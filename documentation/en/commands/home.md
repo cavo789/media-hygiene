@@ -222,7 +222,10 @@ opened the page:
   opened it, and shows what it wrote in a dialog (*Runs in the page*, then *Done. What it
   wrote:*): no window to switch to. One at a time (*Another step runs: wait for its end.*); a
   step past 2 minutes is stopped; an error shows its message only. *Forget every face* deletes the faces
-  only, read back; the names of `config.toml` are deleted only after a yes typed in a terminal.
+  only, read back. *Forget every face and every name* (`people --forget --names`) first opens a
+  confirmation stating how many names go and listing them; it is offered only when
+  `config.toml` names someone. Once it ran, its dialog shows `config.toml` read back (*0 names*),
+  the names removed and where the previous file is kept (`/config/.history/`).
 - **A long step** (`audit`, `clean`, `import`…) runs in the window of `mh` while the page stays
   open: its dialog shows the stage, a bar, how many files are done and how many a second. Close
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again

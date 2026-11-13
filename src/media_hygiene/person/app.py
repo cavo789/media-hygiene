@@ -21,7 +21,7 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.person.draw_route import drawn
 from media_hygiene.person.forget_route import forgotten
-from media_hygiene.person.names import tagged
+from media_hygiene.person.name_tags import tagged
 from media_hygiene.person.pictures import PersonPictures
 from media_hygiene.person.routes import (
     APPLY_PATH,

@@ -25,6 +25,7 @@ from media_hygiene.people.naming import How, face_id, id_of, name_all
 from media_hygiene.people.people_memo import PeopleMemo
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
+from media_hygiene.services.kept_state import KeptState
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -58,6 +59,18 @@ class FaceNames:
     faces: FaceIndex
     shelf: FaceShelf
     memo: PeopleMemo = field(default_factory=PeopleMemo)  # read again after a change
+    kept: KeptState[Known] = field(default_factory=KeptState)  # 0805
+
+    def known(self) -> Known:
+        """Who each face is, kept while the files and the faces are the same (0805).
+
+        Returns:
+            `Known.of` the faces and the settings, built again after a change.
+        """
+        settings = self.settings()
+        every = self.faces.every
+        key = (settings.person, settings.ignored, every)  # the same objects: `is`
+        return self.kept.value(lambda: key, lambda: Known.of(every, settings))
 
     def settings(self) -> PeopleSettings:
         """`[people]` as the file holds it now, the thresholds of the run.
@@ -126,8 +139,7 @@ class FaceNames:
             By number: `name`, `how` (confirmed or assigned), `not` (names ruled out).
         """
         stored = {key: face for key in keys if (face := self._stored(key)) is not None}
-        settings = self.settings()
-        known = Known.of(self.faces.every, settings)
+        known = self.known()
         names = name_all(tuple(stored.values()), known)
         tags: dict[int, dict[str, object]] = {}
         for (key, face), named in zip(stored.items(), names, strict=True):
@@ -164,36 +176,3 @@ class FaceNames:
             The ids, in order.
         """
         return [id_of(face) for key in keys if (face := self._stored(key)) is not None]
-
-
-def tagged(names: FaceNames | None, answer: dict[str, object]) -> dict[str, object]:
-    """An answer of the page, each face and photo told its name.
-
-    A photo whose face was said not to be the name of the first (the face chosen) is
-    left out: "not him" removes it from the search.
-
-    Args:
-        names: The desk; None: the answer as it is.
-        answer: `faces` (a photo's) or `files` (a face's photos), each with `key`.
-
-    Returns:
-        The same answer, with `named` on each item named, `people`, `writable`.
-    """
-    if names is None:
-        return answer
-    for listed in ("faces", "files"):
-        items = answer.get(listed)
-        if not isinstance(items, list):
-            continue
-        tags = names.tags([int(item["key"]) for item in items])
-        for item in items:
-            item["named"] = tags.get(int(item["key"]))
-        if listed == "files" and items and items[0]["named"]:
-            seed = items[0]["named"]["name"]
-            answer[listed] = [items[0]] + [
-                item
-                for item in items[1:]
-                if not (item["named"] and seed and seed in item["named"]["not"])
-            ]
-    people = [person.name for person in names.settings().person]
-    return {**answer, "people": people, "writable": names.config_file is not None}

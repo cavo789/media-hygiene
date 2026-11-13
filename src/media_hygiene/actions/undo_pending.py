@@ -9,6 +9,7 @@ from media_hygiene.actions.copy_in_undo import never_copied
 from media_hygiene.actions.kinds import Status
 from media_hygiene.actions.link_undo import never_linked
 from media_hygiene.actions.reversal import XMP_REVERSALS, Reversal
+from media_hygiene.actions.turn_undo import never_turned
 from media_hygiene.actions.xmp_undo import never_written
 
 if TYPE_CHECKING:
@@ -41,6 +42,8 @@ def never_happened(entry: JournalEntry, reversal: Reversal) -> bool:
         return never_linked(entry)
     if reversal is Reversal.REMOVE_COPY:
         return never_copied(entry)
+    if reversal is Reversal.UNTURN:
+        return never_turned(entry)
     return (
         entry.status is Status.PENDING
         and reversal not in _NOT_ABOUT_THE_PATH

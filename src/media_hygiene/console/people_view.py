@@ -53,26 +53,6 @@ def show_absent(output: Output, absent: int) -> None:
         )
 
 
-def show_missing(output: Output, missing: int, total: int) -> None:
-    """Say how many photos are still to analyse.
-
-    Args:
-        output: Where to print.
-        missing: Photos not analysed yet.
-        total: Photos of the run.
-    """
-    if not missing:
-        return
-    output.info(
-        ngettext(
-            "{count} photo of {total} to analyse; the next runs analyse new ones only.",
-            "{count} photos of {total} to analyse; the next runs analyse new ones "
-            "only.",
-            missing,
-        ).format(count=human_number(missing), total=human_number(total))
-    )
-
-
 def show_found(output: Output, outcome: FindOutcome) -> None:
     """Say how many photos were analysed and faces found, or why it stopped.
 

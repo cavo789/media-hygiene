@@ -29,6 +29,47 @@ _ROUNDS: Final = 2  # the mean, then the mean of what it finds
 
 
 @dataclass(frozen=True, slots=True)
+class FaceRows:
+    """Faces, and their vectors stacked: one row per face, in the same order."""
+
+    faces: tuple[StoredFace, ...]
+    vectors: NDArray[np.float32]
+
+
+def stacked(faces: Sequence[StoredFace]) -> NDArray[np.float32]:
+    """The vectors of faces, one per row.
+
+    Args:
+        faces: The faces.
+
+    Returns:
+        The matrix; an empty one without faces.
+    """
+    if not faces:
+        return np.empty((0, 0), dtype=np.float32)
+    return np.stack([vector_of(face.embedding) for face in faces])
+
+
+def kept_rows(every: FaceRows, kept: tuple[StoredFace, ...]) -> FaceRows:
+    """The rows of some faces of `every`, the matrix not stacked again (0805).
+
+    Args:
+        every: Every face and the matrix of their vectors.
+        kept: Some of them, in their order.
+
+    Returns:
+        Those faces and their rows.
+    """
+    if len(kept) == len(every.faces):
+        return FaceRows(kept, every.vectors)
+    wanted = {id(face) for face in kept}
+    mask = np.fromiter(
+        (id(face) in wanted for face in every.faces), dtype=bool, count=len(every.faces)
+    )
+    return FaceRows(kept, every.vectors[mask])
+
+
+@dataclass(frozen=True, slots=True)
 class Likeness:
     """The faces of a person, one per photo, the closest first, and who they were."""
 
@@ -65,14 +106,12 @@ def known_person(seed: bytes, people: Sequence[AsideFaces]) -> AsideFaces | None
     return best[1] if best[0] >= LOOK_ALIKE else None
 
 
-def likeness(
-    seed: bytes, every: Sequence[StoredFace], people: Sequence[AsideFaces]
-) -> Likeness:
+def likeness(seed: bytes, rows: FaceRows, people: Sequence[AsideFaces]) -> Likeness:
     """The photos of the person a face shows.
 
     Args:
         seed: The face's vector.
-        every: Every face of the index.
+        rows: The faces of the index to look in, and their vectors.
         people: The people set aside.
 
     Returns:
@@ -82,9 +121,9 @@ def likeness(
     known = known_person(seed, people)
     before = known.embeddings if known is not None else ()
     starting = [vector_of(seed), *(vector_of(one) for one in before)]
+    every, vectors = rows.faces, rows.vectors
     if not every:
         return Likeness((), known)
-    vectors = np.stack([vector_of(face.embedding) for face in every])
     mean = unit(np.stack(starting))
     close = np.empty(0, dtype=np.int64)
     likeness_of = np.zeros(len(every), dtype=np.float32)

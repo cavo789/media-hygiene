@@ -169,6 +169,25 @@ def test_forget_asks_before_deleting_the_names(
     assert 'name = "Chloé"' not in (locations.config_dir / "config.toml").read_text()
 
 
+def test_forget_names_deletes_them_without_asking_and_keeps_the_old_file(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """`--names`: no question, the names read back gone, listed, the old file kept."""
+    name_largest(cli, apps)
+    config = locations.config_dir / "config.toml"
+    people_files = list((locations.config_dir / "people").glob("*.toml"))
+    assert people_files
+    gone = flat(run(cli, "people", "--forget", "--names").output)
+    assert "Read back from config.toml: 0 names, 0 faces ignored." in gone
+    assert "Names removed: Chloé." in gone
+    assert 'name = "Chloé"' not in config.read_text()
+    assert not any(path.exists() for path in people_files)
+    history = locations.config_dir / ".history"
+    kept = [path.read_text() for path in history.rglob("*") if path.is_file()]
+    assert any('name = "Chloé"' in text for text in kept)
+    assert any(text and "config.toml" not in text for text in kept)  # the faces' file
+
+
 def test_a_face_too_small_for_the_page_is_named_by_nobody(
     cli: CliRunner, apps: list[object], locations: Locations
 ) -> None:

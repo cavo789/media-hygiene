@@ -29,7 +29,7 @@ from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.people import PeopleStep, PeopleWork
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.people_files import require_people_index
-from media_hygiene.services.prefixed_page import PrefixedPage
+from media_hygiene.services.prefixed_page import KeptPage, PrefixedPage
 
 if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
@@ -75,7 +75,7 @@ def _ready(work: PeopleWork) -> bool:
     Returns:
         True when the page can show groups and analyse the rest itself.
     """
-    return len(work.missing) < len(work.photos) and len(work.missing) <= MOST_NEW
+    return work.new < len(work.photos) and len(work.missing) <= MOST_NEW
 
 
 def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
@@ -105,6 +105,7 @@ def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
         offered,
         relative=True,
         new=len(work.missing),
+        turns=work.turn_only,
     )
     app, aside = people_app(runtime, result, build)
     offer = ApplyOffer(server.apply, lambda: bool(aside.paths()), PageUndo(runtime))
@@ -155,7 +156,7 @@ def people_here(fresh: FreshRuntime, server: HomeServer) -> PrefixedPage:
     Returns:
         The page.
     """
-    return PrefixedPage(PEOPLE_PAGE, fresh, lambda runtime: _built(runtime, server))
+    return KeptPage(PEOPLE_PAGE, fresh, lambda runtime: _built(runtime, server))
 
 
 def people_door(home: Handling, fresh: FreshRuntime) -> Handling:

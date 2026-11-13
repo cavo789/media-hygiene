@@ -18,6 +18,9 @@ nouveau après de nouvelles photos : seules celles-là sont analysées. Depuis l
 analyse, la page s'ouvre aussitôt sur les groupes déjà connus et analyse elle-même jusqu'à
 1 000 nouvelles photos, avec leur progression et un bouton Arrêter ; les groupes sont gardés
 dans le cache, sans être recalculés.
+Les photos analysées par une version plus ancienne, dont seule la rotation reste à deviner,
+sont comptées à part (*N photos dont la rotation reste à deviner*), dans la console et sur la
+page : ce ne sont pas des nouvelles photos.
 
 **Essayer** :
 
@@ -37,7 +40,7 @@ docker run --rm -it `
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Il faut | Vos dossiers, `/cache` (en écriture : les visages y sont gardés), `/config` (en écriture, pour enregistrer les noms) et `-p 127.0.0.1:8088:8088`. |
 | Écrit | Les visages et les deux modèles de visages (39 Mo, une fois), dans le cache ; les noms, dans `config.toml` ; les photos mises de côté, dans `decisions.json` de `/reports`. |
-| Annuler | `people --forget` supprime tous les visages du cache, puis demande si les noms partent aussi. |
+| Annuler | `people --forget` supprime tous les visages du cache, puis demande si les noms partent aussi (`--names` : ils partent sans question, le fichier précédent conservé dans `/config/.history/`). |
 | Avec `mh` | `mh people` : le port est publié pour vous. |
 
 ## Lancer
@@ -296,6 +299,7 @@ vue).
 | `--path CHEMIN` | Seulement les photos sous ce dossier (chemin de l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs. |
 | `--sample N` | Analyser N photos prises au hasard, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
 | `--forget` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun ; demande avant de supprimer aussi les noms de `config.toml`. |
+| `--names` | Avec `--forget` : supprimer aussi les noms de `config.toml` et les visages ignorés, sans demander ; le fichier précédent est conservé dans `/config/.history/`. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 
 ## Votre vie privée

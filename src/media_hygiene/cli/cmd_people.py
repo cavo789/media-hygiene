@@ -51,6 +51,16 @@ def people_command(  # pylint: disable=too-many-arguments
             ),
         ),
     ] = False,
+    names: Annotated[
+        bool,
+        typer.Option(
+            "--names",
+            help=_(
+                "With --forget: delete the names of config.toml and the faces "
+                "ignored too, without asking (the previous file is kept)."
+            ),
+        ),
+    ] = False,
     port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Find the faces the cache lacks, group them, show and name them until Ctrl+C.
@@ -60,6 +70,7 @@ def people_command(  # pylint: disable=too-many-arguments
         path: `--path`, host folders.
         sample: `--sample N`.
         forget: `--forget`.
+        names: `--names`, with `--forget`.
         port: `--port`, inside the container.
 
     Raises:
@@ -83,7 +94,7 @@ def people_command(  # pylint: disable=too-many-arguments
         require_people_index(runtime)
         ensure_writable(runtime, MountKind.CACHE)
         within = tuple(runtime.mapper.to_container(folder) for folder in path or ())
-        result = run_people(runtime, PeopleRequest(within, sample, forget))
+        result = run_people(runtime, PeopleRequest(within, sample, forget, names=names))
         if sample:
             suggest(
                 runtime,

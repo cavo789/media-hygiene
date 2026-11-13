@@ -3,8 +3,10 @@
 (function () {
   const SCAN_PATH = {{ scan_path | tojson }};
   const NEW_PHOTOS = {{ new_photos | tojson }};
+  const TURN_PHOTOS = {{ turn_photos | tojson }};
   const WORDS = {
     start: {{ _("New photos to analyse: {count}. The groups below stay usable meanwhile…") | tojson }},
+    turns: {{ _("Photos whose turn is still to guess: {count} (analysed before, not new).") | tojson }},
     running: {{ _("New photos: {done} of {total} analysed; nothing is sent.") | tojson }},
     done: {{ _("New photos analysed, kept in the cache.") | tojson }},
     stopped: {{ _("Stopped: the photos left will be analysed the next time this page opens.") | tojson }},
@@ -66,7 +68,10 @@
 
   async function start() {
     panel.hidden = false;
-    line.textContent = fill(WORDS.start, { count: NEW_PHOTOS });
+    const said = [];
+    if (NEW_PHOTOS) said.push(fill(WORDS.start, { count: NEW_PHOTOS }));
+    if (TURN_PHOTOS) said.push(fill(WORDS.turns, { count: TURN_PHOTOS }));
+    line.textContent = said.join(" ");
     const answer = await fetch(SCAN_PATH);
     if (!answer.ok) throw new Error(String(answer.status));
     const state = await answer.json();

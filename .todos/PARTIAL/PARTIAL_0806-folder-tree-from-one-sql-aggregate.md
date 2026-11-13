@@ -41,3 +41,20 @@ updated per file): *measured* (pages-budget, 2026-11-11) 2,956 ms at 100,000 fil
 
 Estimated: the folder view's first opening on 52,000 files from ≈ 1.5 s to under 0.1 s;
 with 0804, every later opening is a lookup.
+
+## Status — PARTIAL (2026-11-13)
+
+### Done
+- Measured (scratch script on the bench's synthetic index, best of 3, `nice -n 19`):
+  (a) the current text-only walk (`folder_counts`, 0704): 99 ms at 100,000, 305 ms at
+  300,000; (b) one `GROUP BY` on the parent folder and suffix as SQL expressions:
+  303 ms and 922 ms (3× slower: the sort of computed strings); (c) moot (b loses
+  before the kind is decided).
+- Kept (a): no product change. With 0804 the tree is kept: warm 2.8 ms (100,000), 7.5 ms
+  (300,000); `pages-budget.md` rows and budgets updated.
+
+### Not done
+- A generated `folder` column with an index (schema bump). **Reason:** not measured; the
+  cold build is 126 ms at 100,000 and paid once (ahead, by the warm-up); a schema bump
+  for ≈ 200 ms at 300,000 needs the maintainer's call.
+- The equivalence test: nothing replaced `folder_counts`.

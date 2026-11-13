@@ -3,7 +3,8 @@
 A pattern or dates are judged against the index (an empty index judges nothing). A
 `path` rule is stale when no indexed path matches it, and superseded (0693) when every
 file it matches already sits in a folder the user named: `existing_folder` would keep
-that folder, the rule (read first) moves its files out of it. A rule renaming a
+that folder, the rule (read first) moves its files out of it. A rule aimed at a
+root the index never covered is left alone (`tidy_roots`). A rule renaming a
 folder on purpose looks the same, so a superseded rule is shown, never ticked by
 default.
 """
@@ -16,6 +17,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.rules.calendar import parse_one_off
+from media_hygiene.config.tidy_roots import aimed_root, covered
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -125,6 +127,9 @@ def _path_reason(pattern: str, facts: LibraryFacts) -> tuple[str, OptIn | None] 
         return None  # refused at load time anyway: not ours to judge
     matched = [path for path in facts.paths if compiled.search(path)]
     if not matched:
+        root = aimed_root(pattern)
+        if root is not None and not covered(root, facts.paths):
+            return None  # aimed at a root the index never covered (0751)
         return _("no indexed path matches '{pattern}'").format(pattern=pattern), None
     if all(path in facts.named for path in matched):
         reason = _(

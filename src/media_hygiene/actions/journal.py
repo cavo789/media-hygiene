@@ -34,13 +34,13 @@ class JournalEntry(BaseModel):
     sha256: str | None = None
     keeper: str | None = None
     quarantine: str | None = None
-    # Where a `move` put the file (absent from journals written before 0.3).
-    target: str | None = None
+    target: str | None = None  # where a `move` put the file (absent before 0.3)
     # `sort` only: the classify plan applied, and its row (resumed runs skip it).
     plan: str | None = None
     row: str | None = None
     trial: bool | None = None  # a sort of a sample (0648); absent before
     partial: str | None = None  # a gone file's partial digest (0224), a match's
+    orientation: tuple[int, str] | None = None  # a turn (0802): code, SHA-256 before
     at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def as_done(self) -> JournalEntry:

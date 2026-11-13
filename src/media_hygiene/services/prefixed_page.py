@@ -2,19 +2,23 @@
 
 Same as `review_here` for the pages that need no audit of their own: the page's paths
 are relative to it, so its app answers under the prefix unchanged; the app is built
-again each time the page itself is asked for, on the server's current settings.
+again each time the page itself is asked for, on the server's current settings — or,
+for a `KeptPage` (0804: the people page), only once the index, `/config` or the
+settings changed (`KeptState`): its session and *Apply now* go on.
 """
 
 from __future__ import annotations
 
 import asyncio
 import dataclasses
+from functools import partial
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Protocol, override
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.review.http import Response
 from media_hygiene.review.local_app import PAGE_PATH
+from media_hygiene.services.kept_state import KeptState, page_key
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -95,9 +99,42 @@ class PrefixedPage:
         if path == PAGE_PATH and request.method == "GET":
             runtime = self._fresh.runtime()
             try:
-                self._app = await asyncio.to_thread(self._build, runtime)
+                self._app = await asyncio.to_thread(self._built, runtime)
             except MediaHygieneError as exc:
                 return Response(HTTPStatus.CONFLICT, str(exc).encode())
         if self._app is None:
             return Response(HTTPStatus.NOT_FOUND)
         return await self._app.handle(dataclasses.replace(request, path=path))
+
+    def _built(self, runtime: Runtime) -> Handling:
+        """The app, built again.
+
+        Args:
+            runtime: The server's settings now.
+
+        Returns:
+            The app.
+        """
+        return self._build(runtime)
+
+
+class KeptPage(PrefixedPage):
+    """A page whose app is kept while the index, `/config`, settings are the same."""
+
+    _kept: KeptState[Handling] | None = None
+
+    @override
+    def _built(self, runtime: Runtime) -> Handling:
+        """The app kept, or built again after a change.
+
+        Args:
+            runtime: The server's settings now.
+
+        Returns:
+            The app.
+        """
+        if self._kept is None:
+            self._kept = KeptState()
+        return self._kept.value(
+            partial(page_key, runtime), partial(self._build, runtime)
+        )

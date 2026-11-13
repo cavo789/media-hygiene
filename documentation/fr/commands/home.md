@@ -241,8 +241,11 @@ qui a ouvert la page :
   une fenêtre (*Tourne dans la page*, puis *Terminé. Ce qu'elle a écrit :*) : aucune fenêtre
   où basculer. Une à la fois (*Une autre étape tourne : attendez sa fin.*) ; une étape qui
   dépasse 2 minutes est arrêtée ; une erreur ne montre que son message. *Oublier tous les
-  visages* n'efface que les visages, relus ; les noms de `config.toml` ne sont effacés qu'après
-  un oui tapé dans un terminal.
+  visages* n'efface que les visages, relus. *Oublier tous les visages et tous les noms*
+  (`people --forget --names`) ouvre d'abord une confirmation qui dit combien de noms partent et
+  les liste ; elle n'est proposée que si `config.toml` nomme quelqu'un. Après, sa fenêtre montre
+  `config.toml` relu (*0 noms*), les noms supprimés et où le fichier précédent est conservé
+  (`/config/.history/`).
 - **Une étape longue** (`audit`, `clean`, `import`…) tourne dans la fenêtre de `mh` pendant que
   la page reste ouverte : sa fenêtre montre l'étape en cours, une barre, combien de fichiers sont
   faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et

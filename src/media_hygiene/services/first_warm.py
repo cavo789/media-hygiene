@@ -4,7 +4,9 @@ The library page's first opening cost imports, its template, the index opened an
 full-text table built, and a worker of the pool started: about 1.3 s on the demo. A
 low-priority task runs the same reading requests a moment after the server listens,
 through the server's own router, on its own thread (the index stays read-only); a
-request the user already sent made them cheap. Nothing is written; the task is
+request the user already sent made them cheap. The folder tree, *Events found* and
+the map are built too, and kept by their pages until something changes (0804); the
+people page is not (its build writes its face groups). Nothing is written; the task is
 cancelled with the server's loop, and any failure is left for the real request.
 """
 
@@ -15,7 +17,10 @@ import contextlib
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import ContentType, Request
+from media_hygiene.review.step_watch import PLACES_PAGE
 from media_hygiene.search.app import SEARCH_PAGE_PATH, SEARCH_PATH
+from media_hygiene.search.folders import FOLDERS_PATH
+from media_hygiene.search.found_desk import FOUND_PATH
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -33,6 +38,10 @@ WARM_REQUESTS: Final = (
         {**_HOST, "content-type": ContentType.JSON},
         b'{"text":""}',
     ),
+    # Kept by their pages while nothing changes (0804): the first click is warm too.
+    Request("GET", FOLDERS_PATH, _HOST),
+    Request("GET", FOUND_PATH, _HOST),
+    Request("GET", PLACES_PAGE, _HOST),
 )
 
 

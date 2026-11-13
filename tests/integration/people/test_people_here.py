@@ -146,3 +146,20 @@ def test_a_home_that_ends_on_every_step_keeps_its_way() -> None:
     """Not the home page of an `mh` that keeps it up: no door added."""
     home = _Home()
     assert people_door(home, None) is home  # type: ignore[arg-type]
+
+
+def test_a_turn_only_job_never_counts_as_a_new_photo(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Photos analysed before, their turn not guessed: counted apart (0803)."""
+    del cli  # the coloured tree, audited
+    monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
+    runtime = make_runtime(locations)
+    with PeopleStep(runtime) as people:
+        people.find(people.plan(()).missing, Answering(True, NullProgress()))  # noqa: FBT003
+        people.store.connection.execute("DELETE FROM face_turns")
+        work = people.plan(())
+    assert work.photos
+    assert work.turn_only == len(work.missing) == len(work.photos)
+    assert work.new == 0
+    assert people_here_module.faces_found(runtime)  # the page still opens

@@ -31,6 +31,7 @@ from media_hygiene.index.facts import FileFacts
 from media_hygiene.index.rows import row_of
 from media_hygiene.index.schema import UPSERT, prepare
 from media_hygiene.index.tag_rows import TagStore
+from media_hygiene.index.turn_rows import TurnGuess, TurnStore
 from media_hygiene.scan.metadata import METADATA_VERSION, MediaMetadata
 from media_hygiene.scan.models import MediaFile, VisualFacts
 from media_hygiene.tags.models import FileTags, PlaceKind, Tag, TagSource
@@ -210,6 +211,7 @@ def build(library: Library) -> None:
         connection.execute("PRAGMA synchronous = OFF")
         prepare(connection)
         tags, faces = TagStore(connection), FaceStore(connection, FACE_MODEL)
+        turns = TurnStore(connection, FACE_MODEL)
         for start in range(0, library.count, _BATCH):
             numbers = range(start, min(start + _BATCH, library.count))
             files = [_file(library, number) for number in numbers]
@@ -229,4 +231,6 @@ def build(library: Library) -> None:
                 if file.kind is MediaKind.IMAGE:
                     count = np.random.default_rng().poisson(FACES_PER_FILE)
                     faces.put(_faces(file, people, int(count)))
+                    # Turn guessed (none): the page opens only past that pass (0803).
+                    turns.put(TurnGuess(file.path, file.size, file.mtime_ns, 0))
         connection.commit()

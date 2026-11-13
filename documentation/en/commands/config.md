@@ -111,7 +111,8 @@ mh config tidy --apply   # remove the ticked entries
 | `[[classify.clocks]]` | no photo of that camera on its dates |
 
 A folder on a drive that is not mounted (a USB stick) is **not judged**, and said so. An
-empty index judges no rule: run `audit` on all your folders first. Your hand-drawn places
+empty index judges no rule: run `audit` on all your folders first. A `path` rule whose pattern
+starts with a folder no audit ever covered (`^E:\\Stick\\…`) is left alone too. Your hand-drawn places
 and the spots set aside are never proposed.
 
 `--apply` first copies `config.toml` to `/cache/config-backups/` (dated), removes the ticked

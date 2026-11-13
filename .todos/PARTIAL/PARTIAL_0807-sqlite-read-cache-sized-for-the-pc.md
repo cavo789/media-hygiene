@@ -40,3 +40,25 @@ times over.
       and said so)
 - [ ] WAL, if kept: the `.wal`/`.shm` files beside the index are handled by `mh backup`,
       `shrink`, the read-only `?mode=ro` opens of a `:ro` cache mount, and the e2e tests
+
+## Status — PARTIAL (2026-11-13)
+
+### Done
+- Measured at 100,000 (pages bench, one run per variant, `nice -n 19`, the pragma set on
+  every `mode=ro` connection by a scratch wrapper), cold/warm ms:
+
+  | Route | (a) defaults | (b) cache 256 MB | (c) mmap 1 GB |
+  |---|---|---|---|
+  | home state | 162/60 | 183/68 | 156/50 |
+  | search: a period | 115/116 | 101/99 | 101/102 |
+  | search: nothing typed | 75/75 | 68/67 | 63/67 |
+  | events: a year | 95/93 | 84/85 | 84/85 |
+  | events: found in folders | 314/120 | 302/111 | 303/112 |
+
+- Nothing changed: every gain is ≤ 15 % on one run, inside the run-to-run spread
+  (home state went 13 % *worse* with (b)); the index fits the OS cache already.
+
+### Not done
+- 300,000 and (d) WAL during a running audit. **Reason:** not measured (an audit running
+  beside the bench needs a scripted second process); the (a)–(c) figures do not suggest
+  a gain worth the WAL files' handling in `backup`/`shrink`/`:ro` mounts.

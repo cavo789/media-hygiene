@@ -3,7 +3,8 @@
 A click on *Name your places on a map* used to stop the home server, start a container
 for the map and wait for it. Now the home server answers it: each time the page itself
 is asked for, the clusters and folders are read again from the index and
-`config.toml` (the towns once per process, `towns_once`), and the map's app answers
+`config.toml` once one of them changed (`KeptState`, 0804; the towns once per
+process, `towns_once`), and the map's app answers
 under the prefix, its addresses relative to the page. Places are saved into
 `config.toml` as before; the server's settings follow (`FreshRuntime`).
 """
@@ -12,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import dataclasses
+from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
@@ -20,6 +22,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.http import Request, Response
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.step_watch import PLACES_PAGE
+from media_hygiene.services.kept_state import KeptState, page_key
 from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.places import open_places
 from media_hygiene.services.places_build import places_app
@@ -34,7 +37,7 @@ _AGAIN: Final = NextVerb("places", (MountKind.CONFIG, MountKind.CACHE))
 
 
 class PlacesHere:
-    """The map: built again each time its page is opened."""
+    """The map: built again when its page is opened after a change."""
 
     def __init__(self, fresh: FreshRuntime, server: HomeServer) -> None:
         """Remember how to build it.
@@ -46,6 +49,7 @@ class PlacesHere:
         self._fresh = fresh
         self._server = server
         self._app: PlacesApp | None = None
+        self._kept: KeptState[PlacesApp] = KeptState()
 
     async def handle(self, request: Request) -> Response:
         """Answer a path under `/places`, the prefix taken off.
@@ -73,8 +77,18 @@ class PlacesHere:
         """Read the clusters, the folders and the places saved.
 
         Returns:
-            The map's app.
+            The map's app, the one kept while the index, `/config` and the
+            settings are unchanged.
         """
         runtime = self._fresh.runtime()
-        opened = open_places(runtime, _AGAIN)
-        return places_app(runtime, opened, self._server.executor)
+
+        def build() -> PlacesApp:
+            """Read the map's state from the index and `config.toml`.
+
+            Returns:
+                The map's app.
+            """
+            opened = open_places(runtime, _AGAIN)
+            return places_app(runtime, opened, self._server.executor)
+
+        return self._kept.value(partial(page_key, runtime), build)

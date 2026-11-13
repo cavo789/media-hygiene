@@ -49,27 +49,40 @@ two tenths of them a camera's dump not sorted yet).
 | search: nothing typed | 100,000 | 68.0 | 66.7 | 110 |
 | search: nothing typed | 300,000 | 172.6 | 166.6 | 250 |
 | folders | 10,000 | 287.2 | 299.5 | 450 |
-| folders | 100,000 | 2,991.9 | 2,955.7 | 4,440 |
-| folders | 300,000 | 9,849.9 | 8,851.5 | 13,280 |
+| folders | 100,000 | 125.7 | 2.8 | 100 |
+| folders | 300,000 | 710.3 | 7.5 | 100 |
 | events: a year | 10,000 | 11.4 | 11.1 | 100 |
 | events: a year | 100,000 | 113.8 | 109.4 | 170 |
 | events: a year | 300,000 | 348.6 | 330.5 | 500 |
 | events: found in folders | 10,000 | 188.4 | 191.0 | 290 |
-| events: found in folders | 100,000 | 1,822.8 | 1,827.1 | 2,750 |
-| events: found in folders | 300,000 | 5,547.4 | 5,536.4 | 8,310 |
+| events: found in folders | 100,000 | 312.3 | 125.9 | 190 |
+| events: found in folders | 300,000 | 994.6 | 374.1 | 570 |
 | people page | 10,000 | 961.1 | 338.9 | 510 |
 | people page | 100,000 | 27,335.9 | 3,672.0 | 5,510 |
 | people groups | 10,000 | 11.9 | 11.9 | 100 |
 | people groups | 100,000 | 76.8 | 68.5 | 110 |
 | places page (clusters built) | 10,000 | 498.8 | 211.0 | 320 |
-| places page (clusters built) | 100,000 | 2,423.6 | 2,421.6 | 3,640 |
-| places page (clusters built) | 300,000 | 14,495.6 | 14,759.8 | 22,140 |
+| places page (clusters built) | 100,000 | 2,286.5 | 0.2 | 100 |
+| places page (clusters built) | 300,000 | 6,587.6 | 0.1 | 100 |
 | places clusters | 10,000 | 1.1 | 1.0 | 100 |
 | places clusters | 100,000 | 7.7 | 1.8 | 100 |
 | places clusters | 300,000 | 11.7 | 2.6 | 100 |
 | albums | 10,000 | 0.8 | 0.1 | 100 |
 | albums | 100,000 | 1.3 | 0.3 | 100 |
 | albums | 300,000 | 0.9 | 0.2 | 100 |
+
+## Kept states (0804), measured 2026-11-13
+
+Same method, same machine. The folder tree, *Events found* and the map are now kept by
+their pages while the index and `/config` are unchanged (`services/kept_state.py`):
+their rows above are the 2026-11-13 figures (folders, found events and the map at
+100,000 and 300,000; the others unchanged). Before, measured the same day at 100,000:
+folders 130 ms warm (the text-only count of 0704 had already cut it from 2,956 ms),
+found events 492 ms, the map 2,234 ms. *Events found* stays above 100 ms warm: it
+lists again, at each ask, the folders of the files without a date, for a day set by
+hand in a sidecar (0618); `os.listdir` instead of `Path.iterdir` took it from 287 to
+126 ms. The people page answers 409 on this synthetic library (its faces are not
+"guessed" for the turned-photo check), so it was not measured kept.
 
 ## What grows faster than linearly
 
@@ -78,6 +91,11 @@ two tenths of them a camera's dump not sorted yet).
   cut to the closest; buffers reused): 13.5 s cold at 100,000 (measured 2026-11-12, load
   average 6–9 from other sessions; face grouping alone 24.4 s → 10.3 s). Still all pairs
   (the matrix product): the ≤ 5 s target needs an approximate search or float16.
+- 0814 (measured 2026-11-13, same machine, 100,000 files, 50,347 faces): that cost is the
+  **first** grouping only. With the groups kept in the index (0588), a cold opening runs no
+  neighbour search: people page 2,858 ms cold (11.8 s for the first grouping, 0794), 0.1 ms
+  warm, peak memory 714 MB. New faces join by comparing only themselves with all; a full
+  regroup comes back once they pass a tenth of the others.
 - Everything else grows about linearly (×10 files: ×5 to ×12; ×3 files: ×2.6 to ×3.3,
   measured), but several routes are slow in absolute terms at 100,000: folders 3.0 s,
   places page 5.2 s (it reads every row of the index, facts parsed, for the 1.3 % with

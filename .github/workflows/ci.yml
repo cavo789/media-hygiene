@@ -64,7 +64,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [unit, integration]
+        # 0793: integration (369 s on PR #82, unit 159 s) in two halves: every other test
+        # file of the sorted list, so slow and fast files spread evenly (only the 15 slowest
+        # tests are in the logs, not every file's time: an interleave, not a measured packing).
+        suite: [unit, integration-1, integration-2]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -102,9 +105,20 @@ jobs:
         env:
           COVERAGE_FILE: .coverage.${{ matrix.suite }}
           SUITE: ${{ matrix.suite }}
-        run: >-
-          uv run pytest "tests/${SUITE}" -n auto --dist worksteal --durations=15
-          --cov --cov-report= --cov-fail-under=0
+        run: |
+          case "$SUITE" in
+            unit) targets=(tests/unit) ;;
+            integration-*)
+              half="${SUITE#integration-}"
+              mapfile -t files < <(find tests/integration -name 'test_*.py' | LC_ALL=C sort |
+                awk -v h="$half" 'NR % 2 == h % 2')
+              targets=("${files[@]}")
+              ;;
+            *) exit 1 ;;
+          esac
+          echo "${#targets[@]} target(s) for ${SUITE}"
+          uv run pytest "${targets[@]}" -n auto --dist worksteal --durations=15 \
+            --cov --cov-report= --cov-fail-under=0
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-${{ matrix.suite }}
@@ -130,7 +144,7 @@ jobs:
           merge-multiple: true
       - name: Combined coverage (90 % of branches, pyproject.toml)
         run: |
-          uv run coverage combine .coverage.unit .coverage.integration
+          uv run coverage combine .coverage.unit .coverage.integration-1 .coverage.integration-2
           uv run coverage report
 
   image:

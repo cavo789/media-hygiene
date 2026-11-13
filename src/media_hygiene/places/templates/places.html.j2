@@ -20,7 +20,7 @@
   "needName": _("Give the place a name."),
   "giveYes": _("Give the photos"),
   "deleteYes": _("Delete the place"),
-  "confirmDelete": _("Delete the place {name}? The photos stay where they are."),
+  "placeDeleted": _("Place {name} deleted. The photos stay where they are."),
   "osmSearching": _("Searching OpenStreetMap…"),
   "osmNone": _("OpenStreetMap knows no area of that name."),
   "osmTooLarge": _("Larger areas not listed (regions, countries): {count}. A 'trip' rule names them."),
@@ -106,6 +106,7 @@
 <main id="stage">
 {% include "places_stage.html.j2" %}
 </main>
+{% include "undo_toast.html.j2" %}
 {% endblock %}
 {% block after %}
 <script nonce="{{ page_nonce }}" src="leaflet.js"></script>

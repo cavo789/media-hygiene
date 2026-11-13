@@ -43,6 +43,17 @@ class PeopleWork:
     photos: tuple[PhotoVersion, ...]
     missing: tuple[PhotoVersion, ...]
     absent: int = 0  # in the index, not on disk: their folder is not mounted
+    # Of `missing`, those analysed before whose turn only is to guess (0803).
+    turn_only: int = 0
+
+    @property
+    def new(self) -> int:
+        """The photos never analysed: `missing` without the turn-only jobs.
+
+        Returns:
+            Their count.
+        """
+        return len(self.missing) - self.turn_only
 
 
 class PeopleStep:
@@ -108,10 +119,12 @@ class PeopleStep:
         store = self.store
         photos, absent = present_photos(people_photos(store.connection, within))
         turns = TurnStore(store.connection, self._model)
+        scanned = {p.path for p in photos if store.scanned(p)}
         missing = tuple(
-            p for p in photos if not store.scanned(p) or not turns.guessed(p)
+            p for p in photos if p.path not in scanned or not turns.guessed(p)
         )
-        return PeopleWork(photos, missing, absent)
+        turn_only = sum(1 for p in missing if p.path in scanned)
+        return PeopleWork(photos, missing, absent, turn_only)
 
     def find(self, photos: Sequence[PhotoVersion], answering: Answering) -> FindOutcome:
         """Find the faces of photos, each one committed at once.

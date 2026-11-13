@@ -166,7 +166,7 @@ const SAMPLE = {{ sample_prefix | tojson }};
 {% include "path_names.js.j2" %}
 {% include "people_path_names.js.j2" %}
 {% include "tile_view.js.j2" %}
-{% if new_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
+{% if new_photos or turn_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
 load();
 </script>
 {% include "undo_toast.html.j2" %}

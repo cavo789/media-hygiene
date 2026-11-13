@@ -52,6 +52,7 @@ class PeopleBuild:
     apply_offered: bool = False  # *Apply now*: opened from the home page
     relative: bool = False  # under a prefix of the home server (0600)
     new: int = 0  # photos not analysed yet, which the page analyses itself (0588)
+    turns: int = 0  # of `new`, analysed before: their turn only is to guess (0803)
 
 
 def people_page(build: PeopleBuild) -> bytes:
@@ -83,7 +84,8 @@ def people_page(build: PeopleBuild) -> bytes:
             header=page_header(_PAGE_TEMPLATE),
             strip=STRIP,
             apply_offered=build.apply_offered,
-            new_photos=build.new,
+            new_photos=build.new - build.turns,
+            turn_photos=build.turns,
             scan_path=PEOPLE_PATH,
             **paths,
         )
