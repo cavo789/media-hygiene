@@ -3,7 +3,8 @@
 Counts only, never which page nor which photo, kept `ACTIVITY_DAYS` in
 `/lan/activity.json`: the PC's card answers "did someone look at the photos while I was
 away?". Counted in memory and written every `FLUSH_EVERY` at most (a draft renamed
-over the file, 0600), never once per picture: a stop loses at most those last minutes.
+over the file, 0600), never once per picture, and once more as mh ends (Ctrl+C,
+`docker stop`: `atexit`, 0772): only a killed process loses those last minutes.
 Each write merges with the file as on disk (a `/lan` restored from an older copy adds
 its days), drops the days too old and the phones no longer paired.
 """

@@ -17,3 +17,11 @@ Split from section 0684 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — UNNEEDED (2026-11-13)
+
+Redundant: checked against the code.
+- *Until tonight*: done by 0709 (`review/lan_guest_day.py`: a guest ends at the next local
+  midnight, kept or run-only; `tests/unit/test_lan_guest_day.py`; the card shows `until`).
+- The reports' `.mh-*` files: refused to every role by 0710 (`review/report_files.py`,
+  `_HIDDEN`; `tests/unit/test_report_hidden_files.py`).

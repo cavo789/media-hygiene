@@ -11,6 +11,7 @@ import json
 from datetime import UTC, datetime, timedelta
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
+from unittest.mock import MagicMock
 
 from media_hygiene.review.doors import Door
 from media_hygiene.review.http import Request, Response
@@ -26,10 +27,14 @@ from media_hygiene.review.lan_phones_api import (
 )
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.search.views import PREVIEW_PREFIX, THUMB_PREFIX
+from media_hygiene.services import home_lan
 from tests.support.tv_pairing import tv_paired
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pathlib import Path
+
+    import pytest
 
 _ADDRESS: Final = "192.168.1.20"
 _PEER: Final = "192.168.1.42"
@@ -252,3 +257,23 @@ def test_a_tv_s_last_seen_is_written_at_most_once_an_hour(tmp_path: Path) -> Non
     assert screens.is_paired(token)  # no address: the one written is kept
     assert (tmp_path / TVS_FILE).stat().st_mtime_ns == written
     assert book.tvs().listed()[0].address == _PEER
+
+
+def test_activity_is_written_as_mh_ends(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The counts since the last write are kept at the end of `mh`, not lost (0772)."""
+    book = PhoneBook(tmp_path)
+    assert book.add("Android") is not None
+    ending: list[Callable[[], None]] = []
+    monkeypatch.setattr(home_lan, "phone_book", lambda **_kw: book)
+    monkeypatch.setattr("atexit.register", ending.append)
+    monkeypatch.setattr(home_lan, "LanApp", lambda *_a, **_kw: None)
+    access = LanAccess(_ADDRESS, _PORT, b"a" * 32, secure=True)
+    home_lan.lan_door(MagicMock(), MagicMock(), (access, MagicMock()))
+    assert book.activity is not None
+    book.activity.saw(book.listed()[0], _phone(PAGE_PATH, "x"))
+    assert not (tmp_path / ACTIVITY_FILE).exists()
+    for flush in ending:
+        flush()
+    assert '"pages":1' in (tmp_path / ACTIVITY_FILE).read_text(encoding="utf-8")

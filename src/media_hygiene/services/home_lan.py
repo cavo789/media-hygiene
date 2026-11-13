@@ -7,6 +7,7 @@ home network) is said too: the page then stays on the PC only.
 
 from __future__ import annotations
 
+import atexit
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
@@ -70,6 +71,7 @@ def lan_door(
     phones = phone_book(secure=lan.secure)
     if phones is not None:
         phones.activity = Activity(phones)  # what each phone did (0683)
+        atexit.register(phones.activity.flush)  # the last minutes' counts kept (0772)
     return LanApp(  # phones paired for good under HTTPS (0431)
         pages,
         lan,
