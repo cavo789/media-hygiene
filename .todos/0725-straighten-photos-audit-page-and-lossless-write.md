@@ -3,7 +3,6 @@
 - **Priority**: Medium
 - **Batch**: people
 - **Depends**: —
-- **Needs maintainer**: the audit runs no face detection today (only `people` loads YuNet): guessing in the audit worker means up to 4 YuNet passes per camera photo without an orientation tag, on every audit of new files. Run it in the audit, or in `people` (which already decodes each photo for its faces) and cache it there?
 - **Files**: `src/media_hygiene/faces/straighten.py`, `src/media_hygiene/index/schema.py`, `src/media_hygiene/scan/visual.py`, `src/media_hygiene/actions/xmp_write.py`, `src/media_hygiene/review/templates/pick_grid.js.j2`
 
 Follows PARTIAL 0711 (`.todos/PARTIAL/PARTIAL_0711-detect-photos-needing-rotation.md`, commit d8c3af65), which shipped only the pure guess (`faces/straighten.py`). PARTIAL 0711 does not carry the remainder as a fresh TODO, so this is it.
@@ -23,3 +22,7 @@ Decided by the maintainer in the review of 2026-11-12. (a PARTIAL's remainder be
 - [ ] Apply then undo: file byte-identical to before.
 - [ ] Refusals survive `sort`/`undo`/rename (tests).
 - [ ] Docs EN + FR; French strings.
+
+## Decided (2026-11-13)
+
+The rotation guess is computed in `people` (which already decodes each photo for its faces) and cached there, in the index; the audit runs no face detection (choice by the maintainer, review of `.claude/plans/feedback-2026-11-13-iterate.md`).

@@ -44,3 +44,7 @@ Split from section 0655 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
   rank → photo path, tv), …)` from `review_here.on_tv` and add the template to `_TV_PAGES`;
   `review/unwanted_session.py` is at 200/200 lines, so the rank → path lookup goes in a new
   module. Left with the question of whether a show of likely-junk photos is worth a button.
+
+## Declined (2026-11-13)
+
+The maintainer declined 📺 on the unwanted, quarantine and import pages (review of `.claude/plans/feedback-2026-11-13-iterate.md`): nothing left to do for them.
