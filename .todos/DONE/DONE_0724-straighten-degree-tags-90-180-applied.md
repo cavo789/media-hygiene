@@ -23,3 +23,20 @@ Decided by the maintainer in the review of 2026-11-12.: rebuild only those photo
 ## Decided (2026-11-13)
 
 The degree tags `90`/`180` are read when the preview is made: only the previews of those photos are rebuilt, no global preview `_VERSION` bump (choice by the maintainer, review of `.claude/plans/feedback-2026-11-13-iterate.md`).
+
+## Status — DONE (2026-11-13)
+
+- `scan/degree_tags.py`: `90`/`180` applied in `upright_picture` (as codes 6/3), and in
+  `people/crops.upright_size` (face boxes' frame). `report/preview_cache.preview_key` reads
+  the tag when a preview is made: a degree-tagged photo's preview gets a new name
+  (`_DEGREES_VERSION`), every other preview keeps its name (test rebuilds the old name).
+- Face rows: the first `people` run after 0725 re-analyses whole the photos tagged in degrees
+  (its turn-only pass reads each header); other photos' faces untouched.
+- Visual facts (dHash/pHash) left as computed (deviation, by the decision: only previews):
+  identical copies share the tag, so their hashes stay comparable.
+- Invalidation tests (`tests/unit/test_degree_tags.py`): tag written later by an atomic save
+  with the mtime put back, copy keeping its mtime, file gone; in-place write/touch/rename
+  give a new key through size/mtime/path as before.
+- Cost, measured (1,000 synthetic JPEGs, devcontainer, warm): 0.043 ms per header read →
+  ~4.3 s per 100,000 previews asked (estimated, warm cache; paid only when a preview is
+  asked, not per index row).

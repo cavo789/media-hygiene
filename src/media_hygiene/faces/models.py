@@ -81,6 +81,8 @@ class PhotoFaces:
     mtime_ns: int
     faces: tuple[Face, ...]
     seconds: float
+    turn: int = 0  # degrees clockwise it seems to need (0725); 0: none proposed
+    complete: bool = True  # False: only the turn was looked at, faces not searched
 
 
 def embedding_bytes(vector: NDArray[np.float32]) -> bytes:

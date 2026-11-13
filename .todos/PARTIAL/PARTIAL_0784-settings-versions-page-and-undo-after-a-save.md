@@ -30,3 +30,25 @@ only by hand counts as missing (*visible in web or nonexistent*).
 - [ ] Save → Undo (toast, Ctrl+Z) → the file is byte-identical to before, per file kind
 - [ ] *Restore this one* on the Versions page, read back; a version trimmed meanwhile: refused, said
 - [ ] Docs EN + FR (`reference-safety.md`: the hand copy replaced by the page); French strings
+
+## Status — PARTIAL (2026-11-13)
+
+Done: `/settings/versions/` (`services/settings_versions.py`, `services/versions_here.py`,
+`review/templates/settings_versions*.j2`), linked from the settings index (🕘 Versions): every
+file with versions kept, found from the `.history/` folders (config.toml first), per version
+its date and the keys that differ from what replaced it; *Restore this one* goes through
+`restore_version`, the content read back from the disk is shown; the toast's Undo (Z, Ctrl+Z)
+restores the version that restore kept. A version trimmed meanwhile, or a path no history
+lists: 409, said, nothing changed. Also found and fixed: `/settings/` itself was no longer
+served since the merge of PR #78 (`SettingsHere` dropped from `pages_here`), while the shell's
+⚙ link pointed to it. Tests `tests/unit/test_settings_versions.py` (each file kind restored
+byte-identical, then undone byte-identical; trimmed refused). Docs en + fr
+(`reference-safety.md`: the hand copy replaced by the page); French strings.
+
+Left:
+- The Undo toast after a settings save on the ≈ 10 pages that save one (the writers listed in
+  `tests/unit/test_file_history.py`): each page's save answer must name the version it kept
+  (`keep_previous`'s return, not exposed by `replace_text` yet), then the page calls
+  `mhUndoToast` posting it to `/settings/versions/api/restore`. Not done: one change per page,
+  with a browser check each.
+- A Chromium check of the Versions page and its Ctrl+Z; `docs_screenshots` to run.

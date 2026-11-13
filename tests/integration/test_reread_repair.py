@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import os
 import shutil
-from dataclasses import replace
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
 
@@ -22,11 +21,9 @@ from media_hygiene.config.settings import Settings
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.schema import SCHEMA_VERSION
 from media_hygiene.index.verified_rows import damaged_files
-from media_hygiene.paths.mounts import MountTable
 from media_hygiene.plan.push_entries import Stat
 from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.audit import AuditService
 from media_hygiene.services.good_copy import CopyPlace, repairables
 from media_hygiene.services.push_broken import BrokenFinder
 from media_hygiene.services.repair import jobs_of, repair
@@ -34,7 +31,7 @@ from media_hygiene.services.reread import reread
 from media_hygiene.services.undo import undo_run
 from media_hygiene.services.upkeep import commands_of
 from tests.support.cli import point_mounts, run
-from tests.support.runtime import make_runtime
+from tests.support.damage import audit, damage_library, flip
 from tests.support.scenes import scene
 
 if TYPE_CHECKING:
@@ -44,37 +41,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.paths.locations import Locations
     from media_hygiene.services.runtime import Runtime
-
-
-def _library(locations: Locations) -> tuple[Runtime, Path, Path]:
-    """Two identical photos and one alone, audited; the runtime and the pair."""
-    photos = locations.data_dir / "c" / "Photos"
-    (photos / "a").mkdir(parents=True)
-    (photos / "b").mkdir(parents=True)
-    first = photos / "a" / "IMG_0001.jpg"
-    scene(1).save(first, quality=90)
-    twin = photos / "b" / "IMG_0001.jpg"
-    shutil.copy2(first, twin)
-    scene(2).save(photos / "a" / "IMG_0002.jpg", quality=90)
-    runtime = replace(
-        make_runtime(locations), mounts=MountTable(frozenset({photos}), (), ())
-    )
-    _audit(runtime)
-    return runtime, first, twin
-
-
-def _audit(runtime: Runtime) -> None:
-    """An incremental audit."""
-    AuditService(runtime, NullProgress()).run()
-
-
-def _flip(path: Path, offset: int | None = None) -> None:
-    """Flip one byte in the middle, keeping size and modification time."""
-    stat = path.stat()
-    data = bytearray(path.read_bytes())
-    data[len(data) // 2 if offset is None else offset] ^= 0xFF
-    path.write_bytes(bytes(data))
-    os.utime(path, ns=(stat.st_atime_ns, stat.st_mtime_ns))
 
 
 def _damaged(runtime: Runtime) -> list[str]:
@@ -88,11 +54,11 @@ def test_a_flipped_byte_is_found_listed_restored_and_undone(
     locations: Locations,
 ) -> None:
     """Acceptance: found by the re-read, its copy named, disk identical, undoable."""
-    runtime, first, twin = _library(locations)
+    runtime, first, twin = damage_library(locations)
     assert reread(runtime).files == 3
     before, mtime = first.read_bytes(), first.stat().st_mtime_ns
-    _flip(first)
-    _audit(runtime)  # size and date unchanged: the audit trusts it
+    flip(first)
+    audit(runtime)  # size and date unchanged: the audit trusts it
     result = reread(runtime)
     assert result.damaged == (str(first),)
     found = repairables(runtime)
@@ -112,8 +78,8 @@ def test_a_flipped_byte_is_found_listed_restored_and_undone(
 
 def test_a_first_reading_compares_with_the_audit_digest(locations: Locations) -> None:
     """A file with a copy has its full digest from the audit: damage found at once."""
-    runtime, first, _twin = _library(locations)
-    _flip(first)
+    runtime, first, _twin = damage_library(locations)
+    flip(first)
     assert reread(runtime).damaged == (str(first),)
 
 
@@ -121,9 +87,9 @@ def test_a_first_reading_compares_the_ends_without_a_full_digest(
     locations: Locations,
 ) -> None:
     """A file alone: its first 64 KiB changed, listed, no copy to prove."""
-    runtime, _first, _twin = _library(locations)
+    runtime, _first, _twin = damage_library(locations)
     alone = locations.data_dir / "c" / "Photos" / "a" / "IMG_0002.jpg"
-    _flip(alone, 10)
+    flip(alone, 10)
     assert reread(runtime).damaged == (str(alone),)
     assert [item.copy for item in repairables(runtime)] == [None]
     assert not jobs_of(repairables(runtime))
@@ -131,27 +97,27 @@ def test_a_first_reading_compares_the_ends_without_a_full_digest(
 
 def test_an_edit_with_a_new_date_is_never_damage(locations: Locations) -> None:
     """Changed then audited: a new start, not damage."""
-    runtime, first, _twin = _library(locations)
+    runtime, first, _twin = damage_library(locations)
     reread(runtime)
     scene(5).save(first, quality=80)
     assert reread(runtime).files == 2  # left to the audit: it changed since
-    _audit(runtime)
+    audit(runtime)
     assert not reread(runtime).damaged
     assert not _damaged(runtime)
 
 
 def test_a_touch_is_a_new_start(locations: Locations) -> None:
     """Same bytes, a new date: read fine once audited."""
-    runtime, first, _twin = _library(locations)
+    runtime, first, _twin = damage_library(locations)
     reread(runtime)
     first.touch()
-    _audit(runtime)
+    audit(runtime)
     assert not reread(runtime).damaged
 
 
 def test_a_rewrite_keeping_the_date_is_listed_as_changed(locations: Locations) -> None:
     """`touch -r` after an EXIF rewrite: listed (changed or damaged — look)."""
-    runtime, first, _twin = _library(locations)
+    runtime, first, _twin = damage_library(locations)
     reread(runtime)
     stat = first.stat()
     data = first.read_bytes()
@@ -162,7 +128,7 @@ def test_a_rewrite_keeping_the_date_is_listed_as_changed(locations: Locations) -
 
 def test_the_budget_reads_the_oldest_first(locations: Locations) -> None:
     """One byte of budget: one file per run, the never read first, then in turn."""
-    runtime, _first, _twin = _library(locations)
+    runtime, _first, _twin = damage_library(locations)
     seen = [reread(runtime, 1).files for _ in range(3)]
     assert seen == [1, 1, 1]
     assert reread(runtime, 0).files == 0
@@ -174,9 +140,9 @@ def test_the_budget_reads_the_oldest_first(locations: Locations) -> None:
 
 def test_a_move_by_the_tool_and_a_forget_follow_the_row(locations: Locations) -> None:
     """`sort`/`undo` move the row; the audit forgetting a file drops it."""
-    runtime, first, _twin = _library(locations)
+    runtime, first, _twin = damage_library(locations)
     reread(runtime)
-    _flip(first)
+    flip(first)
     reread(runtime)
     assert runtime.index_file is not None
     moved = str(first.with_name("moved.jpg"))
@@ -190,7 +156,7 @@ def test_a_move_by_the_tool_and_a_forget_follow_the_row(locations: Locations) ->
 
 def test_a_good_copy_in_the_quarantine_is_found(locations: Locations) -> None:
     """The twin set aside before: its journal's SHA-256 names it."""
-    runtime, first, twin = _library(locations)
+    runtime, first, twin = damage_library(locations)
     reread(runtime)
     aside = locations.quarantine_dir / "run1" / "IMG_0001.jpg"
     aside.parent.mkdir(parents=True)
@@ -209,7 +175,7 @@ def test_a_good_copy_in_the_quarantine_is_found(locations: Locations) -> None:
             "quarantine": str(aside),
         }
         journal.record(JournalEntry.model_validate(fields))
-    _flip(first)
+    flip(first)
     reread(runtime)
     found = repairables(runtime)
     assert [(item.copy, item.place) for item in found] == [
@@ -219,8 +185,8 @@ def test_a_good_copy_in_the_quarantine_is_found(locations: Locations) -> None:
 
 def test_push_never_replaces_a_copy_by_a_damaged_file(locations: Locations) -> None:
     """The damaged file, unchanged since, is refused like a broken one."""
-    runtime, first, _twin = _library(locations)
-    _flip(first)
+    runtime, first, _twin = damage_library(locations)
+    flip(first)
     reread(runtime)
     stat = first.stat()
     check: Any = SimpleNamespace(pc_path=lambda relative: first.parent / relative)
@@ -258,9 +224,9 @@ def test_the_console_lists_first_then_restores(
 ) -> None:
     """`audit --reread` lists the file and its copy; `clean --repair --yes` restores."""
     point_mounts(locations, monkeypatch)
-    _runtime, first, _twin = _library(locations)
+    _runtime, first, _twin = damage_library(locations)
     before = first.read_bytes()
-    _flip(first)
+    flip(first)
     listed = run(CliRunner(), "audit", "--reread")
     assert listed.exit_code == 0, listed.output
     assert "IMG_0001.jpg" in listed.output

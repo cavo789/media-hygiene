@@ -1,0 +1,66 @@
+{% extends "page_frame.html.j2" %}
+{# The damaged files (0783), served by the home server under /repair/: each file the re-read
+   found changed while its size and date did not, beside its good copy (a duplicate, a backup,
+   the quarantine), proven by reading it in full. A page of photos to pick (`pick_*`, skill
+   photo-picking-pages): ↩ Restore restores the picked ones shown, journaled, each read back from
+   the disk; the toast's Undo (or Z) runs `mh undo` of that run: the damaged files come back.
+   A file whose copy is gone or changed meanwhile is refused, said, nothing of it moved.
+   No Delete key: nothing is set aside here. #}
+{% set texts = {
+  "status": _("{count} damaged files"),
+  "empty": _("No damaged file known: nothing to restore."),
+  "since": _("Found changed on {since}, read fine on {good}"),
+  "copy": _("Good copy: {path}"),
+  "copyQuarantine": _("Good copy in the quarantine: {path}"),
+  "noCopy": _("No good copy here: look on your backup (NAS, disk)."),
+  "restoring": _("Restoring…"),
+  "back": _("Restored and read back at {time}: {count} files."),
+  "left": _("Not restored: {reasons}"),
+  "notSaved": _("Nothing was restored: {error}"),
+  "failed": _("Nothing was restored (error {status})."),
+  "offline": _("The page cannot reach mh: is it still running?"),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "aside": "",
+  "tick": _("Pick this file"),
+  "saving": _("Restoring…"),
+} %}
+{% set page_name = _("Damaged files") %}
+{% set pick_all = _("every file of the page") %}
+{% set pick_marks = false %}
+{% set pick_first = "repair_restore.html.j2" %}
+{% set keys_safe = _("Restoring copies the good copy beside the file, reads it back, and moves the damaged one to the quarantine, journaled: 'mh undo' of its run puts it back.") %}
+{% block style %}
+{% include "pick_grid.css.j2" %}
+  main#grid { display: block; }
+  #setAside, #takeBack { display: none; }  /* nothing is set aside here: Restore instead */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(220px * var(--tile-scale))), 1fr)); gap: 10px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .pair img, .pair .empty { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .file .empty { font-size: 2rem; text-align: center; }
+  .file .bad { color: var(--bad); } .file .meta div { overflow-wrap: anywhere; }
+  #chosen.saved { color: var(--ok); } #chosen.error { color: var(--bad); }
+{% endblock %}
+{% block side %}
+    <section id="toc" aria-label="{{ page_name }}">
+      <p class="muted">{{ _("Each file changed while its size and date did not: damaged, or rewritten by a program that kept its date — look. Left, the file as it is; right, its good copy.") }}</p>
+      <p class="muted">{{ _("Fast path, every file at once without showing them: mh clean --repair.") }}</p>
+    </section>
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
+    {% include "pick_acting.html.j2" %}
+{% endblock %}
+{% block content %}
+  <main id="grid"></main>
+{% endblock %}
+{% block after %}
+{% include "pick_viewer.html.j2" %}
+{% include "undo_toast.html.j2" %}
+<script nonce="{{ page_nonce }}">
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+{% include "repair.js.j2" %}
+</script>
+{% endblock %}

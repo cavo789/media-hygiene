@@ -47,6 +47,18 @@ _PNG: Final = ".png"
 TINY_SIDE: Final = 400  # pixels: icons, stickers, thumbnails
 
 
+def screenshot_name(stem: str) -> bool:
+    """Tell a screenshot by its name alone.
+
+    Args:
+        stem: The file name without its extension.
+
+    Returns:
+        True for a name screenshot tools give.
+    """
+    return _SCREENSHOT_NAMES.search(stem) is not None
+
+
 def is_screenshot(file: MediaInput) -> bool:
     """Tell a screenshot, a document or a tiny image: never from a camera.
 
@@ -57,7 +69,7 @@ def is_screenshot(file: MediaInput) -> bool:
         True for a screenshot name, or a PNG or tiny image without a camera trace
         (and not named like a camera: that is an edited photo).
     """
-    if _SCREENSHOT_NAMES.search(file.path.stem):
+    if screenshot_name(file.path.stem):
         return True
     if _CAMERA_NAMES.match(file.path.stem):
         return False

@@ -13,6 +13,7 @@ import pytest
 from media_hygiene.review.doors import Door
 from media_hygiene.review.http import Request
 from media_hygiene.review.page_header import PAGE_STEPS
+from media_hygiene.services import disk_space
 from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.disk_space import (
     Limits,
@@ -20,6 +21,7 @@ from media_hygiene.services.disk_space import (
     previews_bytes,
     save_limits,
 )
+from media_hygiene.services.only_count import OnlyCount
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -88,3 +90,31 @@ def test_the_page_renders(tmp_path: Path) -> None:
     assert "disk_space.html.j2" in PAGE_STEPS
     get = Request("GET", "/disk-space/", _JSON)
     assert b'id="previewsSize"' in asyncio.run(_here(tmp_path).handle(get)).body
+
+
+def test_each_run_says_how_many_only_on_the_nas(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A run covered by the last push's NAS listing says it per run (0792)."""
+
+    def run(run_id: str) -> SimpleNamespace:
+        return SimpleNamespace(run_id=run_id, files=5, size=10, started=None)
+
+    status = SimpleNamespace(
+        quarantine=SimpleNamespace(runs=(run("a"), run("b"), run("c")), size=30)
+    )
+    counts = {"a": OnlyCount(2, 3), "b": OnlyCount(1, 0)}
+    monkeypatch.setattr(disk_space, "read_status", lambda _r: status)
+    monkeypatch.setattr(disk_space, "counts_by_run", lambda _r, _runs: counts)
+    monkeypatch.setattr(disk_space, "ago", lambda _s: "now")
+    monkeypatch.setattr(disk_space, "days_since", lambda _s: 0)
+    monkeypatch.setattr(
+        disk_space, "limits_of", lambda _f: Limits(previews_max_gb=1, purge_hint_days=9)
+    )
+    runtime: Any = SimpleNamespace(
+        locations=SimpleNamespace(config_file=None), previews_dir=None
+    )
+    rows = {row.run_id: row for row in disk_space.disk_state(runtime).runs}
+    assert (rows["a"].only, rows["a"].nas) == ("2", "3")
+    assert (rows["b"].only, rows["b"].nas) == ("1", "")
+    assert (rows["c"].only, rows["c"].nas) == ("5", "")

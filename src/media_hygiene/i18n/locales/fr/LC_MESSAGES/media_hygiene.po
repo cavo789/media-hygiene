@@ -1020,6 +1020,13 @@ msgstr ""
 msgid "A proposal to apply"
 msgstr "Une proposition à appliquer"
 
+msgid ""
+"A restore keeps the current content as a version first: it can always be "
+"taken back."
+msgstr ""
+"Une restauration garde d'abord le contenu actuel comme version : elle "
+"peut toujours être reprise."
+
 msgid "A restore tried"
 msgstr "Une restauration essayée"
 
@@ -2155,6 +2162,10 @@ msgstr "Changé d'avis ? Recopiez {backup} sur {config}."
 msgid "Changed your mind? This puts back what was renamed or set aside:"
 msgstr "Changé d'avis ? Ceci remet ce qui a été renommé ou mis de côté :"
 
+#, python-brace-format
+msgid "Changed: {keys}"
+msgstr "Changé : {keys}"
+
 msgid ""
 "Check any group yourself: 'Check it yourself' gives the command printing "
 "its SHA-256 with your system's own tool (PowerShell's Get-FileHash on "
@@ -2689,6 +2700,14 @@ msgstr "Décompte des photos à regarder…"
 
 msgid "Counting the photos to scan…"
 msgstr "Décompte des photos à analyser…"
+
+msgid ""
+"Covered by the copy the last mh push found on the NAS, gone from this PC:"
+" the next push moves it into .removed, which does not count as a copy."
+msgstr ""
+"Couvert par la copie que le dernier mh push a trouvée sur le NAS, absente "
+"de ce PC : le push suivant la déplace dans .removed, qui ne compte pas comme"
+" une copie."
 
 msgid ""
 "Create the folder yourself before docker run (Docker creates a missing "
@@ -3376,6 +3395,15 @@ msgstr ""
 "Chaque copie est recomparée à celle gardée avant d'être déplacée en "
 "quarantaine ; les fichiers illisibles y vont aussi."
 
+msgid ""
+"Each file changed while its size and date did not: damaged, or rewritten "
+"by a program that kept its date — look. Left, the file as it is; right, "
+"its good copy."
+msgstr ""
+"Chaque fichier a changé sans que sa taille ni sa date changent : abîmé, "
+"ou réécrit par un programme qui a gardé sa date — regardez. À gauche, le "
+"fichier tel qu'il est ; à droite, sa bonne copie."
+
 msgid "Each file goes back exactly where it was."
 msgstr "Chaque fichier revient exactement où il était."
 
@@ -3391,6 +3419,13 @@ msgstr ""
 "Chaque fichier lu ici est gardé dans le cache : l'étiqueter ou le placer "
 "ensuite est immédiat. Vous pouvez arrêter à tout moment : ce qui est lu "
 "est gardé."
+
+msgid ""
+"Each file the re-read found damaged, beside its good copy: restore it, "
+"journaled; undo puts the damaged one back."
+msgstr ""
+"Chaque fichier que la relecture a trouvé abîmé, à côté de sa bonne copie "
+": restaurez-le, journalisé ; undo remet le fichier abîmé."
 
 msgid ""
 "Each group holds faces that look alike: probably one person. Type a name "
@@ -4124,6 +4159,11 @@ msgstr "Visages : {faces} trouvés dans {photos} photos ; 'people' les regroupe.
 msgid "Failed"
 msgstr "En échec"
 
+msgid "Fast path, every file at once without showing them: mh clean --repair."
+msgstr ""
+"Chemin rapide, tous les fichiers d'un coup sans les montrer : mh clean "
+"--repair."
+
 msgid "February"
 msgstr "février"
 
@@ -4618,6 +4658,10 @@ msgstr ""
 "Trouvés par media-hygiene seulement : {ours}. Trouvés par Czkawka "
 "seulement : {theirs}. Le terminal les liste."
 
+#, python-brace-format
+msgid "Found changed on {since}, read fine on {good}"
+msgstr "Trouvé changé le {since}, lu correct le {good}"
+
 msgid "Frame rate"
 msgstr "Images par seconde"
 
@@ -4862,6 +4906,14 @@ msgstr "Disparus du PC : mis de côté dans .removed"
 
 msgid "Gone: use --album."
 msgstr "Supprimé : utilisez --album."
+
+#, python-brace-format
+msgid "Good copy in the quarantine: {path}"
+msgstr "Bonne copie dans la quarantaine : {path}"
+
+#, python-brace-format
+msgid "Good copy: {path}"
+msgstr "Bonne copie : {path}"
 
 msgid "Google Photos description"
 msgstr "description Google Photos"
@@ -6890,6 +6942,9 @@ msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder
 msgid "No damaged file known. 🔒 Nothing was changed."
 msgstr "Aucun fichier abîmé connu. 🔒 Rien n'a été modifié."
 
+msgid "No damaged file known: nothing to restore."
+msgstr "Aucun fichier abîmé connu : rien à restaurer."
+
 msgid "No date taken"
 msgstr "Pas de date de prise"
 
@@ -6998,6 +7053,9 @@ msgstr "Aucun dossier à analyser sous {path}."
 
 msgid "No folder to import from."
 msgstr "Aucun dossier d'où importer."
+
+msgid "No good copy here: look on your backup (NAS, disk)."
+msgstr "Pas de bonne copie ici : regardez sur votre sauvegarde (NAS, disque)."
 
 msgid "No group yet: no two faces look alike enough."
 msgstr ""
@@ -7385,6 +7443,13 @@ msgid "No trips to preview: they need a home place and a trip rule."
 msgstr ""
 "Aucun voyage à prévisualiser : il faut un lieu « maison » et une règle de"
 " voyage."
+
+msgid ""
+"No version kept yet: each save of a settings file keeps the one it "
+"replaces."
+msgstr ""
+"Aucune version gardée pour l'instant : chaque enregistrement d'un fichier"
+" de réglages garde celle qu'il remplace."
 
 msgid "No video left to lighten: nothing was changed."
 msgstr "Plus aucune vidéo à alléger : rien n'a changé."
@@ -7881,6 +7946,10 @@ msgid "Nothing was changed: add --apply to write the sidecars."
 msgstr ""
 "Rien n'a été modifié : ajoutez --apply pour écrire les fichiers "
 "compagnons."
+
+#, python-brace-format
+msgid "Nothing was changed: {error}"
+msgstr "Rien n'a été changé : {error}"
 
 msgid "Nothing was deleted from the phone."
 msgstr "Rien n'a été supprimé du téléphone."
@@ -9645,6 +9714,9 @@ msgstr ""
 "Restaurez-le, ou supprimez-le pour recommencer la revue : le classeur "
 "décide alors seul."
 
+msgid "Restore the damaged files"
+msgstr "Restaurer les fichiers abîmés"
+
 msgid ""
 "Restore the files 'audit --reread' found damaged from their good copy (a "
 "duplicate, a backup, the quarantine): listed first, then asked; the "
@@ -9662,11 +9734,21 @@ msgid "Restore the picked files"
 msgstr "Remettre les fichiers choisis"
 
 msgid ""
+"Restore the picked files from their good copy, journaled (Enter opens the"
+" large view)"
+msgstr ""
+"Restaurer les fichiers choisis depuis leur bonne copie, journalisé "
+"(Entrée ouvre la grande vue)"
+
+msgid ""
 "Restore the settings (config.toml, people) too; the index alone by "
 "default."
 msgstr ""
 "Remettre aussi les réglages (config.toml, people) ; l'index seul par "
 "défaut."
+
+msgid "Restore these files"
+msgstr "Restaurer ces fichiers"
 
 #, python-brace-format
 msgid ""
@@ -9676,8 +9758,15 @@ msgstr ""
 "Restaurer ces {count} fichiers depuis leur bonne copie ? Les fichiers "
 "abîmés vont en quarantaine."
 
+msgid "Restore this one"
+msgstr "Restaurer celle-ci"
+
 msgid "Restored"
 msgstr "Restaurés"
+
+#, python-brace-format
+msgid "Restored and read back at {time}: {count} files."
+msgstr "Restaurés et relus à {time} : {count} fichiers."
 
 #, python-brace-format
 msgid "Restored, read back: {path}"
@@ -9687,12 +9776,24 @@ msgid "Restoring"
 msgstr "Restauration"
 
 msgid ""
+"Restoring copies the good copy beside the file, reads it back, and moves "
+"the damaged one to the quarantine, journaled: 'mh undo' of its run puts "
+"it back."
+msgstr ""
+"Restaurer copie la bonne copie à côté du fichier, la relit, et déplace le"
+" fichier abîmé en quarantaine, journalisé : 'mh undo' de son passage le "
+"remet."
+
+msgid ""
 "Restoring puts each file back where it was, never over another one, and "
 "journals it; 'mh undo' of its run still brings back the others."
 msgstr ""
 "Remettre replace chaque fichier là où il était, jamais par-dessus un "
 "autre, et le journalise ; 'mh undo' de son exécution remet encore les "
 "autres."
+
+msgid "Restoring…"
+msgstr "Restauration…"
 
 msgid "Results"
 msgstr "Résultats"
@@ -10114,6 +10215,9 @@ msgstr "Même jour, même dossier"
 
 msgid "Same frame under this difference (bits out of 64)"
 msgstr "Même image sous cet écart (bits sur 64)"
+
+msgid "Same keys, other text"
+msgstr "Mêmes clés, autre texte"
 
 msgid "Same moment"
 msgstr "Même moment"
@@ -13788,6 +13892,13 @@ msgstr ""
 "Cet onglet affiche l'accueil tout seul quand mh le rouvre ; sinon, la "
 "fenêtre PowerShell dit quand c'est fini."
 
+msgid ""
+"This version is not kept any more (trimmed meanwhile): nothing was "
+"changed."
+msgstr ""
+"Cette version n'est plus gardée (élaguée entre-temps) : rien n'a été "
+"changé."
+
 #, python-brace-format
 msgid "This video does not play on a phone as it is ({format})."
 msgstr "Cette vidéo ne se lit pas telle quelle sur un téléphone ({format})."
@@ -14449,6 +14560,12 @@ msgid "Values read from {file} now; “default”: the file does not hold it."
 msgstr ""
 "Valeurs lues dans {file} à l'instant ; « par défaut » : le fichier ne la "
 "contient pas."
+
+msgid "Versions"
+msgstr "Versions"
+
+msgid "Versions of your settings"
+msgstr "Versions de vos réglages"
 
 msgid "Very large: to tell small children apart"
 msgstr "Très grande : pour reconnaître les jeunes enfants"
@@ -15870,6 +15987,9 @@ msgstr "cumulé : %(share)s %%"
 
 msgid "czkawka second opinion check compare"
 msgstr "czkawka second avis vérifier comparer"
+
+msgid "damaged corrupted repair restore good copy reread"
+msgstr "abîmé corrompu réparer restaurer bonne copie relire"
 
 msgid "dark"
 msgstr "sombre"
@@ -17951,6 +18071,9 @@ msgstr "annuler restaurer remettre revenir défaire erreur"
 msgid "undo the last choice"
 msgstr "annuler le dernier choix"
 
+msgid "undo the restore just made"
+msgstr "annuler la restauration qui vient d'être faite"
+
 msgid "unknown"
 msgstr "inconnu"
 
@@ -18343,6 +18466,10 @@ msgid "{count} copies to set aside"
 msgstr "{count} copies à mettre de côté"
 
 #, python-brace-format
+msgid "{count} damaged files"
+msgstr "{count} fichiers abîmés"
+
+#, python-brace-format
 msgid "{count} day ago"
 msgid_plural "{count} days ago"
 msgstr[0] "il y a {count} jour"
@@ -18635,10 +18762,18 @@ msgstr[1] ""
 "déplace dans .removed, qui ne compte pas comme une copie."
 
 #, python-brace-format
-msgid "{count} file found damaged: mh clean --repair puts its copy back."
-msgid_plural "{count} files found damaged: mh clean --repair puts their copy back."
-msgstr[0] "{count} fichier trouvé abîmé : mh clean --repair remet sa copie."
-msgstr[1] "{count} fichiers trouvés abîmés : mh clean --repair remet leur copie."
+msgid ""
+"{count} file found damaged: its page shows it beside its good copy (fast:"
+" mh clean --repair)."
+msgid_plural ""
+"{count} files found damaged: their page shows each beside its good copy "
+"(fast: mh clean --repair)."
+msgstr[0] ""
+"{count} fichier trouvé abîmé : sa page le montre à côté de sa bonne copie"
+" (rapide : mh clean --repair)."
+msgstr[1] ""
+"{count} fichiers trouvés abîmés : leur page montre chacun à côté de sa "
+"bonne copie (rapide : mh clean --repair)."
 
 #, python-brace-format
 msgid "{count} file found."
@@ -19933,6 +20068,10 @@ msgid "{files}, {undecided} to check or to sort"
 msgstr "{files}, {undecided} à vérifier ou à trier"
 
 #, python-brace-format
+msgid "{file} as the disk holds it now"
+msgstr "{file} tel que le disque le contient maintenant"
+
+#, python-brace-format
 msgid ""
 "{file} cannot be read: {error}. The last good settings stay until it is "
 "fixed."
@@ -19965,12 +20104,20 @@ msgid "{file} is not valid TOML: {error}"
 msgstr "{file} n'est pas du TOML valide : {error}"
 
 #, python-brace-format
+msgid "{file} put back as it was, read back from the disk at {time}."
+msgstr "{file} remis comme il était, relu depuis le disque à {time}."
+
+#, python-brace-format
 msgid "{file} read from the disk at {time}."
 msgstr "{file} lu sur le disque à {time}."
 
 #, python-brace-format
 msgid "{file} read from the disk at {time}: {ticked} files ticked."
 msgstr "{file} lu depuis le disque à {time} : {ticked} fichiers cochés."
+
+#, python-brace-format
+msgid "{file} restored to {when}, read back from the disk at {time}."
+msgstr "{file} restauré à la version du {when}, relu depuis le disque à {time}."
 
 #, python-brace-format
 msgid ""
@@ -21127,6 +21274,10 @@ msgstr "{path} a été écrit mais reste incomplet."
 #, python-brace-format
 msgid "{path}: found changed on {since}, read fine on {good}."
 msgstr "{path} : trouvé changé le {since}, lu correct le {good}."
+
+#, python-brace-format
+msgid "{path}: its good copy is gone or changed: nothing was moved."
+msgstr "{path} : sa bonne copie a disparu ou changé : rien n'a été déplacé."
 
 #, python-brace-format
 msgid "{path}: left where it was: {reason}"

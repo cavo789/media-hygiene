@@ -22,6 +22,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import MediaKind
 from media_hygiene.report.thumbnails import jpeg_preview
+from media_hygiene.scan.degree_tags import degree_tagged
 from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
@@ -33,6 +34,8 @@ if TYPE_CHECKING:
 _VERSION: Final = 1
 # Videos got a frame in 0373: their empty previews of before (no picture) are not read.
 _VIDEO_VERSION: Final = 2
+# A tag in degrees (`90`, `180`) is applied since 0724: only those previews are remade.
+_DEGREES_VERSION: Final = "1d"
 _NAME_LENGTH: Final = 32
 _SUFFIX: Final = ".jpg"
 _PARTIAL: Final = ".part"
@@ -126,7 +129,11 @@ def preview_key(job: PreviewJob, size: int, mtime_ns: int) -> str:
     Returns:
         A file name such as `0f3a….jpg`.
     """
-    version = _VIDEO_VERSION if media_kind(job.source) is MediaKind.VIDEO else _VERSION
+    version: int | str = _VERSION
+    if media_kind(job.source) is MediaKind.VIDEO:
+        version = _VIDEO_VERSION
+    elif degree_tagged(job.source):
+        version = _DEGREES_VERSION
     key = f"{version}\0{job.source}\0{size}\0{mtime_ns}\0{job.edge}"
     return hashlib.sha256(key.encode()).hexdigest()[:_NAME_LENGTH] + _SUFFIX
 

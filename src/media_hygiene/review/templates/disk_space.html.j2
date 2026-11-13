@@ -3,7 +3,8 @@
    into config.toml and read back from the disk before being shown. Nothing of the photos is
    touched here; *Purge* of a run opens its photos first (`/quarantine/?run=…&purge=1`, 0591, 0616),
    whose page asks, then comes back here (`?purged=`) to say what the disk says. Each run says
-   how many of its files exist nowhere else (0775), counted from the index. #}
+   how many of its files exist nowhere else (0775), counted from the index, and how many
+   only on the NAS (0792: the cover the last proven push kept in /journal). #}
 {% set page_name = _("Disk space") %}
 {% set keys_safe = _("Your photos are not touched here. Previews are made again when shown.") %}
 {% block style %}
@@ -32,7 +33,7 @@
     <label>{{ _("Suggest purging after (days)") }} <input id="days" type="number" min="1" step="1"></label>
     <button id="saveDays" type="button">{{ _("Save") }}</button>
     <div class="table-wrap"><table>
-      <thead><tr><th>{{ _("Run") }}</th><th>{{ _("Files") }}</th><th title="{{ _("Near duplicates, burst shots, junk or unreadable: not exact copies, whose kept twin stays in your photos.") }}">{{ _("Nowhere else") }}</th><th>{{ _("Size") }}</th><th>{{ _("Since") }}</th><th></th><th></th><th></th></tr></thead>
+      <thead><tr><th>{{ _("Run") }}</th><th>{{ _("Files") }}</th><th title="{{ _("Near duplicates, burst shots, junk or unreadable: not exact copies, whose kept twin stays in your photos.") }}">{{ _("Nowhere else") }}</th><th title="{{ _("Covered by the copy the last mh push found on the NAS, gone from this PC: the next push moves it into .removed, which does not count as a copy.") }}">{{ _("Only on the NAS") }}</th><th>{{ _("Size") }}</th><th>{{ _("Since") }}</th><th></th><th></th><th></th></tr></thead>
       <tbody id="runs"></tbody>
     </table></div>
     <p><a href="/quarantine/">{{ _("See every photo of the quarantine, put some back") }}</a> · <a href="/#history">{{ _("History and undo") }}</a></p>
@@ -70,7 +71,7 @@
     byId("empty").disabled = state.previews_empty;
     byId("runs").replaceChildren(...state.runs.map((run) => {
       const row = document.createElement("tr");
-      for (const value of [run.run_id, run.files, run.only || "?", run.size, run.since, run.old ? TEXTS.old : ""]) {
+      for (const value of [run.run_id, run.files, run.only || "?", run.nas || "", run.size, run.since, run.old ? TEXTS.old : ""]) {
         const cell = document.createElement("td");
         cell.textContent = value;
         row.append(cell);

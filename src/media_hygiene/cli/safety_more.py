@@ -95,11 +95,13 @@ def damaged_line(facts: SafetyFacts) -> SafetyLine:
         return SafetyLine(Level.UNKNOWN, title, _("Not known before a re-read."))
     if counts.damaged:
         sub = ngettext(
-            "{count} file found damaged: mh clean --repair puts its copy back.",
-            "{count} files found damaged: mh clean --repair puts their copy back.",
+            "{count} file found damaged: its page shows it beside its good copy "
+            "(fast: mh clean --repair).",
+            "{count} files found damaged: their page shows each beside its good copy "
+            "(fast: mh clean --repair).",
             counts.damaged,
         ).format(count=human_number(counts.damaged))
-        return SafetyLine(Level.BAD, title, sub)
+        return SafetyLine(Level.BAD, title, sub, "repair")
     return SafetyLine(Level.GOOD, title, _("None found."))
 
 

@@ -18,6 +18,7 @@ from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore, FaceTally
 from media_hygiene.index.moves import load_moves
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.turn_rows import TurnStore
 from media_hygiene.people.known import Known
 from media_hygiene.scan.progress import Step
 from media_hygiene.services.people_files import people_photos, present_photos
@@ -106,7 +107,10 @@ class PeopleStep:
         """
         store = self.store
         photos, absent = present_photos(people_photos(store.connection, within))
-        missing = tuple(p for p in photos if not store.scanned(p))
+        turns = TurnStore(store.connection, self._model)
+        missing = tuple(
+            p for p in photos if not store.scanned(p) or not turns.guessed(p)
+        )
         return PeopleWork(photos, missing, absent)
 
     def find(self, photos: Sequence[PhotoVersion], answering: Answering) -> FindOutcome:
@@ -122,7 +126,10 @@ class PeopleStep:
         recipe = face_recipe(self._runtime)
         progress = answering.progress
         with self._runtime.executor_factory() as executor:
-            deps = FindDeps(recipe, self.store, executor, progress, answering.stopped)
+            turns = TurnStore(self.store.connection, self._model)
+            deps = FindDeps(
+                recipe, self.store, executor, progress, answering.stopped, turns
+            )
             progress.start(
                 Step(_("Finding faces"), _("two small local models: nothing is sent")),
                 len(photos),

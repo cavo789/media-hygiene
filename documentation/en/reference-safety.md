@@ -74,8 +74,10 @@ copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
 - **Your settings keep their previous versions.** Each save of `config.toml`, of a person's or
   an event file, or of `albums.json` first copies the file it replaces into `.history/`
   (`C:\Users\<you>\media-hygiene\config\.history\`, and beside `albums.json`): the last 20
-  of each, 30 days at most. To bring one back, copy it over the file and remove the date
-  that ends its name.
+  of each, 30 days at most. To bring one back: ⚙ Settings, *Versions*: each file, its versions
+  with the keys each one changed, *Restore this one*; the file is read back from the disk and
+  shown, and the toast's *Undo* (or Ctrl+Z) puts back what it held (a restore is itself kept
+  as a version).
 - **The tool's folders stay out of your photos.** A quarantine, journal, cache or reports
   folder placed inside a photo folder (or around one) is refused, with how to mount it instead.
 
@@ -90,7 +92,11 @@ file whose content changed while its size and date did not is never taken for an
 listed as *changed* with the day it was found, the last day it read fine, and where a good copy
 is — a duplicate, a backup folder, the quarantine (each read in full first). A program that
 rewrites a photo and puts its date back looks the same: look before restoring.
-`mh clean --repair` lists them again, asks, copies the good copy beside the file, reads it back,
+The home page's card *Are my photos safe?* opens their page: each damaged file beside its good
+copy, pick the ones to restore (the same gestures as [`library`](commands/library.md)), *Restore
+these files*; each is read back from the disk, and the toast's *Undo* (or Z) puts the damaged
+ones back. A copy gone or changed meanwhile refuses its file, said, nothing moved. The fast
+path, every file at once: `mh clean --repair` lists them again, asks, copies the good copy beside the file, reads it back,
 moves the damaged file to the quarantine and gives the copy its name and date; `mh undo` puts
 the damaged one back. [`push`](commands/push.md) never replaces a backup copy by a file found
 damaged. A file read for the first time is compared with what the audit kept of it (the whole

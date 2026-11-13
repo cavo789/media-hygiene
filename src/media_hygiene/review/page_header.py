@@ -41,6 +41,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
             "commands/home/", "#disk-space", "#place-sur-le-disque"
         ),
         "settings_index.html.j2": SETTINGS_DOC,
+        "settings_versions.html.j2": SETTINGS_DOC,
         "tidy_empty.html.j2": Doc(
             "commands/home/", "#10-minutes-of-tidying", "#10-minutes-de-rangement"
         ),
@@ -59,6 +60,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "shrink_refused.html.j2": "shrink",
         "history.html.j2": "history",
         "quarantine.html.j2": "undo-pick",
+        "repair.html.j2": "repair",
         "import_pick.html.j2": "import-pick",
         **{f"console_{name}.html.j2": name for name in PAGE_CAPTURED},
         "album.html.j2": ALBUMS_DOC,
@@ -74,6 +76,7 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
         "album.html.j2": False,
         "disk_space.html.j2": False,
         "settings_index.html.j2": False,
+        "settings_versions.html.j2": False,
         "tidy_empty.html.j2": False,
         "album_edit.html.j2": True,
         "search.html.j2": True,
@@ -84,6 +87,7 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
         "intruders_review.html.j2": True,
         "unwanted_review.html.j2": True,
         "quarantine.html.j2": True,
+        "repair.html.j2": True,
         "import_pick.html.j2": True,
         "people.html.j2": True,
         "person.html.j2": True,

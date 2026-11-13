@@ -12,6 +12,7 @@ QUARANTINE_PAGE: Final = "/quarantine/"  # `services/pages_here` (0591, 0594)
 IMPORT_PAGE: Final = "/import/"  # `services/pages_here` (0590)
 INTRUDERS_PAGE: Final = "/review/intruders/"  # `services/review_kinds` (0594)
 SHRINK_PAGE: Final = "/shrink/"  # `services/shrink_here` (0599)
+REPAIR_PAGE: Final = "/repair/"  # `services/pages_here` (0783)
 DISK_PURGE_PATH: Final = "/disk-space/api/purge"  # `services/disk_here` (0616)
 SERVED_MORE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     {
@@ -20,6 +21,7 @@ SERVED_MORE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
         ("import", "--pick"): IMPORT_PAGE,
         ("review", "--intruders"): INTRUDERS_PAGE,
         ("shrink", "--try"): SHRINK_PAGE,
+        ("clean", "--repair"): REPAIR_PAGE,
     }
 )
 
