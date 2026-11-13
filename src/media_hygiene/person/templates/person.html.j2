@@ -46,6 +46,8 @@
   "pickToConfirmHint": _("Confirms as {name} the face that matched on each photo ticked in the grid; the photos not ticked stay to decide"),
   "confirmGuesses": [ngettext("✓ Confirm the name guessed: {n}", "✓ Confirm the names guessed: {n}", 1), ngettext("✓ Confirm the name guessed: {n}", "✓ Confirm the names guessed: {n}", 2)],
   "confirmGuessesHint": _("Confirms every ≈ name the tool gave to the faces of this photo ({names})"),
+  "reject": [ngettext("Not {name}: {n}", "Not {name}: {n}", 1), ngettext("Not {name}: {n}", "Not {name}: {n}", 2)],
+  "rejectHint": _("Saves that the face that matched on each photo ticked is not {name}: these photos leave the search"),
   "notName": _("Not {name}: saved, this photo leaves the search"),
   "pathHint": _("A person's name is in this photo's folder or file name: a hint only, nothing is named from it"),
   "drawHint": _("Drag a box around the face the tool did not find."),
@@ -122,6 +124,7 @@
     <div id="steps" hidden>
     <span id="stepsSaid"></span>
     <button id="confirmNames" type="button"></button>
+    <button id="rejectNames" type="button" hidden></button>
     <label>{{ _("Show") }} <select id="showWhich">
       <option value="todo" selected>{{ _("To confirm (≈ and ?)") }}</option>
       <option value="all">{{ _("All the photos") }}</option>

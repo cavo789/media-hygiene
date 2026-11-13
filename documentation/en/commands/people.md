@@ -218,7 +218,8 @@ without a `config.toml` of yours, the names only.
    Once the face is named (or, while it has none, by the name its photos are guessed most: ≈ Diego), a line above the grid says what to do: *① Tick the photos where it
    really is Juliette (Ctrl+A ticks them all; × when it is not them) ② then:* **These are
    Juliette: N**, which confirms the photos you ticked, N stated (until one is ticked, it reads
-   *Tick their photos in the grid, then confirm them here*). **Show** picks the photos
+   *Tick their photos in the grid, then confirm them here*); beside it, **Not Juliette: N**
+   says the opposite for the photos ticked, saved at once (they leave the search). **Show** picks the photos
    by the name of the face that matched: *To confirm (≈ and ?)* (the default: only the work
    left), *All the photos*, *✓ Confirmed as this person*, *≈ Guessed as this person*, *? Not
    named*, *Someone else* (a face that looks like them but is named another person). The

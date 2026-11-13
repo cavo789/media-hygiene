@@ -7716,6 +7716,12 @@ msgstr[1] "Pas {name} : retirer ces {n} visages"
 msgid "Not {name}: take this name off the photo (saved in config.toml)"
 msgstr "Pas {name} : retirer ce nom de la photo (enregistré dans config.toml)"
 
+#, python-brace-format
+msgid "Not {name}: {n}"
+msgid_plural "Not {name}: {n}"
+msgstr[0] "Pas {name} : {n}"
+msgstr[1] "Pas {name} : {n}"
+
 msgid "Notes"
 msgstr "Notes"
 
@@ -10466,6 +10472,14 @@ msgstr ""
 
 msgid "Saved."
 msgstr "Enregistré."
+
+#, python-brace-format
+msgid ""
+"Saves that the face that matched on each photo ticked is not {name}: "
+"these photos leave the search"
+msgstr ""
+"Enregistre que le visage reconnu sur chaque photo cochée n'est pas {name} : "
+"ces photos quittent la recherche"
 
 msgid "Saving…"
 msgstr "Enregistrement…"

@@ -120,7 +120,22 @@ function showConfirm() {
   button.textContent = ready.length ? fill(counted(TEXTS.confirm, ready.length), { name: seedName }) : TEXTS.pickToConfirm;
   const others = picked.size - ready.length;
   button.title = others > 0 ? counted(TEXTS.othersLeft, others) : fill(TEXTS.pickToConfirmHint, { name: seedName });
+  const out = $("rejectNames");
+  const wrong = rejectable();
+  out.hidden = !wrong.length;
+  out.textContent = fill(counted(TEXTS.reject, wrong.length), { name: seedName });
+  out.title = fill(TEXTS.rejectHint, { name: seedName });
 }
+
+// *Not <name>: N* — the photos picked but the face chosen itself: their face is not this person.
+function rejectable() {
+  return files.filter((file) => picked.has(file.key) && file.key !== seed);
+}
+
+$("rejectNames").addEventListener("click", async () => {
+  const keys = rejectable().map((file) => Number(file.key));
+  if (keys.length && seedName && await send({ action: "reject", name: seedName, faces: keys })) await reopen(true);
+});
 
 // *✓ Confirm the names guessed: N* — every ≈ face of the photo, as the tool named it.
 let guesses = [];

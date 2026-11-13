@@ -6444,6 +6444,12 @@ msgstr[1] ""
 msgid "Not {name}: take this name off the photo (saved in config.toml)"
 msgstr ""
 
+#, python-brace-format
+msgid "Not {name}: {n}"
+msgid_plural "Not {name}: {n}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Notes"
 msgstr ""
 
@@ -8720,6 +8726,12 @@ msgid ""
 msgstr ""
 
 msgid "Saved."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Saves that the face that matched on each photo ticked is not {name}: "
+"these photos leave the search"
 msgstr ""
 
 msgid "Saving…"

@@ -238,7 +238,8 @@ sans `config.toml` à vous, les noms seulement.
    *① Cochez les photos où c'est bien Juliette (Ctrl+A les coche toutes ; × quand ce n'est pas
    elle ou lui) ② puis :* **C'est Juliette : N**, qui confirme les photos cochées, N annoncé
    (tant qu'aucune n'est cochée, il dit *Cochez ses photos dans la grille, puis confirmez-les
-   ici*). **Afficher** choisit les photos d'après le
+   ici*) ; à côté, **Pas Juliette : N** dit l'inverse pour les photos cochées, enregistré
+   aussitôt (elles quittent la recherche). **Afficher** choisit les photos d'après le
    nom du visage reconnu : *À confirmer (≈ et ?)* (par défaut : seul le travail restant),
    *Toutes les photos*, *✓ Confirmée comme cette personne*, *≈ Devinée comme cette personne*,
    *? Sans nom*, *Quelqu'un d'autre* (un visage qui lui ressemble mais nommé comme une autre
