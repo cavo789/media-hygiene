@@ -5355,6 +5355,9 @@ msgid ""
 "nor in place"
 msgstr ""
 
+msgid "NUMBER"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
@@ -7230,6 +7233,9 @@ msgid "Our photos"
 msgstr ""
 
 msgid "Output (override general.* of config.toml)"
+msgstr ""
+
+msgid "PATH"
 msgstr ""
 
 msgid "Page not found"
@@ -9625,6 +9631,9 @@ msgid ""
 msgstr ""
 
 msgid "TB"
+msgstr ""
+
+msgid "TEXT"
 msgstr ""
 
 msgid "TV"

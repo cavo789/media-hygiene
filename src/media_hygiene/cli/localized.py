@@ -16,6 +16,7 @@ from typer._click.exceptions import UsageError
 from typer.core import TyperCommand, TyperGroup
 from typer.exceptions import TyperException
 
+from media_hygiene.cli.help_types import PlainTypes
 from media_hygiene.cli.interrupted import stop_on_interrupt
 from media_hygiene.cli.unexpected import debugging, stop_on_error
 from media_hygiene.cli.usage_errors import translated
@@ -52,7 +53,7 @@ def _translate_help(option: TyperOption | None) -> TyperOption | None:
     return option
 
 
-class LocalizedCommand(TyperCommand):
+class LocalizedCommand(PlainTypes, TyperCommand):
     """A command whose usage line, `--help` option and usage errors are translated."""
 
     @override
@@ -97,7 +98,7 @@ class LocalizedCommand(TyperCommand):
         return _translate_help(super().get_help_option(ctx))
 
 
-class LocalizedGroup(TyperGroup):
+class LocalizedGroup(PlainTypes, TyperGroup):
     """The root group, translated like `LocalizedCommand`, calm on Ctrl+C."""
 
     @override

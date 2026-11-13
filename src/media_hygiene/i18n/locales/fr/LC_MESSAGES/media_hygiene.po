@@ -6439,6 +6439,9 @@ msgstr ""
 "N, P et U ne parcourent que les événements qui ont encore des fichiers à "
 "déplacer : ni triés ni en place"
 
+msgid "NUMBER"
+msgstr "NOMBRE"
+
 msgid "Name"
 msgstr "Nom"
 
@@ -8701,6 +8704,9 @@ msgstr "Nos photos"
 
 msgid "Output (override general.* of config.toml)"
 msgstr "Affichage (remplace general.* de config.toml)"
+
+msgid "PATH"
+msgstr "CHEMIN"
 
 msgid "Page not found"
 msgstr "Page introuvable"
@@ -11524,6 +11530,9 @@ msgstr ""
 
 msgid "TB"
 msgstr "To"
+
+msgid "TEXT"
+msgstr "TEXTE"
 
 msgid "TV"
 msgstr "TV"
