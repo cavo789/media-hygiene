@@ -88,6 +88,7 @@ class HomeGroup(Frozen):
     actions: tuple[str, ...]
     numbered: bool = False
     extra: str = ""  # folders, update, ai, about
+    doc: HomeLink | None = None  # the chapter beside its title (0730)
 
 
 class HomeSpace(Frozen):  # one field per thing the page draws

@@ -113,7 +113,10 @@ def with_facts(index: SearchIndex, found: Found) -> Found:
         index.connection, [hit.key for hit in found.hits], index.spot_names
     )
     hits = tuple(
-        _located(_described(hit, known.get(hit.key)), labels.get(hit.key, ("", "")))
+        _located(
+            _described(hit, known.get(hit.key), labels.get(hit.key, ("", ""))[0]),
+            labels.get(hit.key, ("", "")),
+        )
         for hit in found.hits
     )
     return replace(found, hits=hits)
@@ -132,12 +135,15 @@ def _located(hit: Hit, spot: tuple[str, str]) -> Hit:
     return replace(hit, spot=spot[0], landmark=spot[1])
 
 
-def _described(hit: Hit, known: tuple[dict[str, object], str | None] | None) -> Hit:
+def _described(
+    hit: Hit, known: tuple[dict[str, object], str | None] | None, town: str
+) -> Hit:
     """One file with what its metadata says.
 
     Args:
         hit: The file.
         known: Its metadata and its date as written, None when the index has no row.
+        town: Its stored place, the tile's (0750); empty: none stored.
 
     Returns:
         The file described.
@@ -152,6 +158,6 @@ def _described(hit: Hit, known: tuple[dict[str, object], str | None] | None) -> 
         hit,
         facts=video_facts(metadata) if video and metadata else "",
         taken=taken,
-        exif=exif_lines(metadata, taken),
+        exif=exif_lines(metadata, taken, town),
         seconds=float(seconds) if isinstance(seconds, int | float) else None,
     )

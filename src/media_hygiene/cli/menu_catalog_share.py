@@ -22,6 +22,8 @@ from media_hygiene.cli.menu_entry import (
 )
 from media_hygiene.i18n import _
 
+# What an album is and what the albums' page does (0349): the page's chapter too.
+ALBUMS_DOC: Final = Doc("reference-albums/")
 # What a phone's help opens (0615): a few lines of the page, never its `docker` lines.
 TV_HELP: Final = Doc("commands/slideshow/", "#the-tvs-address", "#ladresse-de-la-télé")
 DRIVE_HELP: Final = Doc(
@@ -124,7 +126,8 @@ def share_area() -> Area:
         ),
         "image",
         (
-            Group(_("Your albums"), (), extra="albums"),  # on a phone too (0297)
+            # On a phone too (0297); its chapter beside the title (0730).
+            Group(_("Your albums"), (), extra="albums", doc=ALBUMS_DOC),
             Group(
                 _("The commands"), ("slideshow", "slideshow-album", "share", "album")
             ),

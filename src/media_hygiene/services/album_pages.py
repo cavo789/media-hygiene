@@ -11,13 +11,14 @@ from dataclasses import replace
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.cli.menu_catalog_share import ALBUMS_DOC
 from media_hygiene.docs.served import served_url
 from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.album_show import ALBUM_SHOW, SLIDESHOW_PAGE
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH
-from media_hygiene.review.page_header import ALBUMS_DOC, page_header
+from media_hygiene.review.page_header import page_header
 from media_hygiene.search.album_make_desk import ALBUM_MAKE_PATH, AlbumMakeDesk
 from media_hygiene.search.album_move_desk import ALBUM_MOVE_PATH
 from media_hygiene.search.album_root_desk import ALBUM_ROOT_PATH, album_root_desk

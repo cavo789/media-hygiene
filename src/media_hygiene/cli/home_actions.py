@@ -120,6 +120,7 @@ def home_groups(area: Area, shown: set[str]) -> tuple[HomeGroup, ...]:
             actions=tuple(name for name in group.steps if name in shown),
             numbered=group.numbered,
             extra=group.extra,
+            doc=link(group.doc),
         )
         for group in area.groups
     )

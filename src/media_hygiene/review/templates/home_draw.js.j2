@@ -255,7 +255,7 @@ function groupHtml(group, cards) {
     const tag = group.numbered ? "ol" : "ul";
     body = `<${tag} class="steps">${names.map((name, at) => stepRow(BY_ID[name], at + 1, group.numbered)).join("")}</${tag}>`;
   }
-  return `<section class="group"><h2 class="group-title">${esc(group.title)}</h2>${extra}${body}</section>`;
+  return `<section class="group"><h2 class="group-title">${esc(group.title)}${docLinks(group)}</h2>${extra}${body}</section>`;
 }
 function viewSpace(space) {
   const pct = space.total ? Math.round((100 * space.done) / space.total) : 0;

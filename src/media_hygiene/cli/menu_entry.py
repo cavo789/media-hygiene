@@ -178,9 +178,8 @@ class Group:
     title: str  # translated
     steps: tuple[str, ...]  # their names, in order
     numbered: bool = False  # a guide, numbered on the page
-    extra: str = (
-        ""  # a panel the page adds: `folders`, `update`, `ai`, `about`, `albums`
-    )
+    extra: str = ""  # a panel the page adds: `folders`, `update`, `ai`, `albums`…
+    doc: Doc | None = None  # the chapter beside its title (the albums, 0730)
 
 
 @dataclass(frozen=True, slots=True)

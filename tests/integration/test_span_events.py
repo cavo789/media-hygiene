@@ -176,3 +176,40 @@ def test_do_not_sort_without_ids_or_tab_is_refused(tmp_path: Path) -> None:
         assert not (tmp_path / "events").exists()
         assert left_answer(_span(search), body.encode()).status == HTTPStatus.NOT_FOUND
         assert left_answer(span, b"{}").status == HTTPStatus.BAD_REQUEST
+
+
+def _move(index_file: Path, old: str, new: str) -> None:
+    """Move a row, as `sort`, `undo` or an audit after an Explorer move records it.
+
+    Args:
+        index_file: The index.
+        old: Its path.
+        new: Its new path.
+    """
+    with closing(sqlite3.connect(index_file)) as connection:
+        connection.execute("UPDATE files SET path = ? WHERE path = ?", (new, old))
+        connection.commit()
+
+
+def test_the_grid_follows_moves_while_the_page_stays_open(tmp_path: Path) -> None:
+    """0754: each ask reads the index again: never a stale grid under an event.
+
+    Sorted (by `sort` or the Explorer), the file leaves; put back by `undo`, it returns.
+    """
+    index_file = tmp_path / "index.db"
+    _index(index_file)
+    files = f"{SPAN_FILES_PATH}2024-03-30T10:00:00..2024-03-31T08:00:00"
+    with SearchIndex.open(index_file) as search:
+        span = _span(search)
+
+        def names() -> list[str]:
+            return [hit["name"] for hit in json.loads(span.answer(files).body)["hits"]]
+
+        assert names() == ["a.jpg", "b.jpg", "v.mp4"]
+        sorted_path = "/data/c/P/2024/2024-03/Easter/b.jpg"
+        _move(index_file, "/data/c/Phone/b.jpg", sorted_path)
+        assert names() == ["a.jpg", "v.mp4"]
+        events = json.loads(span.answer(f"{SPAN_PATH}..").body)["events"]
+        assert [card["files"] for card in events] == [1, 1, 1]  # a 22 h gap now
+        _move(index_file, sorted_path, "/data/c/Elsewhere/b.jpg")  # not sorted again
+        assert names() == ["a.jpg", "b.jpg", "v.mp4"]
