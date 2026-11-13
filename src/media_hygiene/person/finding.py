@@ -12,11 +12,10 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
-from media_hygiene.people.known import Known
 from media_hygiene.people.naming import id_of
 from media_hygiene.people.remembered import aside_date
 from media_hygiene.person.drawing import search_vector
-from media_hygiene.person.likeness import likeness
+from media_hygiene.person.likeness import FaceRows, kept_rows, likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.person.shelf import ShelfFace, face_view
 from media_hygiene.review.versioned import versioned_on_disk
@@ -109,7 +108,8 @@ class PersonFinder:
             return {"files": [], "known": None}
         memory = None if aside is None else aside.memory
         people = () if memory is None else memory.people()
-        found = likeness(seed.embedding, self.kept(key), people)
+        every = FaceRows(self.faces.every, self.faces.vectors)
+        found = likeness(seed.embedding, kept_rows(every, self.kept(key)), people)
         chosen = frozenset() if aside is None else aside.paths()
         others = (face for face in found.faces if face.path != seed.path)
         files = [self._card(int(key), seed.path, chosen)]
@@ -139,7 +139,7 @@ class PersonFinder:
         name = tag.get("name") if tag else None
         if self.names is None or not isinstance(name, str) or not name:
             return every
-        rejected = Known.of(every, self.names.settings()).rejected
+        rejected = self.names.known().rejected
         return tuple(
             face for face in every if name not in rejected.get(id_of(face), ())
         )

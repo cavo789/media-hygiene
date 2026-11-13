@@ -15,9 +15,13 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.index.face_rows import FaceStore
 from media_hygiene.index.read_only import connect_read_only
+from media_hygiene.person.likeness import stacked
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    import numpy as np
+    from numpy.typing import NDArray
 
     from media_hygiene.index.face_rows import StoredFace
 
@@ -59,6 +63,16 @@ class FaceIndex:
         """Read the faces again at the next question: one was added."""
         self.__dict__.pop("every", None)
         self.__dict__.pop("_by_path", None)
+        self.__dict__.pop("vectors", None)
+
+    @cached_property
+    def vectors(self) -> NDArray[np.float32]:
+        """The vector of each face of `every`, one per row, stacked once (0805).
+
+        Returns:
+            The matrix; no row without faces.
+        """
+        return stacked(self.every)
 
     @cached_property
     def every(self) -> tuple[StoredFace, ...]:

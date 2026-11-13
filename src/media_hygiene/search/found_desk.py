@@ -12,7 +12,7 @@ The answer is the list read back from the disk.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from http import HTTPStatus
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
@@ -34,6 +34,11 @@ from media_hygiene.search.event_match import Moved, events_named, joined_event
 from media_hygiene.search.move_event import remember_event
 from media_hygiene.search.sidecar_days import read_days_again
 from media_hygiene.search.views import JPEG, THUMB_PREFIX
+from media_hygiene.services.kept_state import (
+    KeptState,
+    connection_file,
+    index_signature,
+)
 
 if TYPE_CHECKING:
     import sqlite3
@@ -66,6 +71,7 @@ class FoundDesk:
     mapper: HostPathMapper
     config_file: Path
     reading: tuple[FolderRules, float]  # folder names' meaning, `merge_gap_hours`
+    kept: KeptState[list[FoundFolder]] = field(default_factory=KeptState)
 
     def state(self, said: Sequence[str] = ()) -> Response:
         """The folders to tick, those said no event, the batches.
@@ -136,13 +142,17 @@ class FoundDesk:
         return self.state(said)
 
     def _folders(self) -> list[FoundFolder]:
-        """The event folders of the index.
+        """The event folders of the index, kept while it and the days are the same.
 
         Returns:
             Them.
         """
-        read_days_again(self.connection)  # a day set by hand counts (0618)
-        return found_folders(self.connection, *self.reading)
+        days = read_days_again(self.connection)  # a day set by hand counts (0618)
+        index_file = connection_file(self.connection)
+        return self.kept.value(
+            lambda: (index_signature(index_file), sorted(days.items())),
+            lambda: found_folders(self.connection, *self.reading),
+        )
 
     def _line(self, found: FoundFolder) -> dict[str, object]:
         """One folder for the page.

@@ -10,14 +10,14 @@ did not see is not listed.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from functools import partial
 from http import HTTPStatus
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import MediaKind
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
@@ -31,7 +31,7 @@ from media_hygiene.search.folder_order import (  # pydantic reads them
     ordered,
 )
 from media_hygiene.search.folder_role_desk import ROLE_PATH
-from media_hygiene.search.folder_tree import PHOTOS, folder_counts
+from media_hygiene.search.folder_tree import PHOTOS, folder_counts, listed_tree
 from media_hygiene.search.heaviest import (
     HEAVIEST_PATH,
     HeaviestAsked,
@@ -40,6 +40,11 @@ from media_hygiene.search.heaviest import (
     video_facts,
 )
 from media_hygiene.search.spot_label import with_spots
+from media_hygiene.services.kept_state import (
+    KeptState,
+    connection_file,
+    index_signature,
+)
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -75,35 +80,28 @@ class FolderDesk:
     roots: tuple[Path, ...]  # the mounted folders, in the container
     chosen: ChosenDesk  # to mark the files set aside
     roles: RoleDesk | None = None  # the roles of `[folders]` (0532)
+    kept: KeptState[list[dict[str, object]]] = field(default_factory=KeptState)
 
     def tree(self) -> Response:
         """`GET /api/folders`: every folder under the mounted ones.
 
         Returns:
-            The folders, sorted by path, each with its parent, counts and size.
+            The folders, sorted by path, each with its parent, counts and size;
+            kept while the index is unchanged (0804).
         """
-        rows = self.index.connection.execute(sql.ALL_FILES)
-        counts = folder_counts(rows, self.roots)
-        tops = {str(root) for root in self.roots}
-        folders = [
-            {
-                "path": self.mapper.to_host(Path(folder)),
-                "inside": folder,  # container path: the search filters on it (0348)
-                "parent": None
-                if folder in tops
-                else self.mapper.to_host(Path(folder).parent),
-                "name": self.mapper.to_host(Path(folder))
-                if folder in tops
-                else Path(folder).name,
-                "photos": count.photos,
-                "videos": count.videos,
-                "files": count.files,
-                "size": human_size(count.size),
-            }
-            for folder, count in sorted(counts.items())
-        ]
+        index_file = connection_file(self.index.connection)
+        folders = self.kept.value(partial(index_signature, index_file), self._folders)
         roles = [] if self.roles is None else self.roles.listed()
         return json_response(HTTPStatus.OK, {"folders": folders, "roles": roles})
+
+    def _folders(self) -> list[dict[str, object]]:
+        """Every folder under the mounted ones, from the index.
+
+        Returns:
+            The folders of the tree, sorted by path.
+        """
+        rows = self.index.connection.execute(sql.ALL_FILES)
+        return listed_tree(folder_counts(rows, self.roots), self.mapper, self.roots)
 
     def answer(self, path: str, body: bytes) -> Response:
         """Answer a `POST` of the folder view.

@@ -12,11 +12,14 @@ from functools import cache
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import MediaKind
 from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+
+    from media_hygiene.paths.host_paths import HostPathMapper
 
 
 PHOTOS = frozenset({MediaKind.IMAGE, MediaKind.RAW})
@@ -75,6 +78,37 @@ def folder_counts(
                 break
             above = above.rpartition("/")[0] or "/"
     return counts
+
+
+def listed_tree(
+    counts: dict[str, FolderCount], mapper: HostPathMapper, roots: tuple[Path, ...]
+) -> list[dict[str, object]]:
+    """The tree as the page reads it.
+
+    Args:
+        counts: What each folder holds (`folder_counts`).
+        mapper: Container paths to the host's.
+        roots: The mounted folders, in the container.
+
+    Returns:
+        The folders, sorted by path, each with its parent, counts and size.
+    """
+    tops = {str(root) for root in roots}
+    return [
+        {
+            "path": mapper.to_host(Path(folder)),
+            "inside": folder,  # container path: the search filters on it (0348)
+            "parent": None if folder in tops else mapper.to_host(Path(folder).parent),
+            "name": mapper.to_host(Path(folder))
+            if folder in tops
+            else Path(folder).name,
+            "photos": count.photos,
+            "videos": count.videos,
+            "files": count.files,
+            "size": human_size(count.size),
+        }
+        for folder, count in sorted(counts.items())
+    ]
 
 
 def _suffix(name: str) -> str:

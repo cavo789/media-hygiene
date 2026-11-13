@@ -72,3 +72,34 @@ Estimated from the table: a second visit of the map, the people page, the folder
 *Events found* on a 52,000-file library drops from 1–2 s of server work to under 0.1 s
 (−90 % or more); on 300,000 files from 5–15 s to under 0.1 s. The first visit after a
 start is paid once, ahead, on the warm-up thread.
+
+## Status — PARTIAL (2026-11-13)
+
+### Done
+- `services/kept_state.py`: `KeptState` keyed on the index file (inode, size, mtime,
+  ctime, header change counter, `-wal`), every file of `/config` but `.history/`, and
+  the settings. Used by the map (`places_here`), the people page (`KeptPage`: app kept,
+  its session and *Apply now* go on), the folder tree (`FolderDesk.kept`) and *Events
+  found* (`FoundDesk.kept`, keyed on the sidecar days too).
+- Built ahead by the warm-up (`first_warm`): `/api/folders`, `/api/found-events`, `/places/`.
+- `sidecar_days`: `os.listdir` instead of `Path.iterdir` (287 → 126 ms warm, found events).
+- Tests (`tests/unit/test_kept_state.py`): a commit by another connection, a move by
+  `sort`/`undo`, an atomic save, a copy keeping the mtime, a `touch`, an in-place
+  edit, another process, a `-wal` file; `/config` edit, atomic save, copy, touch, file
+  added/removed, `.history` ignored; a renamed photo waits for the audit; the folder
+  tree and the people page (built once, again after a name saved).
+- Measured (pages bench, 100,000 files, warm): folders 130 → 2.8 ms, found events
+  492 → 126 ms, map 2,234 → 0.2 ms; 300,000: folders 7.5 ms, found 374 ms, map 0.1 ms.
+
+### Not done
+- *Events found* warm 126 ms at 100,000 (target 100): the sidecar days are listed again
+  at each ask (0618). **Reason:** keying them on folder mtimes misses a sidecar edited
+  in place; needs a decision.
+- People page not measured kept, nor warmed ahead. **Reason:** the bench's synthetic
+  library answers 409 (faces not "guessed"); the page's build writes face groups (not
+  read-only for the warm-up).
+- Warm-up again at the end of an audit run from the home page. **Reason:** not wired; the
+  first visit after an audit pays the build.
+- `tracemalloc` of each kept state. **Reason:** not measured; estimated from the answers:
+  folders 0.9 MB of JSON at 100,000 (2.6 MB at 300,000), found events 0.5 MB, the map's
+  app ≈ its 127 KB page plus clusters: tens of MB at most, no `[cache]` setting proposed.

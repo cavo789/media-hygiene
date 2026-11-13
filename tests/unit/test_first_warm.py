@@ -62,6 +62,9 @@ def test_ready_first_then_the_library_requests(monkeypatch: pytest.MonkeyPatch) 
     assert [(each.method, each.path) for each in handled] == [
         ("GET", SEARCH_PAGE_PATH),
         ("POST", SEARCH_PATH),
+        ("GET", "/api/folders"),  # the kept states built ahead (0804)
+        ("GET", "/api/found-events"),
+        ("GET", "/places/"),
     ]
     assert handled == list(WARM_REQUESTS)
 

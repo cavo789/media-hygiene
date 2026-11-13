@@ -29,7 +29,7 @@ from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.people import PeopleStep, PeopleWork
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.people_files import require_people_index
-from media_hygiene.services.prefixed_page import PrefixedPage
+from media_hygiene.services.prefixed_page import KeptPage, PrefixedPage
 
 if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
@@ -155,7 +155,7 @@ def people_here(fresh: FreshRuntime, server: HomeServer) -> PrefixedPage:
     Returns:
         The page.
     """
-    return PrefixedPage(PEOPLE_PAGE, fresh, lambda runtime: _built(runtime, server))
+    return KeptPage(PEOPLE_PAGE, fresh, lambda runtime: _built(runtime, server))
 
 
 def people_door(home: Handling, fresh: FreshRuntime) -> Handling:

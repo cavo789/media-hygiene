@@ -8,6 +8,7 @@ found by its name, so a file moved with its sidecar (`sort`, Explorer) keeps its
 from __future__ import annotations
 
 import contextlib
+import os
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -77,10 +78,10 @@ def _names_with_sidecars(folder: Path) -> list[str]:
         Its names, sorted; none when it cannot be read or holds no sidecar.
     """
     try:
-        names = sorted(entry.name for entry in folder.iterdir())
+        names = os.listdir(folder)  # noqa: PTH208 - names only, no `Path` per file
     except OSError:
         return []
-    return names if any(n.casefold().endswith(_XMP) for n in names) else []
+    return sorted(names) if any(n.casefold().endswith(_XMP) for n in names) else []
 
 
 def _day_beside(file: Path, listed: dict[Path, list[str]]) -> str | None:
@@ -112,7 +113,7 @@ def undated_days(connection: sqlite3.Connection) -> dict[Path, str]:
     return days_of(Path(row[0]) for row in connection.execute(OWN_UNDATED))
 
 
-def read_days_again(connection: sqlite3.Connection) -> None:
+def read_days_again(connection: sqlite3.Connection) -> dict[Path, str]:
     """Read every sidecar's day again into the search's temporary table (0618).
 
     The event finders (`late_files`, `found_folders`) read it at each ask: a day set,
@@ -120,9 +121,13 @@ def read_days_again(connection: sqlite3.Connection) -> None:
 
     Args:
         connection: The open index.
+
+    Returns:
+        The days read: part of what a page keeps its state under (0804).
     """
     connection.create_function(DAY, 1, media_day, deterministic=True)  # a bare index
     days = undated_days(connection)
     ready(connection).execute(CLEAR_DAYS)
     connection.executemany(PUT_DAY, [(str(path), day) for path, day in days.items()])
     connection.commit()  # no transaction left open: a move writes the index
+    return days
