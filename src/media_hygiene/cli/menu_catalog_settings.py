@@ -70,6 +70,7 @@ def settings_steps() -> tuple[Step, ...]:
             icon="face",
             keywords=_("privacy faces forget delete gdpr"),
             doc=Doc("commands/people/", "#your-privacy", "#votre-vie-privée"),
+            inline=True,  # 0740: seconds; the names' question stays the terminal's
             optional=True,
         ),
         Step(

@@ -224,7 +224,7 @@ function stepRow(action, number, numbered) {
   const cls = ["step", st.done && "is-done", st.proposed && "is-proposed", !st.available && "is-unavailable"].filter(Boolean).join(" ");
   const marker = st.done ? icon("check") : numbered ? String(number) : icon(action.icon);
   const tags = `${st.proposed ? `<span class="pill pill-here">${esc(T.nextStep)}</span>` : ""}${st.done ? `<span class="pill pill-done">${icon("check")} ${esc(T.done)}</span>` : ""}`;
-  return `<li class="${esc(cls)}">
+  return `<li class="${esc(cls)}" id="step-${esc(action.name)}">
     <span class="step-marker" aria-hidden="true">${marker}</span>
     <div class="step-body">
       <h3 class="step-title">${numbered ? `<span class="visually-hidden">${esc(fill(T.stepN, { number: number }))} </span>` : ""}${esc(action.title)}${tags}</h3>
@@ -236,7 +236,7 @@ function stepRow(action, number, numbered) {
 }
 function card(action) {
   const st = statusOf(action);
-  return `<article class="tool-card${st.available || st.planned ? "" : " is-unavailable"}">
+  return `<article class="tool-card${st.available || st.planned ? "" : " is-unavailable"}" id="step-${esc(action.name)}">
     <div class="tool-head"><span class="tool-icon" aria-hidden="true">${icon(action.icon)}</span><h3 class="tool-title">${esc(action.title)}</h3></div>
     <p class="step-text">${esc(st.available || st.planned ? action.text : st.reason)}</p>
     ${pillsOf(action)}

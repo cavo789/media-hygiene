@@ -27,7 +27,7 @@ EVERY_VERB = sorted({command[0] for command in commands()} | set(HOST_COMMANDS))
 STILL_IN_THE_WINDOW = frozenset({
     "album", "apply", "audit", "classify", "clean", "clean-delete", "config-tidy",
     "crosscheck", "explorer", "explorer-remove", "folders-add", "folders-remove",
-    "import", "import-folder", "inventory", "launcher", "nas-add", "people-forget",
+    "import", "import-folder", "inventory", "launcher", "nas-add",
     "phone", "phone-free", "purge", "push", "push-to", "restore", "share", "shortcut",
     "sort", "tags", "undo", "update", "upkeep", "xmp",
 })  # fmt: skip

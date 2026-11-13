@@ -16,3 +16,10 @@ Split from section 0269 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — UNNEEDED (2026-11-13)
+
+Checked against the source TODO: its *Inbox (2026-10-29)* records the maintainer's decision
+"The acting commands from the phone: dropped (the phone stays read-only)". The only item left
+here is exactly that, so nothing remains to build. Reopen only with a decision to let a phone
+act on the library.

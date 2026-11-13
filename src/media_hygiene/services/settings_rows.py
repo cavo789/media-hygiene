@@ -23,6 +23,8 @@ from media_hygiene.services.unwanted_reviewing import UNWANTED_KEYS, UNWANTED_SE
 
 # The anchor of the events page's *Group the photos…* (`search_events_grouping`).
 GROUPING_ANCHOR: Final = "#grouping"
+# The id of an action's card on the home page: this prefix, then its name (0727).
+STEP_CARD: Final = "step-"
 _LOCALE_ANCHOR: Final = "#mhLocale"  # the picker of every page's bar, this one's too
 
 
@@ -132,13 +134,13 @@ def _elsewhere() -> tuple[SettingRow, ...]:
         SettingRow(
             _("Burst series strictness"),
             _("When a shot of a series is offered to set aside."),
-            "/#clean",
+            f"/#clean/{STEP_CARD}review",
             _dotted(BURST_SECTION, BURST_KEYS),
         ),
         SettingRow(
             _("Junk strictness"),
             _("What the junk review counts as a screenshot, too small, too dark…"),
-            "/#clean",
+            f"/#clean/{STEP_CARD}review-junk",
             _dotted(UNWANTED_SECTION, UNWANTED_KEYS),
         ),
         SettingRow(

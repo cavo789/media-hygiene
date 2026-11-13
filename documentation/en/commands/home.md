@@ -215,10 +215,11 @@ opened the page:
   named volume, or an older `mh`, the page gives the command to copy instead.
 - **A short step that asks nothing** (*See each setting and where it comes from* `config`,
   *Back up the index and the settings* `backup`, *See what each run did* `history`, *Keep only
-  the recent reports* `reports --prune`): the home page runs it **itself**, whatever `mh`
+  the recent reports* `reports --prune`, *Forget every face* `people --forget`): the home page runs it **itself**, whatever `mh`
   opened it, and shows what it wrote in a dialog (*Runs in the page*, then *Done. What it
   wrote:*): no window to switch to. One at a time (*Another step runs: wait for its end.*); a
-  step past 2 minutes is stopped; an error shows its message only.
+  step past 2 minutes is stopped; an error shows its message only. *Forget every face* deletes the faces
+  only, read back; the names of `config.toml` are deleted only after a yes typed in a terminal.
 - **A long step** (`audit`, `clean`, `import`…) runs in the window of `mh` while the page stays
   open: its dialog shows the stage, a bar, how many files are done and how many a second. Close
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again

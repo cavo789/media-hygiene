@@ -232,11 +232,14 @@ qui a ouvert la page :
   `mh` plus ancien, la page donne la commande à copier à la place.
 - **Une étape courte qui ne demande rien** (*Voir chaque réglage et d'où il vient* `config`,
   *Sauvegarder l'index et les réglages* `backup`, *Voir ce qu'a fait chaque exécution*
-  `history`, *Ne garder que les rapports récents* `reports --prune`) : la page d'accueil la
+  `history`, *Ne garder que les rapports récents* `reports --prune`,
+  *Oublier tous les visages* `people --forget`) : la page d'accueil la
   lance **elle-même**, quel que soit le `mh` qui l'a ouverte, et montre ce qu'elle a écrit dans
   une fenêtre (*Tourne dans la page*, puis *Terminé. Ce qu'elle a écrit :*) : aucune fenêtre
   où basculer. Une à la fois (*Une autre étape tourne : attendez sa fin.*) ; une étape qui
-  dépasse 2 minutes est arrêtée ; une erreur ne montre que son message.
+  dépasse 2 minutes est arrêtée ; une erreur ne montre que son message. *Oublier tous les
+  visages* n'efface que les visages, relus ; les noms de `config.toml` ne sont effacés qu'après
+  un oui tapé dans un terminal.
 - **Une étape longue** (`audit`, `clean`, `import`…) tourne dans la fenêtre de `mh` pendant que
   la page reste ouverte : sa fenêtre montre l'étape en cours, une barre, combien de fichiers sont
   faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et
