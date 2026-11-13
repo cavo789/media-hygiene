@@ -209,7 +209,7 @@ async function change(action, name) {
   const body = JSON.stringify({ action, album: name || album.name, keys: [String(item.key)] });
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });
   if (!answer) return;
-  toast(answer.message, action === "remove" ? () => putBack(album.name, item.key) : null);
+  toast(answer.message, action === "remove" ? () => putBack(album.name, item.key, answer.taken[0]) : null);
   if (action === "cover") showAlbum(album.name); // the cover, as read back from the disk
   if (action === "remove") {
     closeViewer(false);
@@ -219,8 +219,9 @@ async function change(action, name) {
 }
 // The toast's Undo of a photo taken out (0696): the same add as *Add to an album*; the album
 // shown is then the one read back from albums.json (made again if it was its last photo).
-async function putBack(name, key) {
-  const body = JSON.stringify({ action: "add", album: name, keys: [String(key)] });
+// `at`: where it stood (0726); the server appends it when the album is shorter by then.
+async function putBack(name, key, at) {
+  const body = JSON.stringify({ action: "add", album: name, keys: [String(key)], at });
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });
   if (!answer) return;
   toast(answer.message);

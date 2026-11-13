@@ -16,4 +16,10 @@ Decided by the maintainer in the review of 2026-11-12.
 
 ## Acceptance
 
-- [ ] Test: remove the 2nd of 5, Undo: back 2nd; position beyond the end: appended; album changed meanwhile: no error.
+- [x] Test: remove the 2nd of 5, Undo: back 2nd; position beyond the end: appended; album changed meanwhile: no error.
+
+## Done
+
+- `AlbumChange.at` (and `at` in `POST /api/albums`): added files go there; None or beyond the end: appended.
+- `Shelf.taken` / the answer's `taken`: where the files taken out stood; the toast's Undo sends it back.
+- Tests: `tests/unit/test_album_put_back.py`, `tests/unit/test_undo_toast.py`.

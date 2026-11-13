@@ -53,6 +53,7 @@ class AlbumAsked(BaseModel):
     keys: tuple[str, ...] = Field(default=(), max_length=MAX_ADDED)
     all: bool = False  # every file the search finds, not only those shown
     guests: bool = False  # shown to the guests' devices, or not
+    at: int | None = Field(default=None, ge=0)  # where the files added go (0726)
     search: SearchAsked = SearchAsked()
 
 
@@ -100,7 +101,7 @@ class AlbumDesk:
         early = self._early(asked, files)
         if early is not None:
             return early
-        change = AlbumChange(asked.album, files)
+        change = AlbumChange(asked.album, files, asked.at)
         async with self._turn:
             try:
                 self.ready()
