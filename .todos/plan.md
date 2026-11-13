@@ -27,11 +27,11 @@ One `/todo:run NNNN` each, highest priority first.
 
 | ID | Priority | Title | Batch |
 |---|---|---|---|
-| 0751 | Medium | What 0550 left: Tidy config.toml: remove the entries that point at nothing any more | backlog |
 | 0753 | Medium | What 0567 left: Home page: status, folders, reports, inventory, config shown in the page | home |
 | 0793 | Medium | CI: integration tests in two balanced jobs | tests |
 | 0794 | Medium | Profile people page cold open | page-speed |
 | 0800 | Medium | Events: try one month | one-interface |
+| 0812 | Medium | Tidy config.toml: the page with ticks, place photos, town renames, people files | backlog |
 | 0717 | Low | One run of `docs_screenshots` for the captures the PARTIAL TODOs left stale | docs |
 | 0786 | Low | An HEVC video the browser cannot play shows its frame in the large view | videos |
 | 0796 | Low | Intruders ticks, places filter in URL | page-shell |
@@ -157,6 +157,7 @@ One `/todo:run NNNN` each, highest priority first.
 | 0745 | What 0526 left: Sort trial on one month before the whole library | [PARTIAL_0745-left-by-0526-sort-trial-on-a-sample.md](PARTIAL/PARTIAL_0745-left-by-0526-sort-trial-on-a-sample.md) |
 | 0746 | What 0534 left: Albums folder chosen on the albums page | [PARTIAL_0746-left-by-0534-album-root-chosen-on-the-page.md](PARTIAL/PARTIAL_0746-left-by-0534-album-root-chosen-on-the-page.md) |
 | 0750 | What 0545 left: Keep each photo's landmark and town in the index: searchable, shown, scanned once | [PARTIAL_0750-left-by-0545-store-landmark-in-index-search-show-scan.md](PARTIAL/PARTIAL_0750-left-by-0545-store-landmark-in-index-search-show-scan.md) |
+| 0751 | What 0550 left: Tidy config.toml: remove the entries that point at nothing any more | [PARTIAL_0751-left-by-0550-tidy-config-toml-stale-entries.md](PARTIAL/PARTIAL_0751-left-by-0550-tidy-config-toml-stale-entries.md) |
 | 0754 | What 0572 left: Search › Events: trust what the disk holds, not a classify plan the user forgot | [PARTIAL_0754-left-by-0572-search-events-tab-without-a-classify-plan.md](PARTIAL/PARTIAL_0754-left-by-0572-search-events-tab-without-a-classify-plan.md) |
 | 0757 | What 0601 left: A page runs `mh undo <run>` itself: Undo toast on move to an event and Apply now | [PARTIAL_0757-left-by-0601-page-undo-route.md](PARTIAL/PARTIAL_0757-left-by-0601-page-undo-route.md) |
 | 0758 | What 0614 left: The TV's address `http://<PC>:8089/` opens a welcome page, not the phone's steps | [PARTIAL_0758-left-by-0614-tv-door-welcome-page.md](PARTIAL/PARTIAL_0758-left-by-0614-tv-door-welcome-page.md) |

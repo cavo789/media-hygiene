@@ -25,3 +25,22 @@ Split from section 0550 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 ## Decided (2026-11-13)
 
 A `path` rule aimed at a root the index never covered is left alone by tidy: never shown as stale, never removed (choice by the maintainer, review of `.claude/plans/feedback-2026-11-13-iterate.md`).
+
+## Status — PARTIAL (2026-11-13)
+
+### Done
+- A `path` rule whose pattern names a root (`^E:\\Stick\\…`: drive + first folder) that no
+  indexed file sits under is left alone, never shown as stale (`config/tidy_roots.py`, used by
+  `tidy_rules._path_reason`); a pattern naming no root is judged as before. Tests
+  `tests/unit/test_tidy_roots.py` (root never indexed, folder moved by `sort`, folder renamed,
+  root still covered). Docs EN/FR `commands/config.md`.
+- Checked, already done in 0550: comments and order kept on the default template
+  (`test_removal_keeps_the_comments_of_the_default_template`); nothing removed unticked,
+  backup copy, result read back (`test_list_then_apply_with_a_copy_and_the_undo_line`);
+  unmounted drive and empty index (`test_folders_gone_duplicated_or_on_an_unmounted_drive`,
+  `test_an_empty_index_judges_no_pattern`).
+
+### Not done
+- The web page with ticks; `[[classify.place_photos]]` line by line; town renames vs
+  GeoNames; `people` files linked/unlinked.
+  **Reason:** scope of one session; filed as 0812.

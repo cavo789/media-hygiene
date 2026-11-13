@@ -116,7 +116,9 @@ mh config tidy --apply   # retirer les entrées cochées
 | `[[classify.clocks]]` | aucune photo de cet appareil à ces dates |
 
 Un dossier sur un lecteur non monté (une clé USB) n'est **pas jugé**, et c'est dit. Un index
-vide ne juge aucune règle : lancez d'abord `audit` sur tous vos dossiers. Vos lieux dessinés à
+vide ne juge aucune règle : lancez d'abord `audit` sur tous vos dossiers. Une règle `path` dont
+le motif commence par un dossier qu'aucun audit n'a couvert (`^E:\\Stick\\…`) est laissée de
+côté elle aussi. Vos lieux dessinés à
 la main et les endroits écartés ne sont jamais proposés.
 
 `--apply` copie d'abord `config.toml` dans `/cache/config-backups/` (daté), retire les entrées
