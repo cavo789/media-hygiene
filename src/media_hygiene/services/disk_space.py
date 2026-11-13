@@ -22,7 +22,7 @@ from media_hygiene.places.toml_edit import (
     write_document,
 )
 from media_hygiene.report.preview_cache import trim_previews
-from media_hygiene.services.disk_only import only_by_run
+from media_hygiene.services.disk_only import counts_by_run
 from media_hygiene.services.disk_purge import PurgeReadBack
 from media_hygiene.services.status import read_status
 
@@ -58,6 +58,7 @@ class DiskRun(BaseModel):
     since: str
     old: bool
     only: str = ""  # its files that exist nowhere else (0775); empty: not known
+    nas: str = ""  # its files whose only other copy is on the NAS (0792); empty: none
 
 
 class DiskState(BaseModel):
@@ -143,12 +144,16 @@ def disk_state(runtime: Runtime) -> DiskState:
     limits = limits_of(runtime.locations.config_file)
     quarantine = read_status(runtime).quarantine
     size = previews_bytes(runtime.previews_dir)
-    counted = only_by_run(runtime, [run.run_id for run in quarantine.runs])
+    counted = counts_by_run(runtime, [run.run_id for run in quarantine.runs])
     only = (
         {}
         if counted is None
-        else {r.run_id: counted.get(r.run_id, r.files) for r in quarantine.runs}
+        else {
+            r.run_id: counted[r.run_id].only if r.run_id in counted else r.files
+            for r in quarantine.runs
+        }
     )
+    nas = {run: count.nas for run, count in (counted or {}).items() if count.nas}
     runs = tuple(
         DiskRun(
             run_id=run.run_id,
@@ -158,6 +163,7 @@ def disk_state(runtime: Runtime) -> DiskState:
             since=ago(run.started),
             old=days_since(run.started) >= limits.purge_hint_days,
             only=human_number(only[run.run_id]) if run.run_id in only else "",
+            nas=human_number(nas[run.run_id]) if run.run_id in nas else "",
         )
         for run in quarantine.runs
     )

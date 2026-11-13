@@ -131,6 +131,9 @@ sits next to its effect, saved into `config.toml` and read back before being sho
 quarantine says how many of its files exist **nowhere else** (near duplicates, burst shots, junk
 or unreadable files: not exact copies, whose kept twin stays in your photos; counted from the
 index, `?` without one), and the total is said under the title: the backup does not hold them.
+Its *Only on the NAS* column counts the files whose only other copy is the one the last
+[`push`](push.md) found on the NAS: the next push moves that copy into `.removed`, which does not
+count as a copy.
 Each run has its *See the photos* link, its files as tiles ([`undo --pick`](undo.md#put-back-a-few-photos)),
 and its *Purge* link: the same tiles first, then a button stating how many files it erases and the
 room it frees. It asks once there, `mh` runs [`purge`](purge.md) in its window, and the page comes

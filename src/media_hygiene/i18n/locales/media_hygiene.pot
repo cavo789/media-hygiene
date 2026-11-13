@@ -2219,6 +2219,11 @@ msgid "Counting the photos to scan…"
 msgstr ""
 
 msgid ""
+"Covered by the copy the last mh push found on the NAS, gone from this PC:"
+" the next push moves it into .removed, which does not count as a copy."
+msgstr ""
+
+msgid ""
 "Create the folder yourself before docker run (Docker creates a missing "
 "one for root only); from WSL or Linux, add --user \"$(id -u):$(id -g)\"."
 msgid_plural ""

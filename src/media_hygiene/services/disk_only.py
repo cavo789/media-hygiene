@@ -20,7 +20,7 @@ from media_hygiene.console.formatting import human_size
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.only_copies import SHOWN, only_copies
-from media_hygiene.services.only_count import only_count
+from media_hygiene.services.only_count import OnlyCount, only_count
 from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
@@ -84,15 +84,30 @@ def only_by_run(runtime: Runtime, runs: Sequence[str]) -> dict[str, int] | None:
         The count by run; a run whose journal is lost is left out (every one of its
         files counts then, as `purge` counts them). None without a readable index.
     """
+    counted = counts_by_run(runtime, runs)
+    return None if counted is None else {r: c.only for r, c in counted.items()}
+
+
+def counts_by_run(runtime: Runtime, runs: Sequence[str]) -> dict[str, OnlyCount] | None:
+    """Count, from the index, each run's files nowhere else and only on the NAS (0792).
+
+    Args:
+        runtime: Settings and mount points.
+        runs: The runs in the quarantine.
+
+    Returns:
+        The counts by run, as `only_by_run` leaves runs out; None without a readable
+        index.
+    """
     if not runs or not runtime.persistent(MountKind.CACHE):
         return None
     journal_dir = runtime.locations.journal_dir
-    counts: dict[str, int] = {}
+    counts: dict[str, OnlyCount] = {}
     for run in runs:
         if not journal_file(journal_dir, run).is_file():
             continue
         count = only_count(runtime.locations.index_file, journal_dir, (run,))
         if count is None:
             return None
-        counts[run] = count.only
+        counts[run] = count
     return counts

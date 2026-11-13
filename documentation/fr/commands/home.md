@@ -140,7 +140,10 @@ affichée : *Garder au plus (Go)* (`[cache] previews_max_gb`) et *Proposer la pu
 l'affichage. Chaque exécution de la quarantaine dit combien de ses fichiers n'existent **nulle part
 ailleurs** (quasi-doublons, photos de rafale, fichiers inutiles ou illisibles : pas les copies
 exactes, dont le jumeau gardé reste dans vos photos ; comptés depuis l'index, `?` sans lui), et le
-total est dit sous le titre : la sauvegarde ne les contient pas. Chaque exécution a son lien
+total est dit sous le titre : la sauvegarde ne les contient pas. Sa colonne *Seulement sur le
+NAS* compte les fichiers dont la seule autre copie est celle que le dernier [`push`](push.md) a
+trouvée sur le NAS : le push suivant la déplace dans `.removed`, qui ne compte pas comme une
+copie. Chaque exécution a son lien
 *Voir les photos*, ses fichiers en vignettes
 ([`undo --pick`](undo.md#remettre-quelques-photos)), et son lien *Purger* : les mêmes vignettes d'abord, puis un
 bouton qui annonce combien de fichiers il efface et la place qu'il libère. Il demande une fois là, `mh`
