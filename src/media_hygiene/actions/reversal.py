@@ -18,6 +18,7 @@ from media_hygiene.actions.kinds import MARKS, ActionKind
 from media_hygiene.actions.link_undo import separate_blocker
 from media_hygiene.actions.moved_check import changed_since
 from media_hygiene.actions.quarantine import QUARANTINED
+from media_hygiene.actions.turn_undo import turn_blocker
 from media_hygiene.actions.xmp_undo import xmp_blocker
 from media_hygiene.errors import JournalError
 from media_hygiene.i18n import _
@@ -45,6 +46,7 @@ class Reversal(Enum):
     FORGET_MARK = auto()  # a mark: nothing on the disk, the undo line is the change
     REMOVE_COPY = auto()  # a file `import` copied in (0245): removed while unchanged
     RELINK = auto()  # an album's link removed (0374): made again from its other name
+    UNTURN = auto()  # a photo turned (0802): its old orientation code back
 
 
 REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
@@ -62,6 +64,7 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.MERGE_XMP: Reversal.RESTORE_XMP,
         ActionKind.COPY_IN: Reversal.REMOVE_COPY,
         ActionKind.SHRUNK: Reversal.REMOVE_COPY,  # then its original comes back
+        ActionKind.TURN: Reversal.UNTURN,
     }
     | dict.fromkeys(MARKS, Reversal.FORGET_MARK)
     | dict.fromkeys(QUARANTINED, Reversal.UNQUARANTINE)
@@ -80,6 +83,7 @@ _OWN_CHECKS: Final[Mapping[Reversal, Callable[[JournalEntry], str | None]]] = (
             Reversal.REMOVE_LINK: link_blocker,
             Reversal.SEPARATE_LINK: separate_blocker,
             Reversal.REMOVE_COPY: copy_blocker,
+            Reversal.UNTURN: turn_blocker,
         }
     )
 )

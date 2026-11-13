@@ -11,12 +11,12 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.people_forget import forget_people
+from media_hygiene.console.people_counts import show_missing
 from media_hygiene.console.people_view import (
     show_absent,
     show_estimate,
     show_found,
     show_groups,
-    show_missing,
     show_named,
     show_privacy,
 )
@@ -72,7 +72,7 @@ def run_people(runtime: Runtime, request: PeopleRequest) -> PeopleResult | None:
             left = len(work.missing) - outcome.analysed
             show_estimate(output, left, outcome.estimate(left))
             return None
-        show_missing(output, len(work.missing), len(work.photos))
+        show_missing(output, work)
         if work.missing:
             find_shown(runtime, step, work.missing)
         result = step.result(work)

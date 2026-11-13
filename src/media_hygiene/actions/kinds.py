@@ -74,6 +74,9 @@ class ActionKind(StrEnum):
     SHRUNK = "shrunk"
     QUARANTINE_SHRUNK = "quarantine-shrunk"
     MARK_NOT_WORTH = "mark-not-worth"
+    # Written by `people --straighten` (0802): a JPEG's EXIF orientation changed in
+    # place, two bytes; `orientation` keeps the code and SHA-256 before, `sha256` after.
+    TURN = "turn"
 
     @property
     def remembered(self) -> bool:
@@ -100,6 +103,7 @@ class Phase(StrEnum):
     IMPORT = "import"
     PUSH = "push"
     SHRINK = "shrink"
+    TURN = "turn"
     UNDO = "undo"
 
 
@@ -121,6 +125,7 @@ ACTING_PHASES: Final = (
     Phase.IMPORT,
     Phase.PUSH,
     Phase.SHRINK,
+    Phase.TURN,
 )
 # Actions on folders (an album's marker included): nothing is deleted nor freed by them.
 FOLDER_ACTIONS: Final = frozenset(

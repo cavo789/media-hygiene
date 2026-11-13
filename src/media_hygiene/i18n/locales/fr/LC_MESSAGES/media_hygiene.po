@@ -2166,6 +2166,9 @@ msgstr "Changé d'avis ? Ceci remet ce qui a été renommé ou mis de côté :"
 msgid "Changed: {keys}"
 msgstr "Changé : {keys}"
 
+msgid "Changes the orientation tag of the photos."
+msgstr "Change l'étiquette d'orientation des photos."
+
 msgid ""
 "Check any group yourself: 'Check it yourself' gives the command printing "
 "its SHA-256 with your system's own tool (PowerShell's Get-FileHash on "
@@ -2705,9 +2708,9 @@ msgid ""
 "Covered by the copy the last mh push found on the NAS, gone from this PC:"
 " the next push moves it into .removed, which does not count as a copy."
 msgstr ""
-"Couvert par la copie que le dernier mh push a trouvée sur le NAS, absente "
-"de ce PC : le push suivant la déplace dans .removed, qui ne compte pas comme"
-" une copie."
+"Couvert par la copie que le dernier mh push a trouvée sur le NAS, absente"
+" de ce PC : le push suivant la déplace dans .removed, qui ne compte pas "
+"comme une copie."
 
 msgid ""
 "Create the folder yourself before docker run (Docker creates a missing "
@@ -8954,6 +8957,12 @@ msgstr ""
 msgid "Photos untouched"
 msgstr "Photos intactes"
 
+#, python-brace-format
+msgid "Photos whose turn is still to guess: {count} (analysed before, not new)."
+msgstr ""
+"Photos dont la rotation reste à deviner : {count} (analysées avant, pas "
+"nouvelles)."
+
 msgid "Photos with a shooting date"
 msgstr "Photos avec une date de prise de vue"
 
@@ -14269,6 +14278,9 @@ msgstr "Essai arrêté : ses brouillons sont supprimés, rien n'a changé."
 msgid "Turn into dates"
 msgstr "Convertir en dates"
 
+msgid "Turning"
+msgstr "Rotation"
+
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
@@ -16331,6 +16343,9 @@ msgstr "il a changé depuis qu'il a été trouvé abîmé : gardé"
 msgid "it changed since the audit: audit again"
 msgstr "elle a changé depuis l'audit : relancez l'audit"
 
+msgid "it changed while it was turned: left as is"
+msgstr "elle a changé pendant la rotation : laissée telle quelle"
+
 msgid "it changed while the words were written: left as is"
 msgstr "il a changé pendant l'écriture des mots : laissé tel quel"
 
@@ -16356,6 +16371,9 @@ msgstr "il n'est plus dans l'album : déjà supprimé"
 
 msgid "it is no longer there"
 msgstr "il n'est plus là"
+
+msgid "it is no longer there: moved or deleted since"
+msgstr "elle n'est plus là : déplacée ou supprimée depuis"
 
 msgid "it is not the marker file of an album: kept"
 msgstr "ce n'est pas le fichier repère d'un album : gardé"
@@ -17646,6 +17664,9 @@ msgstr "le groupe redevient sans réponse"
 msgid "the group back to undecided"
 msgstr "le groupe revient à 'non décidé'"
 
+msgid "the journal does not say what the photo held before"
+msgstr "le journal ne dit pas ce que la photo contenait avant"
+
 msgid "the journal does not say where its content is"
 msgstr "le journal ne dit pas où se trouve son contenu"
 
@@ -17722,6 +17743,12 @@ msgstr "l'autre nom ressemble à une copie"
 #, python-brace-format
 msgid "the person set aside on {date}"
 msgstr "la personne mise de côté le {date}"
+
+msgid "the photo changed since (edited in another application?): kept"
+msgstr "la photo a changé depuis (modifiée dans une autre application ?) : gardée"
+
+msgid "the photo would not be the same as before: kept"
+msgstr "la photo ne serait pas la même qu'avant : gardée"
 
 msgid "the previous or next one not set aside"
 msgstr "la précédente ou la suivante pas mise de côté"
@@ -19552,6 +19579,20 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} photos sur {total} à analyser ; les prochaines exécutions "
 "n'analysent que les nouvelles."
+
+#, python-brace-format
+msgid ""
+"{count} photo of {total} whose turn is still to guess (analysed before, "
+"not new)."
+msgid_plural ""
+"{count} photos of {total} whose turn is still to guess (analysed before, "
+"not new)."
+msgstr[0] ""
+"{count} photo sur {total} dont la rotation reste à deviner (analysée "
+"avant, pas nouvelle)."
+msgstr[1] ""
+"{count} photos sur {total} dont la rotation reste à deviner (analysées "
+"avant, pas nouvelles)."
 
 #, python-brace-format
 msgid "{count} photo or video"

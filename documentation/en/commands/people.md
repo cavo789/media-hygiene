@@ -16,6 +16,8 @@ them. The faces stay in the [cache](../reference-glossary.md#cache), never sent 
 after new photos: only those are analysed. From the home page, past the first run, the page
 opens at once on the groups already known and analyses up to 1 000 new photos itself, with
 their progress and a Stop button; the groups are kept in the cache and not recomputed.
+Photos analysed by an older version, whose turn only is still to guess, are counted apart
+(*N photos whose turn is still to guess*), in the console and on the page: they are not new.
 
 **Try it**:
 

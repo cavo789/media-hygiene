@@ -40,7 +40,7 @@ from media_hygiene.index.takeout_rows import CREATE_TAKEOUT
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 21  # 21: face_turns (0725)
+SCHEMA_VERSION: Final = 22  # 22: turn_refusals (0802)
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,

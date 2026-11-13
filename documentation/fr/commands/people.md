@@ -18,6 +18,9 @@ nouveau après de nouvelles photos : seules celles-là sont analysées. Depuis l
 analyse, la page s'ouvre aussitôt sur les groupes déjà connus et analyse elle-même jusqu'à
 1 000 nouvelles photos, avec leur progression et un bouton Arrêter ; les groupes sont gardés
 dans le cache, sans être recalculés.
+Les photos analysées par une version plus ancienne, dont seule la rotation reste à deviner,
+sont comptées à part (*N photos dont la rotation reste à deviner*), dans la console et sur la
+page : ce ne sont pas des nouvelles photos.
 
 **Essayer** :
 

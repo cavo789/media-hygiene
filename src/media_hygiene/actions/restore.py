@@ -15,6 +15,7 @@ from media_hygiene.actions.no_overwrite import (
 )
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.actions.reversal import XMP_REVERSALS, Reversal, source_of
+from media_hygiene.actions.turn_undo import undo_turn
 from media_hygiene.actions.xmp_undo import undo_xmp
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
@@ -23,7 +24,11 @@ if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry
 
 # Undone in place: a sidecar `xmp` wrote, a mark, a copy made a link (0213).
-_IN_PLACE: Final = XMP_REVERSALS | {Reversal.FORGET_MARK, Reversal.SEPARATE_LINK}
+_IN_PLACE: Final = XMP_REVERSALS | {
+    Reversal.FORGET_MARK,
+    Reversal.SEPARATE_LINK,
+    Reversal.UNTURN,  # a photo turned (0802)
+}
 # A name an album run made: a link (its file keeps its other names), the marker;
 # a copy `import` made, proven unchanged by `blocker` (0245).
 _REMOVALS: Final = frozenset(
@@ -84,6 +89,8 @@ def _without_a_file(entry: JournalEntry, reversal: Reversal) -> bool:
         undo_xmp(entry)
     if reversal is Reversal.SEPARATE_LINK:
         separate(entry)  # the name stays: it becomes its own file again (0213)
+    if reversal is Reversal.UNTURN:
+        undo_turn(entry)
     return reversal in _IN_PLACE
 
 

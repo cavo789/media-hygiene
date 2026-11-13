@@ -75,7 +75,7 @@ def _ready(work: PeopleWork) -> bool:
     Returns:
         True when the page can show groups and analyse the rest itself.
     """
-    return len(work.missing) < len(work.photos) and len(work.missing) <= MOST_NEW
+    return work.new < len(work.photos) and len(work.missing) <= MOST_NEW
 
 
 def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
@@ -105,6 +105,7 @@ def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
         offered,
         relative=True,
         new=len(work.missing),
+        turns=work.turn_only,
     )
     app, aside = people_app(runtime, result, build)
     offer = ApplyOffer(server.apply, lambda: bool(aside.paths()), PageUndo(runtime))

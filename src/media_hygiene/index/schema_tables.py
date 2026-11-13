@@ -9,6 +9,7 @@ from media_hygiene.index.gone_rows import CREATE_GONE
 from media_hygiene.index.journal_words import JOURNAL_TABLES
 from media_hygiene.index.meaning_rows import CREATE_MEANINGS
 from media_hygiene.index.spot_rows import CREATE_SPOTS
+from media_hygiene.index.turn_refusals import CREATE_TURN_REFUSALS
 from media_hygiene.index.verified_rows import CREATE_VERIFIED
 
 # The tables created last, whatever the version of the index (`schema.prepare`).
@@ -19,6 +20,7 @@ LATER_TABLES: Final = (
     *FACE_TABLES,
     CREATE_SPOTS,
     CREATE_VERIFIED,
+    CREATE_TURN_REFUSALS,
 )
 # `files` first: `FactsRepository.forget` counts the files it removes on it.
 PATH_TABLES: Final = (
@@ -28,6 +30,7 @@ PATH_TABLES: Final = (
     "face_scans",
     "faces",
     "face_turns",
+    "turn_refusals",
     "measures",
     "takeout",
     "former_names",
