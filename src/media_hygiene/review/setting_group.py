@@ -36,7 +36,10 @@ type Held = dict[str, object]
 
 @dataclass(frozen=True, slots=True)
 class Field:
-    """One value: its key, kind, bounds (numbers) or choices (text), default."""
+    """One value: its key, kind, bounds (numbers) or choices (text), default.
+
+    A boolean default makes a switch: only `true` or `false` then (0747).
+    """
 
     key: str
     default: object
@@ -54,8 +57,8 @@ class Field:
         Returns:
             True when it has the kind and the bounds of the field.
         """
-        if isinstance(value, bool):
-            return False
+        if isinstance(self.default, bool) or isinstance(value, bool):
+            return isinstance(self.default, bool) and isinstance(value, bool)
         if isinstance(self.default, str):
             ok = isinstance(value, str) and len(value) <= self.longest
             return ok and (not self.choices or value in self.choices)

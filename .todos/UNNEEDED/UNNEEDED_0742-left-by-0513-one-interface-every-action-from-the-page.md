@@ -17,3 +17,10 @@ Split from section 0513 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — UNNEEDED (2026-11-13)
+
+Redundant: an umbrella. The steps still leaving the page are counted by
+`test_the_steps_leaving_the_page_only_shrink` (`tests/unit/test_menu_catalog.py`) and the work is
+in open TODOs: 0586 (writing steps from the page, needs a Windows run), 0506 (host steps), 0512
+(typed pages); 0594 is done. The "everything from here" chapter is written when that list is empty.

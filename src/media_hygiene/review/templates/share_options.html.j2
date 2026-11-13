@@ -1,0 +1,49 @@
+{# The copies *Prepare for sending* makes (0747): `[share] long_side_px`, `quality`, `keep_gps`,
+   included by `album_bar.html.j2`. Read from config.toml, saved with `/api/setting-share`, read
+   back from the disk and said. The PC's alone: a phone never sees it (no write from a phone). #}
+<details id="shareOptions" hidden>
+  <summary>⚙ {{ _("Copies to send") }}</summary>
+  <span class="panelRow">
+    <label for="shareSide">{{ _("Long side (pixels)") }}</label>
+    <input id="shareSide" type="number" min="320" max="8192" step="1">
+  </span>
+  <span class="panelRow">
+    <label for="shareQuality">{{ _("JPEG quality") }}</label>
+    <input id="shareQuality" type="number" min="30" max="95" step="1">
+  </span>
+  <span class="panelRow">
+    <label><input id="shareGps" type="checkbox"> {{ _("Keep the GPS position (the copies then say where each photo was taken)") }}</label>
+  </span>
+  <span class="panelRow"><button id="shareSave" class="plain writes" type="button">{{ _("Save") }}</button></span>
+  <p id="shareSaid" role="status"></p>
+</details>
+<script nonce="{{ page_nonce }}">
+(() => {
+  if (!["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) return;
+  const PATH = "/api/setting-share";
+  const $ = (id) => document.getElementById(id);
+  const fail = () => { $("shareSaid").textContent = {{ _("The settings could not be saved in config.toml.") | tojson }}; };
+  const show = (values) => {
+    $("shareSide").value = values.long_side_px;
+    $("shareQuality").value = values.quality;
+    $("shareGps").checked = values.keep_gps;
+  };
+  fetch(PATH, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((answer) => { if (answer) { show(answer.values); $("shareOptions").hidden = false; } })
+    .catch(() => {});
+  $("shareSave").addEventListener("click", () => {
+    $("shareSave").disabled = true;
+    const body = { long_side_px: Number($("shareSide").value), quality: Number($("shareQuality").value), keep_gps: $("shareGps").checked };
+    fetch(PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then((response) => response.json().then((reply) => ({ ok: response.ok, reply })))
+      .then(({ ok, reply }) => {
+        if (!ok) { $("shareSaid").textContent = reply.error ?? ""; return; }
+        show(reply.values);
+        $("shareSaid").textContent = {{ _("Saved in config.toml, read back from the disk: used by the next copies to send.") | tojson }};
+      })
+      .catch(fail)
+      .finally(() => { $("shareSave").disabled = false; });
+  });
+})();
+</script>

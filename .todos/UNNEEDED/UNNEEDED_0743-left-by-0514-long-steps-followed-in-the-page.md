@@ -17,3 +17,9 @@ Split from section 0514 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — UNNEEDED (2026-11-13)
+
+Redundant: points 1, 2 (Stop), 3, 5 and the page's confirmation replacing mh's second question are
+exactly the decided design written into 0586 (open, High, `Needs maintainer`: a run on Windows
+PowerShell 5.1 + Docker Desktop). Nothing to do here apart from 0586.

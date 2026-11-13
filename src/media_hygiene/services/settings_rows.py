@@ -13,7 +13,12 @@ from typing import Final
 
 from media_hygiene.i18n import _
 from media_hygiene.review.album_show import SLIDESHOW_PAGE
-from media_hygiene.review.setting_groups import EVENTS_PATH, LOCALE_PATH, SLIDESHOW_PATH
+from media_hygiene.review.setting_groups import (
+    EVENTS_PATH,
+    LOCALE_PATH,
+    SHARE_PATH,
+    SLIDESHOW_PATH,
+)
 from media_hygiene.review.step_watch import DISK_PAGE
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
@@ -70,6 +75,13 @@ def _grouped() -> tuple[SettingRow, ...]:
             f"{EVENTS_PAGE_PATH}{GROUPING_ANCHOR}",
             _dotted(("classify",), events),
             EVENTS_PATH,
+        ),
+        SettingRow(
+            _("Copies to send"),
+            _("Their size, their quality, and whether they keep the GPS position."),
+            SEARCH_PAGE_PATH,  # the album bar's *Prepare for sending* (0747)
+            _dotted(("share",), ("long_side_px", "quality", "keep_gps")),
+            SHARE_PATH,
         ),
     )
 

@@ -42,6 +42,7 @@
   <span class="panelRow"><button id="albumResults" class="plain writes" role="menuitem" type="button" hidden title="{{ _('A new album named after this search, with every file found; the files set aside stay out. No photo is copied or moved.') }}"></button></span>
   {% endif %}
   <a id="albumBack" href="#" hidden title="{{ _('Back to the album') }}"></a>
+  {% include "share_options.html.j2" %}
   </div>
 </details>
 <button id="albumQuick" class="plain" type="button" hidden title="{{ _('Add to the album') }}" aria-label="{{ _('Add to the album') }}">➕</button>
@@ -61,7 +62,7 @@
     "missing": _("The files of {name} no longer found (moved without the index, or set aside then applied)"),
     "tv": _("To show {name} on the TV: close this page (Ctrl+C in the window where mh runs), then type (copied):"),
     "sendName": _("Last sent"),
-    "send": _("To prepare {name} for sending (resized copies without the GPS position, a folder and a zip): close this page (Ctrl+C in the window where mh runs), then type (copied):"),
+    "send": _("To prepare {name} for sending (resized copies, without the GPS position unless kept, a folder and a zip): close this page (Ctrl+C in the window where mh runs), then type (copied):"),
   } | tojson }};
   const $ = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));

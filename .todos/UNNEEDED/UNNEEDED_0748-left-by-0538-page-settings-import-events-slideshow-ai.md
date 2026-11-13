@@ -16,3 +16,10 @@ Split from section 0538 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — UNNEEDED (2026-11-13)
+
+Already done: events grouping (`merge_gap_hours`, `min_event_size`, `trip_min_km`) with its preview
+(0606, 0643, 0646), slideshow pace (0607), local AI state and model (0608, 0645; its spread to every
+AI page is 0759), language picker live (0609, 0644, 0647) — `review/setting_groups.py`,
+`review/ai_state_api.py`, `tests/unit/test_page_settings.py`.

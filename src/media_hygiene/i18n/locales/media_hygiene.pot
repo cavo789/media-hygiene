@@ -2108,6 +2108,9 @@ msgstr ""
 msgid "Copies the good copy, checks it, then sets the damaged file aside."
 msgstr ""
 
+msgid "Copies to send"
+msgstr ""
+
 msgid "Copies without showing the files: the page shows them first."
 msgstr ""
 
@@ -4500,6 +4503,9 @@ msgid ""
 "over <workbook>': your edits are carried over to its new workbook."
 msgstr ""
 
+msgid "Keep the GPS position (the copies then say where each photo was taken)"
+msgstr ""
+
 msgid ""
 "Keep the GPS position in the copies. false by default: a photo sent must "
 "not say where the house is; 'share --keep-gps' keeps it for one run."
@@ -4857,6 +4863,9 @@ msgid "Local AI not set."
 msgstr ""
 
 msgid "Local AI set."
+msgstr ""
+
+msgid "Long side (pixels)"
 msgstr ""
 
 msgid "Longitude"
@@ -8484,6 +8493,11 @@ msgstr ""
 msgid "Saved in config.toml, read back from the disk: off."
 msgstr ""
 
+msgid ""
+"Saved in config.toml, read back from the disk: used by the next copies to"
+" send."
+msgstr ""
+
 #, python-brace-format
 msgid "Saved in config.toml, read back from the disk: {model}."
 msgstr ""
@@ -11150,6 +11164,9 @@ msgid ""
 "aside."
 msgstr ""
 
+msgid "Their size, their quality, and whether they keep the GPS position."
+msgstr ""
+
 msgid ""
 "Then look for faces in the photos not looked at yet (as 'people' does), "
 "after saying how long it takes and asking."
@@ -11620,9 +11637,9 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"To prepare {name} for sending (resized copies without the GPS position, a"
-" folder and a zip): close this page (Ctrl+C in the window where mh runs),"
-" then type (copied):"
+"To prepare {name} for sending (resized copies, without the GPS position "
+"unless kept, a folder and a zip): close this page (Ctrl+C in the window "
+"where mh runs), then type (copied):"
 msgstr ""
 
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
