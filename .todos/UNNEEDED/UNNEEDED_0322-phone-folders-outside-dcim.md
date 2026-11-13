@@ -3,7 +3,6 @@
 - **Priority**: Low
 - **Batch**: phone
 - **Depends**: —
-- **Needs maintainer**: the folders of their phone outside `DCIM` that hold photos (names only)
 - **Files**: `tests/measure/mh-measure.ps1`, `src/media_hygiene/services/phone_plan.py`, `src/media_hygiene/services/phone_journal.py`, `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`
 
 ## Why
@@ -20,3 +19,8 @@ offered to free. The phone page now says so in its legend.
 2. If some do: list them too (a `[phone] folders` setting, `DCIM` by default?), the plan's paths
    relative to the phone's root instead of `DCIM` — which changes the decisions file and the
    journal's paths: write what an old `phone-decisions.json` becomes.
+
+## Status — UNNEEDED (2026-11-13)
+
+The maintainer answered at the start of `/todo:iterate` of 2026-11-13: no folder outside `DCIM`
+on their phone holds photos or videos worth importing or freeing. `mh phone` stays on `DCIM`.
