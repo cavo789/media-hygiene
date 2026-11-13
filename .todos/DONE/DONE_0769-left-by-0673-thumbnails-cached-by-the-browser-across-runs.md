@@ -19,3 +19,14 @@ Split from section 0673 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — DONE (2026-11-13)
+
+Checked against the code: person, places and the reviews already ask `?v=<tag>` (0701,
+`review/versioned.py`); the 🗂 Events tab shows the library's own stable tiles (0673);
+slideshow, TV, albums, storyteller and home samples done by 0723. Faces cut out keep the
+run's rule on purpose (their box may change under the same photo). The accepted limit
+(same size and mtime keeps its tag) stays accepted. One test per invalidation event:
+`tests/unit/test_versioned_pictures.py`, `tests/unit/test_index_tags.py`. What is left
+(the people page's large view, the second-visit measurement) is tracked in
+`.todos/PARTIAL/PARTIAL_0723-browser-kept-pictures-for-the-rest.md`.

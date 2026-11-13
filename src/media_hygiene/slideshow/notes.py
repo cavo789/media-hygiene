@@ -10,6 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.slideshow.pictures import relative, thumb_path
+
 if TYPE_CHECKING:
     from media_hygiene.slideshow.show import Show
     from media_hygiene.slideshow.slides import Slide
@@ -48,6 +50,8 @@ def story_view(show: Show) -> dict[str, object]:
         if current is None or current.chapter is None or current.chapter.map is None
         else current.chapter.map.view(),
         "next": None if upcoming is None else upcoming.key,
+        "nowThumb": _thumb(current),  # with the file's version (0723)
+        "nextThumb": _thumb(upcoming),
         "points": [
             slide.notes.point
             for slide in _event_of(show)
@@ -100,3 +104,15 @@ def _event_of(show: Show) -> list[Slide]:
         return []
     number = current.chapter.number
     return [s for s in show.slides if s.chapter and s.chapter.number == number]
+
+
+def _thumb(slide: Slide | None) -> str:
+    """A slide's thumbnail, relative to the page, with its file's version (0723).
+
+    Args:
+        slide: The slide; None for none.
+
+    Returns:
+        E.g. `thumb/12.jpg?v=0f3a…`; empty for none.
+    """
+    return "" if slide is None else relative(thumb_path(slide.key, slide.tag))

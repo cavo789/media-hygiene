@@ -19,3 +19,23 @@ Decided by the maintainer in the review of 2026-11-12.
 - [ ] Each listed page answers `immutable` for the current version and the run's rule otherwise (tests).
 - [ ] Requests and bytes on a second visit, before / after (measured).
 - [ ] A file moved by `sort`/`undo`: the tag follows (test).
+
+## Status — PARTIAL (2026-11-13)
+
+Done: `review/versioned.index_tags` reads each file's tag from its index row (one
+`json_each` query, no stat); `Slide.tag` carries it (`services/slideshow_story.told_slides`),
+so the slideshow grid, the TV (`tv_path`), the albums (`slideshow/pictures.picture_paths`)
+and the storyteller (`nowThumb`/`nextThumb`) ask `…?v=<tag>`; the home page samples too
+(`cli/home_samples`). The 🗂 Events tab needed nothing: its photos are the library's own
+tiles (`search/stable_pictures`, 0673). `sort`/`undo` update the index path (`index/schema.MOVE`),
+so the tag follows. Tests: `tests/unit/test_index_tags.py` (edit in place, same time other
+size, atomic save, touch, move by the tool, preview version bump, file gone),
+`test_slideshow_pick.py` (slides carry the index version), `test_slideshow_notes.py`.
+
+Left:
+- The people page's large view (`people_viewer.js.j2`, `PHOTO + key`): the board's faces
+  carry a path only; needs the index's size/mtime per face (a lookup by path), or a tag
+  asked when the large view opens. Faces cut out keep the run's rule (their box changes).
+- Requests and bytes on a second visit, before / after: not measured here (estimated:
+  a 200-photo album, second visit in a new run: 200 thumbnail requests → 0, and every
+  TV picture already shown → 0).

@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import Response
 from media_hygiene.review.local_app import jpeg_response
+from media_hygiene.review.versioned import tagged
 from media_hygiene.search.views import JPEG, THUMB_PREFIX
 from media_hygiene.slideshow.films import FILM_PREFIX, film_path, film_response
 
@@ -25,20 +26,22 @@ if TYPE_CHECKING:
     from media_hygiene.search.pictures import Pictures
     from media_hygiene.slideshow.desk import Desk
     from media_hygiene.slideshow.screen_jpeg import ScreenJob
+    from media_hygiene.slideshow.slides import Slide
 
 TV_PREFIX: Final = "/tv/"
 
 
-def tv_path(key: int) -> str:
+def tv_path(key: int, tag: str = "") -> str:
     """The address of a photo's TV picture.
 
     Args:
         key: The photo's key.
+        tag: Its file's version (`Slide.tag`): kept by the browser for good (0723).
 
     Returns:
-        E.g. `/tv/12.jpg`.
+        E.g. `/tv/12.jpg?v=0f3a…`.
     """
-    return f"{TV_PREFIX}{key}{JPEG}"
+    return tagged(f"{TV_PREFIX}{key}{JPEG}", tag)
 
 
 def relative(path: str) -> str:
@@ -53,16 +56,34 @@ def relative(path: str) -> str:
     return path.lstrip("/")
 
 
-def thumb_path(key: int) -> str:
+def thumb_path(key: int, tag: str = "") -> str:
     """The address of a photo's thumbnail.
 
     Args:
         key: The photo's key.
+        tag: Its file's version (`Slide.tag`): kept by the browser for good (0723).
 
     Returns:
-        E.g. `/thumb/12.jpg`.
+        E.g. `/thumb/12.jpg?v=0f3a…`.
     """
-    return f"{THUMB_PREFIX}{key}{JPEG}"
+    return tagged(f"{THUMB_PREFIX}{key}{JPEG}", tag)
+
+
+def picture_paths(slide: Slide) -> dict[str, object]:
+    """A photo's key, thumbnail and picture addresses, with its version (0723).
+
+    Args:
+        slide: The photo (a video: no picture).
+
+    Returns:
+        Them.
+    """
+    film, key, tag = slide.film is not None, slide.key, slide.tag
+    return {
+        "key": key,
+        "thumb": "" if film else thumb_path(key, tag),
+        "photo": "" if film else tv_path(key, tag),
+    }
 
 
 def slides_view(desk: Desk) -> dict[str, object]:
@@ -78,7 +99,7 @@ def slides_view(desk: Desk) -> dict[str, object]:
     slides = [
         {
             "key": slide.key,
-            "thumb": "" if slide.film else relative(thumb_path(slide.key)),
+            "thumb": "" if slide.film else relative(thumb_path(slide.key, slide.tag)),
             "day": slide.day,
             "film": relative(film_path(slide)),
             "format": "" if slide.film is None else slide.film.label,

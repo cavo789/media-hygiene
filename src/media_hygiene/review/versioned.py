@@ -16,18 +16,25 @@ photo.
 
 from __future__ import annotations
 
+import json
+import sqlite3
 from contextvars import ContextVar
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.report.preview_cache import PreviewJob, preview_key
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    from collections.abc import Iterable
 
     from media_hygiene.scan.models import MediaFile
 
 _PARAM: Final = "v="
 _JPEG: Final = ".jpg"
+_VERSIONS: Final = (
+    "SELECT rowid, path, size, mtime_ns FROM files "
+    "WHERE rowid IN (SELECT value FROM json_each(?))"
+)
 # The tag the request names; one per connection, each served in its own task.
 _ASKED: ContextVar[str] = ContextVar("asked_version", default="")
 
@@ -87,6 +94,42 @@ def versioned_on_disk(url: str, path: Path) -> str:
     """
     tag = disk_tag(path)
     return f"{url}?{_PARAM}{tag}" if tag else url
+
+
+def tagged(url: str, tag: str) -> str:
+    """A picture's address with a tag already known (`index_tags`).
+
+    Args:
+        url: E.g. `/thumb/12.jpg`.
+        tag: The file's tag; empty when unknown.
+
+    Returns:
+        The address and its tag; as it is without one.
+    """
+    return f"{url}?{_PARAM}{tag}" if tag else url
+
+
+def index_tags(connection: sqlite3.Connection, keys: Iterable[int]) -> dict[int, str]:
+    """The tags of files as the index knows them (0723): one query, never a stat.
+
+    The index row follows the tool's own moves (`sort`, `undo` update the path) and
+    the next audit sees the user's: the tag changes with the path, size and time.
+
+    Args:
+        connection: The open index.
+        keys: The files' keys (`rowid`).
+
+    Returns:
+        Each known key's tag; none when the index cannot be read.
+    """
+    try:
+        rows = connection.execute(_VERSIONS, (json.dumps(list(keys)),)).fetchall()
+    except sqlite3.Error:
+        return {}
+    return {
+        int(key): version_tag(Path(path), int(size), int(mtime))
+        for key, path, size, mtime in rows
+    }
 
 
 def asked_from(query: str) -> None:
