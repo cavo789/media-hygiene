@@ -43,8 +43,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
 Classeur :
-C:\Users\you\media-hygiene\reports\20261107-101948-classify\classify.xlsx
-0 modification lue ; classeur enregistré le 7 novembre 2026 à 10:19.
+C:\Users\you\media-hygiene\reports\20261113-174530-classify\classify.xlsx
+0 modification lue ; classeur enregistré le 13 novembre 2026 à 17:45.
 Tri
 ┌────────────────────────────────┬─────────┐
 │ Fichiers à déplacer            │      43 │
@@ -148,7 +148,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20261107-101950
+Tri 20261113-174531
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      3 │
 │ Taille                    │ 3,0 Mo │
@@ -160,8 +160,8 @@ Dossiers sources supprimés : 1.
 ✅ Rien de perdu : 3 fichiers (3,0 Mo) avant et après ; 3 déplacements vérifiés
 sur 3.
 Manifeste :
-C:\Users\you\media-hygiene\reports\20261107-101950-sort\manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20261107-101950' remet tout en
+C:\Users\you\media-hygiene\reports\20261113-174531-sort\manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20261113-174531' remet tout en
 place :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -171,7 +171,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261107-101950
+  cavo789/media-hygiene --locale fr undo 20261113-174531
 👉 Et maintenant : c'est bon ? Triez le reste avec le même plan :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -219,12 +219,12 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 ```text
 👁 Toute une exécution : 'undo --pick' montre les photos et n'en remet que
 quelques-unes.
-──────────────── Annulation de l'exécution sort 20261107-101950 ────────────────
+──────────────── Annulation de l'exécution sort 20261113-174531 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution sort
-20261107-101950
+20261113-174531
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      3 │
 │ Taille                    │ 3,0 Mo │

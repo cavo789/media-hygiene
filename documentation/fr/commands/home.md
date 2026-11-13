@@ -550,7 +550,7 @@ aucun autre site.
 │                                     127.0.0.1:9000:9000 pour --port 9000.    │
 │                                     Par défaut :  port dans config.toml,     │
 │                                     8088.                                    │
-│ --help  -h                          Affiche ce message et quitte.            │
+│ --help  -h      <bool>              Affiche ce message et quitte.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

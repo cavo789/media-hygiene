@@ -191,23 +191,24 @@ figures; the list says its estimate, and the real gain is said after each video.
  (journaled, undoable).
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --folder           <str>  Only the videos below this folder (host path, as   │
-│                           you mounted it); repeat it for several. Default:   │
-│                           every mounted folder.                              │
-│ --lighter                 Lighter still for a large picture: at most 720     │
-│                           lines (lighter_lines in config.toml). For clips    │
-│                           whose quality matters less.                        │
-│ --apply                   Lighten them; without it, only list them with the  │
-│                           gain expected.                                     │
-│ --try                     Encode the first ones (try_count in config.toml)   │
-│                           as drafts, in /cache only, and compare before and  │
-│                           after in the browser; lighten from the page. The   │
-│                           drafts are removed when the page closes.           │
-│ --chosen                  Lighten the videos chosen on the home page's       │
-│                           Lighten page, reusing their drafts. The page       │
-│                           starts it for you.                                 │
-│ --yes      -y             Lighten without asking first.                      │
-│ --help     -h             Show this message and exit.                        │
+│ --folder           <list[str]>  Only the videos below this folder (host      │
+│                                 path, as you mounted it); repeat it for      │
+│                                 several. Default: every mounted folder.      │
+│ --lighter          <bool>       Lighter still for a large picture: at most   │
+│                                 720 lines (lighter_lines in config.toml).    │
+│                                 For clips whose quality matters less.        │
+│ --apply            <bool>       Lighten them; without it, only list them     │
+│                                 with the gain expected.                      │
+│ --try              <bool>       Encode the first ones (try_count in          │
+│                                 config.toml) as drafts, in /cache only, and  │
+│                                 compare before and after in the browser;     │
+│                                 lighten from the page. The drafts are        │
+│                                 removed when the page closes.                │
+│ --chosen           <bool>       Lighten the videos chosen on the home page's │
+│                                 Lighten page, reusing their drafts. The page │
+│                                 starts it for you.                           │
+│ --yes      -y      <bool>       Lighten without asking first.                │
+│ --help     -h      <bool>       Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

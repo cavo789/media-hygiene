@@ -430,7 +430,8 @@ Réglages effectifs
 │                             │ 'bursts', 'tags',          │                   │
 │                             │ 'places']                  │                   │
 │ routine.steps               │ ['audit', 'copies',        │ défaut            │
-│                             │ 'reports']                 │                   │
+│                             │ 'reports', 'reread']       │                   │
+│ routine.reread_gb           │ 20.0                       │ défaut            │
 │ home.favorites              │ []                         │ défaut            │
 │ home.tiles                  │ []                         │ défaut            │
 │ home.family_title           │                            │ défaut            │
@@ -1051,7 +1052,8 @@ Réglages effectifs
 │                             │ 'bursts', 'tags',          │                   │
 │                             │ 'places']                  │                   │
 │ routine.steps               │ ['audit', 'copies',        │ config.toml       │
-│                             │ 'reports']                 │                   │
+│                             │ 'reports', 'reread']       │                   │
+│ routine.reread_gb           │ 20.0                       │ config.toml       │
 │ home.favorites              │ []                         │ config.toml       │
 │ home.tiles                  │ []                         │ config.toml       │
 │ home.family_title           │                            │ config.toml       │

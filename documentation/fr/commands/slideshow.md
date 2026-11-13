@@ -324,7 +324,7 @@ Le port est `[review] port`, celui de toutes les pages.
 │                                       date de modification : today, week,    │
 │                                       month, all ou un jour comme            │
 │                                       2026-10-29.                            │
-│ --help    -h                          Affiche ce message et quitte.          │
+│ --help    -h      <bool>              Affiche ce message et quitte.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

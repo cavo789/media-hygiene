@@ -170,8 +170,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
  dossiers et disques. Commencez par 'audit' (lecture seule), puis 'clean'.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --version            Affiche la version et quitte.                           │
-│ --help     -h        Affiche ce message et quitte.                           │
+│ --version          <bool>  Affiche la version et quitte.                     │
+│ --help     -h      <bool>  Affiche ce message et quitte.                     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Affichage (remplace general.* de config.toml) ──────────────────────────────╮
 │ --locale           <en|fr>                      Langue de l'interface.       │
@@ -228,6 +228,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │             (journalisée, annulable).                                        │
 │ library     Retrouver des photos par leurs mots dans votre navigateur (ou en │
 │             tableau) : les mots que 'tags' leur a donnés.                    │
+│ person      Qui est sur cette photo : nommez chaque visage, puis confirmez   │
+│             les autres photos de cette personne, dans votre navigateur.      │
 │ purge       Effacer pour de bon la quarantaine d'une exécution : avec 'clean │
 │             --delete', la seule façon dont l'outil supprime du contenu.      │
 │ push        Windows seulement, en mh push : copier vos dossiers de photos    │

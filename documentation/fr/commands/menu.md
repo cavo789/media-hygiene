@@ -72,7 +72,7 @@ menu s'affiche quand même, en dernier, sous *Autres commandes*.
 <!-- capture: menu.txt -->
 ```text
 ─────────────────────── media-hygiene — où vous en êtes ────────────────────────
-Dernier audit: 2026-11-07 10:18 (aujourd'hui) — 10 fichiers, 4 copies en trop
+Dernier audit: 2026-11-13 17:43 (aujourd'hui) — 10 fichiers, 4 copies en trop
 (5,9 Mo), 1 illisibles.
 Quarantaine : vide.
 
@@ -173,62 +173,71 @@ Quarantaine : vide.
                                                       quelques
                                                       photos de la
                                                       quarantaine
-   12 mh review --near                                Trancher les 🔒 facultatif
+   12 mh clean --repair                               Restaurer    ↩️ facultatif
+                                                      les fichiers
+                                                      abîmés
+   13 mh review --near                                Trancher les 🔒 facultatif
                                                       quasi-doubl…
-   13 mh review --pairs                               Décider      🔒 facultatif
+   14 mh review --pairs                               Décider      🔒 facultatif
                                                       dossier par
                                                       dossier
-   14 mh review --junk                                Écarter les  🔒 facultatif
+   15 mh review --junk                                Écarter les  🔒 facultatif
                                                       photos
                                                       ratées
-   15 mh review --gone                                Revoir les   🔒 facultatif
+   16 mh review --gone                                Revoir les   🔒 facultatif
                                                       photos
                                                       disparues
-   16 mh review --intruders                           Mettre de    🔒 facultatif
+   17 mh review --intruders                           Mettre de    🔒 facultatif
                                                       côté les
                                                       fichiers
                                                       intrus
-   17 mh crosscheck                                   Demander un  🔒 facultatif
+   18 mh crosscheck                                   Demander un  🔒 facultatif
                                                       second avis
-   18 mh shrink --try                                 Alléger les  ↩️ facultatif
+   19 mh shrink --try                                 Alléger les  ↩️ facultatif
                                                       vidéos
                                                       lourdes
-   19 mh clean --delete                               Supprimer    ⚠️ facultatif
+   20 mh clean --delete                               Supprimer    ⚠️ facultatif
                                                       les copies
                                                       tout de
                                                       suite
       Trier les photos
-✅ 20 mh classify                                     Proposer une 🔒
+✅ 21 mh classify                                     Proposer une 🔒
                                                       arborescence
                                                       rangée
-   21 mh places                                       Nommer vos   🔒 facultatif
+   22 mh places                                       Nommer vos   🔒 facultatif
                                                       lieux sur
                                                       une carte
-   22 mh people                                       Nommer les   🔒 facultatif
+   23 mh people                                       Nommer les   🔒 facultatif
                                                       visages
-   23 mh sort                                         Ranger les   ↩️
+   24 mh sort                                         Ranger les   ↩️
                                                       photos dans
                                                       les dossiers
                                                       proposés
       Retrouver une photo
       Le parcours
-   24 mh tags                                         Donner des   🔒
+   25 mh tags                                         Donner des   🔒
                                                       mots à vos
                                                       photos
-   25 mh spots                                        Nommer où    🔒
+   26 mh spots                                        Nommer où    🔒
                                                       vos photos
                                                       ont été
                                                       prises
-   26 mh library                                      Photothèque  🔒
+   27 mh library                                      Photothèque  🔒
                                                       : retrouver
                                                       une photo
       Pour aller plus loin
-   27 mh xmp                                          Emporter les ↩️ facultatif
+      mh person "C:\Photos\IMG_0001.jpg"              Nommer       🔒
+                                                      quelqu'un
+                                                      depuis une
+                                                      photo (à
+                                                      taper
+                                                      vous-même)
+   28 mh xmp                                          Emporter les ↩️ facultatif
                                                       mots dans
                                                       d'autres
                                                       logiciels
                                                       photo
-   28 mh inventory                                    Toutes vos   🔒 facultatif
+   29 mh inventory                                    Toutes vos   🔒 facultatif
                                                       photos dans
                                                       Excel
       Sauvegarder sur le NAS
@@ -239,7 +248,7 @@ Quarantaine : vide.
                                                       sur le NAS
                                                       (à taper
                                                       vous-même)
-   29 mh push                                         Sauvegarder  ↩️
+   30 mh push                                         Sauvegarder  ↩️
                                                       ce qui
                                                       manque au
                                                       NAS
@@ -266,7 +275,7 @@ Quarantaine : vide.
                                                       taper
                                                       vous-même)
       Rapports
-   30 mh reports                                      Lister les   🔒
+   31 mh reports                                      Lister les   🔒
                                                       rapports
       mh reports --prune 10                           Ne garder    🔒 facultatif
                                                       que les
@@ -276,56 +285,56 @@ Quarantaine : vide.
                                                       vous-même)
       Réglages
       Vos dossiers
-   31 mh folders                                      Voir vos     🔒
+   32 mh folders                                      Voir vos     🔒
                                                       dossiers
       mh folders remove "E:\Archives"                 Retirer un   🔒 facultatif
                                                       dossier (à
                                                       taper
                                                       vous-même)
       Mise à jour
-   32 mh update                                       Installer la 🔒
+   33 mh update                                       Installer la 🔒
                                                       nouvelle
                                                       version
       Sauvegarde
-   33 mh backup                                       Sauvegarder  🔒
+   34 mh backup                                       Sauvegarder  🔒
                                                       l'index et
                                                       les réglages
-   34 mh restore                                      Remettre     ↩️
+   35 mh restore                                      Remettre     ↩️
                                                       l'index
       Windows
-   35 mh shortcut                                     Une icône    🔒 facultatif
+   36 mh shortcut                                     Une icône    🔒 facultatif
                                                       sur le
                                                       Bureau et
                                                       dans le menu
                                                       Démarrer
-   36 mh explorer                                     Media        🔒 facultatif
+   37 mh explorer                                     Media        🔒 facultatif
                                                       Hygiene dans
                                                       le clic
                                                       droit de
                                                       l'Explorate…
-   37 mh explorer --remove                            Retirer      🔒 facultatif
+   38 mh explorer --remove                            Retirer      🔒 facultatif
                                                       Media
                                                       Hygiene du
                                                       clic droit
       Vie privée
-   38 mh people --forget                              Oublier tous 🔒 facultatif
+   39 mh people --forget                              Oublier tous 🔒 facultatif
                                                       les visages
       Avancé
-   39 mh config                                       Voir chaque  🔒
+   40 mh config                                       Voir chaque  🔒
                                                       réglage et
                                                       d'où il
                                                       vient
-   40 mh config tidy                                  Faire        🔒 facultatif
+   41 mh config tidy                                  Faire        🔒 facultatif
                                                       maigrir
                                                       config.toml
-   41 mh status                                       Où en        🔒 facultatif
+   42 mh status                                       Où en        🔒 facultatif
                                                       suis-je,
                                                       dans la
                                                       console
-   42 mh menu                                         Le menu dans 🔒 facultatif
+   43 mh menu                                         Le menu dans 🔒 facultatif
                                                       la console
-   43 mh launcher                                     Réécrire mh  🔒 facultatif
-   44 mh home                                         La page      🔒 facultatif
+   44 mh launcher                                     Réécrire mh  🔒 facultatif
+   45 mh home                                         La page      🔒 facultatif
                                                       d'accueil
 
 🔒 vos photos ne sont pas touchées · ↩️ peut être annulé · ⚠️ définitif
@@ -370,7 +379,7 @@ pour quitter.
  lance.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --help  -h      <bool>  Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

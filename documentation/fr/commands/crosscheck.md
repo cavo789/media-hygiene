@@ -107,43 +107,45 @@ Les mêmes options de dossiers et d'analyse qu'[`audit`](audit.md#options) : `--
  second avis.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --help  -h      <bool>  Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
-│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
-│                         modifié. Dit ce qui lui manque et ce que lui seul    │
-│                         contient. Répétable.                                 │
+│ --prefer         <list[str]>  Dossier dont les copies sont conservées en     │
+│                               priorité. Répétable ; l'ordre compte.          │
+│ --protect        <list[str]>  Dossier jamais modifié ; ses fichiers sont les │
+│                               copies conservées. Répétable.                  │
+│ --exclude        <list[str]>  Dossier jamais analysé, même pas lu.           │
+│                               Répétable.                                     │
+│ --backup         <list[str]>  Une sauvegarde ou un ancien disque : comparé,  │
+│                               jamais modifié. Dit ce qui lui manque et ce    │
+│                               que lui seul contient. Répétable.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyser que ces catégories ou extensions,    │
-│                              par exemple --ext photo,video ou --ext png,webp │
-│                              (répétable). Catégories : photo, raw, video,    │
-│                              media et celles de scan.categories dans         │
-│                              config.toml. Extensions de photos, RAW et       │
-│                              vidéos seulement. Par défaut : media (toutes    │
-│                              les photos, RAW et vidéos).                     │
-│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
-│                              sans tenir compte de la casse ; * et ? permis,  │
-│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
-│                              (répétable). S'ajoute aux dossiers système déjà │
-│                              ignorés. Pour un dossier précis, utilisez       │
-│                              --exclude.                                      │
+│ --ext                 <list[str]>  N'analyser que ces catégories ou          │
+│                                    extensions, par exemple --ext photo,video │
+│                                    ou --ext png,webp (répétable). Catégories │
+│                                    : photo, raw, video, media et celles de   │
+│                                    scan.categories dans config.toml.         │
+│                                    Extensions de photos, RAW et vidéos       │
+│                                    seulement. Par défaut : media (toutes les │
+│                                    photos, RAW et vidéos).                   │
+│ --exclude-name        <list[str]>  Nom de dossier jamais analysé, où qu'il   │
+│                                    soit, sans tenir compte de la casse ; *   │
+│                                    et ? permis, p. ex. --exclude-name        │
+│                                    Thumbnails,.Trash-* (répétable). S'ajoute │
+│                                    aux dossiers système déjà ignorés. Pour   │
+│                                    un dossier précis, utilisez --exclude.    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --fresh                  Czkawka relit et recalcule l'empreinte de chaque    │
-│                          fichier, sans tenir compte de ce que son cache dans │
-│                          /cache retient de sa dernière exécution. Plus lent  │
-│                          ; pour un second avis qui ne doit rien au           │
-│                          précédent.                                          │
-│ --print-command          Ne pas lancer Czkawka ici : afficher la commande    │
-│                          qui le lance dans sa propre image, puis comparer    │
-│                          les résultats qu'il a écrits dans /reports          │
-│                          (czkawka.json).                                     │
+│ --fresh                <bool>  Czkawka relit et recalcule l'empreinte de     │
+│                                chaque fichier, sans tenir compte de ce que   │
+│                                son cache dans /cache retient de sa dernière  │
+│                                exécution. Plus lent ; pour un second avis    │
+│                                qui ne doit rien au précédent.                │
+│ --print-command        <bool>  Ne pas lancer Czkawka ici : afficher la       │
+│                                commande qui le lance dans sa propre image,   │
+│                                puis comparer les résultats qu'il a écrits    │
+│                                dans /reports (czkawka.json).                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -113,13 +113,14 @@ grande vue : un clic montre toutes les photos de ce monument (Ctrl+clic l'ajoute
  l'audit le fait pour les nouvelles.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --help  -h      <bool>  Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml ────╮
-│ --vision          🤖 Puis laisser le modèle de vision local de [classify.ai… │
-│                   choisir, parmi les monuments à moins de 1 km, celui que    │
-│                   montre chaque photo (les photos ne sont envoyées qu'à ce   │
-│                   modèle ; un nom saisi à la main l'emporte toujours).       │
+│ --vision        <bool>  🤖 Puis laisser le modèle de vision local de         │
+│                         [classify.ai] choisir, parmi les monuments à moins   │
+│                         de 1 km, celui que montre chaque photo (les photos   │
+│                         ne sont envoyées qu'à ce modèle ; un nom saisi à la  │
+│                         main l'emporte toujours).                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

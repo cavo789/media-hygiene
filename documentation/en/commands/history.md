@@ -89,7 +89,7 @@ Runs (newest first)
  🔒 Read-only: never changes your photos. List the runs and what they did.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h      <bool>  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

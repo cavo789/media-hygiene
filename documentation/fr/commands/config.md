@@ -158,7 +158,7 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 
 <!-- capture: help-config.txt -->
 ```text
- Utilisation : media-hygiene config [OPTIONS] [action]:<tidy>
+ Utilisation : media-hygiene config [OPTIONS] [action]
 
  🔒 Lecture seule : ne modifie jamais vos photos. Affiche chaque réglage, son
  origine, et les points de montage.
@@ -169,19 +169,23 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 │                       photo).                                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --apply                 Avec tidy : retirer les entrées cochées, après une   │
-│                         copie de config.toml.                                │
-│ --dates                 Avec tidy : cocher aussi les règles date_range sans  │
-│                         photo.                                               │
-│ --upgrade               Ajouter à votre config.toml les réglages de cette    │
-│                         version, avec leur explication ; vos valeurs et      │
-│                         commentaires sont gardés.                            │
-│ --convention            Passer les rangements  de votre config.toml à la     │
-│                         convention de tri année/année-mois/événement :       │
-│                         montre chaque changement, demande, écrit.            │
-│ --dry-run               Avec --upgrade ou --convention : lister ce qui       │
-│                         changerait, sans rien écrire.                        │
-│ --help        -h        Affiche ce message et quitte.                        │
+│ --apply               <bool>  Avec tidy : retirer les entrées cochées, après │
+│                               une copie de config.toml.                      │
+│ --dates               <bool>  Avec tidy : cocher aussi les règles date_range │
+│                               sans photo.                                    │
+│ --superseded          <bool>  Avec tidy : cocher aussi les règles path dont  │
+│                               les fichiers sont déjà dans des dossiers que   │
+│                               vous avez nommés.                              │
+│ --upgrade             <bool>  Ajouter à votre config.toml les réglages de    │
+│                               cette version, avec leur explication ; vos     │
+│                               valeurs et commentaires sont gardés.           │
+│ --convention          <bool>  Passer les rangements  de votre config.toml à  │
+│                               la convention de tri                           │
+│                               année/année-mois/événement : montre chaque     │
+│                               changement, demande, écrit.                    │
+│ --dry-run             <bool>  Avec --upgrade ou --convention : lister ce qui │
+│                               changerait, sans rien écrire.                  │
+│ --help        -h      <bool>  Affiche ce message et quitte.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

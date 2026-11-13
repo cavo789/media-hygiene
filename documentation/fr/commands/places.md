@@ -221,7 +221,7 @@ nommer en ligne les lieux des nouvelles photos*, dans la colonne de gauche, dit 
 │                                     127.0.0.1:9000:9000 pour --port 9000.    │
 │                                     Par défaut :  port dans config.toml,     │
 │                                     8088.                                    │
-│ --help  -h                          Affiche ce message et quitte.            │
+│ --help  -h      <bool>              Affiche ce message et quitte.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

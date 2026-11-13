@@ -74,7 +74,7 @@ a run, its date opens its report.
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --prune          <int range> [x>=0]  Delete all reports but the N most       │
 │                                      recent ones.                            │
-│ --help   -h                          Show this message and exit.             │
+│ --help   -h      <bool>              Show this message and exit.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

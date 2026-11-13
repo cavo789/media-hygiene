@@ -86,7 +86,7 @@ dossier a été audité complètement pour la dernière fois.
 │ --format          <xlsx|csv>  xlsx : un classeur Excel (feuilles Fichiers et │
 │                               Résumé). csv : la feuille Fichiers seule,      │
 │                               comme plan.csv. Par défaut : xlsx.             │
-│ --help    -h                  Affiche ce message et quitte.                  │
+│ --help    -h      <bool>      Affiche ce message et quitte.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

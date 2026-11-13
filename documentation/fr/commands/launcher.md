@@ -307,7 +307,7 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
 │                                          (Windows) ou 'bash' (WSL, Linux,    │
 │                                          macOS). Par défaut : deviné d'après │
 │                                          les dossiers montés.                │
-│ --photos              <str>              Un dossier de photos et vidéos, tel │
+│ --photos              <list[str]>        Un dossier de photos et vidéos, tel │
 │                                          que l'Explorateur le montre :       │
 │                                          "C:\Photos" (ou /mnt/c/Photos sous  │
 │                                          WSL). Répétez-la pour plusieurs     │
@@ -318,13 +318,13 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
 │                                          déplacement, pas une copie). Par    │
 │                                          défaut : le dossier quarantine de   │
 │                                          votre dossier personnel.            │
-│ --backup              <str>              Une sauvegarde ou un ancien disque, │
+│ --backup              <list[str]>        Une sauvegarde ou un ancien disque, │
 │                                          tel que l'Explorateur le montre :   │
 │                                          "E:\Sauvegarde". Monté en lecture   │
 │                                          seule pour chaque commande, clean   │
 │                                          compris, et donné en --backup :     │
 │                                          comparé, jamais modifié. Répétable. │
-│ --help        -h                         Affiche ce message et quitte.       │
+│ --help        -h      <bool>             Affiche ce message et quitte.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

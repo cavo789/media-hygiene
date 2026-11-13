@@ -116,12 +116,12 @@ docker run --rm -it `
 │                      défaut.                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y              Ne pas demander de confirmation (remplace            │
+│ --yes   -y      <bool>  Ne pas demander de confirmation (remplace            │
 │                         clean.confirm).                                      │
 │ --to            <path>  Copier d'abord la quarantaine dans ce dossier,       │
 │                         vérifier chaque octet de la copie, et seulement      │
 │                         ensuite l'effacer.                                   │
-│ --help  -h              Affiche ce message et quitte.                        │
+│ --help  -h      <bool>  Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

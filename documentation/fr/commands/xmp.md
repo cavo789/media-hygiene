@@ -133,18 +133,19 @@ xmp_folder_gps = true
  (journalisé, annulable).
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path           <str>  Seulement les photos sous ce dossier (chemin de      │
-│                         l'hôte, tel que vous l'avez monté) ; à répéter pour  │
-│                         plusieurs. Par défaut : tous les fichiers de         │
-│                         l'index.                                             │
-│ --apply                 Écrire les fichiers compagnons ; sans cette option,  │
-│                         seulement montrer ce qui serait écrit.               │
-│ --help   -h             Affiche ce message et quitte.                        │
+│ --path           <list[str]>  Seulement les photos sous ce dossier (chemin   │
+│                               de l'hôte, tel que vous l'avez monté) ; à      │
+│                               répéter pour plusieurs. Par défaut : tous les  │
+│                               fichiers de l'index.                           │
+│ --apply          <bool>       Écrire les fichiers compagnons ; sans cette    │
+│                               option, seulement montrer ce qui serait écrit. │
+│ --help   -h      <bool>       Affiche ce message et quitte.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
-│                        seule : jamais modifié, et jamais refusé pour cela    │
-│                        (mh passe vos sauvegardes). Répétable.                │
+│ --backup        <list[str]>  Une sauvegarde ou un ancien disque, monté en    │
+│                              lecture seule : jamais modifié, et jamais       │
+│                              refusé pour cela (mh passe vos sauvegardes).    │
+│                              Répétable.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

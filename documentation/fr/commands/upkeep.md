@@ -69,7 +69,7 @@ Répondre *non* à une question ne saute que cette étape.
  copies mises de côté, rapports ; chacun demande comme d'habitude.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --help  -h      <bool>  Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

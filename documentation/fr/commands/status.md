@@ -102,7 +102,7 @@ puis **une** étape suivante, en commande complète prête à coller. Une quaran
  audit, la quarantaine, ce qu'il reste : sans analyse.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --help  -h      <bool>  Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -98,7 +98,7 @@ docker run --rm -it `
  into one archive outside Docker's cache volume, read back.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h      <bool>  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

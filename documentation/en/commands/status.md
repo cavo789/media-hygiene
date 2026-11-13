@@ -97,7 +97,7 @@ first thing it suggests to [`purge`](purge.md).
  quarantine, what is left: no scan.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h      <bool>  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

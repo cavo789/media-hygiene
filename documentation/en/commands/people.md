@@ -64,7 +64,7 @@ named, and the address of the page: a click on a face opens its photo. Ctrl+C, o
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysed: 12 faces, 0.04 s per photo.
+✅ 37 photos analysed: 12 faces, 0.08 s per photo.
 ✅ 17 faces in 47 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
 once.
 ✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
@@ -313,14 +313,14 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
  anywhere.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path            <str>               Only the photos below this folder      │
+│ --path            <list[str]>         Only the photos below this folder      │
 │                                       (host path, as you mounted it); repeat │
 │                                       it for several. Default: every photo   │
 │                                       of the index.                          │
 │ --sample          <int range> [x>=0]  Analyse this many random photos, print │
 │                                       the time per photo and the estimate of │
 │                                       a full run, and stop.                  │
-│ --forget                              Delete every face from the cache, then │
+│ --forget          <bool>              Delete every face from the cache, then │
 │                                       show that none is left; asks before    │
 │                                       deleting the names of config.toml too. │
 │ --port            <int range> [x>=1]  Port of the page. docker run publishes │
@@ -328,7 +328,7 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 │                                       computer: -p 127.0.0.1:9000:9000 for   │
 │                                       --port 9000. Default:  port in         │
 │                                       config.toml, 8088.                     │
-│ --help    -h                          Show this message and exit.            │
+│ --help    -h      <bool>              Show this message and exit.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

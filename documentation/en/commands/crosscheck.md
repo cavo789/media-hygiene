@@ -105,41 +105,43 @@ The same folder and scan options as [`audit`](audit.md#options): `--prefer`, `--
  finder, then compare its groups with a fresh audit: a second opinion.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h      <bool>  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
-│                         order matters.                                       │
-│ --protect        <str>  Folder never modified; its files are the copies      │
-│                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, not even read. Repeatable.    │
-│ --backup         <str>  A backup or an old disk: compared, never changed.    │
-│                         Says what it lacks and what only it holds.           │
-│                         Repeatable.                                          │
+│ --prefer         <list[str]>  Folder whose copies are kept first. Repeat it; │
+│                               the order matters.                             │
+│ --protect        <list[str]>  Folder never modified; its files are the       │
+│                               copies kept. Repeatable.                       │
+│ --exclude        <list[str]>  Folder never analysed, not even read.          │
+│                               Repeatable.                                    │
+│ --backup         <list[str]>  A backup or an old disk: compared, never       │
+│                               changed. Says what it lacks and what only it   │
+│                               holds. Repeatable.                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮
-│ --ext                 <str>  Only analyse these categories or extensions,    │
-│                              e.g. --ext photo,video or --ext png,webp        │
-│                              (repeatable). Categories: photo, raw, video,    │
-│                              media and those of scan.categories in           │
-│                              config.toml. Photo, RAW and video extensions    │
-│                              only. Default: media (every photo, RAW and      │
-│                              video).                                         │
-│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
-│                              case ignored; * and ? allowed, e.g.             │
-│                              --exclude-name Thumbnails,.Trash-*              │
-│                              (repeatable). Adds to the system folders        │
-│                              already skipped. For one precise folder, use    │
-│                              --exclude.                                      │
+│ --ext                 <list[str]>  Only analyse these categories or          │
+│                                    extensions, e.g. --ext photo,video or     │
+│                                    --ext png,webp (repeatable). Categories:  │
+│                                    photo, raw, video, media and those of     │
+│                                    scan.categories in config.toml. Photo,    │
+│                                    RAW and video extensions only. Default:   │
+│                                    media (every photo, RAW and video).       │
+│ --exclude-name        <list[str]>  Folder name never analysed, wherever it   │
+│                                    is, case ignored; * and ? allowed, e.g.   │
+│                                    --exclude-name Thumbnails,.Trash-*        │
+│                                    (repeatable). Adds to the system folders  │
+│                                    already skipped. For one precise folder,  │
+│                                    use --exclude.                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --fresh                  Czkawka reads and hashes every file again, ignoring │
-│                          what its cache in /cache remembers from its         │
-│                          previous run. Slower; for a second opinion that     │
-│                          owes nothing to an earlier one.                     │
-│ --print-command          Do not run Czkawka here: print the command that     │
-│                          runs it in its own image, then compare the results  │
-│                          it wrote in /reports (czkawka.json).                │
+│ --fresh                <bool>  Czkawka reads and hashes every file again,    │
+│                                ignoring what its cache in /cache remembers   │
+│                                from its previous run. Slower; for a second   │
+│                                opinion that owes nothing to an earlier one.  │
+│ --print-command        <bool>  Do not run Czkawka here: print the command    │
+│                                that runs it in its own image, then compare   │
+│                                the results it wrote in /reports              │
+│                                (czkawka.json).                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

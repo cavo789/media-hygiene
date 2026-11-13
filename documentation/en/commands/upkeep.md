@@ -67,7 +67,7 @@ Answering *no* to a question skips that step only.
  aside, reports; each asks as usual.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h      <bool>  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

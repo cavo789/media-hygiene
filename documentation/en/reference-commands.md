@@ -169,8 +169,8 @@ command shows its own `--help`; here is the list of the commands:
  Start with 'audit' (read-only), then 'clean'.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --version            Show the version and exit.                              │
-│ --help     -h        Show this message and exit.                             │
+│ --version          <bool>  Show the version and exit.                        │
+│ --help     -h      <bool>  Show this message and exit.                       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Output (override general.* of config.toml) ─────────────────────────────────╮
 │ --locale           <en|fr>                      Interface language.          │
@@ -221,6 +221,8 @@ command shows its own `--help`; here is the list of the commands:
 │             each copy proven (journaled, undoable).                          │
 │ library     Find photos by their words in your browser (or as a table): the  │
 │             words 'tags' gave them.                                          │
+│ person      Who is on this photo: name each face, then confirm that person's │
+│             other photos, in your browser.                                   │
 │ purge       Erase the quarantine of a run for good: with 'clean --delete',   │
 │             the only way the tool removes content.                           │
 │ push        Windows only, as mh push: copy your photo folders into a folder  │

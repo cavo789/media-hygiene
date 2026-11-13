@@ -168,7 +168,9 @@ What you can do
 kept whole.
 
 ✅ HTML report:
-C:\Users\you\media-hygiene\reports\20261107-101359-audit\report.html
+C:\Users\you\media-hygiene\reports\20261113-174130-audit\report.html
+
+🖼 63 new thumbnails ready: the library opens at once.
 👉 What next: run 'clean' to set 3.4 MB of copies aside.
 mh clean
 💡 Type mh open: your browser shows every report.

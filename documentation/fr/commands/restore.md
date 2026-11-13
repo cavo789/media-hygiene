@@ -80,9 +80,9 @@ plus récente est remise.
 │                       récente par défaut.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --config            Remettre aussi les réglages (config.toml, people) ;      │
-│                     l'index seul par défaut.                                 │
-│ --help    -h        Affiche ce message et quitte.                            │
+│ --config          <bool>  Remettre aussi les réglages (config.toml, people)  │
+│                           ; l'index seul par défaut.                         │
+│ --help    -h      <bool>  Affiche ce message et quitte.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -79,9 +79,9 @@ back.
 │                       default.                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --config            Restore the settings (config.toml, people) too; the      │
-│                     index alone by default.                                  │
-│ --help    -h        Show this message and exit.                              │
+│ --config          <bool>  Restore the settings (config.toml, people) too;    │
+│                           the index alone by default.                        │
+│ --help    -h      <bool>  Show this message and exit.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

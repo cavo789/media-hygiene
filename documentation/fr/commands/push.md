@@ -143,19 +143,20 @@ plan.
  elle montre le plan.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ *  --to              <str>  The backup folder, as Windows writes it          │
-│                             (\\NAS\backup_photos): a folder of its own,      │
-│                             never a photo folder nor a backup compared.      │
-│                             [required]                                       │
-│    --anyway                 Go on even when more than stop_above_percent     │
-│                             (config.toml) of the backup would be set aside   │
-│                             or replaced.                                     │
-│    --help    -h             Affiche ce message et quitte.                    │
+│ *  --to              <str>   The backup folder, as Windows writes it         │
+│                              (\\NAS\backup_photos): a folder of its own,     │
+│                              never a photo folder nor a backup compared.     │
+│                              [required]                                      │
+│    --anyway          <bool>  Go on even when more than stop_above_percent    │
+│                              (config.toml) of the backup would be set aside  │
+│                              or replaced.                                    │
+│    --help    -h      <bool>  Affiche ce message et quitte.                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
-│                        seule : jamais modifié, et jamais refusé pour cela    │
-│                        (mh passe vos sauvegardes). Répétable.                │
+│ --backup        <list[str]>  Une sauvegarde ou un ancien disque, monté en    │
+│                              lecture seule : jamais modifié, et jamais       │
+│                              refusé pour cela (mh passe vos sauvegardes).    │
+│                              Répétable.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

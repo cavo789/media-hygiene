@@ -67,7 +67,7 @@ ouvre sa photo. Ctrl+C, ou fermer son onglet, l'arrête.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysées : 12 visages, 0,04 s par photo.
+✅ 37 photos analysées : 13 visages, 0,07 s par photo.
 ✅ 17 visages dans 47 photos : 3 groupes de visages semblables, les plus grands
 7, 5, 4 ; 1 vus une seule fois.
 ✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les
@@ -339,7 +339,7 @@ SHA-256 : il n'envoie rien sur vos photos.
  Visages gardés dans le cache, jamais envoyés nulle part.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path            <str>               Seulement les photos sous ce dossier   │
+│ --path            <list[str]>         Seulement les photos sous ce dossier   │
 │                                       (chemin de l'hôte, tel que vous l'avez │
 │                                       monté) ; à répéter pour plusieurs. Par │
 │                                       défaut : toutes les photos de l'index. │
@@ -347,7 +347,7 @@ SHA-256 : il n'envoie rien sur vos photos.
 │                                       hasard, afficher le temps par photo et │
 │                                       l'estimation d'une exécution complète, │
 │                                       puis s'arrêter.                        │
-│ --forget                              Supprimer tous les visages du cache,   │
+│ --forget          <bool>              Supprimer tous les visages du cache,   │
 │                                       puis montrer qu'il n'en reste aucun ;  │
 │                                       demande aussi avant d'effacer les noms │
 │                                       de config.toml.                        │
@@ -357,7 +357,7 @@ SHA-256 : il n'envoie rien sur vos photos.
 │                                       127.0.0.1:9000:9000 pour --port 9000.  │
 │                                       Par défaut :  port dans config.toml,   │
 │                                       8088.                                  │
-│ --help    -h                          Affiche ce message et quitte.          │
+│ --help    -h      <bool>              Affiche ce message et quitte.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

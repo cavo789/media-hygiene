@@ -640,10 +640,11 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
  gave them.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   words      <str>  Words to find, printed as a table instead of opening the │
-│                     page: "bord de mer" a phrase, anniv* a start of word,    │
-│                     place:durbuy among the places only (also vision,         │
-│                     caption, folder, name, date, person).                    │
+│   words...      <list[str]>  Words to find, printed as a table instead of    │
+│                              opening the page: "bord de mer" a phrase,       │
+│                              anniv* a start of word, place:durbuy among the  │
+│                              places only (also vision, caption, folder,      │
+│                              name, date, person).                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --limit           <int range> [x>=1]  How many files the table lists at      │
@@ -657,7 +658,7 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
 │                                       computer: -p 127.0.0.1:9000:9000 for   │
 │                                       --port 9000. Default:  port in         │
 │                                       config.toml, 8088.                     │
-│ --help    -h                          Show this message and exit.            │
+│ --help    -h      <bool>              Show this message and exit.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

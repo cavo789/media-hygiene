@@ -152,12 +152,12 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>  Instead of a saved album: the files of this       │
-│                            category, as the edited classify workbook says.   │
-│ --event             <str>  The files of this event: its id or its name.      │
-│ --apply                    Make the links; without it, only show what the    │
-│                            album gathers.                                    │
-│ --help      -h             Show this message and exit.                       │
+│ --category          <str>   Instead of a saved album: the files of this      │
+│                             category, as the edited classify workbook says.  │
+│ --event             <str>   The files of this event: its id or its name.     │
+│ --apply             <bool>  Make the links; without it, only show what the   │
+│                             album gathers.                                   │
+│ --help      -h      <bool>  Show this message and exit.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
 │ --rule            <str>                  The files the classify rule of this │
@@ -168,9 +168,9 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 │                                          latest classify run's by default.   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
-│                        changed, and not refused for being read-only (mh      │
-│                        passes your backups). Repeatable.                     │
+│ --backup        <list[str]>  A backup or an old disk, mounted read-only:     │
+│                              never changed, and not refused for being        │
+│                              read-only (mh passes your backups). Repeatable. │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

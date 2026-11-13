@@ -129,24 +129,24 @@ the source folders it will remove, then asks.
 │                        run's by default.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes                 -y             Do not ask for confirmation (overrides  │
-│                                      sort.confirm).                          │
-│ --keep-empty-folders                 Keep the source folders the sort leaves │
-│                                      empty.                                  │
-│ --event                       <str>  Sort only the files of this event (its  │
-│                                      id: the first column of the Events      │
-│                                      sheet); the rest of the workbook is     │
-│                                      left for later.                         │
-│ --trial                       <str>  Sort a sample first: 'latest' (the      │
-│                                      latest month with photos), a month such │
-│                                      as 2024-05, or a folder; the same sort  │
-│                                      then does the rest.                     │
-│ --help                -h             Show this message and exit.             │
+│ --yes                 -y      <bool>  Do not ask for confirmation (overrides │
+│                                       sort.confirm).                         │
+│ --keep-empty-folders          <bool>  Keep the source folders the sort       │
+│                                       leaves empty.                          │
+│ --event                       <str>   Sort only the files of this event (its │
+│                                       id: the first column of the Events     │
+│                                       sheet); the rest of the workbook is    │
+│                                       left for later.                        │
+│ --trial                       <str>   Sort a sample first: 'latest' (the     │
+│                                       latest month with photos), a month     │
+│                                       such as 2024-05, or a folder; the same │
+│                                       sort then does the rest.               │
+│ --help                -h      <bool>  Show this message and exit.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
-│                        changed, and not refused for being read-only (mh      │
-│                        passes your backups). Repeatable.                     │
+│ --backup        <list[str]>  A backup or an old disk, mounted read-only:     │
+│                              never changed, and not refused for being        │
+│                              read-only (mh passes your backups). Repeatable. │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

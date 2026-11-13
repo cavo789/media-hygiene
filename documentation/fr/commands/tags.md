@@ -137,16 +137,16 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
  facultative 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path             <str>  Seulement les photos sous ce dossier (chemin de    │
-│                           l'hôte, tel que vous l'avez monté) ; à répéter     │
-│                           pour plusieurs. Par défaut : tous les fichiers de  │
-│                           l'index.                                           │
-│ --meaning                 Laisser aussi un modèle regarder chaque photo sur  │
-│                           le processeur de cet ordinateur (CLIP, une seule   │
-│                           fois, environ 1 minute pour 1 000 photos), pour    │
-│                           que 'library' trouve ce qu'une photo montre. Par   │
-│                           défaut :  meaning.                                 │
-│ --help     -h             Affiche ce message et quitte.                      │
+│ --path             <list[str]>  Seulement les photos sous ce dossier (chemin │
+│                                 de l'hôte, tel que vous l'avez monté) ; à    │
+│                                 répéter pour plusieurs. Par défaut : tous    │
+│                                 les fichiers de l'index.                     │
+│ --meaning          <bool>       Laisser aussi un modèle regarder chaque      │
+│                                 photo sur le processeur de cet ordinateur    │
+│                                 (CLIP, une seule fois, environ 1 minute pour │
+│                                 1 000 photos), pour que 'library' trouve ce  │
+│                                 qu'une photo montre. Par défaut :  meaning.  │
+│ --help     -h      <bool>       Affiche ce message et quitte.                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml ────╮
 │ --sample               <int range> [x>=0]  Décrire ce nombre de photos       │
@@ -155,12 +155,12 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
 │                                            photo et l'estimation d'une       │
 │                                            exécution complète, puis          │
 │                                            s'arrêter.                        │
-│ --no-describe                              Ne rien demander de nouveau au    │
+│ --no-describe          <bool>              Ne rien demander de nouveau au    │
 │                                            modèle local : seulement les mots │
 │                                            des dossiers, des noms, des dates │
 │                                            et des lieux, et les descriptions │
 │                                            déjà dans le cache.               │
-│ --yes          -y                          Décrire les photos sans demander, │
+│ --yes          -y      <bool>              Décrire les photos sans demander, │
 │                                            quel que soit leur nombre.        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

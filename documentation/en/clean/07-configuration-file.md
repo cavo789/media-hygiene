@@ -390,7 +390,8 @@ Effective settings
 │ imports.then                  │ ['audit', 'copies', 'bursts', │ default      │
 │                               │ 'tags', 'places']             │              │
 │ routine.steps                 │ ['audit', 'copies',           │ default      │
-│                               │ 'reports']                    │              │
+│                               │ 'reports', 'reread']          │              │
+│ routine.reread_gb             │ 20.0                          │ default      │
 │ home.favorites                │ []                            │ default      │
 │ home.tiles                    │ []                            │ default      │
 │ home.family_title             │                               │ default      │
@@ -944,7 +945,8 @@ Effective settings
 │ imports.then                  │ ['audit', 'copies', 'bursts', │ config.toml  │
 │                               │ 'tags', 'places']             │              │
 │ routine.steps                 │ ['audit', 'copies',           │ config.toml  │
-│                               │ 'reports']                    │              │
+│                               │ 'reports', 'reread']          │              │
+│ routine.reread_gb             │ 20.0                          │ config.toml  │
 │ home.favorites                │ []                            │ config.toml  │
 │ home.tiles                    │ []                            │ config.toml  │
 │ home.family_title             │                               │ config.toml  │

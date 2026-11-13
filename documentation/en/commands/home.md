@@ -505,7 +505,7 @@ fonts and pictures come from the image itself: the page asks nothing of any othe
 │                                     computer: -p 127.0.0.1:9000:9000 for     │
 │                                     --port 9000. Default:  port in           │
 │                                     config.toml, 8088.                       │
-│ --help  -h                          Show this message and exit.              │
+│ --help  -h      <bool>              Show this message and exit.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -155,14 +155,14 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>  Au lieu d'un album enregistré : les fichiers de   │
-│                            cette catégorie, d'après le classeur de classify  │
-│                            modifié.                                          │
-│ --event             <str>  Les fichiers de cet événement : son identifiant   │
-│                            ou son nom.                                       │
-│ --apply                    Crée les liens ; sans cette option, montre        │
-│                            seulement ce que l'album rassemble.               │
-│ --help      -h             Affiche ce message et quitte.                     │
+│ --category          <str>   Au lieu d'un album enregistré : les fichiers de  │
+│                             cette catégorie, d'après le classeur de classify │
+│                             modifié.                                         │
+│ --event             <str>   Les fichiers de cet événement : son identifiant  │
+│                             ou son nom.                                      │
+│ --apply             <bool>  Crée les liens ; sans cette option, montre       │
+│                             seulement ce que l'album rassemble.              │
+│ --help      -h      <bool>  Affiche ce message et quitte.                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
 │ --rule            <str>                  Les fichiers que la règle de        │
@@ -174,9 +174,10 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 │                                          défaut.                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
-│                        seule : jamais modifié, et jamais refusé pour cela    │
-│                        (mh passe vos sauvegardes). Répétable.                │
+│ --backup        <list[str]>  Une sauvegarde ou un ancien disque, monté en    │
+│                              lecture seule : jamais modifié, et jamais       │
+│                              refusé pour cela (mh passe vos sauvegardes).    │
+│                              Répétable.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

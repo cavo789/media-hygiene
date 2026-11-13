@@ -687,10 +687,11 @@ recherche*.
  les mots que 'tags' leur a donnés.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   words      <str>  Mots à trouver, affichés en tableau au lieu d'ouvrir la  │
-│                     page : "bord de mer" une expression, anniv* un début de  │
-│                     mot, place:durbuy parmi les lieux seulement (aussi       │
-│                     vision, caption, folder, name, date, person).            │
+│   words...      <list[str]>  Mots à trouver, affichés en tableau au lieu     │
+│                              d'ouvrir la page : "bord de mer" une            │
+│                              expression, anniv* un début de mot,             │
+│                              place:durbuy parmi les lieux seulement (aussi   │
+│                              vision, caption, folder, name, date, person).   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --limit           <int range> [x>=1]  Nombre maximal de fichiers listés dans │
@@ -706,7 +707,7 @@ recherche*.
 │                                       127.0.0.1:9000:9000 pour --port 9000.  │
 │                                       Par défaut :  port dans config.toml,   │
 │                                       8088.                                  │
-│ --help    -h                          Affiche ce message et quitte.          │
+│ --help    -h      <bool>              Affiche ce message et quitte.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

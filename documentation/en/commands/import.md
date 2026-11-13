@@ -317,8 +317,8 @@ happens (a run of kind `phone` in `mh history`).
 │                                      path); default: 'From <source>' in your │
 │                                      first photo folder (From NAS, From E),  │
 │                                      its folders kept below it.              │
-│ --yes    -y                          Copy without asking first.              │
-│ --phone                              A phone over USB instead of a folder:   │
+│ --yes    -y      <bool>              Copy without asking first.              │
+│ --phone          <bool>              A phone over USB instead of a folder:   │
 │                                      Windows only, the mh of PowerShell      │
 │                                      copies its new photos itself; --free    │
 │                                      then makes room on it.                  │
@@ -328,7 +328,7 @@ happens (a run of kind `phone` in `mh history`).
 │                                      modified time. Default: every file of a │
 │                                      folder; with --phone, since the last    │
 │                                      import.                                 │
-│ --pick                               See the files as photos in the browser  │
+│ --pick           <bool>              See the files as photos in the browser  │
 │                                      first: unpick those you do not want,    │
 │                                      then copy from the page.                │
 │ --port           <int range> [x>=1]  Port of the page. docker run publishes  │
@@ -336,12 +336,12 @@ happens (a run of kind `phone` in `mh history`).
 │                                      computer: -p 127.0.0.1:9000:9000 for    │
 │                                      --port 9000. Default:  port in          │
 │                                      config.toml, 8088.                      │
-│ --help   -h                          Show this message and exit.             │
+│ --help   -h      <bool>              Show this message and exit.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --backup        <str>  A backup or an old disk: compared, never changed.     │
-│                        Says what it lacks and what only it holds.            │
-│                        Repeatable.                                           │
+│ --backup        <list[str]>  A backup or an old disk: compared, never        │
+│                              changed. Says what it lacks and what only it    │
+│                              holds. Repeatable.                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

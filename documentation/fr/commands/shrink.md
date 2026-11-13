@@ -199,25 +199,28 @@ est dit après chaque vidéo.
  quarantaine (journalisé, annulable).
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --folder           <str>  Seulement les vidéos sous ce dossier (chemin de    │
-│                           l'hôte, tel que vous l'avez monté) ; répétez-la    │
-│                           pour plusieurs. Par défaut : tous les dossiers     │
-│                           montés.                                            │
-│ --lighter                 Plus léger encore pour une grande image : 720      │
-│                           lignes au plus (lighter_lines dans config.toml).   │
-│                           Pour les clips dont la qualité compte moins.       │
-│ --apply                   Les alléger ; sans cette option, seulement les     │
-│                           lister avec le gain attendu.                       │
-│ --try                     Encoder les premières (try_count dans config.toml) │
-│                           en brouillons, dans /cache seulement, et comparer  │
-│                           avant et après dans le navigateur ; alléger depuis │
-│                           la page. Les brouillons sont supprimés quand la    │
-│                           page se ferme.                                     │
-│ --chosen                  Alléger les vidéos choisies sur la page            │
-│                           d'allègement de la page d'accueil, en réutilisant  │
-│                           leurs brouillons. La page le lance pour vous.      │
-│ --yes      -y             Alléger sans demander d'abord.                     │
-│ --help     -h             Affiche ce message et quitte.                      │
+│ --folder           <list[str]>  Seulement les vidéos sous ce dossier (chemin │
+│                                 de l'hôte, tel que vous l'avez monté) ;      │
+│                                 répétez-la pour plusieurs. Par défaut : tous │
+│                                 les dossiers montés.                         │
+│ --lighter          <bool>       Plus léger encore pour une grande image :    │
+│                                 720 lignes au plus (lighter_lines dans       │
+│                                 config.toml). Pour les clips dont la qualité │
+│                                 compte moins.                                │
+│ --apply            <bool>       Les alléger ; sans cette option, seulement   │
+│                                 les lister avec le gain attendu.             │
+│ --try              <bool>       Encoder les premières (try_count dans        │
+│                                 config.toml) en brouillons, dans /cache      │
+│                                 seulement, et comparer avant et après dans   │
+│                                 le navigateur ; alléger depuis la page. Les  │
+│                                 brouillons sont supprimés quand la page se   │
+│                                 ferme.                                       │
+│ --chosen           <bool>       Alléger les vidéos choisies sur la page      │
+│                                 d'allègement de la page d'accueil, en        │
+│                                 réutilisant leurs brouillons. La page le     │
+│                                 lance pour vous.                             │
+│ --yes      -y      <bool>       Alléger sans demander d'abord.               │
+│ --help     -h      <bool>       Affiche ce message et quitte.                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

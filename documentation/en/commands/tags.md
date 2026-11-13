@@ -136,26 +136,26 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
  what it shows with an optional local AI 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path             <str>  Only the photos below this folder (host path, as   │
-│                           you mounted it); repeat it for several. Default:   │
-│                           every file of the index.                           │
-│ --meaning                 Also let a model look at each photo on this        │
-│                           computer's processor (CLIP, once, about 1 minute   │
-│                           per 1,000 photos), so that 'library' finds what a  │
-│                           photo shows. Default:  meaning.                    │
-│ --help     -h             Show this message and exit.                        │
+│ --path             <list[str]>  Only the photos below this folder (host      │
+│                                 path, as you mounted it); repeat it for      │
+│                                 several. Default: every file of the index.   │
+│ --meaning          <bool>       Also let a model look at each photo on this  │
+│                                 computer's processor (CLIP, once, about 1    │
+│                                 minute per 1,000 photos), so that 'library'  │
+│                                 finds what a photo shows. Default:  meaning. │
+│ --help     -h      <bool>       Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🤖 Local AI (Ollama), optional: a model set in config.toml ─────────────────╮
 │ --sample               <int range> [x>=0]  Describe this many random photos  │
 │                                            with the local model, print the   │
 │                                            time per photo and the estimate   │
 │                                            of a full run, and stop.          │
-│ --no-describe                              Ask the local model nothing new:  │
+│ --no-describe          <bool>              Ask the local model nothing new:  │
 │                                            the words of the folders, names,  │
 │                                            dates and places only, and the    │
 │                                            descriptions already in the       │
 │                                            cache.                            │
-│ --yes          -y                          Describe the photos without       │
+│ --yes          -y      <bool>              Describe the photos without       │
 │                                            asking, however many.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

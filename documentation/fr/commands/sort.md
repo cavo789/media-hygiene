@@ -134,25 +134,27 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
 │                        classify par défaut.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes                 -y             Ne pas demander de confirmation         │
-│                                      (remplace sort.confirm).                │
-│ --keep-empty-folders                 Garder les dossiers sources que le tri  │
-│                                      laisse vides.                           │
-│ --event                       <str>  Trier seulement les fichiers de cet     │
-│                                      événement (son identifiant : la         │
-│                                      première colonne de la feuille          │
-│                                      Événements) ; le reste du classeur      │
-│                                      attend.                                 │
-│ --trial                       <str>  Trier d'abord un échantillon : 'latest' │
-│                                      (le dernier mois avec des photos), un   │
-│                                      mois comme 2024-05, ou un dossier ; le  │
-│                                      même tri fait ensuite le reste.         │
-│ --help                -h             Affiche ce message et quitte.           │
+│ --yes                 -y      <bool>  Ne pas demander de confirmation        │
+│                                       (remplace sort.confirm).               │
+│ --keep-empty-folders          <bool>  Garder les dossiers sources que le tri │
+│                                       laisse vides.                          │
+│ --event                       <str>   Trier seulement les fichiers de cet    │
+│                                       événement (son identifiant : la        │
+│                                       première colonne de la feuille         │
+│                                       Événements) ; le reste du classeur     │
+│                                       attend.                                │
+│ --trial                       <str>   Trier d'abord un échantillon :         │
+│                                       'latest' (le dernier mois avec des     │
+│                                       photos), un mois comme 2024-05, ou un  │
+│                                       dossier ; le même tri fait ensuite le  │
+│                                       reste.                                 │
+│ --help                -h      <bool>  Affiche ce message et quitte.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
-│                        seule : jamais modifié, et jamais refusé pour cela    │
-│                        (mh passe vos sauvegardes). Répétable.                │
+│ --backup        <list[str]>  Une sauvegarde ou un ancien disque, monté en    │
+│                              lecture seule : jamais modifié, et jamais       │
+│                              refusé pour cela (mh passe vos sauvegardes).    │
+│                              Répétable.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

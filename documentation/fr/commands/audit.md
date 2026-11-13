@@ -132,41 +132,49 @@ cavo789/media-hygiene --locale fr audit --people
  et les fichiers cassés.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --help  -h      <bool>  Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
-│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
-│                         modifié. Dit ce qui lui manque et ce que lui seul    │
-│                         contient. Répétable.                                 │
+│ --prefer         <list[str]>  Dossier dont les copies sont conservées en     │
+│                               priorité. Répétable ; l'ordre compte.          │
+│ --protect        <list[str]>  Dossier jamais modifié ; ses fichiers sont les │
+│                               copies conservées. Répétable.                  │
+│ --exclude        <list[str]>  Dossier jamais analysé, même pas lu.           │
+│                               Répétable.                                     │
+│ --backup         <list[str]>  Une sauvegarde ou un ancien disque : comparé,  │
+│                               jamais modifié. Dit ce qui lui manque et ce    │
+│                               que lui seul contient. Répétable.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyser que ces catégories ou extensions,    │
-│                              par exemple --ext photo,video ou --ext png,webp │
-│                              (répétable). Catégories : photo, raw, video,    │
-│                              media et celles de scan.categories dans         │
-│                              config.toml. Extensions de photos, RAW et       │
-│                              vidéos seulement. Par défaut : media (toutes    │
-│                              les photos, RAW et vidéos).                     │
-│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
-│                              sans tenir compte de la casse ; * et ? permis,  │
-│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
-│                              (répétable). S'ajoute aux dossiers système déjà │
-│                              ignorés. Pour un dossier précis, utilisez       │
-│                              --exclude.                                      │
+│ --ext                 <list[str]>  N'analyser que ces catégories ou          │
+│                                    extensions, par exemple --ext photo,video │
+│                                    ou --ext png,webp (répétable). Catégories │
+│                                    : photo, raw, video, media et celles de   │
+│                                    scan.categories dans config.toml.         │
+│                                    Extensions de photos, RAW et vidéos       │
+│                                    seulement. Par défaut : media (toutes les │
+│                                    photos, RAW et vidéos).                   │
+│ --exclude-name        <list[str]>  Nom de dossier jamais analysé, où qu'il   │
+│                                    soit, sans tenir compte de la casse ; *   │
+│                                    et ? permis, p. ex. --exclude-name        │
+│                                    Thumbnails,.Trash-* (répétable). S'ajoute │
+│                                    aux dossiers système déjà ignorés. Pour   │
+│                                    un dossier précis, utilisez --exclude.    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --full              Relire tous les dossiers, même ceux qui n'ont pas changé │
-│                     depuis le dernier audit : pour une photo modifiée sur    │
-│                     place par un autre programme.                            │
-│ --people            Chercher ensuite les visages des photos pas encore       │
-│                     examinées (comme 'people'), après avoir dit combien de   │
-│                     temps cela prend et demandé.                             │
-│ --yes     -y        Avec --people : ne pas demander, continuer.              │
+│ --full            <bool>  Relire tous les dossiers, même ceux qui n'ont pas  │
+│                           changé depuis le dernier audit : pour une photo    │
+│                           modifiée sur place par un autre programme.         │
+│ --people          <bool>  Chercher ensuite les visages des photos pas encore │
+│                           examinées (comme 'people'), après avoir dit        │
+│                           combien de temps cela prend et demandé.            │
+│ --yes     -y      <bool>  Avec --people : ne pas demander, continuer.        │
+│ --reread          <bool>  Seulement relire en entier les fichiers lus il y a │
+│                           le plus longtemps, jusqu'à  reread_gb, pour        │
+│                           trouver un fichier qu'un disque a abîmé sans       │
+│                           changer sa taille ni sa date ; puis lister les     │
+│                           fichiers abîmés et où se trouve une bonne copie.   │
+│                           Ne change rien.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

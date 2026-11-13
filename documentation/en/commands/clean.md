@@ -174,40 +174,45 @@ cavo789/media-hygiene clean --yes
 │                                             the pairs or the series changed. │
 │                                             Alone, --decisions reads         │
 │                                             decisions.json.                  │
-│ --yes        -y                             Do not ask for confirmation      │
+│ --yes        -y      <bool>                 Do not ask for confirmation      │
 │                                             (overrides clean.confirm).       │
-│ --help       -h                             Show this message and exit.      │
+│ --help       -h      <bool>                 Show this message and exit.      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --delete          Free the space at once: delete the exact copies for good,  │
-│                   after a byte comparison with the kept copy, instead of     │
-│                   moving them to the quarantine; 'undo' rebuilds them from   │
-│                   the kept copy.                                             │
+│ --delete        <bool>  Free the space at once: delete the exact copies for  │
+│                         good, after a byte comparison with the kept copy,    │
+│                         instead of moving them to the quarantine; 'undo'     │
+│                         rebuilds them from the kept copy.                    │
+│ --repair        <bool>  Restore the files 'audit --reread' found damaged     │
+│                         from their good copy (a duplicate, a backup, the     │
+│                         quarantine): listed first, then asked; the damaged   │
+│                         file goes to the quarantine, 'undo' puts it back.    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
-│                         order matters.                                       │
-│ --protect        <str>  Folder never modified; its files are the copies      │
-│                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, not even read. Repeatable.    │
-│ --backup         <str>  A backup or an old disk: compared, never changed.    │
-│                         Says what it lacks and what only it holds.           │
-│                         Repeatable.                                          │
+│ --prefer         <list[str]>  Folder whose copies are kept first. Repeat it; │
+│                               the order matters.                             │
+│ --protect        <list[str]>  Folder never modified; its files are the       │
+│                               copies kept. Repeatable.                       │
+│ --exclude        <list[str]>  Folder never analysed, not even read.          │
+│                               Repeatable.                                    │
+│ --backup         <list[str]>  A backup or an old disk: compared, never       │
+│                               changed. Says what it lacks and what only it   │
+│                               holds. Repeatable.                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮
-│ --ext                 <str>  Only analyse these categories or extensions,    │
-│                              e.g. --ext photo,video or --ext png,webp        │
-│                              (repeatable). Categories: photo, raw, video,    │
-│                              media and those of scan.categories in           │
-│                              config.toml. Photo, RAW and video extensions    │
-│                              only. Default: media (every photo, RAW and      │
-│                              video).                                         │
-│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
-│                              case ignored; * and ? allowed, e.g.             │
-│                              --exclude-name Thumbnails,.Trash-*              │
-│                              (repeatable). Adds to the system folders        │
-│                              already skipped. For one precise folder, use    │
-│                              --exclude.                                      │
+│ --ext                 <list[str]>  Only analyse these categories or          │
+│                                    extensions, e.g. --ext photo,video or     │
+│                                    --ext png,webp (repeatable). Categories:  │
+│                                    photo, raw, video, media and those of     │
+│                                    scan.categories in config.toml. Photo,    │
+│                                    RAW and video extensions only. Default:   │
+│                                    media (every photo, RAW and video).       │
+│ --exclude-name        <list[str]>  Folder name never analysed, wherever it   │
+│                                    is, case ignored; * and ? allowed, e.g.   │
+│                                    --exclude-name Thumbnails,.Trash-*        │
+│                                    (repeatable). Adds to the system folders  │
+│                                    already skipped. For one precise folder,  │
+│                                    use --exclude.                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

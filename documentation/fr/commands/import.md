@@ -345,8 +345,8 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
 │                                      <source> » dans votre premier dossier   │
 │                                      de photos (From NAS, From E), ses       │
 │                                      dossiers gardés en dessous.             │
-│ --yes    -y                          Copier sans demander d'abord.           │
-│ --phone                              Un téléphone en USB au lieu d'un        │
+│ --yes    -y      <bool>              Copier sans demander d'abord.           │
+│ --phone          <bool>              Un téléphone en USB au lieu d'un        │
 │                                      dossier : Windows seulement, le mh de   │
 │                                      PowerShell copie lui-même ses nouvelles │
 │                                      photos ; --free fait ensuite de la      │
@@ -358,7 +358,7 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
 │                                      Par défaut : tous les fichiers d'un     │
 │                                      dossier ; avec --phone, depuis le       │
 │                                      dernier import.                         │
-│ --pick                               Voir d'abord les fichiers en photos     │
+│ --pick           <bool>              Voir d'abord les fichiers en photos     │
 │                                      dans le navigateur : écartez ceux que   │
 │                                      vous ne voulez pas, puis copiez depuis  │
 │                                      la page.                                │
@@ -368,12 +368,12 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
 │                                      127.0.0.1:9000:9000 pour --port 9000.   │
 │                                      Par défaut :  port dans config.toml,    │
 │                                      8088.                                   │
-│ --help   -h                          Affiche ce message et quitte.           │
+│ --help   -h      <bool>              Affiche ce message et quitte.           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <str>  Une sauvegarde ou un ancien disque : comparé, jamais  │
-│                        modifié. Dit ce qui lui manque et ce que lui seul     │
-│                        contient. Répétable.                                  │
+│ --backup        <list[str]>  Une sauvegarde ou un ancien disque : comparé,   │
+│                              jamais modifié. Dit ce qui lui manque et ce que │
+│                              lui seul contient. Répétable.                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

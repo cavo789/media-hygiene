@@ -128,26 +128,27 @@ cavo789/media-hygiene classify --sample 20
  local AI 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year            <str>  Only the files of this year, or of these years:     │
-│                          2016 or 2015-2017.                                  │
-│ --path            <str>  Only the files below this folder (host path, as you │
-│                          mounted it); repeat it for several. The events stay │
-│                          whole: they are built from every file, and only the │
-│                          files below the folders get a proposal. With        │
-│                          --year: the files of both.                          │
-│ --layout          <str>  Where sure files go, e.g.                           │
-│                          '{year}/{year_month}/{category}'.                   │
-│ --target          <str>  Host folder receiving the tree; in place by         │
-│                          default.                                            │
-│ --help    -h             Show this message and exit.                         │
+│ --year            <str>        Only the files of this year, or of these      │
+│                                years: 2016 or 2015-2017.                     │
+│ --path            <list[str]>  Only the files below this folder (host path,  │
+│                                as you mounted it); repeat it for several.    │
+│                                The events stay whole: they are built from    │
+│                                every file, and only the files below the      │
+│                                folders get a proposal. With --year: the      │
+│                                files of both.                                │
+│ --layout          <str>        Where sure files go, e.g.                     │
+│                                '{year}/{year_month}/{category}'.             │
+│ --target          <str>        Host folder receiving the tree; in place by   │
+│                                default.                                      │
+│ --help    -h      <bool>       Show this message and exit.                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --leave                <str>  Host folder never sorted (analysed and cleaned │
-│                               as usual).                                     │
-│ --carry-over           <str>  Workbook whose edits are carried over; the     │
-│                               latest classify run's by default.              │
-│ --no-carry-over               Start fresh: carry no edit of a previous       │
-│                               workbook over.                                 │
+│ --leave                <list[str]>  Host folder never sorted (analysed and   │
+│                                     cleaned as usual).                       │
+│ --carry-over           <str>        Workbook whose edits are carried over;   │
+│                                     the latest classify run's by default.    │
+│ --no-carry-over        <bool>       Start fresh: carry no edit of a previous │
+│                                     workbook over.                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🤖 Local AI (Ollama), optional: a model set in config.toml ─────────────────╮
 │ --sample               <int range> [x>=0]  Estimate a full run first:        │
@@ -155,11 +156,11 @@ cavo789/media-hygiene classify --sample 20
 │                                            with the local model, print the   │
 │                                            time per photo and the estimate   │
 │                                            of a full run, and stop.          │
-│ --no-describe                              Ask the local model nothing new:  │
+│ --no-describe          <bool>              Ask the local model nothing new:  │
 │                                            the subject rules read the        │
 │                                            descriptions already in the       │
 │                                            cache.                            │
-│ --yes          -y                          Describe the photos without       │
+│ --yes          -y      <bool>              Describe the photos without       │
 │                                            asking, however many.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

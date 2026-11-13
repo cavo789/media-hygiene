@@ -180,40 +180,48 @@ cavo789/media-hygiene --locale fr clean --yes
 │                                             si les dossiers, les paires ou   │
 │                                             les séries ont changé. Seul,     │
 │                                             --decisions lit decisions.json.  │
-│ --yes        -y                             Ne pas demander de confirmation  │
+│ --yes        -y      <bool>                 Ne pas demander de confirmation  │
 │                                             (remplace clean.confirm).        │
-│ --help       -h                             Affiche ce message et quitte.    │
+│ --help       -h      <bool>                 Affiche ce message et quitte.    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --delete          Libérer l'espace tout de suite : supprimer pour de bon les │
-│                   copies exactes, après une comparaison octet par octet avec │
-│                   la copie gardée, au lieu de les déplacer en quarantaine ;  │
-│                   'undo' les reconstruit à partir de la copie gardée.        │
+│ --delete        <bool>  Libérer l'espace tout de suite : supprimer pour de   │
+│                         bon les copies exactes, après une comparaison octet  │
+│                         par octet avec la copie gardée, au lieu de les       │
+│                         déplacer en quarantaine ; 'undo' les reconstruit à   │
+│                         partir de la copie gardée.                           │
+│ --repair        <bool>  Restaurer les fichiers que 'audit --reread' a        │
+│                         trouvés abîmés depuis leur bonne copie (un doublon,  │
+│                         une sauvegarde, la quarantaine) : listés d'abord,    │
+│                         puis demandé ; le fichier abîmé va en quarantaine,   │
+│                         'undo' le remet.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
-│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
-│                         modifié. Dit ce qui lui manque et ce que lui seul    │
-│                         contient. Répétable.                                 │
+│ --prefer         <list[str]>  Dossier dont les copies sont conservées en     │
+│                               priorité. Répétable ; l'ordre compte.          │
+│ --protect        <list[str]>  Dossier jamais modifié ; ses fichiers sont les │
+│                               copies conservées. Répétable.                  │
+│ --exclude        <list[str]>  Dossier jamais analysé, même pas lu.           │
+│                               Répétable.                                     │
+│ --backup         <list[str]>  Une sauvegarde ou un ancien disque : comparé,  │
+│                               jamais modifié. Dit ce qui lui manque et ce    │
+│                               que lui seul contient. Répétable.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyser que ces catégories ou extensions,    │
-│                              par exemple --ext photo,video ou --ext png,webp │
-│                              (répétable). Catégories : photo, raw, video,    │
-│                              media et celles de scan.categories dans         │
-│                              config.toml. Extensions de photos, RAW et       │
-│                              vidéos seulement. Par défaut : media (toutes    │
-│                              les photos, RAW et vidéos).                     │
-│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
-│                              sans tenir compte de la casse ; * et ? permis,  │
-│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
-│                              (répétable). S'ajoute aux dossiers système déjà │
-│                              ignorés. Pour un dossier précis, utilisez       │
-│                              --exclude.                                      │
+│ --ext                 <list[str]>  N'analyser que ces catégories ou          │
+│                                    extensions, par exemple --ext photo,video │
+│                                    ou --ext png,webp (répétable). Catégories │
+│                                    : photo, raw, video, media et celles de   │
+│                                    scan.categories dans config.toml.         │
+│                                    Extensions de photos, RAW et vidéos       │
+│                                    seulement. Par défaut : media (toutes les │
+│                                    photos, RAW et vidéos).                   │
+│ --exclude-name        <list[str]>  Nom de dossier jamais analysé, où qu'il   │
+│                                    soit, sans tenir compte de la casse ; *   │
+│                                    et ? permis, p. ex. --exclude-name        │
+│                                    Thumbnails,.Trash-* (répétable). S'ajoute │
+│                                    aux dossiers système déjà ignorés. Pour   │
+│                                    un dossier précis, utilisez --exclude.    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -124,17 +124,17 @@ xmp_folder_gps = true
  darktable, Lightroom or Immich; never into a photo (journaled, undoable).
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path           <str>  Only the photos below this folder (host path, as you │
-│                         mounted it); repeat it for several. Default: every   │
-│                         file of the index.                                   │
-│ --apply                 Write the sidecars; without it, only show what would │
-│                         be written.                                          │
-│ --help   -h             Show this message and exit.                          │
+│ --path           <list[str]>  Only the photos below this folder (host path,  │
+│                               as you mounted it); repeat it for several.     │
+│                               Default: every file of the index.              │
+│ --apply          <bool>       Write the sidecars; without it, only show what │
+│                               would be written.                              │
+│ --help   -h      <bool>       Show this message and exit.                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
-│                        changed, and not refused for being read-only (mh      │
-│                        passes your backups). Repeatable.                     │
+│ --backup        <list[str]>  A backup or an old disk, mounted read-only:     │
+│                              never changed, and not refused for being        │
+│                              read-only (mh passes your backups). Repeatable. │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

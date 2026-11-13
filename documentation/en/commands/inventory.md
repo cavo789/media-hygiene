@@ -83,7 +83,7 @@ audited completely.
 │ --format          <xlsx|csv>  xlsx: an Excel workbook (Files and Summary     │
 │                               sheets). csv: the Files sheet only, like       │
 │                               plan.csv. Default: xlsx.                       │
-│ --help    -h                  Show this message and exit.                    │
+│ --help    -h      <bool>      Show this message and exit.                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -107,13 +107,13 @@ click shows every photo of that landmark (Ctrl+click adds it to the search).
  were taken (landmark, town, regions), offline; the audit does it for new ones.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h      <bool>  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🤖 Local AI (Ollama), optional: a model set in config.toml ─────────────────╮
-│ --vision          🤖 Then let the local vision model of [classify.ai] pick,  │
-│                   among the landmarks within 1 km, the one each photo shows  │
-│                   (sends the photos to that model only; a name typed by hand │
-│                   always wins).                                              │
+│ --vision        <bool>  🤖 Then let the local vision model of [classify.ai]  │
+│                         pick, among the landmarks within 1 km, the one each  │
+│                         photo shows (sends the photos to that model only; a  │
+│                         name typed by hand always wins).                     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

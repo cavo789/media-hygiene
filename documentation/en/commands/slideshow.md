@@ -297,7 +297,7 @@ The port is `[review] port`, the one of every page.
 │                                       in their name, else their modified     │
 │                                       time: today, week, month, all or a day │
 │                                       such as 2026-10-29.                    │
-│ --help    -h                          Show this message and exit.            │
+│ --help    -h      <bool>              Show this message and exit.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

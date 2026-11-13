@@ -215,30 +215,33 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
  les déplace ensuite.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --near                 Passer en revue les quasi-doublons et les vidéos      │
-│                        réencodées groupe par groupe au lieu des rafales :    │
-│                        comme prévu, garder l'autre version, ou laisser tel   │
-│                        quel ; « clean --tier near --decisions » l'applique.  │
-│ --pairs                Passer en revue les paires de dossiers des doublons   │
-│                        exacts une à une au lieu des rafales : comme prévu,   │
-│                        inverser les dossiers, ou ne pas toucher ; 'clean     │
-│                        --decisions' l'applique.                              │
-│ --junk                 Passer en revue les photos le plus probablement       │
-│                        indésirables (minuscules, captures d'écran, presque   │
-│                        noires ou blanches, les plus floues) au lieu des      │
-│                        rafales : rien n'est mis de côté sans vous ; 'clean   │
-│                        --decisions' déplace en quarantaine ce que vous avez  │
-│                        mis de côté. Seuils :  de config.toml.                │
-│ --gone                 Passer en revue les photos et vidéos disparues depuis │
-│                        un audit (supprimées dans l'Explorateur ?) au lieu    │
-│                        des rafales : dites lesquelles vous avez supprimées   │
-│                        exprès, et 'clean --decisions' les retient, pour      │
-│                        qu'elles soient mises de côté si elles reviennent.    │
-│ --intruders            Choisir les fichiers intrus (zip, docx, pdf… dans vos │
-│                        dossiers photos) à mettre de côté, par extension et   │
-│                        par dossier, au lieu des rafales ; 'clean             │
-│                        --decisions' les déplace en quarantaine.              │
-│ --help       -h        Affiche ce message et quitte.                         │
+│ --near               <bool>  Passer en revue les quasi-doublons et les       │
+│                              vidéos réencodées groupe par groupe au lieu des │
+│                              rafales : comme prévu, garder l'autre version,  │
+│                              ou laisser tel quel ; « clean --tier near       │
+│                              --decisions » l'applique.                       │
+│ --pairs              <bool>  Passer en revue les paires de dossiers des      │
+│                              doublons exacts une à une au lieu des rafales : │
+│                              comme prévu, inverser les dossiers, ou ne pas   │
+│                              toucher ; 'clean --decisions' l'applique.       │
+│ --junk               <bool>  Passer en revue les photos le plus probablement │
+│                              indésirables (minuscules, captures d'écran,     │
+│                              presque noires ou blanches, les plus floues) au │
+│                              lieu des rafales : rien n'est mis de côté sans  │
+│                              vous ; 'clean --decisions' déplace en           │
+│                              quarantaine ce que vous avez mis de côté.       │
+│                              Seuils :  de config.toml.                       │
+│ --gone               <bool>  Passer en revue les photos et vidéos disparues  │
+│                              depuis un audit (supprimées dans l'Explorateur  │
+│                              ?) au lieu des rafales : dites lesquelles vous  │
+│                              avez supprimées exprès, et 'clean --decisions'  │
+│                              les retient, pour qu'elles soient mises de côté │
+│                              si elles reviennent.                            │
+│ --intruders          <bool>  Choisir les fichiers intrus (zip, docx, pdf…    │
+│                              dans vos dossiers photos) à mettre de côté, par │
+│                              extension et par dossier, au lieu des rafales ; │
+│                              'clean --decisions' les déplace en quarantaine. │
+│ --help       -h      <bool>  Affiche ce message et quitte.                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
 │ --decisions        <path>              Fichier où les décisions sont         │
@@ -259,29 +262,31 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 │                                        2026-10-29.                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
-│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
-│                         modifié. Dit ce qui lui manque et ce que lui seul    │
-│                         contient. Répétable.                                 │
+│ --prefer         <list[str]>  Dossier dont les copies sont conservées en     │
+│                               priorité. Répétable ; l'ordre compte.          │
+│ --protect        <list[str]>  Dossier jamais modifié ; ses fichiers sont les │
+│                               copies conservées. Répétable.                  │
+│ --exclude        <list[str]>  Dossier jamais analysé, même pas lu.           │
+│                               Répétable.                                     │
+│ --backup         <list[str]>  Une sauvegarde ou un ancien disque : comparé,  │
+│                               jamais modifié. Dit ce qui lui manque et ce    │
+│                               que lui seul contient. Répétable.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyser que ces catégories ou extensions,    │
-│                              par exemple --ext photo,video ou --ext png,webp │
-│                              (répétable). Catégories : photo, raw, video,    │
-│                              media et celles de scan.categories dans         │
-│                              config.toml. Extensions de photos, RAW et       │
-│                              vidéos seulement. Par défaut : media (toutes    │
-│                              les photos, RAW et vidéos).                     │
-│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
-│                              sans tenir compte de la casse ; * et ? permis,  │
-│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
-│                              (répétable). S'ajoute aux dossiers système déjà │
-│                              ignorés. Pour un dossier précis, utilisez       │
-│                              --exclude.                                      │
+│ --ext                 <list[str]>  N'analyser que ces catégories ou          │
+│                                    extensions, par exemple --ext photo,video │
+│                                    ou --ext png,webp (répétable). Catégories │
+│                                    : photo, raw, video, media et celles de   │
+│                                    scan.categories dans config.toml.         │
+│                                    Extensions de photos, RAW et vidéos       │
+│                                    seulement. Par défaut : media (toutes les │
+│                                    photos, RAW et vidéos).                   │
+│ --exclude-name        <list[str]>  Nom de dossier jamais analysé, où qu'il   │
+│                                    soit, sans tenir compte de la casse ; *   │
+│                                    et ? permis, p. ex. --exclude-name        │
+│                                    Thumbnails,.Trash-* (répétable). S'ajoute │
+│                                    aux dossiers système déjà ignorés. Pour   │
+│                                    un dossier précis, utilisez --exclude.    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

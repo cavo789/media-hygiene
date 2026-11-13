@@ -75,7 +75,7 @@ clic : chaque ligne est une exécution, sa date ouvre son rapport.
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --prune          <int range> [x>=0]  Supprime tous les rapports sauf les N   │
 │                                      plus récents.                           │
-│ --help   -h                          Affiche ce message et quitte.           │
+│ --help   -h      <bool>              Affiche ce message et quitte.           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

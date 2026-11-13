@@ -42,8 +42,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
 Workbook:
-C:\Users\you\media-hygiene\reports\20261107-101537-classify\classify.xlsx
-0 edits read; workbook saved on 7 November 2026 at 10:15.
+C:\Users\you\media-hygiene\reports\20261113-174319-classify\classify.xlsx
+0 edits read; workbook saved on 13 November 2026 at 17:43.
 Sort
 ┌──────────────────────────────┬─────────┐
 │ Files to move                │      43 │
@@ -140,7 +140,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20261107-101538
+Sort 20261113-174320
 ┌──────────────────────────┬────────┐
 │ Files processed          │      3 │
 │ Size                     │ 3.0 MB │
@@ -150,8 +150,8 @@ Sort 20261107-101538
 └──────────────────────────┴────────┘
 Source folders removed: 1.
 ✅ Nothing lost: 3 files (3.0 MB) before and after; 3 of 3 moves verified.
-Manifest: C:\Users\you\media-hygiene\reports\20261107-101538-sort\manifest.json
-💡 Changed your mind? 'media-hygiene undo 20261107-101538' moves everything
+Manifest: C:\Users\you\media-hygiene\reports\20261113-174320-sort\manifest.json
+💡 Changed your mind? 'media-hygiene undo 20261113-174320' moves everything
 back:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -161,7 +161,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene undo 20261107-101538
+  cavo789/media-hygiene undo 20261113-174320
 👉 What next: looks right? Sort the rest with the same plan:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -206,11 +206,11 @@ back, the removed folders come back, the folders the sort created go.
 <!-- capture: undo-sort.txt -->
 ```text
 👁 A whole run: 'undo --pick' shows the photos and puts back only a few.
-────────────────────── Undo the sort run 20261107-101538 ───────────────────────
+────────────────────── Undo the sort run 20261113-174320 ───────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the sort run 20261107-101538
+Undo the sort run 20261113-174320
 ┌──────────────────────────┬────────┐
 │ Files processed          │      3 │
 │ Size                     │ 3.0 MB │

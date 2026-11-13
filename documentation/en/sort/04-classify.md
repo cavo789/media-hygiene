@@ -114,9 +114,9 @@ those that match nothing any more.
 To check or to sort: 8 files in 2 events.
 💡 Nothing was changed: 'classify' only proposes.
 ✅ Workbook to edit:
-C:\Users\you\media-hygiene\reports\20261107-101410-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261113-174145-classify\classify.xlsx
 ✅ Report with the photos:
-C:\Users\you\media-hygiene\reports\20261107-101410-classify\report.html
+C:\Users\you\media-hygiene\reports\20261113-174145-classify\report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
