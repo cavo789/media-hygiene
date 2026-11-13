@@ -19,3 +19,7 @@ Decided by the maintainer in the review of 2026-11-12.: rebuild only those photo
 - [ ] A demo photo with tag 90 and one with 180 appear upright in previews and give upright face boxes.
 - [ ] Other photos' previews and rows untouched (test counting rebuilds).
 - [ ] Cost on a 100,000-file index stated, measured.
+
+## Decided (2026-11-13)
+
+The degree tags `90`/`180` are read when the preview is made: only the previews of those photos are rebuilt, no global preview `_VERSION` bump (choice by the maintainer, review of `.claude/plans/feedback-2026-11-13-iterate.md`).

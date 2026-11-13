@@ -1,6 +1,6 @@
 {# The copies *Prepare for sending* makes (0747): `[share] long_side_px`, `quality`, `keep_gps`,
    included by `album_bar.html.j2`. Read from config.toml, saved with `/api/setting-share`, read
-   back from the disk and said. The PC's alone: a phone never sees it (no write from a phone). #}
+   back from the disk and said; the saved `keep_gps` adds `--keep-gps` to the command said. The PC's alone: a phone never sees it (no write from a phone). #}
 <details id="shareOptions" hidden>
   <summary>⚙ {{ _("Copies to send") }}</summary>
   <span class="panelRow">
@@ -27,6 +27,7 @@
     $("shareSide").value = values.long_side_px;
     $("shareQuality").value = values.quality;
     $("shareGps").checked = values.keep_gps;
+    window.mhShareKeepGps = values.keep_gps; // the saved value, for *Prepare for sending*
   };
   fetch(PATH, { cache: "no-store" })
     .then((response) => (response.ok ? response.json() : null))

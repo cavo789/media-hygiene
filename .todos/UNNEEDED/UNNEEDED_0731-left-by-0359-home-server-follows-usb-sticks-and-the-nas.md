@@ -20,3 +20,7 @@ Split from section 0359 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Closed (2026-11-13): split
+
+As decided by the maintainer (`.claude/plans/feedback-2026-11-13-iterate.md`), one TODO per item, each waiting for a Windows run: NAS checked every minute → 0787; *Remove the USB stick* / `mh eject` → 0788; *not plugged in* in search/browse → 0789; `mh search` opens the running tab → 0790; tab reloads after the restart (and 0359's Windows run) → 0791. Nothing left here.

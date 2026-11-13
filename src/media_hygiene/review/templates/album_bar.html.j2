@@ -178,7 +178,8 @@
       }
       await send("add");
     }
-    say(TEXTS.send, 'mh share --album "{name}"');
+    // `[share] keep_gps` on (read back by share_options): the command says so (0747).
+    say(TEXTS.send, 'mh share --album "{name}"' + (window.mhShareKeepGps ? " --keep-gps" : ""));
   });
   // `?album=<name>` (0501): opened by the albums page's *Add photos*, the field filled once
   // (never remembered: the next page starts empty) and a way back to that album.

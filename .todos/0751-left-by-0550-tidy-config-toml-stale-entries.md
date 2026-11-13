@@ -21,3 +21,7 @@ Split from section 0550 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Decided (2026-11-13)
+
+A `path` rule aimed at a root the index never covered is left alone by tidy: never shown as stale, never removed (choice by the maintainer, review of `.claude/plans/feedback-2026-11-13-iterate.md`).
