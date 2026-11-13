@@ -6,6 +6,7 @@ import json
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.services.step_next import read_next
 from media_hygiene.services.step_progress import read_progress, step_lost
 
 if TYPE_CHECKING:
@@ -61,6 +62,9 @@ def read_state(folder: Path) -> dict[str, object]:
         said = _said(folder / name)
         if said is not None:
             found = {"state": state, "id": said.get("id"), "code": said.get("code")}
+            line = read_next(folder) if state == StepState.DONE else None
+            if line is not None:
+                found["next"] = line  # the step's 👉 line, for its end toast (0762)
             progress = read_progress(folder)  # a step that writes says how far (0361)
             if state == StepState.RUNNING and step_lost(folder):
                 found["lost"] = True  # its window closed: no more pulse (0632)

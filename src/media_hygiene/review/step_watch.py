@@ -28,6 +28,7 @@ from media_hygiene.review.serving import json_response
 from media_hygiene.review.step_files import WATCH, StepState, WatchFiles, read_state
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
+from media_hygiene.services.step_next import forget_next
 from media_hygiene.services.step_progress import forget_progress
 
 if TYPE_CHECKING:
@@ -129,6 +130,7 @@ async def keep_step(folder: Path, words: tuple[str, ...], command: str) -> Respo
     if refused is not None:
         return refused
     await asyncio.to_thread(forget_progress, folder)
+    await asyncio.to_thread(forget_next, folder)  # 0762
     step = secrets.token_hex(_ID_BYTES)
     text = json.dumps({"id": step, "words": list(words)}, ensure_ascii=False, indent=0)
     try:

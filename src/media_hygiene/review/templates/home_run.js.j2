@@ -233,7 +233,7 @@ function followStep(id, command) {
     followed = null;
     $("#runDlg").close();
     const ok = step.code === 0;
-    const ended = fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code });
+    const ended = fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code }) + window.mhStepNext(step); // 0762
     toast(ended, ok ? "ok" : "info");
     notifyEnd(ended);
     reload();

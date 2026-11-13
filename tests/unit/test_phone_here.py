@@ -114,6 +114,11 @@ def test_served_with_the_slideshow_the_way_home_and_apply(
         assert page.status is HTTPStatus.OK
         assert b'id="showBar"' in page.body
         assert b'id="applyNow"' in page.body
+        assert (
+            b'const UNDO_PATH = "api/undo-run"' in page.body
+        )  # the toast's Undo (0757)
+        assert b'id="mhUndoToast"' in page.body
+        assert phone.call("GET", "/api/undo-run").status is HTTPStatus.OK
         assert b'id="homeLink" href="/" data-shared="1"' in page.body
         assert b"const SERVED = true" in page.body
         assert b'"/api/state"' not in page.body  # relative: answered under /phone/

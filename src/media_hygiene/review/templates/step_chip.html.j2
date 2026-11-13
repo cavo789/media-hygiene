@@ -52,6 +52,9 @@
     "follow": _("Follow the step"),
   } | tojson }};
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  // The step's 👉 line once done (`next`, 0762), after its end: text only.
+  const nextOf = (step) => (step && typeof step.next === "string" && step.next ? " 👉 " + step.next : "");
+  window.mhStepNext = nextOf;
   const chip = document.getElementById("mhStepChip");
   const dialog = document.getElementById("mhStepDlg");
   const slot = document.querySelector("[data-step-slot]");
@@ -133,7 +136,7 @@
     drawIdle();
     if (step.state !== "done" || step.id !== id || claimed.has(id)) return;
     const ok = step.code === 0;
-    const text = fill(ok ? STEP_TEXTS.done : STEP_TEXTS.failed, { step: stage || STEP_TEXTS.step, code: step.code });
+    const text = fill(ok ? STEP_TEXTS.done : STEP_TEXTS.failed, { step: stage || STEP_TEXTS.step, code: step.code }) + nextOf(step);
     if (window.mhSay) window.mhSay(text, ok ? "ok" : "error");
     window.mhNotify.end(text);
   }

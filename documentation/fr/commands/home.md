@@ -250,7 +250,8 @@ qui a ouvert la page :
   dans sa barre du haut (*⏳ Audit · 45 % · 3 min restantes* ; rien quand aucune étape ne tourne)
   ouvre la même fenêtre de suivi, le titre de l'onglet commence par l'avancement
   (*45 % · Audit — …*), si bien que la barre des onglets sert de jauge pendant que vous travaillez
-  ailleurs, et sa fin s'annonce sur la page affichée (*Terminé : Audit.*), ou par la notification
+  ailleurs, et sa fin s'annonce sur la page affichée (*Terminé : Audit.*, suivi de la ligne 👉 *Et maintenant :* de
+  l'étape quand elle en a écrit une), ou par la notification
   quand l'onglet est caché. Un téléphone du Wi-Fi de la maison voit la pastille aussi, en lecture seule.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
   dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
