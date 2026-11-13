@@ -173,7 +173,7 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
 - Une vignette touchée montre cette photo sur la télé.
 - **Ne pas montrer** retire du diaporama la photo sur la télé (la télé passe à la suivante) ; le
   bouton d'une vignette fait de même pour n'importe quelle photo, et **Remontrer** la remet.
-- La vignette d'une vidéo est marquée **▶**. Sur la télé, elle passe jusqu'au bout, puis le
+- La vignette d'une vidéo est l'une de ses images (décodée une fois, gardée dans le cache), marquée **▶**. Sur la télé, elle passe jusqu'au bout, puis le
   diaporama continue ; **❚❚ Pause** la met en pause aussi. Une vidéo que la télé ne sait pas lire
   est signalée sous sa vignette (*Pas sur la télé : son format (hevc) n'y est pas lu.*) et passée.
 - **Le nom de l'événement** : à chaque nouvel événement (un nouveau dossier, dans l'ordre du

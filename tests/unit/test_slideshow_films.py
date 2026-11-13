@@ -220,8 +220,8 @@ def test_the_phone_sees_the_videos_marked_and_the_hevc_one_labelled(
     slides = json.loads(_get(app, "/api/slides").body)["slides"]
     assert [(slide["thumb"], slide["film"], slide["format"]) for slide in slides] == [
         ("thumb/1.jpg", "", ""),
-        ("", "film/2.mov", "h264"),
-        ("", "", "hevc"),
+        ("thumb/2.jpg", "film/2.mov", "h264"),  # a frame of it (0733)
+        ("thumb/3.jpg", "", "hevc"),
         ("thumb/4.jpg", "", ""),
     ]
 

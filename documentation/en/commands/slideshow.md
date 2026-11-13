@@ -157,7 +157,7 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
 - A tap on a thumbnail shows that photo on the TV.
 - **Do not show** sets the photo on the TV out of the show (the TV moves on); a thumbnail's own
   button does the same for any photo, and **Show again** sets it back.
-- A video's thumbnail is marked **▶**. On the TV, it plays to its end, then the show moves on;
+- A video's thumbnail is one of its frames (decoded once, kept in the cache), marked **▶**. On the TV, it plays to its end, then the show moves on;
   **❚❚ Pause** pauses it too. A video the TV cannot play is labelled under its thumbnail
   (*Not on the TV: its format (hevc) does not play there.*) and passed over.
 - **The event's name**: at each new event (a new folder, in the show's order), the TV shows a

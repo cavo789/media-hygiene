@@ -70,10 +70,13 @@ def thumb_path(key: int, tag: str = "") -> str:
 
 
 def picture_paths(slide: Slide) -> dict[str, object]:
-    """A photo's key, thumbnail and picture addresses, with its version (0723).
+    """A file's key, thumbnail and picture addresses, with its version (0723).
+
+    A video's thumbnail is one of its frames, decoded once and kept in the cache
+    (`report.video_preview`); it has no picture: it plays as it is (0733).
 
     Args:
-        slide: The photo (a video: no picture).
+        slide: The photo or the video.
 
     Returns:
         Them.
@@ -81,7 +84,7 @@ def picture_paths(slide: Slide) -> dict[str, object]:
     film, key, tag = slide.film is not None, slide.key, slide.tag
     return {
         "key": key,
-        "thumb": "" if film else thumb_path(key, tag),
+        "thumb": thumb_path(key, tag),
         "photo": "" if film else tv_path(key, tag),
     }
 
@@ -99,7 +102,7 @@ def slides_view(desk: Desk) -> dict[str, object]:
     slides = [
         {
             "key": slide.key,
-            "thumb": "" if slide.film else relative(thumb_path(slide.key, slide.tag)),
+            "thumb": relative(thumb_path(slide.key, slide.tag)),  # a video: its frame
             "day": slide.day,
             "film": relative(film_path(slide)),
             "format": "" if slide.film is None else slide.film.label,

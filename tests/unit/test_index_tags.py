@@ -176,7 +176,7 @@ def test_the_show_and_album_addresses_carry_the_tag() -> None:
         "photo": "/tv/3.jpg?v=0f3a",
     }
     film = picture_paths(Slide(4, film=Film(".mp4")))
-    assert film["thumb"] == film["photo"] == ""
+    assert (film["thumb"], film["photo"]) == ("/thumb/4.jpg", "")  # a frame (0733)
 
 
 class _Show:

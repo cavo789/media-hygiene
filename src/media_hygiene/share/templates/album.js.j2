@@ -156,9 +156,10 @@ async function showAlbum(name) {
   window.scrollTo(0, 0);
 }
 function tile(item, number) {
-  const inside = item.thumb
-    ? `<img src="${esc(item.thumb)}" alt="" loading="lazy">`
-    : `<span class="film" aria-hidden="true"><span>▶${item.film ? "" : `<small>${esc(item.format)}</small>`}</span></span>`;
+  const mark = `<span>▶${item.film ? "" : `<small>${esc(item.format)}</small>`}</span>`;
+  // A video's thumbnail is one of its frames (0733): the ▶ mark lies over it.
+  const frame = item.thumb ? `<img src="${esc(item.thumb)}" alt="" loading="lazy">` : "";
+  const inside = item.photo ? frame : `${frame}<span class="film${frame ? " over" : ""}" aria-hidden="true">${mark}</span>`;
   return `<button type="button" data-at="${number}" aria-label="${esc(fill(T.of, { at: number + 1, total: items.length }))}">${inside}</button>`;
 }
 function route() {

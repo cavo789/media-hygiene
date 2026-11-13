@@ -77,7 +77,11 @@ def test_the_cover_is_the_sharpest_photo_of_the_first_day_and_days_are_named() -
         ("", "Heraklion"),
     ]
     film, unplayable = days[0]["items"][2], days[1]["items"][1]
-    assert (film["film"], film["photo"], film["thumb"]) == ("/film/3.mp4", "", "")
+    assert (film["film"], film["photo"], film["thumb"]) == (
+        "/film/3.mp4",
+        "",
+        "/thumb/3.jpg",
+    )
     assert (unplayable["film"], unplayable["format"]) == ("", "avi")
 
 
