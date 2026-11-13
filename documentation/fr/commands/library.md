@@ -575,7 +575,8 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   ajoutées à l'album tapé ou, si le champ est vide, à un seul album *Dernier envoi*, remplacé à
   chaque envoi.
   **⚙ Copies à envoyer**, juste en dessous (sur le PC seulement), règle leur grand côté, leur
-  qualité JPEG et si elles gardent la position GPS (`[share]` de `config.toml`), enregistrés et relus.
+  qualité JPEG et si elles gardent la position GPS (`[share]` de `config.toml`), enregistrés et relus ;
+  avec la position gardée, la commande donnée finit par `--keep-gps`.
 - Au plus 3 000 photos ajoutées d'un coup : affinez une recherche qui en trouve plus.
 
 Un album peut aussi devenir un dossier de l'Explorateur : [`album "Crète 2023"`](album.md) le

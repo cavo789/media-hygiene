@@ -39,3 +39,11 @@ def test_the_album_page_offers_add_photos_aimed_at_it() -> None:
     assert "new URLSearchParams({ album: NAME })" in script
     assert 'asked.set("from"' in script
     assert 'id="addPhotos"' in _template("share", "album_edit.html.j2")
+
+
+def test_prepare_for_sending_adds_keep_gps_when_the_setting_is_on() -> None:
+    """0747: the saved `[share] keep_gps` makes the command end with `--keep-gps`."""
+    options = _template("review", "share_options.html.j2")
+    assert "window.mhShareKeepGps = values.keep_gps;" in options
+    album_bar = _template("review", "album_bar.html.j2")
+    assert '(window.mhShareKeepGps ? " --keep-gps" : "")' in album_bar

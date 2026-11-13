@@ -533,7 +533,8 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   ([`share`](share.md)). With photos picked, no album to make first: they are added to the album
   typed, or, when the field is empty, to a single *Last sent* album, replaced at each send.
   **⚙ Copies to send**, just below (on the PC only), sets their long side, their JPEG quality
-  and whether they keep the GPS position (`[share]` of `config.toml`), saved and read back.
+  and whether they keep the GPS position (`[share]` of `config.toml`), saved and read back;
+  with the position kept, the command given ends with `--keep-gps`.
 - At most 3,000 photos added at once: narrow a search that finds more.
 
 An album can also become a folder of the Explorer: [`album "Crete 2023"`](album.md) makes it, as
