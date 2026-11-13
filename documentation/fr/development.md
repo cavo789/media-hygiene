@@ -130,7 +130,8 @@ page, chaque lien et chaque ancre.
 
 `home_dev` (mêmes options que `hygiene home`, par exemple `home_dev --port 8765`) sert la page
 d'accueil depuis les sources et la tient à jour pendant que vous éditez : un modèle modifié est relu
-à la requête suivante (`auto_reload` de Jinja, rien à faire), et un `.py` modifié sous
+à la requête suivante (`auto_reload` de Jinja, rien à faire) et l'onglet ouvert se recharge seul en environ une
+seconde (`MEDIA_HYGIENE_DEV_RELOAD=1`, posé par l'assistant et jamais par l'image), et un `.py` modifié sous
 `src/media_hygiene/` relance le serveur en environ une seconde. Le nouveau processus tire un nouveau
 `RUN_TAG` : l'onglet ouvert se recharge seul (`X-Media-Hygiene-Run`). La surveillance est une boucle
 de l'assistant : rien n'en atteint l'image. Ctrl+C l'arrête.

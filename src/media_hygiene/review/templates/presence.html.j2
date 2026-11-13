@@ -44,6 +44,17 @@
   window.addEventListener("pageshow", () => alive(false));
   if (!PROBE) window.addEventListener("pagehide", () => alive(true));
   window.setInterval(() => alive(false), ALIVE_MS);
+{% if dev_reload() %}
+  // Developer only (0771, review/dev_reload.py): a template edited under `home_dev` reloads this tab.
+  let templates = null;
+  window.setInterval(() => own(window.location.pathname, { method: "HEAD", cache: "no-store" })
+    .then((response) => {
+      const now = response.headers.get("X-Media-Hygiene-Templates");
+      if (templates === null) templates = now;
+      else if (now !== null && now !== templates) window.location.reload();
+    })
+    .catch(() => undefined), 1000);
+{% endif %}
 })();
 </script>
 {% endif %}

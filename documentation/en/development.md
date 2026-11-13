@@ -123,7 +123,8 @@ the site's Markdown extensions and anchors; where a link leads is decided by
 
 `home_dev` (same options as `hygiene home`, e.g. `home_dev --port 8765`) serves the home page from
 the sources and keeps it current while you edit: a changed template is read again by the next
-request (Jinja's `auto_reload`, nothing to do), and a changed `.py` under `src/media_hygiene/`
+request (Jinja's `auto_reload`, nothing to do) and the open tab reloads itself within about a
+second (`MEDIA_HYGIENE_DEV_RELOAD=1`, set by the helper and never by the image), and a changed `.py` under `src/media_hygiene/`
 restarts the server within about a second. The new process draws a new `RUN_TAG`, so the open tab
 reloads itself (`X-Media-Hygiene-Run`). The watcher is a loop of the helper: nothing of it reaches
 the image. Ctrl+C stops it.
