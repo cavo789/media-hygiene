@@ -74,7 +74,8 @@ def crop_jpeg(picture: Image.Image, box: FaceBox) -> bytes:
 
 
 _ORIENTATION: Final = 0x0112
-_TURNED: Final = frozenset({5, 6, 7, 8})  # EXIF orientations that swap width and height
+# EXIF orientations that swap width and height, and the degrees some software writes.
+_TURNED: Final = frozenset({5, 6, 7, 8, 90})
 
 
 def upright_size(path: Path) -> tuple[int, int] | None:

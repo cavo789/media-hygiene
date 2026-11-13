@@ -27,6 +27,7 @@ PATH_TABLES: Final = (
     "tags",
     "face_scans",
     "faces",
+    "face_turns",
     "measures",
     "takeout",
     "former_names",

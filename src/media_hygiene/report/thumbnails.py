@@ -12,6 +12,7 @@ from PIL import Image, ImageFile, ImageOps
 
 from media_hygiene.constants import THUMBNAILS_DIR_NAME, MediaKind
 from media_hygiene.report.video_preview import video_preview
+from media_hygiene.scan.degree_tags import degree_upright
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.image_check import prepare_image_worker
 from media_hygiene.scan.raw_check import raw_errors, raw_preview
@@ -155,4 +156,5 @@ def upright_picture(source: Path, edge: int | None = None) -> Image.Image:
             scale = edge / max(width, height, 1)
             if scale < 1:
                 image.draft(None, (math.ceil(width * scale), math.ceil(height * scale)))
-        return rgb_of(ImageOps.exif_transpose(image))
+        upright = degree_upright(image, ImageOps.exif_transpose(image))
+        return rgb_of(upright)

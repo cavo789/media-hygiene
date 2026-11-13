@@ -26,3 +26,22 @@ Decided by the maintainer in the review of 2026-11-12. (a PARTIAL's remainder be
 ## Decided (2026-11-13)
 
 The rotation guess is computed in `people` (which already decodes each photo for its faces) and cached there, in the index; the audit runs no face detection (choice by the maintainer, review of `.claude/plans/feedback-2026-11-13-iterate.md`).
+
+## Status — PARTIAL (2026-11-13)
+
+### Done
+
+- The guess runs in `people` (`faces/turn_guess.py`, `faces/worker.find_faces`), from the
+  picture already decoded; faces as stored counted once, three more detections only for an
+  untagged camera photo without a face. Cached in the index, table `face_turns` (schema 21,
+  `index/turn_rows.py`, a `PATH_TABLES` table: follows `sort`/`undo` moves, leaves with a
+  file gone); a new size/mtime = guessed again. Photos analysed before get a turn-only job
+  (header only when not worth guessing).
+- Lossless orientation write, pure: `actions/orientation_bytes.with_orientation` changes the
+  two bytes of the EXIF entry; writing the old code back gives the file byte for byte (test).
+
+### Not done → TODO 0802
+
+- The journaled write (executor + `undo`), the *Photos to straighten* page, refusals by path,
+  the *What next* line, the home card, docs EN + FR. **Reason:** one session's scope; each
+  needs the page first (Seeing first) — nothing writes to a photo yet.

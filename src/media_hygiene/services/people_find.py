@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.faces.worker import FaceJob, find_faces
 from media_hygiene.i18n import ngettext
+from media_hygiene.index.turn_rows import TurnGuess
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -23,6 +24,7 @@ if TYPE_CHECKING:
     from media_hygiene.faces.worker import FinderRecipe
     from media_hygiene.index.descriptions import PhotoVersion
     from media_hygiene.index.face_rows import FaceStore
+    from media_hygiene.index.turn_rows import TurnStore
     from media_hygiene.scan.progress import ProgressSink
 
 _SHARE: Final = 2  # one worker per this many CPUs
@@ -30,13 +32,14 @@ _SHARE: Final = 2  # one worker per this many CPUs
 
 @dataclass(frozen=True, slots=True)
 class FindDeps:
-    """What finding needs: the recipe, the store, the pool, progress, Ctrl+C."""
+    """What finding needs: the recipe, the stores, the pool, progress, Ctrl+C."""
 
     recipe: FinderRecipe
     store: FaceStore
     executor: Executor
     progress: ProgressSink
     stopped: Callable[[], bool]
+    turns: TurnStore | None = None  # where the turns guessed are kept (0725)
 
 
 @dataclass(slots=True)
@@ -112,10 +115,18 @@ class _Run:
             if self.deps.stopped():
                 self.outcome.stopped = True
                 return
-            job = FaceJob(photo.path, photo.size, photo.mtime_ns, self.deps.recipe)
+            known = self.deps.store.scanned(photo)  # faces kept: the turn only
+            job = FaceJob(
+                photo.path, photo.size, photo.mtime_ns, self.deps.recipe, known
+            )
             loop = asyncio.get_running_loop()
             found = await loop.run_in_executor(self.deps.executor, find_faces, job)
-            self._count(found)
+            if found is not None and self.deps.turns is not None:
+                self.deps.turns.put(
+                    TurnGuess(found.path, found.size, found.mtime_ns, found.turn)
+                )
+            if found is None or found.complete:
+                self._count(found)
             self.deps.progress.advance()
 
     def _count(self, found: PhotoFaces | None) -> None:
