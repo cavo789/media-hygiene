@@ -55,3 +55,11 @@ def test_without_a_name_it_is_not_offered(tmp_path: Path) -> None:
 def test_a_broken_file_offers_nothing(tmp_path: Path) -> None:
     """A file that is not TOML: a reason, no traceback."""
     assert _line(tmp_path, "[[people.person]\n").reason
+
+
+def test_the_command_carries_what_the_confirmation_listed(tmp_path: Path) -> None:
+    """A name added in another tab changes the command: the server refuses the click."""
+    line = _line(tmp_path, _PEOPLE)
+    assert line.step.command.endswith("--names --expect 2/0")
+    added = _line(tmp_path, _PEOPLE + '\n[[people.person]]\nname = "Léa"\nfaces = []\n')
+    assert added.step.command.endswith("--expect 3/0")

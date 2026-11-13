@@ -302,3 +302,18 @@ def test_a_face_marked_out_while_confirming_never_comes_back_under_that_name(
     sections = state(apps[-1])["sections"]
     assert isinstance(sections, list)
     assert out not in [key for s in sections if s["name"] == "Chloé" for key in keys(s)]
+
+
+def test_forget_names_refuses_when_the_names_changed_since_the_page(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """`--expect` no longer matching: refused before any face or name is deleted."""
+    name_largest(cli, apps)
+    config = locations.config_dir / "config.toml"
+    refused = run(cli, "people", "--forget", "--names", "--expect", "0/0")
+    assert refused.exit_code != 0
+    assert "nothing was deleted" in flat(refused.output)
+    assert 'name = "Chloé"' in config.read_text()
+    assert "faces forgotten" not in flat(refused.output)
+    gone = flat(run(cli, "people", "--forget", "--names", "--expect", "1/0").output)
+    assert "Names removed: Chloé." in gone

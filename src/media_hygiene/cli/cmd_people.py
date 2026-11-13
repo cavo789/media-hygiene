@@ -61,6 +61,17 @@ def people_command(  # pylint: disable=too-many-arguments
             ),
         ),
     ] = False,
+    expect: Annotated[
+        str,
+        typer.Option(
+            "--expect",
+            help=_(
+                "With --names: what the confirmation listed (names/ignored, e.g. "
+                "3/12); refuses, deleting nothing, when config.toml changed since."
+            ),
+            show_default=False,
+        ),
+    ] = "",
     port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Find the faces the cache lacks, group them, show and name them until Ctrl+C.
@@ -71,6 +82,7 @@ def people_command(  # pylint: disable=too-many-arguments
         sample: `--sample N`.
         forget: `--forget`.
         names: `--names`, with `--forget`.
+        expect: `--expect`, with `--names`.
         port: `--port`, inside the container.
 
     Raises:
@@ -81,6 +93,7 @@ def people_command(  # pylint: disable=too-many-arguments
     from media_hygiene.cli.cmd_search import suggest_clean
     from media_hygiene.cli.next_steps import carried, suggest
     from media_hygiene.cli.people_flow import PeopleRequest, run_people
+    from media_hygiene.cli.people_forget import NamesAsked
     from media_hygiene.paths.mount_kind import MountKind
     from media_hygiene.services.next_command import NextVerb
     from media_hygiene.services.people_files import require_people_index
@@ -94,7 +107,8 @@ def people_command(  # pylint: disable=too-many-arguments
         require_people_index(runtime)
         ensure_writable(runtime, MountKind.CACHE)
         within = tuple(runtime.mapper.to_container(folder) for folder in path or ())
-        result = run_people(runtime, PeopleRequest(within, sample, forget, names=names))
+        asked = NamesAsked(delete=names, expect=expect)
+        result = run_people(runtime, PeopleRequest(within, sample, forget, asked))
         if sample:
             suggest(
                 runtime,

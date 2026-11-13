@@ -29,3 +29,9 @@ disk is not plugged in (0359). "Not found" is the very answer the page must give
 
 - One run of `mh` on Windows (PowerShell 5.1) to prove the hand-over; add a step to
   `tests/measure/mh-measure.ps1` if it is not visible from the page itself.
+
+## Decided (2026-11-13, maintainer, review of feedback-2026-11-13-3-iterate)
+
+- `mh.ps1` hands the configured folder list to the container as a small JSON file in `/cache`
+  (not an environment variable: no length limit, accents and spaces kept, readable when
+  debugging). Still needs one `mh` run on Windows to verify.

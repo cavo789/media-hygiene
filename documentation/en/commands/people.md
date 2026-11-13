@@ -276,6 +276,7 @@ found, set the photo aside on its own (Delete in its large view).
 | `--sample N` | Analyse N random photos, print the time per photo and the estimate of a full run, and stop. |
 | `--forget` | Delete every face from the cache, then show that none is left; asks before deleting the names of `config.toml` too. |
 | `--names` | With `--forget`: delete the names of `config.toml` and the faces ignored too, without asking; the previous file is kept in `/config/.history/`. |
+| `--expect N/M` | With `--names`: the names and faces ignored the confirmation listed (the home page adds it); refuses, deleting nothing, when `config.toml` changed since. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 
 ## Your privacy

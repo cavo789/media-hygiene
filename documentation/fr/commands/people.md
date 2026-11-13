@@ -301,6 +301,7 @@ vue).
 | `--sample N` | Analyser N photos prises au hasard, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
 | `--forget` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun ; demande avant de supprimer aussi les noms de `config.toml`. |
 | `--names` | Avec `--forget` : supprimer aussi les noms de `config.toml` et les visages ignorés, sans demander ; le fichier précédent est conservé dans `/config/.history/`. |
+| `--expect N/M` | Avec `--names` : les noms et visages ignorés que la confirmation a listés (la page d'accueil l'ajoute) ; refuse, sans rien supprimer, si `config.toml` a changé depuis. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 
 ## Votre vie privée
