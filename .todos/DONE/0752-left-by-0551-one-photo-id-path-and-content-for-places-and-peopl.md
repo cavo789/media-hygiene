@@ -18,3 +18,19 @@ Split from section 0551 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — DONE (2026-11-13)
+
+Each item checked against the code: all three were already done, only unticked.
+- Faces as `{path, id, face}`, old `<path>#<n>` migration, relocation at audit: done by 0570
+  (`config/face_refs.py`, `services/face_refs_audit.py`, tests in `tests/unit/test_face_refs.py`:
+  sort, undo, quarantine and back, Explorer rename, copy on another drive, edited photo,
+  identical copies tie broken by name).
+- Relocation after `import` and the home page's audit: `relocate_after_audit` ends
+  `AuditService.run`, which `mh audit`, `import` (`import_run`, `import_copies`) and the home
+  page (`cli/home_audit`) all call. New end-to-end proof: `tests/integration/test_face_rename_audit.py`
+  (a folder renamed outside, a real audit, the face's path rewritten, its id kept).
+- The places page's take-back sends `id` (`places/board.py` → `take_back(config_file, act.id)`),
+  kept as decided 2026-11-02.
+
+No follow-up filed; no new limit.
