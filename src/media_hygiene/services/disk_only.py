@@ -94,5 +94,5 @@ def only_by_run(runtime: Runtime, runs: Sequence[str]) -> dict[str, int] | None:
         count = only_count(runtime.locations.index_file, journal_dir, (run,))
         if count is None:
             return None
-        counts[run] = count
+        counts[run] = count.only
     return counts

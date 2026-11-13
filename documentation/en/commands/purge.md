@@ -77,7 +77,10 @@ docker run --rm -it `
   a near duplicate, a burst shot, junk or an unreadable file has none. Before its question,
   `purge` lists those (*37 files set aside exist nowhere else*), then asks once, naming them
   (*That includes the 37 files listed above*): no, and nothing is erased. The quarantine's
-  page lists them the same way above its *Erase* button. A copy on the NAS is not counted (the container keeps no list of it).
+  page lists them the same way above its *Erase* button. A file pushed to the NAS
+  before it was set aside is said apart (*5 files exist only on the NAS*): the last
+  [`push`](push.md) found it there, same path, size and date; the next push moves that copy
+  into `.removed`, which does not count as a copy.
 - An empty quarantine says *The quarantine is empty* and does nothing.
 - A run name without a quarantine is refused: *Run … has no quarantine*.
 - The quarantine holds what `clean` moved (extra copies, unreadable files, orphan sidecars, near

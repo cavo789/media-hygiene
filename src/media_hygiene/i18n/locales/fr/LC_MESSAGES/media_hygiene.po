@@ -18471,6 +18471,10 @@ msgstr ""
 "les deux copies sont triées."
 
 #, python-brace-format
+msgid "{count} exist nowhere else"
+msgstr "{count} n'existent nulle part ailleurs"
+
+#, python-brace-format
 msgid "{count} extra copy"
 msgid_plural "{count} extra copies"
 msgstr[0] "{count} copie en trop"
@@ -18603,6 +18607,20 @@ msgid "{count} file exists nowhere else."
 msgid_plural "{count} files exist nowhere else."
 msgstr[0] "{count} fichier n'existe nulle part ailleurs."
 msgstr[1] "{count} fichiers n'existent nulle part ailleurs."
+
+#, python-brace-format
+msgid ""
+"{count} file exists only on the NAS: the next mh push moves it into "
+".removed, which does not count as a copy."
+msgid_plural ""
+"{count} files exist only on the NAS: the next mh push moves them into "
+".removed, which does not count as a copy."
+msgstr[0] ""
+"{count} fichier n'existe que sur le NAS : le prochain mh push le déplace "
+"dans .removed, qui ne compte pas comme une copie."
+msgstr[1] ""
+"{count} fichiers n'existent que sur le NAS : le prochain mh push les "
+"déplace dans .removed, qui ne compte pas comme une copie."
 
 #, python-brace-format
 msgid "{count} file found damaged: mh clean --repair puts its copy back."
@@ -19128,6 +19146,10 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} groupes de quasi-doublons décidés dans « review --near » "
 "attendent --tier near : rien n'en bouge sans lui."
+
+#, python-brace-format
+msgid "{count} nowhere else"
+msgstr "{count} nulle part ailleurs"
 
 #, python-brace-format
 msgid "{count} obvious"

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import JournalWriter, journal_file
 from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.services.only_count import only_count
+from media_hygiene.services.only_count import OnlyCount, only_count
 from tests.support.indexed_photos import indexed_photos
 from tests.support.journaled import done_line
 
@@ -43,8 +43,10 @@ def test_twin_in_the_index_covers_its_copy(tmp_path: Path) -> None:
     indexed_photos(index, tmp_path / "photos", 1)
     keeper = tmp_path / "photos" / "IMG_0.jpg"
     journals = _set_aside(tmp_path, keeper, keeper.stat().st_size)
-    assert only_count(index, journals, [_RUN]) == 1  # the near duplicate
-    assert only_count(index, journals, [_RUN, "20261001-100000"]) == 1  # lost: out
+    assert only_count(index, journals, [_RUN]) == OnlyCount(1)  # the near duplicate
+    assert only_count(index, journals, [_RUN, "20261001-100000"]) == OnlyCount(
+        1
+    )  # lost: out
 
 
 def test_other_size_or_no_index(tmp_path: Path) -> None:
@@ -52,6 +54,6 @@ def test_other_size_or_no_index(tmp_path: Path) -> None:
     index = tmp_path / "index.sqlite"
     indexed_photos(index, tmp_path / "photos", 1)
     journals = _set_aside(tmp_path, tmp_path / "photos" / "IMG_0.jpg", 1)
-    assert only_count(index, journals, [_RUN]) == 2
+    assert only_count(index, journals, [_RUN]) == OnlyCount(2)
     assert only_count(None, journals, [_RUN]) is None
     assert only_count(tmp_path / "none.sqlite", journals, [_RUN]) is None

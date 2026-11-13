@@ -8,6 +8,8 @@
 {% set texts = {
   "status": _("{count} files in the quarantine, from {runs} runs"),
   "empty": _("The quarantine is empty: nothing to restore."),
+  "only": _("{count} exist nowhere else"),
+  "onlyRun": _("{count} nowhere else"),
   "run": _("Run {run}"),
   "count": _("{count} files"),
   "restoring": _("Putting back…"),
@@ -39,6 +41,7 @@
   #runs { margin: 6px 0 0; padding: 0; list-style: none; }
   #runs li { display: flex; justify-content: space-between; gap: 8px; }
   #purgeOnly { color: var(--bad); } #purgeOnly ul { margin: 4px 0; padding-left: 18px; overflow-wrap: anywhere; }
+  #runs .only { color: var(--warn); white-space: nowrap; }
   #runs a { color: var(--accent); text-decoration: none; overflow-wrap: anywhere; }
 {% endblock %}
 {% block side %}

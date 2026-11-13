@@ -7,8 +7,9 @@ copy (`quarantine-duplicate`: compared byte for byte with its `keeper` first) an
 that kept copy is still on the disk with the same size; everything else is the only
 copy (a near duplicate names a keeper too, of other content: not a cover). A run
 whose journal is lost cannot tell: each of its files counts as an only copy (the
-safe side). A NAS copy is not counted as cover: the container keeps no listing of
-the push target.
+safe side). A file the last proven push found on the NAS (same path, size and date,
+`nas_cover`, 0781) is counted apart: *only on the NAS*, a cover until the next push
+moves it into `.removed`.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from media_hygiene.actions.purge import run_folders
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.actions.runs import run_phase
 from media_hygiene.errors import JournalError
+from media_hygiene.services.nas_cover import read_cover
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -39,6 +41,7 @@ class OnlyCopies:
 
     files: tuple[Path, ...] = ()
     size: int = 0
+    nas: int = 0  # files with no other copy but on the NAS (0781)
 
 
 def only_copies(
@@ -56,18 +59,24 @@ def only_copies(
     """
     files: list[Path] = []
     size = 0
+    nas = 0
     for run in runs:
-        found = _of_run(quarantines, journal_dir, run)
-        for file in found:
+        for file, on_nas in _of_run(quarantines, journal_dir, run):
             try:
-                size += file.stat().st_size
-            except OSError:  # gone by hand meanwhile: nothing to lose any more
+                found = file.stat().st_size
+            except OSError:  # gone by hand or purged: nothing to lose any more
                 continue
+            if on_nas:
+                nas += 1
+                continue
+            size += found
             files.append(file)
-    return OnlyCopies(tuple(files), size)
+    return OnlyCopies(tuple(files), size, nas)
 
 
-def _of_run(quarantines: Sequence[Path], journal_dir: Path, run: str) -> list[Path]:
+def _of_run(
+    quarantines: Sequence[Path], journal_dir: Path, run: str
+) -> list[tuple[Path, bool]]:
     """The only copies of one run: from its journal, else every file of its folders.
 
     Args:
@@ -76,15 +85,18 @@ def _of_run(quarantines: Sequence[Path], journal_dir: Path, run: str) -> list[Pa
         run: The run.
 
     Returns:
-        The files of its quarantine with no kept twin on the disk.
+        The files of its quarantine with no kept twin on the disk, each with
+        whether the last push found it on the NAS.
     """
     try:
         entries = read_journal_once(journal_file(journal_dir, run))
     except JournalError, OSError:
         folders = run_folders(quarantines, run)
-        return sorted(p for f in folders for p in f.rglob("*") if p.is_file())
+        files = sorted(p for f in folders for p in f.rglob("*") if p.is_file())
+        return [(file, False) for file in files]
+    cover = read_cover(journal_dir)
     return [
-        Path(entry.quarantine)
+        (Path(entry.quarantine), cover.holds(entry))
         for entry in set_aside(entries)
         if entry.quarantine is not None and not _covered(entry)
     ]

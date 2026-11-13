@@ -24,6 +24,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.near_views import folder_and_name
 from media_hygiene.review.views import ORIGINAL_LINK, PREVIEW_LINK
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.disk_only import only_by_run
 from media_hygiene.services.undo import undo_pick
 from media_hygiene.services.undo_guard import ensure_undo_ready
 
@@ -58,6 +59,7 @@ class QuarantineState(BaseModel):
     model_config = _FROZEN
 
     tiles: tuple[QuarantinedTile, ...]
+    only: dict[str, int] | None = None  # per run, nowhere else (0782); None: unknown
 
 
 class Restored(BaseModel):
@@ -127,7 +129,8 @@ def quarantine_state(runtime: Runtime) -> QuarantineState:
                 original=f"{ORIGINAL_LINK}{key}{suffix}",
             )
         )
-    return QuarantineState(tiles=tuple(tiles))
+    runs = list(dict.fromkeys(tile.run for tile in tiles))
+    return QuarantineState(tiles=tuple(tiles), only=only_by_run(runtime, runs))
 
 
 def restore_picked(runtime: Runtime, keys: Iterable[str]) -> Restored:

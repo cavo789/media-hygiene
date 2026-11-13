@@ -15552,6 +15552,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{count} exist nowhere else"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} extra copy"
 msgid_plural "{count} extra copies"
 msgstr[0] ""
@@ -15654,6 +15658,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} file exists nowhere else."
 msgid_plural "{count} files exist nowhere else."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file exists only on the NAS: the next mh push moves it into "
+".removed, which does not count as a copy."
+msgid_plural ""
+"{count} files exist only on the NAS: the next mh push moves them into "
+".removed, which does not count as a copy."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -16063,6 +16077,10 @@ msgid_plural ""
 "near: nothing of them moves without it."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} nowhere else"
+msgstr ""
 
 #, python-brace-format
 msgid "{count} obvious"

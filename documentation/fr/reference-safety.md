@@ -74,6 +74,9 @@ sont supprimés aussi : ils ne contiennent rien.
   [`push`](commands/push.md) ne la copie pas : un fichier mis de côté qui n'est pas une copie
   exacte (un quasi-doublon, une photo de rafale, un fichier inutile) n'existe nulle part ailleurs,
   et `purge`, `push`, la page *Place sur le disque* et la carte de la page d'accueil disent combien.
+  Un fichier envoyé avant d'être mis de côté est compté à part, *seulement sur le NAS*, jusqu'à
+  ce que le push suivant déplace cette copie dans `.removed` (vidé après
+  `[push] keep_removed_days` : jamais compté comme une copie).
 - **Vos réglages gardent leurs versions précédentes.** Chaque enregistrement de `config.toml`,
   du fichier d'une personne ou d'un événement, ou d'`albums.json` copie d'abord le fichier qu'il
   remplace dans `.history/` (`C:\Users\<vous>\media-hygiene\config\.history\`, et à côté

@@ -71,7 +71,10 @@ last one clicked, a drag draws a rectangle, Ctrl+A picks every file shown, I inv
 picking, Enter or a double click shows a photo large. **↩ Restore the picked files** puts them
 back where they were: a partial undo of their runs, journaled, with the same guards as `undo` (a
 drive whose quarantine is not mounted is refused). The page then shows the quarantine as read
-again from the disk; `mh undo <run>` later still brings back the rest of the run.
+again from the disk; `mh undo <run>` later still brings back the rest of the run. Each run of the
+*Runs* list says how many of its files exist nowhere else (*3 nowhere else*: near duplicates,
+burst shots, junk, not exact copies), counted from the index, and the status line the total;
+without an index, no figure.
 
 ```powershell
 mh undo --pick

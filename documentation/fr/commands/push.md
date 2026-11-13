@@ -58,7 +58,11 @@ passage, retirée ensuite.
    avant de les effacer). Quand des fichiers mis de côté n'existent nulle part ailleurs
    (quasi-doublons, photos de rafale, fichiers inutiles : pas des copies exactes), le plan dit
    combien : *12 fichiers mis de côté dans la quarantaine n'existent nulle part ailleurs, et la
-   sauvegarde ne copie pas la quarantaine*.
+   sauvegarde ne copie pas la quarantaine*. Ceux qu'il a trouvés sur le NAS au push précédent
+   comptent aussi : ce push déplace leur copie dans `.removed`. À la fin, l'exécution garde la
+   liste de ce que contient le NAS (chemin, taille, date) dans le dossier du journal : jusqu'au
+   push suivant, un fichier envoyé puis mis de côté compte comme *seulement sur le NAS*, pas
+   *nulle part ailleurs*.
 2. **Planifie**, et le dit : ce qui est déjà là, ce qui est nouveau, ce qui a été déplacé (même
    taille, date, premiers et derniers 64 Ko : renommé sur le NAS, rien n'est envoyé), ce qui a
    été modifié (la copie du NAS mise de côté d'abord), ce qui a disparu du PC.

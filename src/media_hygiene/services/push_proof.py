@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.plan.push_entries import Entry
+from media_hygiene.services.nas_cover import Listing, keep_cover
 from media_hygiene.services.push_broken import BrokenFinder, ContentCheck
 from media_hygiene.services.push_journal import push_run, record_done
 from media_hygiene.services.push_read import read_plan
@@ -72,6 +73,8 @@ def prove_push(runtime: Runtime, query: ProofQuery) -> PushProof:
     made = record_done(run, _per_folder(sides, found))
     check = ContentCheck(target, tuple(sides.sources))
     broken = BrokenFinder(runtime, check).broken(sides.source)
+    files = {str(check.pc_path(path)): stat for path, stat in sides.target.items()}
+    keep_cover(runtime.locations.journal_dir, Listing(run.run_id, target.host, files))
     missing = tuple(
         path
         for path, stat in sorted(sides.source.items())
