@@ -51,6 +51,10 @@ def test_no_page_touches_the_history_by_itself() -> None:
         text = path.read_text("utf-8")
         assert "pushState" not in text, path
         assert "replaceState" not in text, path
+        # 0765: the query string is read through `mhView.get` only (each key checked).
+        # The TV screen (old browsers, ES5, no frame) keeps its own test of `here=1`.
+        if path.name != "screen_here.js.j2":
+            assert "location.search" not in text, path
 
 
 def test_values_read_from_the_url_never_become_markup() -> None:
@@ -84,7 +88,15 @@ def test_the_large_view_pushes_and_back_closes_it() -> None:
 
 
 @pytest.mark.parametrize(
-    "template", ["review.html.j2", "near_review.js.j2", "pairs_review.js.j2"]
+    "template",
+    [
+        "review.html.j2",
+        "near_review.js.j2",
+        "pairs_review.js.j2",
+        "gone_review.js.j2",
+        "unwanted_review.js.j2",
+        "shrink.js.j2",
+    ],
 )
 def test_each_review_keeps_its_group(template: str) -> None:
     """Bursts, near duplicates, pairs: the group shown is the `g` key, replaced."""

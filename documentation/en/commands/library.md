@@ -112,7 +112,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **The view stays in the address**: the words, the period and the folder searched are in the
   page's address, so a reload or a bookmark gives the same search. In the large view, **Back**
   closes it (as Esc) and leaves the grid where it was; on the reviews (bursts, near duplicates,
-  pairs) a reload opens the same group again.
+  pairs, deleted files, unwanted photos) a reload opens the same group again, and on *Shrink* the
+  same video.
 - **Pick**, as on every page of photos: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**

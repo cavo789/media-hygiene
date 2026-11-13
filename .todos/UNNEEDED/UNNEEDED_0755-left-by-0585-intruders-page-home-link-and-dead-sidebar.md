@@ -18,3 +18,14 @@ Split from section 0585 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — UNNEEDED (2026-11-13)
+
+Redundant: checked against the code.
+- *No sidebar item looks clickable without being one, on any page*: already tested over every page
+  of `SHELL_PAGES`, typed and from home (`tests/unit/test_page_headers.py`,
+  `test_typed_in_the_console_no_shell_entry_looks_clickable`,
+  `test_opened_from_home_every_shell_entry_is_a_link_and_the_way_back_is_there`).
+- *The intruders page has Back to the home page*: opened from home, done and tested (same test).
+- Typed by a command: the very work of 0512 (`Needs maintainer`: the launcher's exit code, a run on
+  Windows PowerShell 5.1 + Docker Desktop). Closes with 0512, nothing to do here.

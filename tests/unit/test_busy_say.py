@@ -65,3 +65,11 @@ def test_the_library_shows_placeholders_while_it_loads() -> None:
     """The first answer comes into placeholder tiles: the grid never moves."""
     search = render_page("search.html.j2")
     assert 'window.mhPlaceholders($("grid"), PLACEHOLDER_TILES);' in search
+
+
+def test_the_people_page_saves_through_the_busy_button() -> None:
+    """0766: a section button stays busy until its save is answered."""
+    people = (
+        _TEMPLATES.parent.parent / "people" / "templates" / "people.js.j2"
+    ).read_text("utf-8")
+    assert "window.mhBusy(button, () => post(body, path))" in people

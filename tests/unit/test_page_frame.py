@@ -181,3 +181,16 @@ def test_the_places_templates_stay_under_the_soft_cap() -> None:
     """0668: the map page is split into parts, none of them a monolith."""
     for path in (_SRC / "places" / "templates").glob("*.j2"):
         assert len(path.read_text("utf-8").splitlines()) <= TEMPLATE_SOFT_CAP, path
+
+
+@pytest.mark.parametrize("template", _FRAMED)
+def test_every_framed_page_holds_the_busy_and_say_pieces_once(template: str) -> None:
+    """0763: `mhSay`, `mhBusy`, `mhPlaceholders` come from the frame, no copy."""
+    page = render_page(template)
+    for part in (
+        '<div id="mhSay" aria-live="polite">',
+        "window.mhSay = ",
+        "window.mhBusy = ",
+        "window.mhPlaceholders = ",
+    ):
+        assert page.count(part) == 1, (template, part)

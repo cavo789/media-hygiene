@@ -79,8 +79,8 @@ async function find(typed) {
   $("drawOpen").hidden = false;
   sideSay(result.faces.length ? "" : (result.scanned ? TEXTS.noFace : TEXTS.notScanned));
   showFaces(result.faces);
-  const face = $("faces").children[Number(wanted.get("face"))]; // a "?" of the large view (0714)
-  if (wanted.has("face") && face) { wanted.delete("face"); face.click(); }
+  const face = $("faces").children[wanted.face]; // a "?" of the large view (0714)
+  if (wanted.face !== undefined && face) { delete wanted.face; face.click(); }
 }
 
 async function lookAgain() {
@@ -149,7 +149,7 @@ $("find").addEventListener("submit", (event) => {
   if ($("path").value.trim()) find($("path").value.trim());
 });
 $("lookAgain").addEventListener("click", lookAgain);
-const wanted = new URLSearchParams(window.location.search); // `path`, and `face` once
-const asked = wanted.get("path");
+const wanted = window.mhView.get({ path: "path", face: "int" }); // `path`, and `face` once
+const asked = wanted.path;
 $("status").textContent = TEXTS.start;
 if (asked) { $("path").value = asked; find(asked); }

@@ -89,7 +89,7 @@
       row.append(purge);
       return row;
     }));
-    const asked = new URLSearchParams(window.location.search).get("purged");
+    const asked = window.mhView.get({ purged: "text" }).purged;
     if (asked && state.purged && state.purged.run_id === asked) {
       const { gone, freed, stated } = state.purged;
       byId("said").textContent = fill(gone ? TEXTS.purgedYes : TEXTS.purgedNo, { run: asked, freed, stated });

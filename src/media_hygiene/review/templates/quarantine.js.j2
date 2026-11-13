@@ -6,7 +6,7 @@ const STATE_PATH = {{ state_path | tojson }};
 const RESTORE_PATH = {{ restore_path | tojson }};
 const CHOSEN_PATH = ""; // unused: `saveChoice` restores
 const LANG = document.documentElement.lang;
-const ONLY_RUN = new URLSearchParams(window.location.search).get("run"); // from Disk space, *Purge* (0591)
+const ONLY_RUN = window.mhView.get({ run: "text" }).run || null; // from Disk space, *Purge* (0591)
 let tiles = [];
 const shownOf = (all) => (ONLY_RUN ? all.filter((tile) => tile.run === ONLY_RUN) : all);
 

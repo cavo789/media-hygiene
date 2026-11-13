@@ -86,7 +86,7 @@
   byId("lateRefuse").addEventListener("click", refuse);
   $("form").addEventListener("submit", () => { shownEvent = null; byId("lateBar").hidden = true; });
   byId("tabEvents").addEventListener("click", load, { once: true });
-  const wanted = new URLSearchParams(window.location.search).get("late");
+  const wanted = window.mhView.get({ late: "text" }).late;
   if (!byId("events").hidden || wanted) load();
   if (wanted) open(wanted, false);
 })();

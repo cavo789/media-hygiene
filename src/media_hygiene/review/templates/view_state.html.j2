@@ -1,7 +1,7 @@
 {# The view a page shows, kept in its URL (0666): Back, a reload and a bookmark bring it back.
    Included once by the frame, the home page and the album page, like the ask dialog.
    - `window.mhView.get(keys)`: the page's own keys read from the query string, each checked
-     against its kind (`"int"`, `"word"`, `"text"` or a list of the values allowed); anything
+     against its kind (`"int"`, `"word"`, `"text"`, `"path"` or a list of the values allowed); anything
      else is dropped. What it returns is untrusted text: set it as a value, never as HTML.
    - `window.mhView.set(values, {push, state, hash})`: writes these keys (`null` or `""`
      removes one) and keeps the others. `push` adds a step of the history (the large view, a new
@@ -10,10 +10,12 @@
 <script nonce="{{ page_nonce }}">
 (() => {
   const TEXT_MAX = 200;  // longer than any search typed, short enough for every browser
+  const PATH_MAX = 4096;  // a file's path (`/person?path=`): the longest a Linux path may be
   const KINDS = { int: /^\d{1,7}$/, word: /^[A-Za-z][A-Za-z0-9_-]{0,31}$/ };
   const allowed = (kind, value) => {
     if (Array.isArray(kind)) return kind.includes(value);
     if (kind === "text") return value.length <= TEXT_MAX;
+    if (kind === "path") return value.length <= PATH_MAX;
     return Boolean(KINDS[kind]) && KINDS[kind].test(value);
   };
   const get = (keys) => {
