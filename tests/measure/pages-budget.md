@@ -91,6 +91,11 @@ hand in a sidecar (0618); `os.listdir` instead of `Path.iterdir` took it from 28
   cut to the closest; buffers reused): 13.5 s cold at 100,000 (measured 2026-11-12, load
   average 6–9 from other sessions; face grouping alone 24.4 s → 10.3 s). Still all pairs
   (the matrix product): the ≤ 5 s target needs an approximate search or float16.
+- 0814 (measured 2026-11-13, same machine, 100,000 files, 50,347 faces): that cost is the
+  **first** grouping only. With the groups kept in the index (0588), a cold opening runs no
+  neighbour search: people page 2,858 ms cold (11.8 s for the first grouping, 0794), 0.1 ms
+  warm, peak memory 714 MB. New faces join by comparing only themselves with all; a full
+  regroup comes back once they pass a tenth of the others.
 - Everything else grows about linearly (×10 files: ×5 to ×12; ×3 files: ×2.6 to ×3.3,
   measured), but several routes are slow in absolute terms at 100,000: folders 3.0 s,
   places page 5.2 s (it reads every row of the index, facts parsed, for the 1.3 % with
