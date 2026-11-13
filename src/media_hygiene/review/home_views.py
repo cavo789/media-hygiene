@@ -45,7 +45,8 @@ class HomeField(Frozen):
     name: str
     label: str
     example: str
-    kind: str  # text, number, folder, album
+    kind: str  # text, number, folder, album, choice
+    choices: tuple[tuple[str, str], ...] = ()  # choice: (value, label), buttons
 
 
 class HomeAction(Frozen):  # one field per thing the page draws

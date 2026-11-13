@@ -101,8 +101,8 @@ function showDialog(dialog) {
 const closeButton = () => `<button class="btn btn-ghost icon-btn" type="button" data-close aria-label="${esc(T.close)}">${icon("x")}</button>`;
 function openForm(action) {
   const dialog = $("#formDlg");
-  // An album is picked from those saved (`albumChoices`), never typed: only an existing name runs.
-  const input = (field, at) => (field.kind === "album"
+  // An album is picked from those saved (`albumChoices`), never typed; a choice is a button (0785).
+  const input = (field, at) => (field.kind === "choice" ? choiceButtons(field) : field.kind === "album"
     ? `<select id="f-${esc(field.name)}" name="${esc(field.name)}" data-album required disabled${at ? "" : " autofocus"}><option value="">${esc(T.albumLoading)}</option></select>`
     : `<input id="f-${esc(field.name)}" name="${esc(field.name)}" type="${field.kind === "number" ? "number" : "text"}" value="${esc(field.example)}" autocomplete="off" spellcheck="false" required${at ? "" : " autofocus"}>`);
   const fields = action.fields.map((field, at) => `<div class="field"><label for="f-${esc(field.name)}">${esc(field.label)}</label>${input(field, at)}</div>`).join("");

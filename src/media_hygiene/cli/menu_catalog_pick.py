@@ -68,3 +68,26 @@ def import_folder_pick_step() -> Step:
         doc=Doc("commands/import/", *PICK_ANCHORS),
         fields=(folder_field(),),
     )
+
+
+def period_field() -> Field:
+    """The period of a phone import, buttons on the home page (0785).
+
+    Returns:
+        The field: `--since` added unless *Since the last import* is chosen.
+    """
+    return Field(
+        "period",
+        _("Which photos of the phone"),
+        "last",
+        pattern=r"last|today|week|month|all",
+        kind=FieldKind.CHOICE,
+        choices=(
+            ("last", _("Since the last import")),
+            ("today", _("Today")),
+            ("week", _("This week")),
+            ("month", _("This month")),
+            ("all", _("All")),
+        ),
+        option="--since",
+    )

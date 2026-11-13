@@ -123,7 +123,10 @@ dernier import** (le premier prend tout) ; `--since today`, `week` (les 7 dernie
 (`IMG_20261029_…`, `Screenshot_2026-10-29…`), sinon sa date de modification sur le téléphone. Les
 nouveaux fichiers plus anciens restent sur le téléphone et sont comptés : *Laissées sur le
 téléphone : 1 240 photos et vidéos plus anciennes*. `--since` vaut aussi pour un dossier
-(`mh import E:\DCIM --since month`), dont le défaut reste tous les fichiers.
+(`mh import E:\DCIM --since month`), dont le défaut reste tous les fichiers. Sur la page
+d'accueil, *Copier les nouvelles photos du téléphone* la demande d'abord, un bouton par choix :
+**Depuis le dernier import** (le défaut), **Aujourd'hui**, **Cette semaine**, **Ce mois-ci**,
+**Tout** ; `mh menu` la lance depuis le dernier import.
 
 **Un dossier par téléphone** : les copies vont dans un dossier au nom du téléphone, celui que
 Windows montre dans *Ce PC* (le nom d'appareil du téléphone). Deux téléphones du même modèle
@@ -167,7 +170,8 @@ page des rafales : elle reste au premier plan, et la suite continue à sa fermet
 d'abord. Avec `tags` activé, quand la page des rafales était ouverte : *Fini
 sur la page des rafales ? Appuyez sur Entrée*, puis les prises écartées vont en quarantaine
 (`clean --decisions import-bursts.json`, avec sa propre question). Enfin, *✨ Tout est fait : 42
-nouvelles photos et vidéos dans votre photothèque*, le nom proposé pour les nouvelles photos et
+nouvelles photos et vidéos dans votre photothèque, 2 séries de rafales revues (3 prises mises
+de côté)* (les séries que la page des rafales a vues), le nom proposé pour les nouvelles photos et
 le diaporama de **cet import seulement** : *📺 Votre diaporama « Promenade à Liège » est prêt : mh slideshow --folder "…" --since today*, puis *Le montrer sur la télé
 maintenant ? (o/N)*. Retirez une étape de `then` pour la couper (`then = []` : rien ne tourne). 🔒 Sans `--free`, le téléphone est seulement lu :
 rien n'y est supprimé, déplacé ni renommé.

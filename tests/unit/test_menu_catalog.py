@@ -96,10 +96,11 @@ def test_the_slideshow_is_in_share_and_nowhere_else() -> None:
 
 
 def test_the_fields_appear_in_their_command() -> None:
-    """Each field is a `{name}` word of its command; its example fits its pattern."""
+    """Each field is a `{name}` word of its command, or an option; its example fits."""
     for step in CATALOG.steps:
         for field in step.fields:
-            assert f"{{{field.name}}}" in step.command.split(), step.name
+            word = f"{{{field.name}}}" in step.command.split()
+            assert word != bool(field.option), step.name
             assert re.fullmatch(field.pattern, field.example), step.name
 
 

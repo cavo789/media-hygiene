@@ -33,3 +33,20 @@ resumed from a step (0604, `review/import_chain_api.py`) and the toggles saved i
 - The period chosen on the page reaches `--since` (test of the command built); `mh menu`
   asks it too; docs en + fr (`commands/import.md`); `docs_screenshots` to run.
 - The end line counts the shots of `import-bursts.json` set aside (unit test).
+
+## Status — PARTIAL (2026-11-13)
+
+Done: `FieldKind.CHOICE` (`Field.choices`, `Field.option`: an option added after the
+command unless the default is chosen, `cli/menu_words.py`); the phone step asks
+*Since the last import · Today · This week · This month · All* as buttons
+(`choiceButtons`, `home_draw.js.j2`), handed to `--since` (tests
+`tests/unit/test_import_period_bursts.py`); the end line counts the burst series seen
+and their shots set aside from `import-bursts.json` (`reviewed_bursts`); docs en + fr.
+
+Left:
+- `mh menu` does not ask the period as a numbered question: it runs the import since
+  the last one, as before (a choice field has a default, `Step.asks`). The question
+  needs a prompt in `mh_menu.ps1.j2` / `mh.sh.j2` (the menu's lines carry no field).
+- The copies set aside are not in the end line: `phone-end --copies` runs in its own
+  container, its count is not kept for the end (a small file in /reports would do).
+- `docs_screenshots` to run (the phone step now opens a form).

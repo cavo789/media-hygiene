@@ -295,3 +295,8 @@ function renderMain() {
   if (REMOTE && space.id === HOME) tvAlbums();
   if (audit.last) drawAudit(audit.last);
 }
+// A field of fixed choices (0785: the period of a phone import), one button each, the first chosen.
+function choiceButtons(field) {
+  const one = ([value, label], at) => `<label class="choice"><input type="radio" name="${esc(field.name)}" value="${esc(value)}"${at ? "" : " checked autofocus"}><span>${esc(label)}</span></label>`;
+  return `<div class="choices" role="radiogroup" id="f-${esc(field.name)}">${field.choices.map(one).join("")}</div>`;
+}

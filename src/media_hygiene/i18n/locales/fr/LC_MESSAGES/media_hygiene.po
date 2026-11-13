@@ -10942,6 +10942,9 @@ msgstr "Sidecars non écrits d'ici : le prochain 'xmp --apply' le retire."
 msgid "Since"
 msgstr "Depuis"
 
+msgid "Since the last import"
+msgstr "Depuis le dernier import"
+
 msgid "Size"
 msgstr "Taille"
 
@@ -13789,6 +13792,9 @@ msgstr ""
 msgid "This video does not play on a phone as it is ({format})."
 msgstr "Cette vidéo ne se lit pas telle quelle sur un téléphone ({format})."
 
+msgid "This week"
+msgstr "Cette semaine"
+
 msgid "This word may only come from what the photos show: not described yet."
 msgstr ""
 "Ce mot ne peut venir que de ce que montrent les photos : pas encore "
@@ -14690,6 +14696,9 @@ msgstr "Où en sont vos photos"
 
 msgid "Whether a phone may open the pages, and see the originals."
 msgstr "Si un téléphone peut ouvrir les pages, et voir les originaux."
+
+msgid "Which photos of the phone"
+msgstr "Quelles photos du téléphone"
 
 msgid ""
 "Which photos the grid shows, by the name of the face that matched; Ctrl+A"
@@ -16886,6 +16895,9 @@ msgstr "introuvable là où le plan ou un tri l'a mis"
 
 msgid "not found: is its disk plugged in?"
 msgstr "introuvable : son disque est-il branché ?"
+
+msgid "not one of its choices"
+msgstr "pas l'un de ses choix"
 
 msgid "not sorted yet"
 msgstr "pas encore triées"
@@ -21267,6 +21279,12 @@ msgid "{section} is not a list."
 msgstr "{section} n'est pas une liste."
 
 #, python-brace-format
+msgid "{series} burst series reviewed"
+msgid_plural "{series} burst series reviewed"
+msgstr[0] "{series} série de rafales revue"
+msgstr[1] "{series} séries de rafales revues"
+
+#, python-brace-format
 msgid "{series} to look at one by one"
 msgstr "{series} à regarder une à une"
 
@@ -21327,6 +21345,12 @@ msgstr "{sheet} : {key} : '{value}' ({why})"
 #, python-brace-format
 msgid "{shift}: rule {camera}"
 msgstr "{shift} : règle {camera}"
+
+#, python-brace-format
+msgid "{shots} shot set aside"
+msgid_plural "{shots} shots set aside"
+msgstr[0] "{shots} prise mise de côté"
+msgstr[1] "{shots} prises mises de côté"
 
 #, python-brace-format
 msgid "{shown} of the {count} photos it will ask about:"
@@ -21694,12 +21718,12 @@ msgid "✕ hides a tile, ← and → move it; saved at once."
 msgstr "✕ masque une tuile, ← et → la déplacent ; enregistré aussitôt."
 
 #, python-brace-format
-msgid "✨ All done: {count} new photo or video in your library."
-msgid_plural "✨ All done: {count} new photos and videos in your library."
-msgstr[0] "✨ Tout est fait : {count} nouvelle photo ou vidéo dans votre photothèque."
+msgid "✨ All done: {count} new photo or video in your library"
+msgid_plural "✨ All done: {count} new photos and videos in your library"
+msgstr[0] "✨ Tout est fait : {count} nouvelle photo ou vidéo dans votre photothèque"
 msgstr[1] ""
 "✨ Tout est fait : {count} nouvelles photos et vidéos dans votre "
-"photothèque."
+"photothèque"
 
 msgid "❚❚ Pause"
 msgstr "❚❚ Pause"

@@ -81,7 +81,7 @@ def _cells(runtime: Runtime, line: MenuStep) -> tuple[str, ...]:
     text = escape(line.step.title)
     if line.step.planned:
         text += f" [italic]{_('(planned)')}[/]"
-    elif line.step.fields:
+    elif line.step.asks:
         text += f" [italic]{_('(type it yourself)')}[/]"
     elif not line.command:
         text += f" [italic]{_('(nothing to do yet)')}[/]"
@@ -116,7 +116,7 @@ def _footer(runtime: Runtime, menu: Menu) -> None:
                 )
             )
         )
-    if any(line.step.fields and not line.step.planned for line in menu.steps):
+    if any(line.step.asks and not line.step.planned for line in menu.steps):
         output.info(
             _("A step to type yourself takes words only you know: {url}").format(
                 url=f"{DOC_PAGES}/{_('reference-commands/')}"

@@ -7,11 +7,11 @@ it, then three tools.
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.cli.menu_words import command_words
 from media_hygiene.constants import DOC_PAGES, Locale
 from media_hygiene.i18n import active_locale
 
@@ -20,7 +20,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.cli.status_step import Slot
 
-_PLACEHOLDER: Final = re.compile(r"^\{(?P<name>\w+)\}$")
 _QUOTE: Final = '"'
 
 
@@ -62,6 +61,7 @@ class FieldKind(StrEnum):
     NUMBER = "number"
     FOLDER = "folder"  # a folder as the Explorer shows it
     ALBUM = "album"  # an album saved, picked from their list, never typed
+    CHOICE = "choice"  # one of its `choices`, buttons on the page (0785)
 
 
 @dataclass(frozen=True, slots=True)
@@ -95,6 +95,8 @@ class Field:
     example: str
     pattern: str = r"[^\"\x00-\x1f]+"  # the whole value: no quote, no control character
     kind: FieldKind = FieldKind.TEXT
+    choices: tuple[tuple[str, str], ...] = ()  # CHOICE: (value, translated label)
+    option: str = ""  # an option added when its value is not `example`, e.g. `--since`
 
 
 @dataclass(frozen=True, slots=True)
@@ -137,9 +139,18 @@ class Step:  # pylint: disable=too-many-instance-attributes  # one per catalog c
             values: The value of each field, by name.
 
         Returns:
-            The words, `Noël 2025` one of them.
+            The words, `Noël 2025` one of them; an option field's after them.
         """
-        return tuple(_word(word, values) for word in self.command.split())
+        return command_words(self, values)
+
+    @property
+    def asks(self) -> tuple[Field, ...]:
+        """The fields only the user can type: those with choices have a default.
+
+        Returns:
+            Them; empty when `mh menu` can run the step as it is.
+        """
+        return tuple(field for field in self.fields if not field.option)
 
     @property
     def typed(self) -> str:
@@ -148,27 +159,13 @@ class Step:  # pylint: disable=too-many-instance-attributes  # one per catalog c
         Returns:
             It, a value with a space between double quotes; empty without fields.
         """
-        if not self.fields:
+        if not self.asks:
             return ""
         values = {field.name: field.example for field in self.fields}
         return " ".join(
             f"{_QUOTE}{word}{_QUOTE}" if " " in word or "\\" in word else word
             for word in self.words(values)
         )
-
-
-def _word(word: str, values: Mapping[str, str]) -> str:
-    """One word of a command, or the value its placeholder stands for.
-
-    Args:
-        word: The word, `{name}` for a field.
-        values: The value of each field.
-
-    Returns:
-        The word or the value.
-    """
-    match = _PLACEHOLDER.match(word)
-    return values[match["name"]] if match else word
 
 
 @dataclass(frozen=True, slots=True)

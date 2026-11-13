@@ -6,6 +6,7 @@ from media_hygiene.cli.menu_catalog_pick import (
     folder_field,
     import_folder_pick_step,
     import_pick_step,
+    period_field,
 )
 from media_hygiene.cli.menu_entry import (
     Area,
@@ -51,6 +52,7 @@ def import_steps() -> tuple[Step, ...]:
                 "#depuis-un-téléphone--mh-import---phone",
             ),
             windows=True,
+            fields=(period_field(),),
         ),
         Step(
             "phone-free",

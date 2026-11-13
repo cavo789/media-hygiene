@@ -97,6 +97,7 @@ def _action(line: MenuStep) -> HomeAction:
                 label=field.label,
                 example=field.example,
                 kind=field.kind.value,
+                choices=field.choices,
             )
             for field in step.fields
         ),

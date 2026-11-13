@@ -112,7 +112,10 @@ import** (the first one takes all); `--since today`, `week` (the last 7 days), `
 month), `all` or a day (`2026-10-29`). A file's day is the date in its name (`IMG_20261029_…`,
 `Screenshot_2026-10-29…`), else its modified time on the phone. The older new files stay on the
 phone and are counted: *Left on the phone: 1,240 older photos and videos*. `--since` works for a
-folder too (`mh import E:\DCIM --since month`), whose default stays every file.
+folder too (`mh import E:\DCIM --since month`), whose default stays every file. On the home page,
+*Copy the new photos of the phone* asks it first with one button each: **Since the last import**
+(the default), **Today**, **This week**, **This month**, **All**; `mh menu` runs it since the last
+import.
 
 **One folder per phone**: the copies go to a folder named after the phone, the name Windows
 shows in *This PC* (the phone's own device name). Two phones of the same model left at their
@@ -151,7 +154,8 @@ describes the new photos; when it is not running, `tags` says so and the chain g
 when it closes, with no question to answer first. With `tags` on, when the burst page was
 open: *Done on the burst page? Press Enter*, then the shots you set aside go to the quarantine
 (`clean --decisions import-bursts.json`, its own question). Last, *✨ All done: 42 new photos and
-videos in your library*, the name proposed for the new photos and the slideshow of **this import
+videos in your library, 2 burst series reviewed (3 shots set aside)* (the series once the burst page
+saw them), the name proposed for the new photos and the slideshow of **this import
 only**: *📺 Your slideshow "Walk in Liège" is ready: mh slideshow --folder "…" --since today*, then *Show it on the TV now? (y/N)*.
 Remove a step from `then` to switch it off (`then = []`: nothing runs). 🔒 Without `--free`, the phone is only read: nothing on
 it is deleted, moved or renamed.
