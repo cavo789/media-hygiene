@@ -31,3 +31,23 @@ visual twin, which the *seeing first* rule (0524) forbids: both come together.
       it, disk identical to before the flip, `undo` puts the damaged file back
 - [ ] A file whose good copy is gone meanwhile: refused, said, nothing moved
 - [ ] Docs EN + FR; French strings
+
+## Status — PARTIAL (2026-11-13)
+
+Done: the page `/repair/` in the home server (`services/repair_pick.py`, `review/repair_app.py`,
+`services/repair_serving.py`, `review/templates/repair*.j2`), built on the shared `pick_*` parts
+like the quarantine's page: each damaged file beside its good copy (two previews, since when,
+where the copy is), *Restore these files* on the tiles picked, every copy proven again at that
+moment, one journaled run (`services/repair.repair`), each file read back, the page read again;
+the toast's Undo (or Z) runs `mh undo` of that run (`/api/undo-run`). A copy gone meanwhile:
+refused, said, nothing moved. Catalog step `repair` (`clean --repair`, served here by
+`SERVED_MORE`); the safety card's *Damaged files* line opens it, the console line stays the fast
+path. Tests `tests/integration/test_repair_page.py` (flip → listed → restored identical → Undo;
+copy gone; card). Docs en + fr (`reference-safety.md`, `commands/clean.md`); French strings.
+No *Apply now*: nothing is set aside to apply, each restore acts at once, journaled.
+
+Left:
+- The Chromium walk of the page (gestures of the photo-picking contract, no `pageerror`, the
+  grid's top unchanged by a pick) was not run here: add `repair.html.j2` to the e2e browser
+  walks (`tests/e2e/test_ask_dialog_browser.py` pattern) and to `tests/integration/tags/test_pick_pages.py`.
+- `docs_screenshots` to run (the card's line changed; a new page).

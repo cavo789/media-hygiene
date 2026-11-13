@@ -32,6 +32,26 @@ def clean_more_steps() -> tuple[Step, ...]:
             optional=True,
         ),
         Step(
+            "repair",
+            space,
+            _("Restore the damaged files"),
+            _(
+                "Each file the re-read found damaged, beside its good copy: restore "
+                "it, journaled; undo puts the damaged one back."
+            ),
+            "clean --repair",
+            Risk.UNDO,
+            Kind.PAGE,
+            icon="undo",
+            keywords=_("damaged corrupted repair restore good copy reread"),
+            doc=Doc(
+                "reference-safety/",
+                "#a-file-damaged-by-the-disk",
+                "#un-fichier-abîmé-par-le-disque",
+            ),
+            optional=True,
+        ),
+        Step(
             "review-near",
             space,
             _("Settle the near duplicates"),

@@ -1,0 +1,107 @@
+{# The script of repair.html.j2, after the shared `pick_*` scripts: each damaged file beside
+   its good copy; ↩ Restore posts the keys picked, then shows the files as the server read them
+   again from the disk; the toast's Undo runs `mh undo` of the run just made. #}
+const TEXTS = {{ texts | tojson }};
+const STATE_PATH = {{ state_path | tojson }};
+const RESTORE_PATH = {{ restore_path | tojson }};
+const CHOSEN_PATH = ""; // unused: `saveChoice` restores
+const LANG = document.documentElement.lang;
+let tiles = [];
+
+const number = (value) => value.toLocaleString(LANG);
+
+function listing() {
+  return tiles.map((tile) => ({
+    key: tile.key, name: tile.name, preview: tile.copy_preview || tile.preview, original: tile.original,
+    chosen: false, video: tile.video, folder: tile.folder,
+  }));
+}
+
+function picture(src, name) {
+  if (!src) return element("div", "empty", "∅");
+  const image = element("img");
+  image.loading = "lazy";
+  image.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+  image.alt = name;
+  image.src = src;
+  image.addEventListener("error", () => image.replaceWith(element("div", "empty", "📷")));
+  return image;
+}
+
+function card(file, index) {
+  const tile = tiles[index];
+  const node = element("article");
+  const pair = element("div", "pair");
+  pair.append(picture(tile.video ? "" : tile.preview, tile.name), picture(tile.video ? "" : tile.copy_preview, tile.name));
+  const meta = element("div", "meta");
+  const copy = tile.good_copy === null ? TEXTS.noCopy : fill(tile.in_quarantine ? TEXTS.copyQuarantine : TEXTS.copy, { path: tile.good_copy });
+  meta.append(
+    element("div", "name", tile.name), element("div", "muted", tile.folder),
+    element("div", "bad", fill(TEXTS.since, { since: tile.since, good: tile.good })),
+    element("div", tile.good_copy === null ? "bad" : "muted", copy),
+  );
+  node.append(pair, meta);
+  return wireCard(node, index);
+}
+
+function placeCards(made) {
+  if (made.length === 0) {
+    $("grid").replaceChildren(element("p", "muted", TEXTS.empty));
+    return;
+  }
+  const grid = element("div", "tiles");
+  grid.append(...made);
+  $("grid").replaceChildren(grid);
+}
+
+function scope() {
+  return {};
+}
+
+function reopen() {
+  showFiles(listing(), false);
+  $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length) }) : TEXTS.empty;
+}
+
+function say(text, kind) {
+  for (const id of ["chosen", "viewerSaid"]) {
+    $(id).className = kind || "";
+    $(id).textContent = text;
+  }
+  $("chosen").title = text;
+}
+
+async function readAgain() {
+  const answer = await ask(STATE_PATH);
+  if (!answer || !answer.ok) { say(TEXTS.offline, "error"); return; }
+  tiles = (await answer.json()).tiles;
+  reopen();
+}
+
+// ↩ Restore: the files picked (only those shown) are restored; the page shows the disk again.
+saveChoice = async (action, keys) => {
+  if (action !== "add" || keys.length === 0) return false;
+  say(TEXTS.restoring, "");
+  const answer = await ask(RESTORE_PATH, { keys: keys });
+  if (!answer) { say(TEXTS.offline, "error"); return false; }
+  const reply = await answer.json().catch(() => ({}));
+  if (!answer.ok) {
+    say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error");
+    return false;
+  }
+  tiles = reply.state.tiles;
+  let text = fill(TEXTS.back, { time: new Date().toLocaleTimeString(LANG), count: number(reply.back.length) });
+  if (reply.left.length) text += " " + fill(TEXTS.left, { reasons: reply.left.join(" · ") });
+  say(text, reply.left.length ? "error" : "saved");
+  if (reply.run_id) {
+    window.mhUndoToast(text, async () => { say(await window.mhUndoRun(reply.run_id), ""); await readAgain(); }, { keys: true });
+  }
+  return true;
+};
+deleteKeySets = false; // nothing is set aside here
+delete VIEWER_KEYS.Delete;
+delete VIEWER_KEYS.Backspace;
+delete VIEWER_KEYS.a;
+$("restore").addEventListener("click", () => choose("add"));
+
+readAgain();

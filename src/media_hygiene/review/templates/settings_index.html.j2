@@ -18,6 +18,7 @@
 {% block bar %}
   <strong>{{ page_name }}</strong>
   <label>{{ _("Find a setting") }} <input id="settingsFind" type="search" autocomplete="off"></label>
+  <a href="versions/">🕘 {{ _("Versions") }}</a>
   <span id="settingsSaid" role="status" aria-live="polite"></span>
 {% endblock %}
 {% block content %}

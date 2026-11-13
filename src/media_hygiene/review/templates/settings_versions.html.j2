@@ -1,0 +1,40 @@
+{% extends "page_frame.html.j2" %}
+{# The versions kept of each file the tool saves (0784): config.toml, a person's, an event
+   file, albums.json. Per version, its date and the keys it differs by from what replaced it;
+   *Restore this one* puts it back (the current content kept as a version first), then shows
+   the file as read back from the disk. The toast's Undo (Ctrl+Z, or Z) restores the version
+   that kept what the file held. A version trimmed meanwhile is refused, said. #}
+{% set page_name = _("Versions of your settings") %}
+{% set keys_safe = _("A restore keeps the current content as a version first: it can always be taken back.") %}
+{% block style %}
+  main section { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+  main li { padding: 6px 0; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+  main li:last-child { border-bottom: 0; }
+  main ul { list-style: none; margin: 0; padding: 0; }
+  main code { overflow-wrap: anywhere; }
+  main pre { max-height: 50vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+  #versionsSaid.saved { color: var(--ok); } #versionsSaid.error { color: var(--bad); }
+{% endblock %}
+{% block keys %}
+      <dt><kbd>Ctrl</kbd>+<kbd>Z</kbd></dt><dd>{{ _("undo the restore just made") }}</dd>
+{% endblock %}
+{% block bar %}
+  <strong>{{ page_name }}</strong>
+  <a href="../">{{ _("Every setting") }}</a>
+  <span id="versionsSaid" role="status" aria-live="polite"></span>
+{% endblock %}
+{% block content %}
+<main>
+  <div id="versionsFiles"></div>
+  <section id="versionsBack" hidden aria-labelledby="backTitle">
+    <h2 id="backTitle"></h2>
+    <pre id="versionsContent"></pre>
+  </section>
+</main>
+{% endblock %}
+{% block after %}
+{% include "undo_toast.html.j2" %}
+<script nonce="{{ page_nonce }}">
+{% include "settings_versions.js.j2" %}
+</script>
+{% endblock %}

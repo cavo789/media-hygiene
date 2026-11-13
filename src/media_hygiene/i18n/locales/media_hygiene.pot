@@ -801,6 +801,11 @@ msgstr ""
 msgid "A proposal to apply"
 msgstr ""
 
+msgid ""
+"A restore keeps the current content as a version first: it can always be "
+"taken back."
+msgstr ""
+
 msgid "A restore tried"
 msgstr ""
 
@@ -1752,6 +1757,10 @@ msgid "Changed your mind? Copy {backup} over {config}."
 msgstr ""
 
 msgid "Changed your mind? This puts back what was renamed or set aside:"
+msgstr ""
+
+#, python-brace-format
+msgid "Changed: {keys}"
 msgstr ""
 
 msgid ""
@@ -2780,6 +2789,12 @@ msgid ""
 "quarantine; unreadable files go there too."
 msgstr ""
 
+msgid ""
+"Each file changed while its size and date did not: damaged, or rewritten "
+"by a program that kept its date — look. Left, the file as it is; right, "
+"its good copy."
+msgstr ""
+
 msgid "Each file goes back exactly where it was."
 msgstr ""
 
@@ -2789,6 +2804,11 @@ msgstr ""
 msgid ""
 "Each file read here is kept in the cache: tagging or placing it later is "
 "immediate. You can stop at any time: what is read is kept."
+msgstr ""
+
+msgid ""
+"Each file the re-read found damaged, beside its good copy: restore it, "
+"journaled; undo puts the damaged one back."
 msgstr ""
 
 msgid ""
@@ -3374,6 +3394,9 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+msgid "Fast path, every file at once without showing them: mh clean --repair."
+msgstr ""
+
 msgid "February"
 msgstr ""
 
@@ -3784,6 +3807,10 @@ msgid ""
 " terminal lists them."
 msgstr ""
 
+#, python-brace-format
+msgid "Found changed on {since}, read fine on {good}"
+msgstr ""
+
 msgid "Frame rate"
 msgstr ""
 
@@ -3993,6 +4020,14 @@ msgid "Gone from the PC: set aside in .removed"
 msgstr ""
 
 msgid "Gone: use --album."
+msgstr ""
+
+#, python-brace-format
+msgid "Good copy in the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Good copy: {path}"
 msgstr ""
 
 msgid "Google Photos description"
@@ -5726,6 +5761,9 @@ msgstr ""
 msgid "No damaged file known. 🔒 Nothing was changed."
 msgstr ""
 
+msgid "No damaged file known: nothing to restore."
+msgstr ""
+
 msgid "No date taken"
 msgstr ""
 
@@ -5817,6 +5855,9 @@ msgid "No folder to analyse under {path}."
 msgstr ""
 
 msgid "No folder to import from."
+msgstr ""
+
+msgid "No good copy here: look on your backup (NAS, disk)."
 msgstr ""
 
 msgid "No group yet: no two faces look alike enough."
@@ -6150,6 +6191,11 @@ msgid "No town of more than 1,000 inhabitants starts so."
 msgstr ""
 
 msgid "No trips to preview: they need a home place and a trip rule."
+msgstr ""
+
+msgid ""
+"No version kept yet: each save of a settings file keeps the one it "
+"replaces."
 msgstr ""
 
 msgid "No video left to lighten: nothing was changed."
@@ -6582,6 +6628,10 @@ msgid "Nothing was changed: add --apply to make the links."
 msgstr ""
 
 msgid "Nothing was changed: add --apply to write the sidecars."
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing was changed: {error}"
 msgstr ""
 
 msgid "Nothing was deleted from the phone."
@@ -8048,6 +8098,9 @@ msgid ""
 "alone then decides."
 msgstr ""
 
+msgid "Restore the damaged files"
+msgstr ""
+
 msgid ""
 "Restore the files 'audit --reread' found damaged from their good copy (a "
 "duplicate, a backup, the quarantine): listed first, then asked; the "
@@ -8061,8 +8114,16 @@ msgid "Restore the picked files"
 msgstr ""
 
 msgid ""
+"Restore the picked files from their good copy, journaled (Enter opens the"
+" large view)"
+msgstr ""
+
+msgid ""
 "Restore the settings (config.toml, people) too; the index alone by "
 "default."
+msgstr ""
+
+msgid "Restore these files"
 msgstr ""
 
 #, python-brace-format
@@ -8071,7 +8132,14 @@ msgid ""
 "the quarantine."
 msgstr ""
 
+msgid "Restore this one"
+msgstr ""
+
 msgid "Restored"
+msgstr ""
+
+#, python-brace-format
+msgid "Restored and read back at {time}: {count} files."
 msgstr ""
 
 #, python-brace-format
@@ -8082,8 +8150,17 @@ msgid "Restoring"
 msgstr ""
 
 msgid ""
+"Restoring copies the good copy beside the file, reads it back, and moves "
+"the damaged one to the quarantine, journaled: 'mh undo' of its run puts "
+"it back."
+msgstr ""
+
+msgid ""
 "Restoring puts each file back where it was, never over another one, and "
 "journals it; 'mh undo' of its run still brings back the others."
+msgstr ""
+
+msgid "Restoring…"
 msgstr ""
 
 msgid "Results"
@@ -8428,6 +8505,9 @@ msgid "Same day and folder"
 msgstr ""
 
 msgid "Same frame under this difference (bits out of 64)"
+msgstr ""
+
+msgid "Same keys, other text"
 msgstr ""
 
 msgid "Same moment"
@@ -11464,6 +11544,11 @@ msgid ""
 " the PowerShell window says when it is done."
 msgstr ""
 
+msgid ""
+"This version is not kept any more (trimmed meanwhile): nothing was "
+"changed."
+msgstr ""
+
 #, python-brace-format
 msgid "This video does not play on a phone as it is ({format})."
 msgstr ""
@@ -12028,6 +12113,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Values read from {file} now; “default”: the file does not hold it."
+msgstr ""
+
+msgid "Versions"
+msgstr ""
+
+msgid "Versions of your settings"
 msgstr ""
 
 msgid "Very large: to tell small children apart"
@@ -13224,6 +13315,9 @@ msgid "cumulated: %(share)s%%"
 msgstr ""
 
 msgid "czkawka second opinion check compare"
+msgstr ""
+
+msgid "damaged corrupted repair restore good copy reread"
 msgstr ""
 
 msgid "dark"
@@ -15114,6 +15208,9 @@ msgstr ""
 msgid "undo the last choice"
 msgstr ""
 
+msgid "undo the restore just made"
+msgstr ""
+
 msgid "unknown"
 msgstr ""
 
@@ -15460,6 +15557,10 @@ msgid "{count} copies to set aside"
 msgstr ""
 
 #, python-brace-format
+msgid "{count} damaged files"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} day ago"
 msgid_plural "{count} days ago"
 msgstr[0] ""
@@ -15684,8 +15785,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} file found damaged: mh clean --repair puts its copy back."
-msgid_plural "{count} files found damaged: mh clean --repair puts their copy back."
+msgid ""
+"{count} file found damaged: its page shows it beside its good copy (fast:"
+" mh clean --repair)."
+msgid_plural ""
+"{count} files found damaged: their page shows each beside its good copy "
+"(fast: mh clean --repair)."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -16709,6 +16814,10 @@ msgid "{files}, {undecided} to check or to sort"
 msgstr ""
 
 #, python-brace-format
+msgid "{file} as the disk holds it now"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{file} cannot be read: {error}. The last good settings stay until it is "
 "fixed."
@@ -16735,11 +16844,19 @@ msgid "{file} is not valid TOML: {error}"
 msgstr ""
 
 #, python-brace-format
+msgid "{file} put back as it was, read back from the disk at {time}."
+msgstr ""
+
+#, python-brace-format
 msgid "{file} read from the disk at {time}."
 msgstr ""
 
 #, python-brace-format
 msgid "{file} read from the disk at {time}: {ticked} files ticked."
+msgstr ""
+
+#, python-brace-format
+msgid "{file} restored to {when}, read back from the disk at {time}."
 msgstr ""
 
 #, python-brace-format
@@ -17769,6 +17886,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path}: found changed on {since}, read fine on {good}."
+msgstr ""
+
+#, python-brace-format
+msgid "{path}: its good copy is gone or changed: nothing was moved."
 msgstr ""
 
 #, python-brace-format

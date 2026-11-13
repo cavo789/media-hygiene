@@ -80,8 +80,11 @@ sont supprimés aussi : ils ne contiennent rien.
 - **Vos réglages gardent leurs versions précédentes.** Chaque enregistrement de `config.toml`,
   du fichier d'une personne ou d'un événement, ou d'`albums.json` copie d'abord le fichier qu'il
   remplace dans `.history/` (`C:\Users\<vous>\media-hygiene\config\.history\`, et à côté
-  d'`albums.json`) : les 20 dernières de chacun, 30 jours au plus. Pour en reprendre une,
-  copiez-la par-dessus le fichier et retirez la date qui termine son nom.
+  d'`albums.json`) : les 20 dernières de chacun, 30 jours au plus. Pour en reprendre une :
+  ⚙ Réglages, *Versions* : chaque fichier, ses versions avec les clés que chacune a changées,
+  *Restaurer celle-ci* ; le fichier est relu depuis le disque et affiché, et le *Annuler* du
+  bandeau (ou Ctrl+Z) remet ce qu'il contenait (une restauration est elle-même gardée comme
+  version).
 - **Les dossiers de l'outil restent hors de vos photos.** Un dossier de quarantaine, de journal,
   de cache ou de rapports placé dans un dossier de photos (ou autour) est refusé, avec la façon
   de le monter autrement.
@@ -98,7 +101,12 @@ an. Un fichier dont le contenu a changé sans que sa taille ni sa date changent 
 pour une modification : il est listé comme *changé*, avec le jour où il a été trouvé, le dernier
 jour où il a été lu correct, et où se trouve une bonne copie — un doublon, un dossier de
 sauvegarde, la quarantaine (chacune relue en entier d'abord). Un programme qui réécrit une photo
-et remet sa date ressemble à cela : regardez avant de restaurer. `mh clean --repair` les liste à
+et remet sa date ressemble à cela : regardez avant de restaurer. La carte *Mes photos sont-elles en
+sécurité ?* de la page d'accueil ouvre leur page : chaque fichier abîmé à côté de sa bonne copie,
+choisissez ceux à restaurer (les mêmes gestes que [`library`](commands/library.md)), *Restaurer ces
+fichiers* ; chacun est relu depuis le disque, et le *Annuler* du bandeau (ou Z) remet les fichiers
+abîmés. Une copie disparue ou changée entre-temps refuse son fichier, c'est dit, rien n'est
+déplacé. Le chemin rapide, tous les fichiers d'un coup : `mh clean --repair` les liste à
 nouveau, demande, copie la bonne copie à côté du fichier, la relit, déplace le fichier abîmé en
 quarantaine et donne à la copie son nom et sa date ; `mh undo` remet le fichier abîmé.
 [`push`](commands/push.md) ne remplace jamais une copie de la sauvegarde par un fichier trouvé

@@ -166,6 +166,7 @@ def clean_area() -> Area:
     further = (
         "upkeep",
         "undo-pick",
+        "repair",
         "review-near",
         "review-pairs",
         "review-junk",

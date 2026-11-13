@@ -1,0 +1,86 @@
+{# The script of settings_versions.html.j2: the files and their versions, *Restore this one*,
+   the content read back shown, the toast's Undo restoring the version the restore kept. #}
+(() => {
+  "use strict";
+  const RESTORE_PATH = {{ restore_path | tojson }};
+  const TEXTS = {{ {
+    "none": _("No version kept yet: each save of a settings file keeps the one it replaces."),
+    "restore": _("Restore this one"),
+    "keys": _("Changed: {keys}"),
+    "more": _("and {count} more"),
+    "same": _("Same keys, other text"),
+    "unknown": _("Not readable"),
+    "restoring": _("Restoring…"),
+    "restored": _("{file} restored to {when}, read back from the disk at {time}."),
+    "undone": _("{file} put back as it was, read back from the disk at {time}."),
+    "back": _("{file} as the disk holds it now"),
+    "notDone": _("Nothing was changed: {error}"),
+    "offline": _("The page cannot reach mh: is it still running?"),
+  } | tojson }};
+  const LANG = document.documentElement.lang;
+  let files = {{ files | tojson }};
+  const node = (tag, text, className) => {
+    const made = document.createElement(tag);
+    if (text !== undefined) made.textContent = text;
+    if (className) made.className = className;
+    return made;
+  };
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const when = (stamp) => {
+    const iso = stamp.replace(/^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)(\d\d)(\d+)Z$/, "$1-$2-$3T$4:$5:$6Z");
+    const date = new Date(iso);
+    return Number.isNaN(date.getTime()) ? stamp : date.toLocaleString(LANG);
+  };
+  const said = (text, kind) => { const line = document.getElementById("versionsSaid"); line.textContent = text; line.className = kind || ""; };
+  const keysOf = (version) => {
+    if (version.keys.length === 1 && version.keys[0] === "?") return TEXTS.unknown;
+    if (!version.keys.length) return TEXTS.same;
+    const more = version.more ? " " + fill(TEXTS.more, { count: version.more }) : "";
+    return fill(TEXTS.keys, { keys: version.keys.join(", ") }) + more;
+  };
+  const draw = () => {
+    const holder = document.getElementById("versionsFiles");
+    if (!files.length) { holder.replaceChildren(node("p", TEXTS.none, "muted")); return; }
+    holder.replaceChildren(...files.map((file) => {
+      const section = node("section");
+      const list = node("ul");
+      list.append(...file.versions.map((version) => {
+        const item = node("li");
+        const button = node("button", TEXTS.restore, "plain");
+        button.type = "button";
+        button.addEventListener("click", () => restore(file, version.name, false));
+        item.append(node("strong", when(version.when)), node("span", keysOf(version), "muted"), button);
+        return item;
+      }));
+      section.append(node("h2", file.label), list);
+      return section;
+    }));
+  };
+  async function restore(file, name, undoing) {
+    said(TEXTS.restoring, "");
+    const response = await fetch(RESTORE_PATH, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: file.path, name: name }),
+    }).catch(() => null);
+    if (!response) { said(TEXTS.offline, "error"); return; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { said(fill(TEXTS.notDone, { error: answer.error || response.status }), "error"); return; }
+    files = answer.files;
+    draw();
+    const time = new Date().toLocaleTimeString(LANG);
+    const stamp = name.slice(name.lastIndexOf(".") + 1);
+    const text = fill(undoing ? TEXTS.undone : TEXTS.restored, { file: file.label, when: when(stamp), time: time });
+    said(text, "saved");
+    document.getElementById("backTitle").textContent = fill(TEXTS.back, { file: file.label });
+    document.getElementById("versionsContent").textContent = answer.content;
+    document.getElementById("versionsBack").hidden = false;
+    if (!undoing) window.mhUndoToast(text, () => restore(file, answer.kept, true), { keys: true });
+  }
+  // Ctrl+Z: the toast's Undo, while it shows (nothing else on this page uses Ctrl+Z).
+  document.addEventListener("keydown", (event) => {
+    if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
+    if (document.getElementById("mhUndoToast").hidden) return;
+    event.preventDefault();
+    document.getElementById("mhUndoButton").click();
+  });
+  draw();
+})();
