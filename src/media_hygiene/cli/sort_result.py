@@ -21,13 +21,16 @@ if TYPE_CHECKING:
     from media_hygiene.services.sort_models import SortResult
 
 
-def show_result(runtime: Runtime, result: SortResult, *, trial: bool) -> None:
+def show_result(
+    runtime: Runtime, result: SortResult, *, rest: str | None = None
+) -> None:
     """Show what the run did, the proof, and how to undo or go on.
 
     Args:
         runtime: Settings, mount points and output.
         result: The run.
-        trial: `--trial`: the rest follows with the same command, without it.
+        rest: After a `--trial`, the command sorting the rest (`sort`, with the workbook
+            named when the user named one: 0745); None otherwise.
     """
     output, host = runtime.output, runtime.mapper.to_host
     outcome = result.moves.outcome
@@ -55,11 +58,11 @@ def show_result(runtime: Runtime, result: SortResult, *, trial: bool) -> None:
             _("Run the same command again to continue: the files moved are skipped.")
         )
     tidy_tip(runtime)
-    if trial and not result.moves.interrupted:
+    if rest is not None and not result.moves.interrupted:
         suggest(
             runtime,
             _("looks right? Sort the rest with the same plan:"),
-            NextVerb(carried(runtime, "sort"), CHANGING),
+            NextVerb(carried(runtime, rest), CHANGING),
         )
     safety(
         runtime,

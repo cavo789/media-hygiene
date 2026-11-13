@@ -17,3 +17,16 @@ Split from section 0526 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — PARTIAL (2026-11-13)
+
+### Done
+- The suggested "sort the rest" command now carries the named workbook (`sort "<workbook>"`;
+  plain `sort` when none was given): `cli/sort_result.py` (`rest=`), `cli/cmd_sort.py`. Test in
+  `tests/unit/test_sort_parts.py`; docs EN + FR `commands/sort.md`.
+
+### Not done
+- The page side: a *Try on one month* button on the sort/Events page of `library`, then the
+  photos shown in their new folders.
+  **Reason:** a new UI action on a tile page (photo-picking contract, *Apply now* offer, a server
+  route running a trial sort, Chromium proof): a lot of its own, not safe to do unattended.

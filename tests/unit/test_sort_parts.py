@@ -140,7 +140,7 @@ def test_the_closing_summary_tells_what_went_wrong(locations: Locations) -> None
         manifest("C:\\b.jpg: its size changed"),
         MountError("The manifest could not be written."),
     )
-    show_result(runtime, result, trial=False)
+    show_result(runtime, result)
     text = " ".join(output_of(runtime).split())
     assert "Time per step" not in text  # only with --verbosity verbose
     for expected in (
@@ -246,7 +246,7 @@ def test_a_verbose_sort_says_where_its_time_went(locations: Locations) -> None:
         None,
         (StageTime(Stage.COUNTS, 0.25), StageTime(Stage.MOVES, 70.0)),
     )
-    show_result(runtime, result, trial=False)
+    show_result(runtime, result)
     text = " ".join(output_of(runtime).split())
     assert "Time per step: counts 0.2 s · moves 1 min 10 s" in text
 
@@ -262,8 +262,9 @@ def test_a_trial_ends_on_sorting_the_rest(locations: Locations) -> None:
         None,
         (),
     )
-    show_result(runtime, result, trial=True)
+    show_result(runtime, result, rest='sort "C:\\w\\plan.xlsx"')
     step, tips, _settings = runtime.output.board.drain()
     assert step is not None
     assert "Sort the rest with the same plan" in str(step)
+    assert "plan.xlsx" in str(step)  # the named workbook is carried (0745)
     assert any((tip.command or "").endswith("undo 20260930-100000") for tip in tips)
