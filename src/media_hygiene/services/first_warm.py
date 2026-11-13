@@ -5,9 +5,11 @@ full-text table built, and a worker of the pool started: about 1.3 s on the demo
 low-priority task runs the same reading requests a moment after the server listens,
 through the server's own router, on its own thread (the index stays read-only); a
 request the user already sent made them cheap. The folder tree, *Events found* and
-the map are built too, and kept by their pages until something changes (0804); the
-people page is not (its build writes its face groups). Nothing is written; the task is
-cancelled with the server's loop, and any failure is left for the real request.
+the map are built too, and kept by their pages until something changes (0804). The
+people page comes last (0817): its build writes its face groups, as a visit would, so
+it is skipped while another connection writes the index (an audit, `people`): the
+visit builds it then. The task is cancelled with the server's loop, and any failure
+is left for the real request.
 """
 
 from __future__ import annotations
@@ -16,11 +18,14 @@ import asyncio
 import contextlib
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.index.write_probe import index_busy
+from media_hygiene.paths.locations import Locations
 from media_hygiene.review.http import ContentType, Request
 from media_hygiene.review.step_watch import PLACES_PAGE
 from media_hygiene.search.app import SEARCH_PAGE_PATH, SEARCH_PATH
 from media_hygiene.search.folders import FOLDERS_PATH
 from media_hygiene.search.found_desk import FOUND_PATH
+from media_hygiene.services.people_here import PEOPLE_PAGE
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -43,10 +48,21 @@ WARM_REQUESTS: Final = (
     Request("GET", FOUND_PATH, _HOST),
     Request("GET", PLACES_PAGE, _HOST),
 )
+# Kept too, but its build writes into the index: last, never beside a writer (0817).
+WARM_PEOPLE: Final = Request("GET", PEOPLE_PAGE, _HOST)
 
 
 def _nothing() -> None:
     """Run in a worker of the pool: starting it is the point."""
+
+
+def _index_busy() -> bool:
+    """Tell whether another connection writes the index now.
+
+    Returns:
+        True while an audit or `people` writes it, or when it cannot be written.
+    """
+    return index_busy(Locations().index_file)
 
 
 async def warm_first_clicks(router: Handling, pool: Executor) -> None:
@@ -62,6 +78,8 @@ async def warm_first_clicks(router: Handling, pool: Executor) -> None:
         for request in WARM_REQUESTS:
             await router.handle(request)
             await asyncio.sleep(0)  # a real request waiting goes first
+        if not await asyncio.to_thread(_index_busy):
+            await router.handle(WARM_PEOPLE)
         await started
 
 

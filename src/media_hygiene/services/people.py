@@ -17,6 +17,7 @@ from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore, FaceTally
 from media_hygiene.index.moves import load_moves
+from media_hygiene.index.read_versions import scanned_among, unread
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.turn_rows import TurnStore
 from media_hygiene.people.known import Known
@@ -116,13 +117,9 @@ class PeopleStep:
         Returns:
             The work.
         """
-        store = self.store
-        photos, absent = present_photos(people_photos(store.connection, within))
-        turns = TurnStore(store.connection, self._model)
-        scanned = {p.path for p in photos if store.scanned(p)}
-        missing = tuple(
-            p for p in photos if p.path not in scanned or not turns.guessed(p)
-        )
+        connection = self.store.connection
+        photos, absent = present_photos(people_photos(connection, within))
+        scanned, missing = unread(connection, self._model, photos)  # 0815
         turn_only = sum(1 for p in missing if p.path in scanned)
         return PeopleWork(photos, missing, absent, turn_only)
 
@@ -183,7 +180,7 @@ class PeopleStep:
         shown = {photo.path for photo in work.photos}
         faces = tuple(face for face in every if face.path in shown)
         settings = self._runtime.settings.people
-        analysed = sum(store.scanned(photo) for photo in work.photos)
+        analysed = scanned_among(store.connection, self._model, work.photos)
         moves = load_moves(store.connection)
         return PeopleResult(
             group_people(faces, settings, store.connection),

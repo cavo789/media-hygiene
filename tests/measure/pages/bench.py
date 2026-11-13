@@ -8,7 +8,11 @@ sends each route through the router: no socket, so the figures are the server's 
 not the browser's nor the network's. The warm-up of the first clicks (0677) is not
 started (the server's `ready` callback is never called): *cold* is the first request
 of each route in a fresh process, the routes in the order below (a route opening the
-index pays for the ones after it); *warm* is the median of the next runs. Prints
+index pays for the ones after it); *warm* is the median of the next runs. `--warmed`
+runs that warm-up first, as `mh` does once the page listens: *cold* is then the first
+click after a start. `--kept-groups` starts from an index whose face groups are saved
+(`pristine-groups.sqlite`, the cache's index of the first such run): as on a PC past
+its first people page, not the first grouping ever (0817). Prints
 (and writes to `--out`) one JSON document: the figures per route, the peak memory,
 the build time.
 """
@@ -16,6 +20,7 @@ the build time.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import contextlib
 import cProfile
 import json
@@ -44,6 +49,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.ending import EndingDoor
 
 WARM_RUNS: Final = 5
+_GROUPED: Final = "pristine-groups.sqlite"  # the index once the people page grouped
 _LOCAL: Final = {"host": "127.0.0.1"}
 _JSON: Final = {**_LOCAL, "content-type": "application/json"}
 
@@ -111,24 +117,43 @@ async def _one(door: EndingDoor, route: Route) -> tuple[float, int, int]:
     )
 
 
-def _serving(
-    figures: dict[str, object], profiled: str | None, skipped: frozenset[str]
-) -> Callable[..., object]:
+@dataclass(frozen=True, slots=True)
+class Options:
+    """How the routes are timed."""
+
+    profiled: str | None = None  # a route's name: its warm runs profiled
+    skipped: frozenset[str] = frozenset()  # the routes left out (too slow at this size)
+    warmed: bool = False  # the server's warm-up of the first clicks run first
+
+
+async def _warm_first(ready: Callable[[int], None]) -> None:
+    """Start the server's warm-up, as once it listens, and wait until it is over.
+
+    Args:
+        ready: The server's `ready` callback, which starts it.
+    """
+    ready(0)
+    current = asyncio.current_task()
+    await asyncio.gather(*(each for each in asyncio.all_tasks() if each is not current))
+
+
+def _serving(figures: dict[str, object], options: Options) -> Callable[..., object]:
     """The replacement of `serve_until_ended`: time the routes, then Ctrl+C.
 
     Args:
         figures: Filled with one entry per route.
-        profiled: A route's name to profile (its warm runs), or None.
-        skipped: The routes' names left out (too slow at this size).
+        options: The routes profiled, left out; the warm-up first.
 
     Returns:
         The coroutine function.
     """
 
-    async def serve(door: EndingDoor, _port: int, _ready: Callable[[int], None]) -> int:
-        for route in (each for each in ROUTES if each.name not in skipped):
+    async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> int:
+        if options.warmed:
+            await _warm_first(ready)
+        for route in (each for each in ROUTES if each.name not in options.skipped):
             cold, status, size = await _one(door, route)
-            profile = cProfile.Profile() if route.name == profiled else None
+            profile = cProfile.Profile() if route.name == options.profiled else None
             if profile is not None:
                 profile.enable()
             warm = [(await _one(door, route))[0] for _ in range(WARM_RUNS)]
@@ -161,16 +186,23 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument(
         "--skip", action="append", default=[], help="a route's name left out"
     )
+    parser.add_argument(
+        "--warmed", action="store_true", help="the warm-up of a start run first"
+    )
+    parser.add_argument(
+        "--kept-groups", action="store_true", help="an index with face groups saved"
+    )
     parser.add_argument("--out", type=Path, default=None, help="the JSON file written")
     return parser.parse_args()
 
 
-def _prepare(files: int, folder: Path) -> float:
+def _prepare(files: int, folder: Path, groups: bool = False) -> float:  # noqa: FBT001, FBT002
     """Point the mounts, build the index if missing, copy it into the cache.
 
     Args:
         files: How many files.
         folder: Where every size lives.
+        groups: Start from the index whose face groups are saved, when there.
 
     Returns:
         The seconds the build took; 0 when it was there.
@@ -187,20 +219,20 @@ def _prepare(files: int, folder: Path) -> float:
     # The pages write into the index (the face groups, 0432): each run starts afresh.
     for leftover in index.parent.glob(f"{index.name}*"):
         leftover.unlink()
-    shutil.copyfile(pristine, index)
+    grouped = base / _GROUPED
+    shutil.copyfile(grouped if groups and grouped.exists() else pristine, index)
     return built
 
 
 def main() -> None:
     """Build if needed, serve, time, print."""
     arguments = _arguments()
-    built = _prepare(arguments.files, arguments.folder)
+    built = _prepare(arguments.files, arguments.folder, arguments.kept_groups)
     install(Locale.EN)
     routes: dict[str, object] = {}
     # As `tests/support/home_serving` does: the server's loop replaced by the bench.
-    vars(home)["serve_until_ended"] = _serving(
-        routes, arguments.profile, frozenset(arguments.skip)
-    )
+    options = Options(arguments.profile, frozenset(arguments.skip), arguments.warmed)
+    vars(home)["serve_until_ended"] = _serving(routes, options)
     started = time.perf_counter()
     with contextlib.suppress(SystemExit):
         build_app()(
@@ -208,6 +240,10 @@ def main() -> None:
             prog_name="media-hygiene",
             standalone_mode=False,
         )
+    base = arguments.folder / str(arguments.files)
+    if arguments.kept_groups and not (base / _GROUPED).exists():
+        index = base / MountKind.CACHE.value / "index.sqlite"
+        shutil.copyfile(index, base / _GROUPED)
     document = json.dumps(
         {
             "files": arguments.files,

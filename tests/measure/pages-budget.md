@@ -84,6 +84,24 @@ hand in a sidecar (0618); `os.listdir` instead of `Path.iterdir` took it from 28
 126 ms. The people page answers 409 on this synthetic library (its faces are not
 "guessed" for the turned-photo check), so it was not measured kept.
 
+## During an audit, after a start (0816, 0817, 0815), measured 2026-11-13
+
+Same machine and method, 100,000 files, the index of 0814 (face groups kept).
+
+- **0816, WAL**: an audit-like writer in another process (the repository's own `put`,
+  500 rows/s, a commit every 5 s) beside the bench, 20 warm runs per route, two runs per
+  mode. Medians: no route moved by 10 % between rollback journal and WAL (e.g. home
+  state 41 vs 42 ms, found events 124 vs 127 ms, people groups 26 vs 28 ms); worst
+  times (cold included) within 5 %. A writer costs *Events found* about +13 % in both
+  modes (110 → 125 ms, CPU shared), not a lock wait. WAL not adopted.
+- **0817**: `--kept-groups --warmed` (the bench's new modes: the index with its groups
+  saved, the server's warm-up run first): first click on the people page 2,986 →
+  0.7 ms. The kept state holds ≈ 95 MB (`tracemalloc` around its first build, modules
+  first imported included).
+- **0815**: the people plan reads the scanned and guessed versions in one query each:
+  their lookups 430–570 → 140–170 ms (97,157 photos, 3 runs); people page cold without
+  the warm-up 2,858–2,986 → 2,408–2,473 ms (−15 %, 2 runs).
+
 ## What grows faster than linearly
 
 - The people page's first opening (face grouping, all pairs: 0.96 s → 27.3 s for ×10

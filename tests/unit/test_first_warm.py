@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.review.http import Request, Response
 from media_hygiene.search.app import SEARCH_PAGE_PATH, SEARCH_PATH
 from media_hygiene.services import first_warm
-from media_hygiene.services.first_warm import WARM_REQUESTS, warmed
+from media_hygiene.services.first_warm import WARM_PEOPLE, WARM_REQUESTS, warmed
 
 if TYPE_CHECKING:
     import pytest
@@ -54,9 +54,20 @@ async def _serve(handled: list[Request], fails: bool = False) -> list[int]:  # n
     return told
 
 
+def _idle(monkeypatch: pytest.MonkeyPatch, busy: bool = False) -> None:  # noqa: FBT001, FBT002
+    """No delay; the index written by another connection, or not.
+
+    Args:
+        monkeypatch: The fixture.
+        busy: An audit or `people` writes the index.
+    """
+    monkeypatch.setattr(first_warm, "WARM_DELAY", 0.0)
+    monkeypatch.setattr(first_warm, "_index_busy", lambda: busy)
+
+
 def test_ready_first_then_the_library_requests(monkeypatch: pytest.MonkeyPatch) -> None:
     """The server's message goes first; the page and an empty search follow."""
-    monkeypatch.setattr(first_warm, "WARM_DELAY", 0.0)
+    _idle(monkeypatch)
     handled: list[Request] = []
     assert asyncio.run(_serve(handled)) == [1234]
     assert [(each.method, each.path) for each in handled] == [
@@ -65,13 +76,22 @@ def test_ready_first_then_the_library_requests(monkeypatch: pytest.MonkeyPatch) 
         ("GET", "/api/folders"),  # the kept states built ahead (0804)
         ("GET", "/api/found-events"),
         ("GET", "/places/"),
+        ("GET", "/people/"),  # last: its build writes its face groups (0817)
     ]
+    assert handled == [*WARM_REQUESTS, WARM_PEOPLE]
+
+
+def test_the_people_page_waits_for_a_writer(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An audit writing the index: the people page is left for the visit."""
+    _idle(monkeypatch, busy=True)
+    handled: list[Request] = []
+    asyncio.run(_serve(handled))
     assert handled == list(WARM_REQUESTS)
 
 
 def test_a_failure_leaves_no_trace(monkeypatch: pytest.MonkeyPatch) -> None:
     """A router that raises stops the warm-up silently: the real request tells."""
-    monkeypatch.setattr(first_warm, "WARM_DELAY", 0.0)
+    _idle(monkeypatch)
     handled: list[Request] = []
     asyncio.run(_serve(handled, fails=True))
     assert len(handled) == 1

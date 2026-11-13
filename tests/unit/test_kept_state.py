@@ -9,6 +9,7 @@ import shutil
 import sqlite3
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from http import HTTPStatus
 from pathlib import Path
 from types import SimpleNamespace
@@ -20,6 +21,7 @@ from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.review.http import Request, Response
 from media_hygiene.search.folders import FolderDesk
 from media_hygiene.search.fts import SearchIndex
+from media_hygiene.services import first_warm
 from media_hygiene.services.kept_state import (
     KeptState,
     config_signature,
@@ -313,6 +315,50 @@ def test_the_people_page_keeps_its_app_until_a_name_is_saved(
     assert len(built) == 1
     (config / "people" / "ann.toml").write_text("faces = [1]\n", encoding="utf-8")
     asyncio.run(page.handle(asked))  # the name saved by the page itself
+    assert len(built) == 2
+
+
+def test_a_failed_warm_up_leaves_the_visit_working(
+    index: Path, config: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The warm-up's build fails (0817): no trace, nothing kept, the visit builds."""
+    locations = SimpleNamespace(index_file=index, config_dir=config)
+    runtime = SimpleNamespace(locations=locations, settings="settings")
+    fresh = SimpleNamespace(runtime=lambda: runtime)
+    built: list[object] = []
+
+    def build(_: object) -> Handling:
+        built.append(object())
+        if len(built) == 1:
+            locked = "database is locked"
+            raise sqlite3.OperationalError(locked)
+        return cast("Handling", _Answer())
+
+    page = KeptPage("/people/", cast("FreshRuntime", fresh), build)
+
+    class Router:
+        """The people page under its prefix, 200 for the rest."""
+
+        async def handle(self, request: Request) -> Response:
+            """Answer.
+
+            Args:
+                request: The request.
+
+            Returns:
+                The page's answer, or 200.
+            """
+            if page.serves(request.path):
+                return await page.handle(request)
+            return Response(HTTPStatus.OK)
+
+    monkeypatch.setattr(first_warm, "WARM_DELAY", 0.0)
+    monkeypatch.setattr(first_warm, "_index_busy", lambda: False)
+    with ThreadPoolExecutor(1) as pool:
+        asyncio.run(first_warm.warm_first_clicks(Router(), pool))
+    assert len(built) == 1
+    asked = Request("GET", "/people/", {"host": "127.0.0.1"})
+    assert asyncio.run(page.handle(asked)).status == HTTPStatus.OK
     assert len(built) == 2
 
 
