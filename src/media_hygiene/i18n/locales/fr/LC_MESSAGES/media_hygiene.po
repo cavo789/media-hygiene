@@ -9638,6 +9638,9 @@ msgstr ""
 "ces lignes en commentaire pour utiliser les listes intégrées ('media-"
 "hygiene config' les affiche) ; une liste vide [] désactive la règle."
 
+msgid "Reload the home page: its confirmation lists them again."
+msgstr "Rechargez la page d'accueil : sa confirmation les liste à nouveau."
+
 msgid "Remember as a rule"
 msgstr "Retenir comme règle"
 
@@ -10478,8 +10481,8 @@ msgid ""
 "Saves that the face that matched on each photo ticked is not {name}: "
 "these photos leave the search"
 msgstr ""
-"Enregistre que le visage reconnu sur chaque photo cochée n'est pas {name} : "
-"ces photos quittent la recherche"
+"Enregistre que le visage reconnu sur chaque photo cochée n'est pas {name}"
+" : ces photos quittent la recherche"
 
 msgid "Saving…"
 msgstr "Enregistrement…"
@@ -12687,6 +12690,13 @@ msgstr ""
 #, python-brace-format
 msgid "The names of config.toml cannot be read: {error}."
 msgstr "Les noms de config.toml ne peuvent pas être lus : {error}."
+
+msgid ""
+"The names of config.toml changed since the page listed them: nothing was "
+"deleted."
+msgstr ""
+"Les noms de config.toml ont changé depuis que la page les a listés : rien "
+"n'a été supprimé."
 
 msgid ""
 "The names of the people go into the sidecars, next to the photos: anyone "
@@ -15004,6 +15014,13 @@ msgid ""
 msgstr ""
 "Avec --forget : supprimer aussi les noms de config.toml et les visages "
 "ignorés, sans demander (le fichier précédent est conservé)."
+
+msgid ""
+"With --names: what the confirmation listed (names/ignored, e.g. 3/12); "
+"refuses, deleting nothing, when config.toml changed since."
+msgstr ""
+"Avec --names : ce que la confirmation a listé (noms/ignorés, p. ex. "
+"3/12) ; refuse, sans rien supprimer, si config.toml a changé depuis."
 
 msgid "With --people: do not ask, go on."
 msgstr "Avec --people : ne pas demander, continuer."

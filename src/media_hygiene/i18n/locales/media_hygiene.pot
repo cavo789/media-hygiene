@@ -8034,6 +8034,9 @@ msgid ""
 "disables the rule."
 msgstr ""
 
+msgid "Reload the home page: its confirmation lists them again."
+msgstr ""
+
 msgid "Remember as a rule"
 msgstr ""
 
@@ -10596,6 +10599,11 @@ msgid "The names of config.toml cannot be read: {error}."
 msgstr ""
 
 msgid ""
+"The names of config.toml changed since the page listed them: nothing was "
+"deleted."
+msgstr ""
+
+msgid ""
 "The names of the people go into the sidecars, next to the photos: anyone "
 "who gets a copy of them can read who is on them."
 msgstr ""
@@ -12486,6 +12494,11 @@ msgstr ""
 msgid ""
 "With --forget: delete the names of config.toml and the faces ignored too,"
 " without asking (the previous file is kept)."
+msgstr ""
+
+msgid ""
+"With --names: what the confirmation listed (names/ignored, e.g. 3/12); "
+"refuses, deleting nothing, when config.toml changed since."
 msgstr ""
 
 msgid "With --people: do not ask, go on."

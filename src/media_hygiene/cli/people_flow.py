@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli.people_forget import forget_people
+from media_hygiene.cli.people_forget import NamesAsked, forget_people
 from media_hygiene.console.people_counts import show_missing
 from media_hygiene.console.people_view import (
     show_absent,
@@ -43,7 +43,7 @@ class PeopleRequest:
     within: tuple[Path, ...] = ()
     sample: int = 0
     forget: bool = False
-    names: bool = False  # `--names`: the names go too, without a question (0795)
+    names: NamesAsked | None = None  # `--names`, `--expect` (0795)
 
 
 def run_people(runtime: Runtime, request: PeopleRequest) -> PeopleResult | None:
@@ -60,7 +60,7 @@ def run_people(runtime: Runtime, request: PeopleRequest) -> PeopleResult | None:
     output = runtime.output
     with PeopleStep(runtime) as step:
         if request.forget:
-            forget_people(runtime, step.store, names=request.names)
+            forget_people(runtime, step.store, request.names)
             return None
         work = step.plan(request.within)
         show_absent(output, work.absent)
