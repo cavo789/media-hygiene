@@ -19385,6 +19385,12 @@ msgstr[1] ""
 "n'analysent que les nouvelles."
 
 #, python-brace-format
+msgid "{count} photo or video"
+msgid_plural "{count} photos and videos"
+msgstr[0] "{count} photo ou vidéo"
+msgstr[1] "{count} photos et vidéos"
+
+#, python-brace-format
 msgid ""
 "{count} photo or video has disappeared since an audit: deleted on "
 "purpose, or moved to a disk not plugged in? Only you can tell."
@@ -19879,6 +19885,14 @@ msgstr ""
 #, python-brace-format
 msgid "{files} without GPS"
 msgstr "{files} sans GPS"
+
+#, python-brace-format
+msgid "{files}, from {first} to {last}"
+msgstr "{files}, de {first} à {last}"
+
+#, python-brace-format
+msgid "{files}, from {year}"
+msgstr "{files}, de {year}"
 
 #, python-brace-format
 msgid "{files}, {undecided} to check or to sort"

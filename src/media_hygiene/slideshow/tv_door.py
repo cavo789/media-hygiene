@@ -23,6 +23,8 @@ from media_hygiene.slideshow.screen_api import ScreenDesk
 from media_hygiene.slideshow.tv_welcome import WELCOME_PATHS, welcome
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.review.http import Request
     from media_hygiene.slideshow.app import SlideshowApp
 
@@ -57,18 +59,18 @@ def screen_page(app: SlideshowApp, request: Request, visitor: Visitor) -> Respon
     )
 
 
-def _front(path: str, family_title: str) -> Response | None:
+def _front(path: str, door: TvDoor) -> Response | None:
     """The welcome page and its meerkat, for every TV, paired or not (0614).
 
     Args:
         path: The path asked.
-        family_title: The welcome page's title.
+        door: The door, with the welcome page's title and its index.
 
     Returns:
         The answer, or None for another path.
     """
     if path in WELCOME_PATHS:
-        return welcome(path, family_title)
+        return welcome(path, door.family_title, door.index_file)
     return None
 
 
@@ -78,6 +80,7 @@ class TvDoor:
 
     app: SlideshowApp
     family_title: str = ""  # `[home] family_title`, the welcome page's title
+    index_file: Path | None = None  # its line of facts (0758)
 
     async def handle(self, request: Request) -> Response:
         """Answer a TV, or a stranger about to become one.
@@ -93,7 +96,7 @@ class TvDoor:
         visitor = app.door.tv_visitor(request)
         if visitor is Visitor.OUTSIDER or request.method != _GET:
             return Response(HTTPStatus.FORBIDDEN)
-        front = _front(request.path, self.family_title)
+        front = _front(request.path, self)
         if front is not None:
             return front
         if request.path == SCREEN_PATH:

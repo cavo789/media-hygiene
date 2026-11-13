@@ -19,3 +19,17 @@ Split from section 0478 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — DONE (2026-11-13)
+
+Checked against the code, item by item:
+- Decided 2 (burst page on the import's bursts, tags/places beside it): done by 0480
+  (`review --imported --since`, step `bursts` of `mh_phone.ps1.j2`, `import-bursts.json`).
+- Decided 3 (the new event's slideshow): done, `slideshow --folder <phone folder> --since <period>`
+  (`cmd_slideshow.py`, the TV question of `mh_phone.ps1.j2`).
+- Decided 4 (chain followed live, resumed after interruption, toggles): done by 0604
+  (`import-chain.json`, `review/import_chain_api.py`, `mh import --chain --from-step`) and 0481
+  (toggles saved in `[imports] then`).
+- `copies` after `tags`: done by 0480 (order audit → copies → bursts → tags).
+- Left, refiled as 0785: Decided 5 (the period buttons on the home page) and the end line's
+  « N bursts reviewed ».

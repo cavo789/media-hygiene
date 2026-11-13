@@ -1,10 +1,9 @@
 """The slideshow served by the home server itself, under `/slideshow/` (0417).
 
 `GET /slideshow/album/<name>` (`/folder/<path>`: 0598) starts the show here and leads to
-its remote at once (`?here=1`: this PC's screen, 0660); the TVs (`Screens`) and
-the pages waiting (`Changes`) belong to the home server, so a TV paired once stays
-paired while it runs, and a new show reaches it by itself (its version above the last
-one's). One show at a time. The TV's plain door: `/screen`, `/` its welcome page (0614).
+its remote at once (`?here=1`: this PC's screen, 0660); the TVs (`Screens`) and the
+pages waiting (`Changes`) belong to the home server: a TV paired stays so, a new show
+reaches it (a higher version). One show at a time. The TV's door: `/screen`, `/` (0614).
 """
 
 from __future__ import annotations
@@ -117,13 +116,14 @@ class SlideshowHere:
         Returns:
             The TV's page (waiting while nothing is shown), its show; `/` welcome.
         """
-        title = self._fresh.runtime().settings.home.family_title
+        runtime = self._fresh.runtime()
+        title, index = runtime.settings.home.family_title, runtime.locations.index_file
         if self.app is not None:
-            return await TvDoor(self.app, title).handle(request)
+            return await TvDoor(self.app, title, index).handle(request)
         if self.door.tv_visitor(request) is Visitor.OUTSIDER:
             return Response(HTTPStatus.FORBIDDEN)
         if request.path in WELCOME_PATHS:
-            return welcome(request.path, title)
+            return welcome(request.path, title, index)
         environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
         page = environment.get_template("tv_wait.html.j2").render(
             refresh_seconds=_TV_WAIT_SECONDS

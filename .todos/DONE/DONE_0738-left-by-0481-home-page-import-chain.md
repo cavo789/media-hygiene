@@ -16,3 +16,10 @@ Split from section 0481 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — DONE (2026-11-13)
+
+Checked against the code: the chain followed live on the home page and resumed from a step
+is done by 0604 (`import-chain.json` written by `mh_phone.ps1.j2` before each step,
+`GET/POST /api/import-chain`, `home_imports.js.j2` offering the stopped chain from its step;
+`tests/unit/test_import_chain.py`). The period buttons are refiled as 0785.

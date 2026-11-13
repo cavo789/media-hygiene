@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 from types import MappingProxyType
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
@@ -20,6 +20,10 @@ from media_hygiene.review.home_assets import ASSETS_PREFIX, MAX_AGE_S, asset_fil
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan_ca_page import PHONE_STEPS
 from media_hygiene.review.lan_card import TV_SCREEN
+from media_hygiene.slideshow.tv_facts import facts_line
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 WELCOME_PATH: Final = "/"
 _MEERKAT: Final = f"{ASSETS_PREFIX}images/meerkat-lookout.webp"
@@ -39,12 +43,13 @@ _PACKAGE: Final = "media_hygiene.slideshow"
 _TEMPLATE: Final = "tv_welcome.html.j2"
 
 
-def welcome(path: str, family_title: str) -> Response:
+def welcome(path: str, family_title: str, index_file: Path | None = None) -> Response:
     """The welcome page, or one of its files (the meerkat, a font).
 
     Args:
         path: One of `WELCOME_PATHS`.
         family_title: `[home] family_title`; empty: the family view's own default.
+        index_file: The index, for the line of facts (0758); None: no line.
 
     Returns:
         The page, or the file; 404 when the image lacks it.
@@ -60,6 +65,7 @@ def welcome(path: str, family_title: str) -> Response:
     )
     page = template.render(
         title=family_title or _("Our photos"),
+        facts=facts_line(index_file) if index_file is not None else "",
         screen=TV_SCREEN,
         phone=PHONE_STEPS,
         meerkat=_MEERKAT,
