@@ -30,6 +30,7 @@ from media_hygiene.review.ending import (
     serve_until_ended,
 )
 from media_hygiene.review.files import FILE_PATH
+from media_hygiene.review.home_views import UNDO_PATH
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH, PhoneApp
@@ -175,6 +176,7 @@ def _page(place: DecisionsPlace, served: PhoneServed | None) -> bytes:
             apply_offered=here.apply_offered,
             apply_path=_relative(APPLY_PATH),
             apply_pending=here.apply_pending,
+            undo_path=_relative(UNDO_PATH),  # the toast after Apply now (0757)
         )
         .encode()
     )

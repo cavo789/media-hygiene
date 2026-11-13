@@ -23,7 +23,12 @@ from media_hygiene.review.lan_paths import READ_PATHS
 from media_hygiene.review.local_app import PAGE_PATH, page_or_state
 from media_hygiene.review.page_settings import SETTING_PATHS, setting_response
 from media_hygiene.review.place import DecisionsPlace
-from media_hygiene.review.setting_groups import EVENTS_PATH, LOCALE_PATH, SLIDESHOW_PATH
+from media_hygiene.review.setting_groups import (
+    EVENTS_PATH,
+    LOCALE_PATH,
+    SHARE_PATH,
+    SLIDESHOW_PATH,
+)
 from media_hygiene.review.write_routes import CHANGES
 from media_hygiene.services.home import home_page
 from media_hygiene.services.phone_review import phone_page
@@ -82,6 +87,7 @@ def test_defaults_when_no_file(tmp_path: Path) -> None:
             {"merge_gap_hours": 30, "min_event_size": 3, "trip_min_km": 60},
             "classify",
         ),
+        (SHARE_PATH, {"long_side_px": 1600, "quality": 80, "keep_gps": True}, "share"),
     ],
 )
 def test_a_change_is_written_and_read_back(
@@ -110,6 +116,8 @@ def test_a_change_is_written_and_read_back(
         (SLIDESHOW_PATH, {"interval_seconds": True}),
         (SLIDESHOW_PATH, {"interval_seconds": 5, "extra": 1}),
         (EVENTS_PATH, {"merge_gap_hours": 1}),
+        (SHARE_PATH, {"long_side_px": 2048, "quality": 85, "keep_gps": 1}),
+        (SHARE_PATH, {"long_side_px": 100, "quality": 85, "keep_gps": False}),
     ],
 )
 def test_bad_values_are_refused_and_nothing_written(
@@ -258,3 +266,16 @@ def test_no_page_is_said_to_keep_its_language(tmp_path: Path) -> None:
     """0647: the sentence of exceptions is gone from what the save says."""
     _status, answer = _post(tmp_path / "config.toml", LOCALE_PATH, {"locale": "en"})
     assert "mh starts again" not in str(answer["later"])
+
+
+def test_share_defaults_and_switch_read_back(tmp_path: Path) -> None:
+    """0747: the copies to send, from the album bar; a bad value: the default."""
+    config = tmp_path / "config.toml"
+    assert _get(config, SHARE_PATH)[1]["values"] == {
+        "long_side_px": 2048,
+        "quality": 85,
+        "keep_gps": False,
+    }
+    config.write_text("[share]\nkeep_gps = 'yes'\nquality = 70\n", "utf-8")
+    values = _get(config, SHARE_PATH)[1]["values"]
+    assert values == {"long_side_px": 2048, "quality": 70, "keep_gps": False}

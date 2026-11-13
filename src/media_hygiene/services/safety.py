@@ -59,6 +59,7 @@ class SafetyFacts:  # pylint: disable=too-many-instance-attributes
     quarantine: QuarantineState
     only: int | None  # files of the quarantine that exist nowhere else
     reread: RereadCounts | None
+    nas: int = 0  # files of the quarantine whose only other copy is on the NAS
 
 
 def read_safety(runtime: Runtime, quarantine: QuarantineState) -> SafetyFacts:
@@ -96,4 +97,5 @@ def read_safety(runtime: Runtime, quarantine: QuarantineState) -> SafetyFacts:
         quarantine=quarantine,
         only=slow.only if slow is not None else None,
         reread=reread_counts(index),
+        nas=slow.nas if slow is not None else 0,
     )

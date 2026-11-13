@@ -117,7 +117,8 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **La vue reste dans l'adresse** : les mots, la période et le dossier cherchés sont dans
   l'adresse de la page : recharger la page ou un favori rend la même recherche. Dans la grande
   vue, **Précédent** la ferme (comme Échap) et laisse la grille où elle était ; sur les revues
-  (rafales, quasi-doublons, paires), recharger rouvre le même groupe.
+  (rafales, quasi-doublons, paires, fichiers supprimés, photos indésirables), recharger rouvre le
+  même groupe, et sur *Alléger* la même vidéo.
 - **Choisir**, comme sur toute page de photos : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
@@ -573,6 +574,8 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   ([`share`](share.md)). Avec des photos choisies, pas d'album à créer avant : elles sont
   ajoutées à l'album tapé ou, si le champ est vide, à un seul album *Dernier envoi*, remplacé à
   chaque envoi.
+  **⚙ Copies à envoyer**, juste en dessous (sur le PC seulement), règle leur grand côté, leur
+  qualité JPEG et si elles gardent la position GPS (`[share]` de `config.toml`), enregistrés et relus.
 - Au plus 3 000 photos ajoutées d'un coup : affinez une recherche qui en trouve plus.
 
 Un album peut aussi devenir un dossier de l'Explorateur : [`album "Crète 2023"`](album.md) le

@@ -120,9 +120,13 @@ def screen_view(desk: Desk) -> dict[str, object]:
     return {
         "version": show.version,
         "key": None if current is None else current.key,
-        "photo": "" if current is None or current.film else _tv(current.key),
+        "photo": ""
+        if current is None or current.film
+        else _tv(current.key, current.tag),
         "film": "" if current is None else relative(film_path(current)),
-        "next": "" if upcoming is None or upcoming.film else _tv(upcoming.key),
+        "next": ""
+        if upcoming is None or upcoming.film
+        else _tv(upcoming.key, upcoming.tag),
         "playing": show.playing,
         "code": "",
         "chapter": told_chapter(desk),
@@ -131,16 +135,17 @@ def screen_view(desk: Desk) -> dict[str, object]:
     }
 
 
-def _tv(key: int) -> str:
+def _tv(key: int, tag: str) -> str:
     """A photo's TV picture, relative to the TV's page (0417).
 
     Args:
         key: The photo's key.
+        tag: Its file's version (0723).
 
     Returns:
         E.g. `tv/12.jpg`.
     """
-    return relative(tv_path(key))
+    return relative(tv_path(key, tag))
 
 
 def pair_screen(desk: Desk, body: bytes) -> Response:

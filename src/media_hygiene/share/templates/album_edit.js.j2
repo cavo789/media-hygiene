@@ -4,7 +4,7 @@
    request (`remove` with the keys), read back from the disk. #}
 const TEXTS = {{ texts | tojson }};
 const ROUTES = {{ paths | tojson }}; // album, change, list, list_page
-const NAME = new URLSearchParams(window.location.search).get("album") || "";
+const NAME = window.mhView.get({ album: "text" }).album || "";
 const LANG = document.documentElement.lang;
 let album = null; // the album as the server last read it
 

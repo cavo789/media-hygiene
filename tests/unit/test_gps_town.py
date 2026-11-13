@@ -16,3 +16,9 @@ def test_a_photo_with_gps_shows_the_town_one_without_nothing_more() -> None:
     with_gps = exif_lines({"latitude": 50.85, "longitude": 4.35}, "")
     assert "GPS: 50.85000, 4.35000 (Brussels, Belgium)" in with_gps
     assert not [line for line in exif_lines({}, "") if "GPS" in line]
+
+
+def test_the_stored_place_wins_over_the_snapshot() -> None:
+    """0750: the line names the index's place, the tile's, not a second guess."""
+    lines = exif_lines({"latitude": 50.85, "longitude": 4.35}, "", "Home")
+    assert "GPS: 50.85000, 4.35000 (Home)" in lines

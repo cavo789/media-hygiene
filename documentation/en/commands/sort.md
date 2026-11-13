@@ -94,8 +94,8 @@ the source folders it will remove, then asks.
   trial, then the photos in their new folders.
 - **A trial first**: `--trial latest` sorts only the latest month with photos (or
   `--trial 2024-05` one month, `--trial "C:\Photos\2019"` one folder). Look at the result;
-  if it looks right, the same `sort` without `--trial` moves the rest with the same plan,
-  otherwise `undo` puts the trial back: it is one run.
+  if it looks right, the same `sort` without `--trial` moves the rest with the same plan
+  (the suggested line names the workbook if you gave one), otherwise `undo` puts the trial back: it is one run.
 - **Everything stays linked**: right after moving, `sort` rewrites every file of yours that names
   photos by path — the names given to faces (`people\*.toml`), `albums.json`, `decisions.json`
   (burst series, files chosen in `library`; a folder pair whose folder is gone is dropped) and the

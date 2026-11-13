@@ -15,8 +15,9 @@ const DISK_STATE = "/disk-space/api/state";
 const DISK_ONLY = "/disk-space/api/only"; // the run's only copies, listed first (0699)
 let onlyCount = 0;
 const PURGE_PATH = {{ purge_path | tojson }};
-const LANDS_ON = new URLSearchParams(window.location.search).get("back") === "history" ? "/history/" : "/disk-space/"; // 0631
-const WANTS_PURGE = Boolean(ONLY_RUN) && new URLSearchParams(window.location.search).get("purge") === "1";
+const ASKED = window.mhView.get({ back: ["history"], purge: ["1"] });
+const LANDS_ON = ASKED.back === "history" ? "/history/" : "/disk-space/"; // 0631
+const WANTS_PURGE = Boolean(ONLY_RUN) && ASKED.purge === "1";
 
 drawPurge = async () => {
   if (!WANTS_PURGE) return;

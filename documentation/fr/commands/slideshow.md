@@ -132,7 +132,7 @@ diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
    fonctionne aussi, plus lentement, et ne montre que les photos : les vidéos demandent le
    navigateur du Chromecast.
 2. Tapez l'adresse du PC sur le port **8089**, par exemple `http://192.168.1.20:8089/` (la
-   télécommande du téléphone est sur 8088, en `https`) : une page d'accueil s'ouvre, appuyez sur
+   télécommande du téléphone est sur 8088, en `https`) : une page d'accueil s'ouvre (le titre de votre famille, et combien de photos et vidéos l'index connaît, de quelle année à quelle année), appuyez sur
    **OK** sur **📺 Diaporama** (son autre tuile, **📱 Installer sur mon téléphone**, mène un
    téléphone aux étapes du certificat). Mettez plutôt
    `http://192.168.1.20:8089/screen` en favori pour sauter l'accueil ; sans diaporama en cours,
@@ -173,7 +173,7 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
 - Une vignette touchée montre cette photo sur la télé.
 - **Ne pas montrer** retire du diaporama la photo sur la télé (la télé passe à la suivante) ; le
   bouton d'une vignette fait de même pour n'importe quelle photo, et **Remontrer** la remet.
-- La vignette d'une vidéo est marquée **▶**. Sur la télé, elle passe jusqu'au bout, puis le
+- La vignette d'une vidéo est l'une de ses images (décodée une fois, gardée dans le cache), marquée **▶**. Sur la télé, elle passe jusqu'au bout, puis le
   diaporama continue ; **❚❚ Pause** la met en pause aussi. Une vidéo que la télé ne sait pas lire
   est signalée sous sa vignette (*Pas sur la télé : son format (hevc) n'y est pas lu.*) et passée.
 - **Le nom de l'événement** : à chaque nouvel événement (un nouveau dossier, dans l'ordre du

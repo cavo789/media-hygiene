@@ -120,6 +120,7 @@
       <dt><kbd>y</kbd></dt><dd>{{ _("confirm the attributed faces shown, or name the group as the person it looks like") }}</dd>
       <dt>×</dt><dd>{{ _("a face of someone else: the next button of the section saves it") }}</dd>
       <dt>{{ _("Ctrl+click") }}</dt><dd>{{ _("pick faces of the section to name them, Shift+click a range, drag a rectangle, Ctrl+A every face of the current section; ✎ this face only") }}</dd>
+      <dt><kbd>Ctrl</kbd>+<kbd>I</kbd></dt><dd>{{ _("invert: the other faces of the current section instead") }}</dd>
       <dt>{{ _("click") }}</dt><dd>{{ _("its photo large; Delete sets it aside, Esc closes") }}</dd>
 {% endblock %}
 {% block more_keys %}
@@ -135,6 +136,7 @@
   <p id="todo" aria-live="polite"></p>
   <button id="next" class="main" type="button">{{ _("Next to do (g)") }}</button>
   <button id="onlyLeft" type="button"></button>
+  <button id="invertFaces" class="plain" type="button" title="{{ _('Pick the other faces of the current section: the ones picked are left (Ctrl+I)') }}">🔀 {{ _("Invert the picking") }}</button>
   <input id="who" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
   {% include "apply_now.html.j2" %}
   <span id="status" role="status" aria-live="polite"></span>

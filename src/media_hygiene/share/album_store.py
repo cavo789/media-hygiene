@@ -9,7 +9,7 @@ no photo is copied, moved or touched.
 from __future__ import annotations
 
 import datetime as dt
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from pydantic import ValidationError
@@ -48,6 +48,7 @@ class Shelf:
 
     albums: AlbumsFile
     missing: Mapping[str, tuple[str, ...]]  # host paths, by album name
+    taken: tuple[int, ...] = ()  # where the files taken out stood, for Undo (0726)
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,6 +57,7 @@ class AlbumChange:
 
     name: str
     files: tuple[Path, ...]  # in the container
+    at: int | None = None  # where added files go (Undo, 0726); None or beyond: the end
 
 
 class AlbumStore:
@@ -115,7 +117,7 @@ class AlbumStore:
         album = base.named(change.name) or new_album(change.name)
         known = {entry.path for entry in album.entries}
         added = dt.datetime.now(tz=dt.UTC).replace(microsecond=0)
-        entries = list(album.entries)
+        entries: list[AlbumEntry] = []
         mapper = self.lookup.mapper
         with index_of(self.lookup) as connection:
             for source in change.files:
@@ -128,7 +130,10 @@ class AlbumStore:
                 entries.append(
                     AlbumEntry(path=host, sha256=digest, size=size, added=added)
                 )
-        return self._save(base, album.model_copy(update={"entries": tuple(entries)}))
+        at = change.at if change.at is not None else len(album.entries)
+        at = min(max(at, 0), len(album.entries))
+        merged = (*album.entries[:at], *entries, *album.entries[at:])
+        return self._save(base, album.model_copy(update={"entries": merged}))
 
     def remove(self, change: AlbumChange) -> Shelf:
         """Take files out of an album; an album left empty is removed.
@@ -149,7 +154,9 @@ class AlbumStore:
             raise AlbumsError(_("No album named {name}.").format(name=change.name))
         gone = {self.lookup.mapper.to_host(source) for source in change.files}
         kept = tuple(entry for entry in album.entries if entry.path not in gone)
-        return self._save(base, album.model_copy(update={"entries": kept}))
+        taken = tuple(i for i, e in enumerate(album.entries) if e.path in gone)
+        shelf = self._save(base, album.model_copy(update={"entries": kept}))
+        return replace(shelf, taken=taken)
 
     def _save(self, base: AlbumsFile, album: Album) -> Shelf:
         """Write the albums with one album changed (gone when empty), then read back.

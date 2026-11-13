@@ -2577,6 +2577,9 @@ msgstr ""
 msgid "Copies the good copy, checks it, then sets the damaged file aside."
 msgstr "Copie la bonne copie, la vérifie, puis met le fichier abîmé de côté."
 
+msgid "Copies to send"
+msgstr "Copies à envoyer"
+
 msgid "Copies without showing the files: the page shows them first."
 msgstr "Copie sans montrer les fichiers : la page les montre d'abord."
 
@@ -5449,6 +5452,11 @@ msgstr ""
 "'classify --carry-over <classeur>' : vos modifications sont reprises dans"
 " son nouveau classeur."
 
+msgid "Keep the GPS position (the copies then say where each photo was taken)"
+msgstr ""
+"Garder la position GPS (les copies disent alors où chaque photo a été "
+"prise)"
+
 msgid ""
 "Keep the GPS position in the copies. false by default: a photo sent must "
 "not say where the house is; 'share --keep-gps' keeps it for one run."
@@ -5856,6 +5864,9 @@ msgstr "IA locale pas réglée."
 
 msgid "Local AI set."
 msgstr "IA locale réglée."
+
+msgid "Long side (pixels)"
+msgstr "Grand côté (pixels)"
 
 msgid "Longitude"
 msgstr "Longitude"
@@ -8899,6 +8910,13 @@ msgstr ""
 msgid "Pick the ones to set aside"
 msgstr "Choisir ceux à mettre de côté"
 
+msgid ""
+"Pick the other faces of the current section: the ones picked are left "
+"(Ctrl+I)"
+msgstr ""
+"Choisir les autres visages de la section courante : ceux choisis sont "
+"laissés (Ctrl+I)"
+
 msgid "Pick the others: the ones picked are left (I)"
 msgstr "Choisir les autres : ceux choisis sont laissés (I)"
 
@@ -10179,6 +10197,13 @@ msgstr "Enregistré dans config.toml, relu sur le disque."
 msgid "Saved in config.toml, read back from the disk: off."
 msgstr "Enregistré dans config.toml, relu sur le disque : désactivée."
 
+msgid ""
+"Saved in config.toml, read back from the disk: used by the next copies to"
+" send."
+msgstr ""
+"Enregistré dans config.toml, relu sur le disque : utilisé par les "
+"prochaines copies à envoyer."
+
 #, python-brace-format
 msgid "Saved in config.toml, read back from the disk: {model}."
 msgstr "Enregistré dans config.toml, relu sur le disque : {model}."
@@ -10916,6 +10941,9 @@ msgstr "Sidecars non écrits d'ici : le prochain 'xmp --apply' le retire."
 
 msgid "Since"
 msgstr "Depuis"
+
+msgid "Since the last import"
+msgstr "Depuis le dernier import"
 
 msgid "Size"
 msgstr "Taille"
@@ -13415,6 +13443,9 @@ msgstr ""
 "Ses photos sont trouvées par son visage ; vous les vérifiez avant de les "
 "mettre de côté."
 
+msgid "Their size, their quality, and whether they keep the GPS position."
+msgstr "Leur taille, leur qualité, et si elles gardent la position GPS."
+
 msgid ""
 "Then look for faces in the photos not looked at yet (as 'people' does), "
 "after saying how long it takes and asking."
@@ -13761,6 +13792,9 @@ msgstr ""
 msgid "This video does not play on a phone as it is ({format})."
 msgstr "Cette vidéo ne se lit pas telle quelle sur un téléphone ({format})."
 
+msgid "This week"
+msgstr "Cette semaine"
+
 msgid "This word may only come from what the photos show: not described yet."
 msgstr ""
 "Ce mot ne peut venir que de ce que montrent les photos : pas encore "
@@ -13968,13 +14002,13 @@ msgstr "Pour préparer les copies à envoyer, tapez dans le terminal :"
 
 #, python-brace-format
 msgid ""
-"To prepare {name} for sending (resized copies without the GPS position, a"
-" folder and a zip): close this page (Ctrl+C in the window where mh runs),"
-" then type (copied):"
+"To prepare {name} for sending (resized copies, without the GPS position "
+"unless kept, a folder and a zip): close this page (Ctrl+C in the window "
+"where mh runs), then type (copied):"
 msgstr ""
-"Pour préparer {name} pour l'envoi (des copies réduites sans la position "
-"GPS, un dossier et un zip) : fermez cette page (Ctrl+C dans la fenêtre où"
-" tourne mh), puis tapez (copié) :"
+"Pour préparer {name} pour l'envoi (des copies réduites, sans la position "
+"GPS sauf si gardée, un dossier et un zip) : fermez cette page (Ctrl+C "
+"dans la fenêtre où tourne mh), puis tapez (copié) :"
 
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
@@ -14662,6 +14696,9 @@ msgstr "Où en sont vos photos"
 
 msgid "Whether a phone may open the pages, and see the originals."
 msgstr "Si un téléphone peut ouvrir les pages, et voir les originaux."
+
+msgid "Which photos of the phone"
+msgstr "Quelles photos du téléphone"
 
 msgid ""
 "Which photos the grid shows, by the name of the face that matched; Ctrl+A"
@@ -16153,6 +16190,9 @@ msgstr ""
 "extension {values} invalide : lettres, chiffres, « - » et « _ » "
 "seulement, par exemple jpg"
 
+msgid "invert: the other faces of the current section instead"
+msgstr "inverser : les autres visages de la section courante à la place"
+
 msgid "invert: the others instead"
 msgstr "inverser : les autres à la place"
 
@@ -16855,6 +16895,9 @@ msgstr "introuvable là où le plan ou un tri l'a mis"
 
 msgid "not found: is its disk plugged in?"
 msgstr "introuvable : son disque est-il branché ?"
+
+msgid "not one of its choices"
+msgstr "pas l'un de ses choix"
 
 msgid "not sorted yet"
 msgstr "pas encore triées"
@@ -18440,6 +18483,10 @@ msgstr ""
 "les deux copies sont triées."
 
 #, python-brace-format
+msgid "{count} exist nowhere else"
+msgstr "{count} n'existent nulle part ailleurs"
+
+#, python-brace-format
 msgid "{count} extra copy"
 msgid_plural "{count} extra copies"
 msgstr[0] "{count} copie en trop"
@@ -18572,6 +18619,20 @@ msgid "{count} file exists nowhere else."
 msgid_plural "{count} files exist nowhere else."
 msgstr[0] "{count} fichier n'existe nulle part ailleurs."
 msgstr[1] "{count} fichiers n'existent nulle part ailleurs."
+
+#, python-brace-format
+msgid ""
+"{count} file exists only on the NAS: the next mh push moves it into "
+".removed, which does not count as a copy."
+msgid_plural ""
+"{count} files exist only on the NAS: the next mh push moves them into "
+".removed, which does not count as a copy."
+msgstr[0] ""
+"{count} fichier n'existe que sur le NAS : le prochain mh push le déplace "
+"dans .removed, qui ne compte pas comme une copie."
+msgstr[1] ""
+"{count} fichiers n'existent que sur le NAS : le prochain mh push les "
+"déplace dans .removed, qui ne compte pas comme une copie."
 
 #, python-brace-format
 msgid "{count} file found damaged: mh clean --repair puts its copy back."
@@ -18752,12 +18813,12 @@ msgid_plural ""
 "backup does not copy the quarantine: look at them before a purge."
 msgstr[0] ""
 "{count} fichier mis de côté dans la quarantaine n'existe nulle part "
-"ailleurs, et la sauvegarde ne copie pas la quarantaine : regardez-le avant "
-"une purge."
+"ailleurs, et la sauvegarde ne copie pas la quarantaine : regardez-le "
+"avant une purge."
 msgstr[1] ""
 "{count} fichiers mis de côté dans la quarantaine n'existent nulle part "
-"ailleurs, et la sauvegarde ne copie pas la quarantaine : regardez-les avant "
-"une purge."
+"ailleurs, et la sauvegarde ne copie pas la quarantaine : regardez-les "
+"avant une purge."
 
 #, python-brace-format
 msgid "{count} file to copy into your photos ({size}):"
@@ -19099,6 +19160,10 @@ msgstr[1] ""
 "attendent --tier near : rien n'en bouge sans lui."
 
 #, python-brace-format
+msgid "{count} nowhere else"
+msgstr "{count} nulle part ailleurs"
+
+#, python-brace-format
 msgid "{count} obvious"
 msgid_plural "{count} obvious"
 msgstr[0] "{count} évidente"
@@ -19352,6 +19417,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} photos sur {total} à analyser ; les prochaines exécutions "
 "n'analysent que les nouvelles."
+
+#, python-brace-format
+msgid "{count} photo or video"
+msgid_plural "{count} photos and videos"
+msgstr[0] "{count} photo ou vidéo"
+msgstr[1] "{count} photos et vidéos"
 
 #, python-brace-format
 msgid ""
@@ -19848,6 +19919,14 @@ msgstr ""
 #, python-brace-format
 msgid "{files} without GPS"
 msgstr "{files} sans GPS"
+
+#, python-brace-format
+msgid "{files}, from {first} to {last}"
+msgstr "{files}, de {first} à {last}"
+
+#, python-brace-format
+msgid "{files}, from {year}"
+msgstr "{files}, de {year}"
 
 #, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
@@ -21200,6 +21279,12 @@ msgid "{section} is not a list."
 msgstr "{section} n'est pas une liste."
 
 #, python-brace-format
+msgid "{series} burst series reviewed"
+msgid_plural "{series} burst series reviewed"
+msgstr[0] "{series} série de rafales revue"
+msgstr[1] "{series} séries de rafales revues"
+
+#, python-brace-format
 msgid "{series} to look at one by one"
 msgstr "{series} à regarder une à une"
 
@@ -21260,6 +21345,12 @@ msgstr "{sheet} : {key} : '{value}' ({why})"
 #, python-brace-format
 msgid "{shift}: rule {camera}"
 msgstr "{shift} : règle {camera}"
+
+#, python-brace-format
+msgid "{shots} shot set aside"
+msgid_plural "{shots} shots set aside"
+msgstr[0] "{shots} prise mise de côté"
+msgstr[1] "{shots} prises mises de côté"
 
 #, python-brace-format
 msgid "{shown} of the {count} photos it will ask about:"
@@ -21627,12 +21718,12 @@ msgid "✕ hides a tile, ← and → move it; saved at once."
 msgstr "✕ masque une tuile, ← et → la déplacent ; enregistré aussitôt."
 
 #, python-brace-format
-msgid "✨ All done: {count} new photo or video in your library."
-msgid_plural "✨ All done: {count} new photos and videos in your library."
-msgstr[0] "✨ Tout est fait : {count} nouvelle photo ou vidéo dans votre photothèque."
+msgid "✨ All done: {count} new photo or video in your library"
+msgid_plural "✨ All done: {count} new photos and videos in your library"
+msgstr[0] "✨ Tout est fait : {count} nouvelle photo ou vidéo dans votre photothèque"
 msgstr[1] ""
 "✨ Tout est fait : {count} nouvelles photos et vidéos dans votre "
-"photothèque."
+"photothèque"
 
 msgid "❚❚ Pause"
 msgstr "❚❚ Pause"
@@ -22125,7 +22216,7 @@ msgid ""
 "folder: the copy beside its quarantine says what it did, and mh undo "
 "<run> takes that copy back first."
 msgstr ""
-"🧾 Une exécution marquée « d'après la quarantaine » n'a pas de journal dans "
-"le dossier du journal : la copie à côté de sa quarantaine dit ce qu'elle a "
-"fait, et mh undo <run> remet d'abord cette copie en place."
+"🧾 Une exécution marquée « d'après la quarantaine » n'a pas de journal "
+"dans le dossier du journal : la copie à côté de sa quarantaine dit ce "
+"qu'elle a fait, et mh undo <run> remet d'abord cette copie en place."
 

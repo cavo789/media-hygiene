@@ -11,6 +11,7 @@
   const size = (bytes) => (bytes / 1e6).toLocaleString(lang, { maximumFractionDigits: 1 }) + " " + T.mb;
   let state = { drafts: [], busy: true, file: null };
   let at = 0;  // the video shown
+  let opened = window.mhView.get({ g: "int" }).g; // a reload or a bookmark (0765), read once
   let side = "b";  // the frames shown: a, the original; b, the draft
   let shown = "";  // the draft the player holds
   let handed = false;  // the page asked the terminal to lighten
@@ -67,6 +68,7 @@
   };
 
   const render = () => {
+    if (state.drafts.length) window.mhView.set({ g: at }); // the video shown, in the URL (0765)
     list();
     const count = state.file ? state.file.chosen.length : 0;
     const lighten = byId("lighten");
@@ -99,6 +101,7 @@
     .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
     .then((value) => {
       state = value;
+      if (opened !== undefined) { at = opened; opened = undefined; }
       if (at >= state.drafts.length) at = 0;
       render();
       if (!byId("status").textContent || byId("status").className !== "error") proof();

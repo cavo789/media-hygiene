@@ -34,9 +34,11 @@ def show_only_copies(
     """
     found = only_copies(quarantines, runtime.locations.journal_dir, runs)
     count = len(found.files)
+    output = runtime.output
+    if found.nas:
+        output.info(nas_only(found.nas))
     if not count:
         return 0
-    output = runtime.output
     output.warning(
         ngettext(
             "{count} file set aside exists nowhere else ({size}): a near duplicate, "
@@ -53,6 +55,24 @@ def show_only_copies(
             _("  … and {count} more.").format(count=human_number(count - SHOWN))
         )
     return count
+
+
+def nas_only(count: int) -> str:
+    """Say how many files set aside have their only other copy on the NAS (0781).
+
+    Args:
+        count: How many.
+
+    Returns:
+        The sentence.
+    """
+    return ngettext(
+        "{count} file exists only on the NAS: the next mh push moves it into "
+        ".removed, which does not count as a copy.",
+        "{count} files exist only on the NAS: the next mh push moves them into "
+        ".removed, which does not count as a copy.",
+        count,
+    ).format(count=human_number(count))
 
 
 def with_only_copies(question: str, count: int) -> str:

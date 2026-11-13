@@ -8,6 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, cast
 
+from media_hygiene.cli.menu_catalog import catalog
 from media_hygiene.cli.menu_entry import Space
 from media_hygiene.review.http import Request
 from media_hygiene.review.setting_groups import EVENTS_PATH, GROUPS
@@ -17,7 +18,7 @@ from media_hygiene.services.settings_here import (
     settings_page,
 )
 from media_hygiene.services.settings_index import config_only, leaf_keys, shown_values
-from media_hygiene.services.settings_rows import setting_rows
+from media_hygiene.services.settings_rows import STEP_CARD, setting_rows
 
 if TYPE_CHECKING:
     from media_hygiene.services.fresh_runtime import FreshRuntime
@@ -102,11 +103,17 @@ def test_a_home_row_opens_a_card_that_the_home_page_draws() -> None:
     templates = Path(__file__).parents[2] / "src/media_hygiene/review/templates"
     code = "".join(path.read_text("utf-8") for path in templates.glob("home*.j2"))
     spaces = {space.value for space in Space}
+    steps = catalog().steps
+    assert f'id="{STEP_CARD}${{esc(action.name)}}"' in code
     cards = [row.href for row in setting_rows() if row.href.startswith("/#")]
     assert cards
     for href in cards:
         space, _slash, card = href.removeprefix("/#").partition("/")
         assert space == "home" or space in spaces, href
+        if card.startswith(STEP_CARD):  # an action's card, drawn from the catalog
+            name = card.removeprefix(STEP_CARD)
+            assert any(step.name == name and step.space == space for step in steps)
+            continue
         assert not card or f'id="{card}"' in code, href
     assert any("/" in href.removeprefix("/#") for href in cards)
     assert "function revealCard" in code

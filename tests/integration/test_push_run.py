@@ -28,6 +28,7 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.plan.backup_gone import GoneReason
 from media_hygiene.plan.push_entries import Stat
+from media_hygiene.services.nas_cover import read_cover
 from media_hygiene.services.push_journal import push_run, record_pending
 from media_hygiene.services.push_lines import plan_lines
 from media_hygiene.services.push_place import REMOVED_FOLDER
@@ -234,6 +235,8 @@ def test_only_purged_or_confirmed_files_leave_the_backup(locations: Locations) -
     backed_up(runtime)
     photos = locations.data_dir / PHOTOS
     purged = photos / "2019/Vacances/IMG_0001 (1).jpg"
+    journal_dir = runtime.locations.journal_dir
+    assert str(purged).casefold() in read_cover(journal_dir).files  # kept (0781)
     journal_clean(runtime, purged, ActionKind.QUARANTINE_DUPLICATE)
     purged.unlink()
     (photos / "2019/Vacances/IMG_0003.jpg").unlink()  # by mistake, in the Explorer
@@ -251,6 +254,10 @@ def test_only_purged_or_confirmed_files_leave_the_backup(locations: Locations) -
     assert (backup / "IMG_0003.jpg").is_file()
     removed = locations.data_dir / "e/Backup" / REMOVED_FOLDER / proof.run_id
     assert (removed / "C/Family Photos/2019/Vacances/IMG_0001 (1).jpg").is_file()
+    cover = read_cover(journal_dir)  # `.removed` never counts as a cover (0781)
+    assert cover.run_id == proof.run_id
+    assert str(purged).casefold() not in cover.files
+    assert str(photos / "2019/Vacances/IMG_0003.jpg").casefold() in cover.files
 
 
 def test_undo_puts_back_what_a_run_set_aside(locations: Locations) -> None:  # pylint: disable=too-many-locals

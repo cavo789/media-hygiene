@@ -70,7 +70,7 @@
       if (step === null) { stop(); waitForHome(null); return; }
       if (step.state !== "done" || step.id !== state.id) return;
       stop();
-      const text = fill(step.code === 0 ? TEXTS.done : TEXTS.stopped, { command: state.command, code: step.code });
+      const text = fill(step.code === 0 ? TEXTS.done : TEXTS.stopped, { command: state.command, code: step.code }) + window.mhStepNext(step); // 0762
       try { window.sessionStorage.setItem(ENDED_KEY, text); } catch { /* private mode */ }
       said.textContent = text;
       window.location.reload();

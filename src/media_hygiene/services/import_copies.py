@@ -12,12 +12,15 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import TYPE_CHECKING
 
-from media_hygiene.errors import MountError
+from media_hygiene.errors import DecisionsError, MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.plan.models import CleanPlan
+from media_hygiene.report.burst_decisions import BurstStatus
+from media_hygiene.report.decisions import read_decisions
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.clean import CleanService
+from media_hygiene.services.import_bursts import IMPORT_DECISIONS
 
 if TYPE_CHECKING:
     from collections.abc import Collection
@@ -111,17 +114,46 @@ def tell_aside(runtime: Runtime, new: Collection[Path]) -> None:
         runtime.output.info(_("↩️ Put them back: mh undo"))
 
 
+def reviewed_bursts(path: Path) -> tuple[int, int]:
+    """The burst series of an import reviewed, and their shots set aside (0785).
+
+    Args:
+        path: The import's decisions file (`import-bursts.json`).
+
+    Returns:
+        How many series were seen, how many shots they set aside; zeros without it.
+    """
+    if not path.is_file():
+        return 0, 0
+    try:
+        bursts = read_decisions(path).bursts
+    except DecisionsError:
+        return 0, 0
+    seen = [series for series in bursts if series.status is BurstStatus.DONE]
+    return len(seen), sum(len(series.discarded) for series in seen)
+
+
 def tell_done(runtime: Runtime, new: Collection[Path]) -> None:
-    """Say what the import did, once every step ran.
+    """Say what the import did, once every step ran, its bursts reviewed included.
 
     Args:
         runtime: Settings, mount points and output.
         new: The files the import copied and kept (the copies set aside are gone).
     """
-    runtime.output.success(
-        ngettext(
-            "✨ All done: {count} new photo or video in your library.",
-            "✨ All done: {count} new photos and videos in your library.",
-            len(new),
-        ).format(count=len(new))
-    )
+    line = ngettext(
+        "✨ All done: {count} new photo or video in your library",
+        "✨ All done: {count} new photos and videos in your library",
+        len(new),
+    ).format(count=len(new))
+    series, shots = reviewed_bursts(runtime.locations.reports_dir / IMPORT_DECISIONS)
+    if series:
+        reviewed = ngettext(
+            "{series} burst series reviewed",
+            "{series} burst series reviewed",
+            series,
+        ).format(series=series)
+        aside = ngettext(
+            "{shots} shot set aside", "{shots} shots set aside", shots
+        ).format(shots=shots)
+        line = f"{line}, {reviewed} ({aside})"
+    runtime.output.success(f"{line}.")

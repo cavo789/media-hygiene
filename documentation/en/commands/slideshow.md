@@ -123,7 +123,7 @@ show: a TV reloaded loses nothing, stopping `mh` ends it.
    **The TV's own browser** (a Samsung *Smart Hub*: the **Internet** app) works too, slower, and
    shows the photos only: the videos need the Chromecast's browser.
 2. Type the PC's address on port **8089**, for example `http://192.168.1.20:8089/` (the
-   phone's remote is on 8088, in `https`): a welcome page opens, press **OK** on **📺 Slideshow** (its other tile, **📱 Install on my phone**, leads a phone to the certificate's steps). Bookmark
+   phone's remote is on 8088, in `https`): a welcome page opens (your family's title, and how many photos and videos the index holds, from which year to which), press **OK** on **📺 Slideshow** (its other tile, **📱 Install on my phone**, leads a phone to the certificate's steps). Bookmark
    `http://192.168.1.20:8089/screen` instead to skip the welcome; with no slideshow running,
    the TV says what to do on the phone. It is plain `http`, on your home network: a TV cannot
    install the PC's certificate, and nothing goes on the internet. That address serves the TV's
@@ -157,7 +157,7 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
 - A tap on a thumbnail shows that photo on the TV.
 - **Do not show** sets the photo on the TV out of the show (the TV moves on); a thumbnail's own
   button does the same for any photo, and **Show again** sets it back.
-- A video's thumbnail is marked **▶**. On the TV, it plays to its end, then the show moves on;
+- A video's thumbnail is one of its frames (decoded once, kept in the cache), marked **▶**. On the TV, it plays to its end, then the show moves on;
   **❚❚ Pause** pauses it too. A video the TV cannot play is labelled under its thumbnail
   (*Not on the TV: its format (hevc) does not play there.*) and passed over.
 - **The event's name**: at each new event (a new folder, in the show's order), the TV shows a

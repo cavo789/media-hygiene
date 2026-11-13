@@ -6,8 +6,9 @@ const STATE_PATH = {{ state_path | tojson }};
 const RESTORE_PATH = {{ restore_path | tojson }};
 const CHOSEN_PATH = ""; // unused: `saveChoice` restores
 const LANG = document.documentElement.lang;
-const ONLY_RUN = new URLSearchParams(window.location.search).get("run"); // from Disk space, *Purge* (0591)
+const ONLY_RUN = window.mhView.get({ run: "text" }).run || null; // from Disk space, *Purge* (0591)
 let tiles = [];
+let only = null; // per run, the files that exist nowhere else (0782); null: unknown
 const shownOf = (all) => (ONLY_RUN ? all.filter((tile) => tile.run === ONLY_RUN) : all);
 
 const number = (value) => value.toLocaleString(LANG);
@@ -57,7 +58,9 @@ function placeCards(made) {
 let drawPurge = () => {}; // `quarantine_purge.js.j2`, from Disk space (0616)
 
 function paint() {
-  $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length), runs: number(runsOf().length) }) : TEXTS.empty;
+  const total = only ? runsOf().reduce((sum, run) => sum + (only[run] || 0), 0) : 0;
+  const nowhere = total ? " · " + fill(TEXTS.only, { count: number(total) }) : "";
+  $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length), runs: number(runsOf().length) }) + nowhere : TEXTS.empty;
   $("everyRun").hidden = !ONLY_RUN;
   drawPurge();
   $("runs").replaceChildren(...runsOf().map((run, rank) => {
@@ -65,6 +68,7 @@ function paint() {
     const link = element("a", "", run);
     link.href = "#run-" + rank;
     item.append(link, element("span", "muted", number(tiles.filter((tile) => tile.run === run).length)));
+    if (only && only[run]) item.append(element("span", "only", fill(TEXTS.onlyRun, { count: number(only[run]) })));
     return item;
   }));
 }
@@ -98,6 +102,7 @@ saveChoice = async (action, keys) => {
     return false;
   }
   tiles = shownOf(reply.state.tiles);
+  only = reply.state.only;
   let text = fill(TEXTS.back, { time: new Date().toLocaleTimeString(LANG), count: number(reply.back.length) });
   if (reply.left.length) text += " " + fill(TEXTS.left, { reasons: reply.left.join(" · ") });
   say(text, reply.left.length ? "error" : "saved");
@@ -113,6 +118,8 @@ $("restore").addEventListener("click", () => choose("add"));
 
 ask(STATE_PATH).then(async (answer) => {
   if (!answer || !answer.ok) { say(TEXTS.offline, "error"); return; }
-  tiles = shownOf((await answer.json()).tiles);
+  const state = await answer.json();
+  tiles = shownOf(state.tiles);
+  only = state.only;
   reopen();
 });

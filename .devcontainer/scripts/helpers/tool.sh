@@ -28,12 +28,13 @@ function home_dev() {
     stamp="$(mktemp)"
     # Each round: one server in its own session (so the kill reaches uv's child); a changed
     # module ends it and the loop starts another, which draws a new RUN_TAG: the open tab
-    # reloads itself (X-Media-Hygiene-Run). Templates need no restart (Jinja's auto_reload).
+    # reloads itself (X-Media-Hygiene-Run). Templates need no restart (Jinja's auto_reload): the
+    # variable makes every page poll their change time and reload itself (review/dev_reload.py).
     # shellcheck disable=SC2064
     trap "kill -- -\${pid:-0} 2>/dev/null; rm -f '${stamp}'; trap - INT TERM" INT TERM
     while :; do
         touch "${stamp}"
-        setsid bash -c 'hygiene home "$@"' _ "$@" &
+        MEDIA_HYGIENE_DEV_RELOAD=1 setsid bash -c 'hygiene home "$@"' _ "$@" &
         pid=$!
         changed=0
         while kill -0 "${pid}" 2>/dev/null; do

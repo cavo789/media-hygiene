@@ -38,7 +38,9 @@ def say_only_copies(runtime: Runtime) -> int:
     runs = tuple(run.run_id for run in state.runs)
     if not runs:
         return 0
-    only = slow_facts(SlowAsk(runtime, runs, folders)).only
+    facts = slow_facts(SlowAsk(runtime, runs, folders))
+    # This push moves the NAS copies of files set aside into `.removed` (0781).
+    only = facts.only + facts.nas
     if only:
         runtime.output.warning(
             ngettext(

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.purge_only import nas_only
 from media_hygiene.cli.safety_lines import (
     Level,
     SafetyLine,
@@ -73,6 +74,8 @@ def quarantine_line(facts: SafetyFacts, purge_days: int) -> SafetyLine:
             "{count} files exist nowhere else.",
             facts.only,
         ).format(count=human_number(facts.only))
+    if facts.nas:
+        sub += " " + nas_only(facts.nas)
     old = (facts.now - oldest).days >= purge_days
     return SafetyLine(Level.WARN if old else Level.GOOD, title, sub, "purge")
 

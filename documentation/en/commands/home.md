@@ -215,10 +215,11 @@ opened the page:
   named volume, or an older `mh`, the page gives the command to copy instead.
 - **A short step that asks nothing** (*See each setting and where it comes from* `config`,
   *Back up the index and the settings* `backup`, *See what each run did* `history`, *Keep only
-  the recent reports* `reports --prune`): the home page runs it **itself**, whatever `mh`
+  the recent reports* `reports --prune`, *Forget every face* `people --forget`): the home page runs it **itself**, whatever `mh`
   opened it, and shows what it wrote in a dialog (*Runs in the page*, then *Done. What it
   wrote:*): no window to switch to. One at a time (*Another step runs: wait for its end.*); a
-  step past 2 minutes is stopped; an error shows its message only.
+  step past 2 minutes is stopped; an error shows its message only. *Forget every face* deletes the faces
+  only, read back; the names of `config.toml` are deleted only after a yes typed in a terminal.
 - **A long step** (`audit`, `clean`, `import`…) runs in the window of `mh` while the page stays
   open: its dialog shows the stage, a bar, how many files are done and how many a second. Close
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
@@ -227,8 +228,8 @@ opened the page:
   **Every page** of the home server shows it too, not only the home page: a chip in its top bar
   (*⏳ Audit · 45 % · 3 min left*; nothing while no step runs) opens the same follow dialog,
   the tab's title starts with the progress (*45 % · Audit — …*), so the tab bar is the loader
-  while you work elsewhere, and its end is said on the page shown (*Done: Audit.*), or by the
-  notification when the tab is hidden. A phone on the home Wi-Fi sees the chip too, read-only.
+  while you work elsewhere, and its end is said on the page shown (*Done: Audit.*, followed by the step's 👉 *What next* line
+  when it printed one), or by the notification when the tab is hidden. A phone on the home Wi-Fi sees the chip too, read-only.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
   photos, files gone, intruder files, the faces of `people`, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
@@ -311,7 +312,7 @@ the home network too: the phone already paired reloads its page and gets the sli
 | How | HTTPS (`https://192.168.1.20:8088`), signed by a certificate authority `mh` makes on your PC: the phone installs it once (below); the code and the cookie never travel in clear. |
 | Kept | `C:\Users\<you>\media-hygiene\lan\` holds that authority and the page's certificate (`ca.key` never leaves it). Deleted, `mh` makes a new one: install it again on each phone. |
 | Next time | A paired phone opens the page directly. The PC's card lists the **phones paired for good** (Android, iPhone… and the date) with **Forget this phone**: its cookie opens nothing any more. `phones.json` (in the `lan` folder) keeps only a hash of each phone's token. |
-| Who came, and when | Each device on the card shows its **last seen** date and address, and its last 30 days: **pages opened** and **pictures viewed** (counts only, never which photos; `activity.json`, written every few minutes). Type a name (*Léa's phone*) then **Rename**. A phone **unseen for 90 days** is forgotten at the next start, and the card says which (TVs stay paired for good). **Forget every device** asks first in a window of the page (Esc or **Cancel** keep them all), then forgets all phones and TVs at once: each must type a code again. A device forgotten while it is connected is refused at its next request. If the `lan` folder is restored from an older copy, its list applies from then on; a new, empty folder means pairing again. |
+| Who came, and when | Each device on the card shows its **last seen** date and address, and its last 30 days: **pages opened** and **pictures viewed** (counts only, never which photos; `activity.json`, written every few minutes and when mh stops). Type a name (*Léa's phone*) then **Rename**. A phone **unseen for 90 days** is forgotten at the next start, and the card says which (TVs stay paired for good). **Forget every device** asks first in a window of the page (Esc or **Cancel** keep them all), then forgets all phones and TVs at once: each must type a code again. A device forgotten while it is connected is refused at its next request. If the `lan` folder is restored from an older copy, its list applies from then on; a new, empty folder means pairing again. |
 
 ### Once per phone: install the certificate
 

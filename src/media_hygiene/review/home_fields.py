@@ -86,6 +86,10 @@ def _checked(field: Field, value: str) -> str:
             field.kind is FieldKind.NUMBER and not _NUMBER.match(text),
             _("a number"),
         ),
+        (
+            bool(field.choices) and text not in {value for value, _l in field.choices},
+            _("not one of its choices"),
+        ),
         (not re.fullmatch(field.pattern, text), _("not accepted, e.g. {example}")),
     )
     reason = next((reason for refused, reason in refusals if refused), "")

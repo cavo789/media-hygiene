@@ -15,7 +15,7 @@ def _template(package: str, name: str) -> str:
 def test_the_album_field_is_filled_once_from_the_address_with_a_way_back() -> None:
     """`?album=` fills the field and shows ← the album; nothing remembers it."""
     field = _template("review", "album_bar.html.j2")
-    assert 'get("album")' in field
+    assert 'window.mhView.get({ album: "text" }).album' in field
     assert '"/albums/edit?album=" + encodeURIComponent(aimed)' in field
     assert "localStorage" not in field
 

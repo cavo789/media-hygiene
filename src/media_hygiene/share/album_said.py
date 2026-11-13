@@ -20,7 +20,8 @@ def shelf_view(shelf: Shelf, name: str | None, place: str) -> dict[str, object]:
         place: The albums file, as the user sees it.
 
     Returns:
-        The JSON object: `albums` (name, count, missing paths), `message`.
+        The JSON object: `albums` (name, count, missing paths), `message`,
+        `taken` (where the files taken out stood, 0726).
     """
     albums = [
         {
@@ -38,7 +39,7 @@ def shelf_view(shelf: Shelf, name: str | None, place: str) -> dict[str, object]:
         for album in shelf.albums.albums
         if shelf.missing.get(album.name)
     )
-    return {"albums": albums, "message": " ".join(lines)}
+    return {"albums": albums, "message": " ".join(lines), "taken": list(shelf.taken)}
 
 
 def album_message(shelf: Shelf, name: str, place: str) -> str:

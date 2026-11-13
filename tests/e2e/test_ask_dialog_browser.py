@@ -9,7 +9,6 @@ Heavy (the Playwright image): CI only, where `MEDIA_HYGIENE_E2E_BROWSER` is set.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Final
 
@@ -19,15 +18,14 @@ from media_hygiene import places as places_static
 from media_hygiene.places.app import STATE_PATH
 from media_hygiene.places.photos import FOLDERS_PATH
 from tests.support.page_render import render_page
-from tests.support.pages_browser import BrowserRun, build_browser, run_browser
+from tests.support.pages_browser import (
+    BROWSER_ONLY,
+    BrowserRun,
+    build_browser,
+    run_browser,
+)
 
-pytestmark = [
-    pytest.mark.e2e,
-    pytest.mark.skipif(
-        os.environ.get("MEDIA_HYGIENE_E2E_BROWSER", "") != "1",
-        reason="browser tests run in CI only (MEDIA_HYGIENE_E2E_BROWSER=1)",
-    ),
-]
+pytestmark = list(BROWSER_ONLY)
 _SUPPORT: Final = Path(__file__).parents[1] / "support"
 
 

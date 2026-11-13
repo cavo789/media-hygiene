@@ -52,6 +52,7 @@
 
   const render = () => {
     if (groups.length === 0) return;
+    window.mhView.set({ g: at }); // a reload or a bookmark opens this group (0765)
     const group = groups[at];
     const deleted = files.filter((file) => file.decision === "deleted").length;
     const done = files.filter((file) => file.decision !== "").length;
@@ -171,7 +172,8 @@
         setStatus(fill(T.loaded, { time: clock(file.modified) }), "saved");
       }
       const first = groups.findIndex((group) => !decided(group));
-      at = first >= 0 ? first : 0;
+      const asked = window.mhView.get({ g: "int" }).g; // a reload or a bookmark (0765)
+      at = asked !== undefined && asked < groups.length ? asked : Math.max(first, 0);
       render();
     })
     .catch(() => setStatus(T.offline, "error"));

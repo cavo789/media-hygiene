@@ -75,7 +75,10 @@ fichiers affichés, I inverse le choix, Entrée ou un double clic montre une pho
 **↩ Remettre les fichiers choisis** les replace là où ils étaient : une annulation partielle de
 leurs exécutions, journalisée, avec les mêmes garde-fous que `undo` (un disque dont la quarantaine
 n'est pas montée est refusé). La page montre ensuite la quarantaine relue sur le disque ;
-`mh undo <exécution>` remet plus tard le reste de l'exécution.
+`mh undo <exécution>` remet plus tard le reste de l'exécution. Chaque exécution de la liste
+*Exécutions* dit combien de ses fichiers n'existent nulle part ailleurs (*3 nulle part ailleurs* :
+quasi-doublons, photos de rafale, fichiers inutiles, pas des copies exactes), compté depuis
+l'index, et la ligne d'état le total ; sans index, pas de chiffre.
 
 ```powershell
 mh undo --pick

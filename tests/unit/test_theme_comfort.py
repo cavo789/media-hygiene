@@ -33,6 +33,7 @@ PAIRS: Final = (
     ("mk-ink-soft", "mk-sunken"),
     ("mk-primary", "mk-n-0"),
     ("mk-primary", "mk-surface"),
+    ("mk-primary", "mk-sunken"),
     ("mk-on-primary", "mk-primary"),
     ("mk-on-danger", "mk-danger-line"),
     ("mk-danger-line", "mk-n-0"),

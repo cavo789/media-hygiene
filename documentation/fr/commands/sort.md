@@ -97,7 +97,8 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
   essai, puis les photos dans leurs nouveaux dossiers.
 - **Un essai d'abord** : `--trial latest` trie seulement le dernier mois avec des photos (ou
   `--trial 2024-05` un mois, `--trial "C:\Photos\2019"` un dossier). Regardez le résultat ;
-  s'il convient, le même `sort` sans `--trial` déplace le reste avec le même plan, sinon
+  s'il convient, le même `sort` sans `--trial` déplace le reste avec le même plan
+  (la ligne suggérée reprend le classeur si vous en avez donné un), sinon
   `undo` remet l'essai en place : c'est une seule exécution.
 - **Tout reste lié** : juste après les déplacements, `sort` réécrit chacun de vos fichiers qui
   nomment des photos par leur chemin — les noms donnés aux visages (`people\*.toml`),

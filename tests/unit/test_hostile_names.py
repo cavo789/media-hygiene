@@ -13,6 +13,7 @@ import asyncio
 import base64
 import hashlib
 import io
+import json
 import re
 from http import HTTPStatus
 from pathlib import Path
@@ -27,6 +28,7 @@ from media_hygiene.review.nonce import NONCE_MARK, REVIEW_POLICY, hashed_policy,
 from media_hygiene.review.page_header import PAGE_STEPS
 from media_hygiene.review.report_files import report_response
 from media_hygiene.review.respond import write_response
+from media_hygiene.review.serving import json_response
 from tests.support.html_sinks import SOURCES, Context, Hole, all_holes, is_safe
 from tests.support.page_render import render_page
 
@@ -209,21 +211,23 @@ def test_a_page_without_scripts_keeps_the_policy() -> None:
     assert hashed_policy(REVIEW_POLICY, b"<p>no script</p>") == REVIEW_POLICY
 
 
+class _Writer:
+    """A connection keeping what is written to it."""
+
+    def __init__(self) -> None:
+        """Nothing written yet."""
+        self.data = b""
+
+    def write(self, data: bytes) -> None:
+        """Keep what is written."""
+        self.data += data
+
+    async def drain(self) -> None:
+        """Nothing to wait for."""
+
+
 def test_the_written_answer_carries_the_same_nonce_twice() -> None:
     """On the wire: the header's nonce is the one the page's scripts carry."""
-
-    class _Writer:
-        def __init__(self) -> None:
-            """Nothing written yet."""
-            self.data = b""
-
-        def write(self, data: bytes) -> None:
-            """Keep what is written."""
-            self.data += data
-
-        async def drain(self) -> None:
-            """Nothing to wait for."""
-
     writer = _Writer()
     page = f'<script nonce="{NONCE_MARK}">go()</script>'.encode()
     asyncio.run(write_response(writer, Response(HTTPStatus.OK, page, ContentType.HTML)))  # type: ignore[arg-type]
@@ -231,3 +235,19 @@ def test_the_written_answer_carries_the_same_nonce_twice() -> None:
     nonce = re.search(rb"'nonce-([^']+)'", head).group(1)  # type: ignore[union-attr]
     assert b'nonce="' + nonce + b'"' in body
     assert int(re.search(rb"Content-Length: (\d+)", head).group(1)) == len(body)  # type: ignore[union-attr]
+
+
+def test_a_json_answer_carries_a_hostile_name_as_data() -> None:
+    """A JSON answer is never read as a page: its type is said and sniffing refused.
+
+    The scripts insert its values through the linted escaping; the browser itself
+    never renders it, even opened directly, so a hostile name stays a string.
+    """
+    writer = _Writer()
+    answer = json_response(HTTPStatus.OK, {"name": HOSTILE, "names": [HOSTILE]})
+    asyncio.run(write_response(writer, answer))  # type: ignore[arg-type]
+    head, _blank, body = writer.data.partition(b"\r\n\r\n")
+    assert b"Content-Type: application/json" in head
+    assert b"X-Content-Type-Options: nosniff" in head
+    assert b"script-src 'nonce-" in head
+    assert json.loads(body) == {"name": HOSTILE, "names": [HOSTILE]}

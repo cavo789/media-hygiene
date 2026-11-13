@@ -142,7 +142,8 @@ def sort_command(  # pylint: disable=too-many-arguments
             raise typer.Exit(ExitCode.OK)
         with RichProgress(output.console) as progress, StopRequest() as stop:
             result = SortService(runtime, progress).execute(prepared, stop.requested)
-    show_result(runtime, result, trial=bool(trial))
+    rest = (f'sort "{workbook}"' if workbook else "sort") if trial else None
+    show_result(runtime, result, rest=rest)
 
 
 def _confirm(runtime: Runtime, prepared: Prepared, *, yes: bool) -> bool:

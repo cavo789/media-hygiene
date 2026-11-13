@@ -232,11 +232,14 @@ qui a ouvert la page :
   `mh` plus ancien, la page donne la commande à copier à la place.
 - **Une étape courte qui ne demande rien** (*Voir chaque réglage et d'où il vient* `config`,
   *Sauvegarder l'index et les réglages* `backup`, *Voir ce qu'a fait chaque exécution*
-  `history`, *Ne garder que les rapports récents* `reports --prune`) : la page d'accueil la
+  `history`, *Ne garder que les rapports récents* `reports --prune`,
+  *Oublier tous les visages* `people --forget`) : la page d'accueil la
   lance **elle-même**, quel que soit le `mh` qui l'a ouverte, et montre ce qu'elle a écrit dans
   une fenêtre (*Tourne dans la page*, puis *Terminé. Ce qu'elle a écrit :*) : aucune fenêtre
   où basculer. Une à la fois (*Une autre étape tourne : attendez sa fin.*) ; une étape qui
-  dépasse 2 minutes est arrêtée ; une erreur ne montre que son message.
+  dépasse 2 minutes est arrêtée ; une erreur ne montre que son message. *Oublier tous les
+  visages* n'efface que les visages, relus ; les noms de `config.toml` ne sont effacés qu'après
+  un oui tapé dans un terminal.
 - **Une étape longue** (`audit`, `clean`, `import`…) tourne dans la fenêtre de `mh` pendant que
   la page reste ouverte : sa fenêtre montre l'étape en cours, une barre, combien de fichiers sont
   faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et
@@ -247,7 +250,8 @@ qui a ouvert la page :
   dans sa barre du haut (*⏳ Audit · 45 % · 3 min restantes* ; rien quand aucune étape ne tourne)
   ouvre la même fenêtre de suivi, le titre de l'onglet commence par l'avancement
   (*45 % · Audit — …*), si bien que la barre des onglets sert de jauge pendant que vous travaillez
-  ailleurs, et sa fin s'annonce sur la page affichée (*Terminé : Audit.*), ou par la notification
+  ailleurs, et sa fin s'annonce sur la page affichée (*Terminé : Audit.*, suivi de la ligne 👉 *Et maintenant :* de
+  l'étape quand elle en a écrit une), ou par la notification
   quand l'onglet est caché. Un téléphone du Wi-Fi de la maison voit la pastille aussi, en lecture seule.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
   dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
@@ -338,7 +342,7 @@ diaporama.
 | Comment | HTTPS (`https://192.168.1.20:8088`), signé par une autorité de certification que `mh` crée sur votre PC : le téléphone l'installe une fois (ci-dessous) ; le code et le cookie ne circulent jamais en clair. |
 | Gardé | `C:\Users\<vous>\media-hygiene\lan\` contient cette autorité et le certificat de la page (`ca.key` n'en sort jamais). Supprimé, `mh` en crée une nouvelle : réinstallez-la sur chaque téléphone. |
 | La fois suivante | Un téléphone appairé ouvre la page directement. La carte du PC liste les **téléphones appairés pour de bon** (Android, iPhone… et la date) avec **Oublier ce téléphone** : son cookie n'ouvre plus rien. `phones.json` (dans le dossier `lan`) ne garde qu'un hash du jeton de chaque téléphone. |
-| Qui est venu, et quand | Chaque appareil de la carte montre sa date de **dernière visite** et son adresse, et ses 30 derniers jours : **pages ouvertes** et **images vues** (des nombres seulement, jamais quelles photos ; `activity.json`, écrit toutes les quelques minutes). Tapez un nom (*Téléphone de Léa*) puis **Renommer**. Un téléphone **pas vu depuis 90 jours** est oublié au démarrage suivant, et la carte dit lequel (les TV restent appairées pour de bon). **Oublier tous les appareils** demande d'abord dans une fenêtre de la page (Échap ou **Annuler** les gardent tous), puis oublie d'un coup téléphones et TV : chacun devra retaper un code. Un appareil oublié pendant qu'il est connecté est refusé à sa requête suivante. Si le dossier `lan` est restauré depuis une copie plus ancienne, sa liste s'applique dès lors ; un dossier neuf et vide veut dire appairer à nouveau. |
+| Qui est venu, et quand | Chaque appareil de la carte montre sa date de **dernière visite** et son adresse, et ses 30 derniers jours : **pages ouvertes** et **images vues** (des nombres seulement, jamais quelles photos ; `activity.json`, écrit toutes les quelques minutes et à l'arrêt de mh). Tapez un nom (*Téléphone de Léa*) puis **Renommer**. Un téléphone **pas vu depuis 90 jours** est oublié au démarrage suivant, et la carte dit lequel (les TV restent appairées pour de bon). **Oublier tous les appareils** demande d'abord dans une fenêtre de la page (Échap ou **Annuler** les gardent tous), puis oublie d'un coup téléphones et TV : chacun devra retaper un code. Un appareil oublié pendant qu'il est connecté est refusé à sa requête suivante. Si le dossier `lan` est restauré depuis une copie plus ancienne, sa liste s'applique dès lors ; un dossier neuf et vide veut dire appairer à nouveau. |
 
 ### Une fois par téléphone : installer le certificat
 

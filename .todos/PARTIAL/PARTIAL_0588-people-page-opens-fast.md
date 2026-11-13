@@ -22,8 +22,8 @@ library (≈ 20 000) redone at every opening; the rest ≈ 15 s (*estimated* by 
 ## Acceptance
 
 - [ ] With no new photo: the page in under 3 s (measured on Windows)
-- [ ] New photos: the page opens at once, their analysis followed in it
-  → code work, not the maintainer's: listed in 0718 (2026-11-12)
+- [x] New photos: the page opens at once, their analysis followed in it
+  → driven in Chromium by `tests/e2e/test_people_new_photos_browser.py` (0756, 2026-11-13)
 
 ## Status — PARTIAL (2026-11-06)
 

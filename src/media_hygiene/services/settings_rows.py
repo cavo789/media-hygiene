@@ -13,7 +13,12 @@ from typing import Final
 
 from media_hygiene.i18n import _
 from media_hygiene.review.album_show import SLIDESHOW_PAGE
-from media_hygiene.review.setting_groups import EVENTS_PATH, LOCALE_PATH, SLIDESHOW_PATH
+from media_hygiene.review.setting_groups import (
+    EVENTS_PATH,
+    LOCALE_PATH,
+    SHARE_PATH,
+    SLIDESHOW_PATH,
+)
 from media_hygiene.review.step_watch import DISK_PAGE
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
@@ -23,6 +28,8 @@ from media_hygiene.services.unwanted_reviewing import UNWANTED_KEYS, UNWANTED_SE
 
 # The anchor of the events page's *Group the photos…* (`search_events_grouping`).
 GROUPING_ANCHOR: Final = "#grouping"
+# The id of an action's card on the home page: this prefix, then its name (0727).
+STEP_CARD: Final = "step-"
 _LOCALE_ANCHOR: Final = "#mhLocale"  # the picker of every page's bar, this one's too
 
 
@@ -68,6 +75,13 @@ def _grouped() -> tuple[SettingRow, ...]:
             f"{EVENTS_PAGE_PATH}{GROUPING_ANCHOR}",
             _dotted(("classify",), events),
             EVENTS_PATH,
+        ),
+        SettingRow(
+            _("Copies to send"),
+            _("Their size, their quality, and whether they keep the GPS position."),
+            SEARCH_PAGE_PATH,  # the album bar's *Prepare for sending* (0747)
+            _dotted(("share",), ("long_side_px", "quality", "keep_gps")),
+            SHARE_PATH,
         ),
     )
 
@@ -132,13 +146,13 @@ def _elsewhere() -> tuple[SettingRow, ...]:
         SettingRow(
             _("Burst series strictness"),
             _("When a shot of a series is offered to set aside."),
-            "/#clean",
+            f"/#clean/{STEP_CARD}review",
             _dotted(BURST_SECTION, BURST_KEYS),
         ),
         SettingRow(
             _("Junk strictness"),
             _("What the junk review counts as a screenshot, too small, too dark…"),
-            "/#clean",
+            f"/#clean/{STEP_CARD}review-junk",
             _dotted(UNWANTED_SECTION, UNWANTED_KEYS),
         ),
         SettingRow(

@@ -13,12 +13,12 @@ and read again only when the key changes. The key lists what they depend on:
   copy keeps the mtime);
 - every folder below each run's quarantine folder, with its mtime and ctime (a file
   removed or put back by hand, by `undo` or by `purge` changes its folder's);
+- the NAS listing the last proven push kept (`nas_cover`, 0781: a new push);
 - the index file (an audit after a kept twin was removed by hand: the only thing not
   under the tool folders, seen at the next audit; until then the card may count it as
   covered, but `purge` counts the only copies again, uncached, before it erases).
 
-A cache never written (no persistent `/cache`) or unreadable: the facts are read as
-before.
+A cache never written (no persistent `/cache`) or unreadable: read as before.
 """
 
 from __future__ import annotations
@@ -34,6 +34,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.purge import run_folders
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.nas_cover import cover_file
 from media_hygiene.services.only_copies import only_copies
 from media_hygiene.services.only_count import only_count
 from media_hygiene.services.quarantines import held_back
@@ -51,6 +52,7 @@ class SlowFacts:
 
     only: int  # files of the quarantine that exist nowhere else
     unplugged: tuple[str, ...]  # drives whose quarantine is not mounted
+    nas: int = 0  # files of the quarantine whose only other copy is on the NAS
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,10 +85,14 @@ def slow_facts(ask: SlowAsk) -> SlowFacts:
         return kept
     journal_dir = runtime.locations.journal_dir
     # From the index: 55 s of stats through Docker Desktop became a query (2026-11-11).
-    only = only_count(_index(runtime), journal_dir, ask.runs)
-    if only is None:  # no index: the disk is asked, file by file
-        only = len(only_copies(ask.folders, journal_dir, ask.runs).files)
-    facts = SlowFacts(only, tuple(sorted(set(held_back(runtime, ask.runs).values()))))
+    counted = only_count(_index(runtime), journal_dir, ask.runs)
+    if counted is None:  # no index: the disk is asked, file by file
+        found = only_copies(ask.folders, journal_dir, ask.runs)
+        only, nas = len(found.files), found.nas
+    else:
+        only, nas = counted.only, counted.nas
+    unplugged = tuple(sorted(set(held_back(runtime, ask.runs).values())))
+    facts = SlowFacts(only, unplugged, nas)
     if cache is not None:
         _write(cache, key, facts)
     return facts
@@ -120,6 +126,7 @@ def safety_key(ask: SlowAsk) -> str:
         parts.append([run, _stamp(journal_file(locations.journal_dir, run))])
         parts.append([_tree(folder) for folder in folders])
     parts.append(_stamp(locations.index_file))
+    parts.append(_stamp(cover_file(locations.journal_dir)))
     return hashlib.sha256(json.dumps(parts).encode()).hexdigest()
 
 
@@ -167,7 +174,8 @@ def _read(cache: Path, key: str) -> SlowFacts | None:
         kept = json.loads(cache.read_text("utf-8"))
         if kept["key"] != key:
             return None
-        return SlowFacts(int(kept["only"]), tuple(str(d) for d in kept["unplugged"]))
+        unplugged = tuple(str(d) for d in kept["unplugged"])
+        return SlowFacts(int(kept["only"]), unplugged, int(kept["nas"]))
     except OSError, ValueError, KeyError, TypeError:
         return None
 
@@ -180,7 +188,12 @@ def _write(cache: Path, key: str, facts: SlowFacts) -> None:
         key: Their key.
         facts: The facts.
     """
-    said = {"key": key, "only": facts.only, "unplugged": list(facts.unplugged)}
+    said = {
+        "key": key,
+        "only": facts.only,
+        "unplugged": list(facts.unplugged),
+        "nas": facts.nas,
+    }
     temporary = cache.with_name(f".{cache.name}.tmp")
     with contextlib.suppress(OSError):
         temporary.write_text(json.dumps(said), "utf-8")

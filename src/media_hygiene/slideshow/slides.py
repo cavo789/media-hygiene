@@ -74,6 +74,7 @@ class Slide:
     chapter: Chapter | None = None  # its event (0448)
     place: str = ""  # where it was taken, when its event does not say it (0472)
     notes: Notes | None = None  # what the storyteller reads (0449)
+    tag: str = ""  # its file's version, from the index: `?v=` of its pictures (0723)
 
 
 @dataclass(frozen=True, slots=True)

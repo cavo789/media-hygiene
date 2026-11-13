@@ -16,6 +16,7 @@ from urllib.parse import urlencode
 from media_hygiene.constants import MediaKind
 from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.review.home_parts import HomeSample
+from media_hygiene.review.versioned import tagged, version_tag
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.folders import FOLDER_QUERY
@@ -28,7 +29,7 @@ if TYPE_CHECKING:
 SAMPLES: Final = 10
 _DRAWN: Final = SAMPLES * 6  # more than shown: videos and files gone are skipped
 _DRAW: Final = (
-    "SELECT rowid, path FROM files WHERE broken_reason IS NULL "
+    "SELECT rowid, path, size, mtime_ns FROM files WHERE broken_reason IS NULL "
     "ORDER BY RANDOM() LIMIT ?"
 )
 
@@ -53,7 +54,7 @@ def home_samples(runtime: Runtime) -> tuple[HomeSample, ...]:
     aside = chosen_store(runtime).paths()
     mapper = runtime.mapper
     samples: list[HomeSample] = []
-    for key, text in rows:
+    for key, text, size, mtime in rows:
         path = Path(text)
         host = mapper.to_host(path)
         if media_kind(path) is not MediaKind.IMAGE or host in aside:
@@ -64,7 +65,9 @@ def home_samples(runtime: Runtime) -> tuple[HomeSample, ...]:
         query = urlencode({FOLDER_QUERY: folder})
         samples.append(
             HomeSample(
-                thumb=f"{THUMB_PREFIX}{key}{JPEG}",
+                thumb=tagged(
+                    f"{THUMB_PREFIX}{key}{JPEG}", version_tag(path, size, mtime)
+                ),
                 folder=folder,
                 url=f"{SEARCH_PAGE_PATH}?{query}",
             )

@@ -92,10 +92,10 @@
     const box = document.getElementById("story");
     box.hidden = show.current === null;
     if (show.current === null) return;
-    document.getElementById("storyNow").src = thumb(show.current);
+    document.getElementById("storyNow").src = story.nowThumb || thumb(show.current);
     const next = document.getElementById("storyNext");
     next.hidden = story.next === null || story.next === undefined;
-    if (!next.hidden) next.src = thumb(story.next);
+    if (!next.hidden) next.src = story.nextThumb || thumb(story.next);
     const chapter = show.chapter || {};
     const at = story.time ? TEXTS.storyAt.replace("{time}", story.time) : "";
     const when = [story.day, at].filter(Boolean).join(" ");

@@ -78,7 +78,9 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
                             app,
                             ending,
                             plain=TvDoor(
-                                app, runtime.settings.home.family_title
+                                app,
+                                runtime.settings.home.family_title,
+                                runtime.locations.index_file,
                             ).handle,
                         ),
                         start.port,

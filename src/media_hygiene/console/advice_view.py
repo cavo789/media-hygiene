@@ -9,6 +9,7 @@ from rich.markup import escape
 from media_hygiene.console.advice import Advice, TipKind, select
 from media_hygiene.console.one_line import say
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.services.step_next import note_next
 
 if TYPE_CHECKING:
     from media_hygiene.console.output import Output
@@ -39,6 +40,7 @@ def print_advice(
         _print_tip(output, advice)
     if step is not None:
         say(output.console, f"👉 [bold]{_('What next:')}[/] {step.text}")
+        note_next(step.text)  # the end toast of the home pages (0762)
         if step.command is not None:
             output.command(step.command)
     for advice in selection.shown:

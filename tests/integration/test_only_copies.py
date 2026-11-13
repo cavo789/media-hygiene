@@ -21,6 +21,7 @@ from media_hygiene.services.disk_only import only_answer
 from media_hygiene.services.disk_space import disk_state
 from media_hygiene.services.only_copies import only_copies
 from media_hygiene.services.only_count import only_count
+from media_hygiene.services.quarantine_pick import quarantine_state
 from media_hygiene.services.runtime import Runtime
 from tests.support.cli import run
 from tests.support.runtime import make_runtime, output_of
@@ -60,7 +61,8 @@ def _counted(locations: Locations) -> int | None:
         It.
     """
     runs = list_run_ids(locations.journal_dir)
-    return only_count(locations.index_file, locations.journal_dir, runs)
+    counted = only_count(locations.index_file, locations.journal_dir, runs)
+    return None if counted is None else counted.only
 
 
 def test_exact_copies_are_covered(cli: CliRunner, locations: Locations) -> None:
@@ -217,3 +219,26 @@ def test_push_says_how_many_the_backup_does_not_hold(
     said = " ".join(output_of(runtime).split())
     assert f"{count} files set aside in the quarantine exist nowhere else" in said
     assert "the backup does not copy the quarantine" in said
+
+
+def test_the_quarantine_page_counts_them_per_run(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Each run of the quarantine page says how many exist nowhere else (0782)."""
+    assert run(cli, "clean", "--yes").exit_code == 0  # exact copies, and unreadable
+    exact = quarantine_state(make_runtime(locations))
+    (run_id,) = {tile.run for tile in exact.tiles}
+    assert exact.only == {run_id: len(_only(locations))}
+    assert len(_only(locations)) < len(exact.tiles)  # an exact copy is not counted
+    assert run(cli, "undo", "--yes").exit_code == 0
+    assert run(cli, "clean", "--yes", "--tier", "near-all").exit_code == 0
+    near = quarantine_state(make_runtime(locations))
+    assert sum((near.only or {}).values()) == len(_only(locations))
+    assert WHATSAPP in _only(locations)
+    kept = Runtime.persistent  # no index: no figure, no error
+    monkeypatch.setattr(
+        Runtime,
+        "persistent",
+        lambda rt, kind: kind is not MountKind.CACHE and kept(rt, kind),
+    )
+    assert quarantine_state(make_runtime(locations)).only is None

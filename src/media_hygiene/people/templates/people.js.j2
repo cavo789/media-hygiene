@@ -149,7 +149,14 @@ async function setAside(index, action) {
   if (faces.length) send({ action, faces, label }, ASIDE_PATH);
 }
 
-async function send(body, path) {
+// A save from a section button keeps that button busy until the answer (0664's mhBusy);
+// a key press has no button: only the late line, the bar's *Saving…* stays either way.
+function send(body, path) {
+  const button = document.activeElement instanceof HTMLButtonElement ? document.activeElement : null;
+  return window.mhBusy ? window.mhBusy(button, () => post(body, path)) : post(body, path);
+}
+
+async function post(body, path) {
   say(TEXTS.saving);
   let answer;
   try {

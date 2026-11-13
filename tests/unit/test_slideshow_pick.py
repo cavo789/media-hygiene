@@ -17,6 +17,7 @@ from media_hygiene.index.schema import prepare
 from media_hygiene.report.chosen_decisions import ChosenFile
 from media_hygiene.report.decisions import DecisionsFile
 from media_hygiene.review.place import DEFAULT_DECISIONS
+from media_hygiene.review.versioned import version_tag
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.services.albums import album_store
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
@@ -176,3 +177,13 @@ def test_an_album_leaves_out_its_files_set_aside(
         picked = picked_slides(runtime, search, Pick(album="Crete 2023"))
     assert tuple(slide.key for slide in picked.slides) == (5,)
     assert picked.missing == 0
+
+
+def test_each_slide_carries_its_index_version(runtime: Runtime, tmp_path: Path) -> None:
+    """0723: each slide's tag is its index row's version, read without a stat."""
+    data = runtime.locations.data_dir
+    with SearchIndex.open(_index(runtime, tmp_path)) as search:
+        picked = picked_slides(runtime, search, Pick(words="chat"))
+    assert [slide.tag for slide in picked.slides] == [
+        version_tag(data / _FILES[5][0], 1, 7)
+    ]

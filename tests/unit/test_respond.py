@@ -3,15 +3,20 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from http import HTTPStatus
 from importlib.resources import files
 from typing import TYPE_CHECKING, cast
 
+from media_hygiene.i18n.templates import translated_environment
+from media_hygiene.review import dev_reload
 from media_hygiene.review.http import ContentType, FilePart, Response
 from media_hygiene.review.respond import RUN_HEADER, RUN_TAG, write_response
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    import pytest
 
 
 class _Sink:
@@ -96,3 +101,43 @@ def test_each_page_waiting_for_the_next_server_reads_its_run() -> None:
     waits = package.joinpath("review/templates/home_run.js.j2").read_text("utf-8")
     assert "now !== run" in waits
     assert "COMEBACK_MS" in waits
+
+
+def _head() -> str:
+    sink = _Sink()
+    asyncio.run(
+        write_response(cast("asyncio.StreamWriter", sink), Response(HTTPStatus.OK))
+    )
+    return bytes(sink.sent).partition(b"\r\n\r\n")[0].decode()
+
+
+def test_nothing_is_sent_or_polled_without_the_variable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The shipped image never sets it: no header, no polling script."""
+    monkeypatch.delenv(dev_reload.ENV_VAR, raising=False)
+    assert dev_reload.TEMPLATES_HEADER not in _head()
+    page = translated_environment("media_hygiene.review", (".j2",)).get_template(
+        "presence.html.j2"
+    )
+    assert "X-Media-Hygiene-Templates" not in page.render()
+
+
+def test_a_template_edit_changes_the_tag(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The tag follows the newest template, and every answer carries it."""
+    monkeypatch.setenv(dev_reload.ENV_VAR, "1")
+    monkeypatch.setattr(dev_reload, "_KEEP_S", -1.0)
+    first = dev_reload.templates_tag()
+    assert f"{dev_reload.TEMPLATES_HEADER}: {first}" in _head().splitlines()
+    page = translated_environment("media_hygiene.review", (".j2",)).get_template(
+        "presence.html.j2"
+    )
+    assert "X-Media-Hygiene-Templates" in page.render()
+    template = tmp_path / "x.j2"
+    template.write_text("a", "utf-8")
+    monkeypatch.setattr(dev_reload, "files", lambda _name: tmp_path)
+    before = dev_reload.templates_tag()
+    os.utime(template, ns=(1, 2_000_000_000_000_000_000))
+    assert dev_reload.templates_tag() != before

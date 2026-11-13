@@ -2,10 +2,10 @@
 
 Read from the index alone: each photo's sharpness (the audit's Laplacian) and its GPS
 position (named offline, `geo/`). The cover is the one the user chose (0371), else the
-sharpest photo of the first day; each
-day is named after the town most of its photos were taken in. A video keeps its
-address only when the phone's browser plays it as it is (`slideshow.films`), else its
-format is said, as on the TV (0292).
+sharpest photo of the first day; each day is named after the town most of its photos
+were taken in. A video keeps its address only when the phone's browser plays it as it
+is (`slideshow.films`), else its format is said, as on the TV (0292). Its pictures
+carry their file's version from the index (`?v=`, 0723).
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from pydantic import ValidationError
 from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.slideshow.films import film_path
-from media_hygiene.slideshow.pictures import thumb_path, tv_path
+from media_hygiene.slideshow.pictures import picture_paths
 
 if TYPE_CHECKING:
     import sqlite3
@@ -69,12 +69,12 @@ def facts_of(connection: sqlite3.Connection, key: int) -> Facts:
     if row is None:
         return Facts()
     sharpness, text = row
-    metadata = None
-    if isinstance(text, str):
-        try:
-            metadata = MediaMetadata.model_validate_json(text)
-        except ValidationError:
-            metadata = None
+    try:
+        metadata = (
+            MediaMetadata.model_validate_json(text) if isinstance(text, str) else None
+        )
+    except ValidationError:
+        metadata = None
     return Facts(sharpness, located_point(metadata))
 
 
@@ -135,9 +135,7 @@ def _item(slide: Slide) -> dict[str, object]:
     """
     film = slide.film
     return {
-        "key": slide.key,
-        "thumb": "" if film else thumb_path(slide.key),
-        "photo": "" if film else tv_path(slide.key),
+        **picture_paths(slide),
         "film": film_path(slide),
         "format": "" if film is None else film.label,
     }
@@ -159,7 +157,7 @@ def _cover(
     if not photos:
         return None
     best = max(photos, key=lambda slide: facts[slide.key].sharpness or 0.0)
-    return {"key": best.key, "thumb": thumb_path(best.key), "photo": tv_path(best.key)}
+    return picture_paths(best)
 
 
 def _chosen(key: int | None, slides: tuple[Slide, ...]) -> dict[str, object] | None:
@@ -172,9 +170,8 @@ def _chosen(key: int | None, slides: tuple[Slide, ...]) -> dict[str, object] | N
     Returns:
         Its key, thumbnail and picture addresses; None otherwise.
     """
-    if key is None or not any(s.key == key and s.film is None for s in slides):
-        return None
-    return {"key": key, "thumb": thumb_path(key), "photo": tv_path(key)}
+    chosen = next((s for s in slides if s.key == key and s.film is None), None)
+    return None if chosen is None else picture_paths(chosen)
 
 
 def _commonest(town_of: TownOf, points: Iterable[Point | None]) -> str | None:

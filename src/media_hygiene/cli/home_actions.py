@@ -97,6 +97,7 @@ def _action(line: MenuStep) -> HomeAction:
                 label=field.label,
                 example=field.example,
                 kind=field.kind.value,
+                choices=field.choices,
             )
             for field in step.fields
         ),
@@ -120,6 +121,7 @@ def home_groups(area: Area, shown: set[str]) -> tuple[HomeGroup, ...]:
             actions=tuple(name for name in group.steps if name in shown),
             numbered=group.numbered,
             extra=group.extra,
+            doc=link(group.doc),
         )
         for group in area.groups
     )

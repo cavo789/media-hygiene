@@ -28,6 +28,7 @@
   header img { height: 26vh; width: auto; filter: drop-shadow(0 1vh 1.5vh #00000066); }
   h1 { margin: 0; font: 800 11vh/1.05 "Bricolage Grotesque", "Segoe UI", sans-serif; }
   header p { margin: 1.5vh 0 0; color: #cbbfe0; font-size: 1.1em; }
+  header p.facts { color: #faf0cb; }
   nav { flex: 1; display: flex; gap: 5vw; justify-content: center; align-items: center;
         padding: 4vh 6vw; }
   a { display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -45,6 +46,7 @@
   <img src="{{ meerkat }}" alt="">
   <div>
     <h1>{{ title }}</h1>
+    {% if facts %}<p class="facts">{{ facts }}</p>{% endif %}
     <p>{{ _("Choose with the remote's arrows, then OK.") }}</p>
   </div>
 </header>

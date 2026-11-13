@@ -56,7 +56,10 @@ run, removed after.
    [`purge`](purge.md#good-to-know) lists those before erasing them). When files set aside exist
    nowhere else (near duplicates, burst shots, junk: not exact copies), the plan says how many:
    *12 files set aside in the quarantine exist nowhere else, and the backup does not copy the
-   quarantine*.
+   quarantine*. Those it found on the NAS at the last push count too: this push moves their
+   copy into `.removed`. At the end, the run keeps the list of what the NAS holds (path, size,
+   date) in the journal folder: until the next push, a file pushed then set aside counts as
+   *only on the NAS*, not *nowhere else*.
 2. **Plans**, and says it: what is already there, what is new, what moved (same size, date and
    first and last 64 KB: renamed on the NAS, nothing sent), what was edited (the NAS's copy set
    aside first), what is gone from the PC.

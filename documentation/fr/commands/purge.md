@@ -83,8 +83,10 @@ docker run --rm -it `
   illisible n'en a pas. Avant sa question, `purge` les liste (*37 fichiers mis de côté
   n'existent nulle part ailleurs*), puis demande une seule fois en les nommant (*Cela comprend
   les 37 fichiers listés ci-dessus*) : non, et rien n'est effacé. La page de la quarantaine les
-  liste de même au-dessus de son bouton *Effacer*. Une copie sur le NAS
-  n'est pas comptée (le conteneur n'en garde pas la liste).
+  liste de même au-dessus de son bouton *Effacer*. Un fichier envoyé sur le NAS
+  avant d'être mis de côté est dit à part (*5 fichiers n'existent que sur le NAS*) : le dernier
+  [`push`](push.md) l'y a trouvé, même chemin, même taille, même date ; le push suivant déplace
+  cette copie dans `.removed`, qui ne compte pas comme une copie.
 - Une quarantaine vide dit *La quarantaine est vide* et ne fait rien.
 - Un nom d'exécution sans quarantaine est refusé : *L'exécution … n'a pas de quarantaine*.
 - La quarantaine contient ce que `clean` a déplacé (copies en trop, fichiers illisibles, fichiers

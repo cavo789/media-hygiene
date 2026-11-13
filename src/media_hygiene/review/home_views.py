@@ -45,7 +45,8 @@ class HomeField(Frozen):
     name: str
     label: str
     example: str
-    kind: str  # text, number, folder, album
+    kind: str  # text, number, folder, album, choice
+    choices: tuple[tuple[str, str], ...] = ()  # choice: (value, label), buttons
 
 
 class HomeAction(Frozen):  # one field per thing the page draws
@@ -88,6 +89,7 @@ class HomeGroup(Frozen):
     actions: tuple[str, ...]
     numbered: bool = False
     extra: str = ""  # folders, update, ai, about
+    doc: HomeLink | None = None  # the chapter beside its title (0730)
 
 
 class HomeSpace(Frozen):  # one field per thing the page draws

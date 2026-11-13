@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import sqlite3
 from contextlib import closing
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import journal_file
@@ -20,6 +21,7 @@ from media_hygiene.actions.journal_cache import read_journal_once
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.errors import JournalError
 from media_hygiene.index.read_only import connect_read_only
+from media_hygiene.services.nas_cover import read_cover
 from media_hygiene.services.only_copies import set_aside
 
 if TYPE_CHECKING:
@@ -32,9 +34,17 @@ _BATCH: Final = 500  # paths per query: under SQLite's limit of bound parameters
 _SIZES: Final = "SELECT path, size FROM files WHERE path IN ({marks})"
 
 
+@dataclass(frozen=True, slots=True)
+class OnlyCount:
+    """The files set aside with no kept twin: nowhere else, or only on the NAS."""
+
+    only: int  # exist nowhere else
+    nas: int = 0  # their only other copy is on the NAS (0781)
+
+
 def only_count(
     index_file: Path | None, journal_dir: Path, runs: Sequence[str]
-) -> int | None:
+) -> OnlyCount | None:
     """Count the files of these runs' quarantines with no kept twin in the index.
 
     Args:
@@ -43,7 +53,7 @@ def only_count(
         runs: The runs in the quarantine.
 
     Returns:
-        The count; None without a readable index. A run whose journal is lost is
+        The counts; None without a readable index. A run whose journal is lost is
         left out: the card's way back line names it already.
     """
     if index_file is None or not index_file.is_file():
@@ -59,8 +69,11 @@ def only_count(
         sizes = _sizes(index_file, sorted({twin for _entry, twin in twins}))
     except sqlite3.Error:
         return None
-    covered = sum(sizes.get(twin) == entry.size for entry, twin in twins)
-    return len(held) - covered
+    covered = {id(e) for e, twin in twins if sizes.get(twin) == e.size}
+    alone = [entry for entry in held if id(entry) not in covered]
+    cover = read_cover(journal_dir)
+    nas = sum(cover.holds(entry) for entry in alone)
+    return OnlyCount(len(alone) - nas, nas)
 
 
 def _twin(entry: JournalEntry) -> str | None:

@@ -267,3 +267,9 @@ main {
   gap: 30px;
 }
 main:focus { outline: none; }
+/* A field of fixed choices (0785): radio buttons drawn as a row of buttons. */
+.choices { display: flex; flex-wrap: wrap; gap: 6px; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice span { display: inline-block; padding: 6px 12px; border: 1px solid var(--mk-border-strong); border-radius: 999px; cursor: pointer; }
+.choice input:checked + span { background: var(--mh-apricot); color: var(--mh-on-apricot); border-color: transparent; }
+.choice input:focus-visible + span { outline: 2px solid var(--mh-apricot); outline-offset: 2px; }

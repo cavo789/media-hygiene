@@ -54,12 +54,15 @@ def modified_day(mtime_ns: int) -> str:
     return datetime.fromtimestamp(mtime_ns / _NANO, tz=UTC).date().isoformat()
 
 
-def exif_lines(metadata: dict[str, object], taken: str) -> tuple[str, ...]:
+def exif_lines(
+    metadata: dict[str, object], taken: str, town: str = ""
+) -> tuple[str, ...]:
     """The photo's metadata, one fact per line.
 
     Args:
         metadata: Its metadata (`MediaMetadata` as stored).
         taken: When it was taken (`taken_text`), or empty.
+        town: Its place as the index stores it (the tile's, 0750); empty: worked out.
 
     Returns:
         Taken, camera, lens, exposure, size and place, those known.
@@ -73,7 +76,7 @@ def exif_lines(metadata: dict[str, object], taken: str) -> tuple[str, ...]:
         _("Lens: {lens}").format(lens=metadata["lens"]) if metadata.get("lens") else "",
         _exposure(metadata),
         _pixels(metadata),
-        _place(metadata),
+        _place(metadata, town),
     )
     return tuple(line for line in lines if line)
 
@@ -116,11 +119,12 @@ def _pixels(metadata: dict[str, object]) -> str:
     return _("{width} by {height} pixels").format(width=width, height=height)
 
 
-def _place(metadata: dict[str, object]) -> str:
+def _place(metadata: dict[str, object], town: str) -> str:
     """Say where it was taken, by its GPS position.
 
     Args:
         metadata: Its metadata.
+        town: Its stored place; empty: the nearest town of the snapshot (no row yet).
 
     Returns:
         `GPS: 50.85000, 4.35000 (Brussels, Belgium)`, or empty without a position.
@@ -129,5 +133,5 @@ def _place(metadata: dict[str, object]) -> str:
     if not isinstance(latitude, float | int) or not isinstance(longitude, float | int):
         return ""
     where = f"{latitude:.5f}, {longitude:.5f}"
-    town = town_text(float(latitude), float(longitude))
+    town = town or town_text(float(latitude), float(longitude))
     return _("GPS: {where}").format(where=f"{where} ({town})" if town else where)

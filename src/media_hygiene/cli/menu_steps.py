@@ -123,7 +123,7 @@ def _filled(line: MenuStep, status: Status) -> MenuStep:
     """
     step = line.step
     reason = missing(step, status) or ""
-    if step.fields or step.planned or reason:  # a done step is off with its reason
+    if step.asks or step.planned or reason:  # a done step is off with its reason
         done = _done(step.slot, status)
         return replace(line, command="", reason=reason, done=done)
     match step.slot:

@@ -13,6 +13,7 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_catalog import catalog
+from media_hygiene.cli.menu_catalog_share import ALBUMS_DOC
 from media_hygiene.cli.menu_entry import Doc, Space
 from media_hygiene.cli.safety import PAGE_CAPTURED
 from media_hygiene.constants import Locale
@@ -29,8 +30,6 @@ if TYPE_CHECKING:
 
     from jinja2 import Environment
 
-# What an album is, what the albums' page does (0349): the chapter of its bar (0342).
-ALBUMS_DOC: Final = Doc("reference-albums/")
 SETTINGS_DOC: Final = Doc("commands/home/", "#every-setting", "#tous-les-réglages")
 SLIDESHOW_DOC: Final = Doc("commands/slideshow/")  # ▶ Slideshow's *how* (0660)
 # Each page's template, and the action of the catalog that opens it: its chapter; or

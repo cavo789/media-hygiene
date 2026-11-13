@@ -68,7 +68,9 @@ copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
 - **The quarantine.** What `clean` sets aside waits there, whole, until you `purge` it.
   [`push`](commands/push.md) does not copy it: a file set aside that is not an exact copy (a near
   duplicate, a burst shot, junk) exists nowhere else, and `purge`, `push`, the *Disk space* page
-  and the home page's card say how many.
+  and the home page's card say how many. A file pushed before it was set aside is counted
+  apart, *only on the NAS*, until the next push moves that copy into `.removed` (emptied after
+  `[push] keep_removed_days`: never counted as a copy).
 - **Your settings keep their previous versions.** Each save of `config.toml`, of a person's or
   an event file, or of `albums.json` first copies the file it replaces into `.history/`
   (`C:\Users\<you>\media-hygiene\config\.history\`, and beside `albums.json`): the last 20

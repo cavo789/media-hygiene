@@ -2,7 +2,9 @@
    `pick_grid.js.j2` on faces: pressed on a section and dragged, the rectangle picks every face
    of that section it touches (Ctrl keeps those picked); Ctrl+A picks every face the current
    section shows. Both stay in one section, as `people_name_face.js.j2` picks, and only touch
-   faces drawn (a folded section's strip and the faces of photos set aside are left out). #}
+   faces drawn (a folded section's strip and the faces of photos set aside are left out).
+   Invert (0720, the bar button or Ctrl+I; `i` alone still ignores the group) picks the other
+   faces the current section shows. #}
 const FACE_BAND_START = 6; // pixels before a press becomes a rectangle
 let faceBand = null; // where it started (page), its section, the picking kept, its node
 let faceBandDrawn = false; // the click ending a rectangle opens nothing
@@ -85,11 +87,22 @@ document.addEventListener("click", (event) => {
 }, true);
 $("groups").addEventListener("dragstart", (event) => event.preventDefault());
 
-// Ctrl+A: every face the current section shows (never typing in a field).
+// The faces shown in the current section the picking leaves out (only those drawn).
+function invertFacePick() {
+  if (!state.writable || !state.sections.length) return;
+  const shown = pickableFaces(current).map((node) => Number(node.dataset.key));
+  const kept = facePick.index === current ? facePick.keys : [];
+  setFacePick(current, shown.filter((key) => !kept.includes(key)));
+}
+
+// Ctrl+A: every face the current section shows; Ctrl+I: the others (never typing in a field).
 document.addEventListener("keydown", (event) => {
-  if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "a" || event.shiftKey) return;
+  const key = event.key.toLowerCase();
+  if (!(event.ctrlKey || event.metaKey) || !["a", "i"].includes(key) || event.shiftKey) return;
   if (viewerOpen() || ["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
   if (!state.writable || !state.sections.length) return;
   event.preventDefault();
-  setFacePick(current, pickableFaces(current).map((node) => Number(node.dataset.key)));
+  if (key === "i") invertFacePick();
+  else setFacePick(current, pickableFaces(current).map((node) => Number(node.dataset.key)));
 });
+$("invertFaces").addEventListener("click", invertFacePick);

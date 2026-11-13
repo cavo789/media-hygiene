@@ -13,11 +13,11 @@ from typing import Final
 from pydantic import BaseModel, ConfigDict, Field
 
 LONG_SIDE_PX: Final = 2048
-_SMALLEST_SIDE: Final = 320
-_LARGEST_SIDE: Final = 8192
+SMALLEST_SIDE: Final = 320
+LARGEST_SIDE: Final = 8192
 QUALITY: Final = 85
-_LOWEST_QUALITY: Final = 30
-_HIGHEST_QUALITY: Final = 95  # above, Pillow's own advice: larger files, no better
+LOWEST_QUALITY: Final = 30
+HIGHEST_QUALITY: Final = 95  # above, Pillow's own advice: larger files, no better
 
 
 class ShareSettings(BaseModel):
@@ -25,6 +25,6 @@ class ShareSettings(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    long_side_px: int = Field(default=LONG_SIDE_PX, ge=_SMALLEST_SIDE, le=_LARGEST_SIDE)
-    quality: int = Field(default=QUALITY, ge=_LOWEST_QUALITY, le=_HIGHEST_QUALITY)
+    long_side_px: int = Field(default=LONG_SIDE_PX, ge=SMALLEST_SIDE, le=LARGEST_SIDE)
+    quality: int = Field(default=QUALITY, ge=LOWEST_QUALITY, le=HIGHEST_QUALITY)
     keep_gps: bool = False

@@ -18,6 +18,7 @@ import secrets
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.review.dev_reload import TEMPLATES_HEADER, templates_tag
 from media_hygiene.review.http import HEADER_ENCODING
 from media_hygiene.review.nonce import sealed
 
@@ -61,6 +62,7 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
         *cache[1:],
         "Connection: close",
         f"{RUN_HEADER}: {_RUN}",
+        *_templates_line(),
         "X-Content-Type-Options: nosniff",
         f"Referrer-Policy: {response.referrer}",
         f"Content-Security-Policy: {policy}",
@@ -72,6 +74,16 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
     await writer.drain()
     if part is not None and part.length:
         await _send_part(writer, part)
+
+
+def _templates_line() -> tuple[str, ...]:
+    """The developer's templates tag (0771), none in the shipped image.
+
+    Returns:
+        The header line, or nothing.
+    """
+    tag = templates_tag()
+    return (f"{TEMPLATES_HEADER}: {tag}",) if tag else ()
 
 
 def _immutable(max_age: int) -> str:

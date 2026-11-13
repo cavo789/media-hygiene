@@ -21,6 +21,7 @@ from media_hygiene.people.roster import NamesFile, Roster
 from media_hygiene.review.http import Request
 from media_hygiene.services.people_groups import PeopleGroups
 from tests.support.faces import coloured
+from tests.support.page_render import render_page
 from tests.support.runtime import thread_pool
 
 if TYPE_CHECKING:
@@ -109,3 +110,15 @@ def test_changes_are_refused_without_a_config_file(tmp_path: Path) -> None:
         assert json.loads(wrong.body)["error"].startswith("Not saved: ")
         plain = change(b"{}", LOCAL)
         assert plain.status is HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+
+
+def test_invert_picks_the_other_faces_of_the_section_only() -> None:
+    """0720: a bar button and Ctrl+I invert the faces shown; `i` alone still ignores."""
+    page = render_page("people.html.j2")
+    assert 'id="invertFaces"' in page
+    assert '$("invertFaces").addEventListener("click", invertFacePick);' in page
+    assert 'if (key === "i") invertFacePick();' in page
+    assert "shown.filter((key) => !kept.includes(key))" in page
+    assert "pickableFaces(current)" in page
+    assert 'event.key === "i" && state.writable) ignoreGroup(current)' in page
+    assert "<kbd>Ctrl</kbd>+<kbd>I</kbd>" in page

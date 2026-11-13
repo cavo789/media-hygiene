@@ -7,11 +7,16 @@ from typing import TYPE_CHECKING, Final
 
 import pytest
 
+from media_hygiene.actions.journal import journal_file, read_journal
+from media_hygiene.actions.runs import list_run_ids
 from media_hygiene.cli.home_state import home_state
 from media_hygiene.cli.safety_lines import Level
 from media_hygiene.cli.status_safety import page_safety, safety_of, show_safety
 from media_hygiene.index.safety_counts import RereadCounts, newer_than, reread_counts
 from media_hygiene.index.verified_rows import CREATE_VERIFIED
+from media_hygiene.plan.push_entries import Stat
+from media_hygiene.services.nas_cover import Listing, keep_cover
+from media_hygiene.services.only_copies import set_aside
 from media_hygiene.services.safety_records import last_backup, off_pc
 from media_hygiene.services.status import read_status
 from tests.support.home_states import (
@@ -139,3 +144,23 @@ def test_index_without_reread_and_missing_index(tmp_path: Path) -> None:
     connection.close()
     assert reread_counts(index) == RereadCounts(0, 0, 0, None)
     assert newer_than(index, 0) is None  # no mtime column: unreadable, unknown
+
+
+def test_quarantine_says_the_nas_copies_apart(tmp_path: Path) -> None:
+    """A file the last push found on the NAS: *only on the NAS*, not nowhere else."""
+    runtime = _runtime(tmp_path)
+    after_clean(runtime)
+    index = runtime.index_file
+    assert index is not None
+    indexed_photos(index, tmp_path / "none", 0)
+    journal_dir = runtime.locations.journal_dir
+    entries = [
+        entry
+        for run in list_run_ids(journal_dir)
+        for entry in set_aside(read_journal(journal_file(journal_dir, run)))
+    ]
+    files = {entry.path: Stat(entry.size, entry.mtime_ns) for entry in entries}
+    keep_cover(journal_dir, Listing("20261113-090000", "E:\\Backup", files))
+    line = safety_of(runtime, read_status(runtime))[4]
+    assert "exists nowhere else" not in line.sub
+    assert "1 file exists only on the NAS" in line.sub

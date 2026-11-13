@@ -23,6 +23,7 @@ from pydantic import ValidationError
 from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.geo.towns_once import shared_towns
 from media_hygiene.index.spot_rows import spots_by_key
+from media_hygiene.review.versioned import index_tags
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.services.slideshow_places import Places
 from media_hygiene.slideshow.chapters import Chapter, event_name, event_period
@@ -56,9 +57,9 @@ def told_slides(
         The slides, in the same order.
     """
     points = {slide.key: _point(connection, slide.key) for slide, _path in shown}
-    located_points = [point for point in points.values() if point]
-    places = Places(runtime, shared_towns() if located_points else None, located_points)
+    places = _places(runtime, [point for point in points.values() if point])
     stored = _stored(connection, list(points))
+    tags = index_tags(connection, points)
     told: list[Slide] = []
     for number, (folder, run) in enumerate(
         groupby(shown, key=lambda pair: pair[1].parent), start=1
@@ -77,6 +78,7 @@ def told_slides(
                 slide,
                 chapter=chapter,
                 place=places.spot(points[slide.key], chapter, stored.get(slide.key)),
+                tag=tags.get(slide.key, ""),
             )
             for slide in slides
         )

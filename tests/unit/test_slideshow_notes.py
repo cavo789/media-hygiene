@@ -92,6 +92,8 @@ def test_the_storyteller_reads_the_photo_the_next_one_and_the_map() -> None:
         "here": (50.0, 5.0),
         "map": None,
         "next": 2,
+        "nowThumb": "thumb/1.jpg",
+        "nextThumb": "thumb/2.jpg",
         "points": [(50.0, 5.0), (50.1, 5.1)],
     }
 
