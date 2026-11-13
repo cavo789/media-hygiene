@@ -17,3 +17,13 @@ Split from section 0510 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Resolution (2026-11-13) — DONE
+
+- Point 6 (page opened behind): already closed, `.todos/DONE/DONE_0577-typed-page-opens-behind-other-windows.md`.
+- Sentence tests for the four cases (nothing, extensions only, folders only, both; plural and
+  singular), EN + FR: `tests/e2e/test_intruders_browser.py` + `tests/support/intruders_walk.py`
+  run the page's own script in Chromium (the Playwright image already used by the other page
+  walks), `api/state` mocked; the sentence and the button checked. CI only
+  (`MEDIA_HYGIENE_E2E_BROWSER=1`); run here once: 2 passed in 3.5 s (measured).
+- Nothing user-facing changed: no documentation, no strings.

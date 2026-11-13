@@ -7,16 +7,27 @@ Python 3.10 runs in that image: nothing newer in the scripts it runs.
 
 from __future__ import annotations
 
+import os
 import shlex
 import subprocess
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
+
+import pytest
 
 from tests.support.docker import docker
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+# The marks of a browser test: e2e, and CI only (`MEDIA_HYGIENE_E2E_BROWSER=1`).
+BROWSER_ONLY: Final = (
+    pytest.mark.e2e,
+    pytest.mark.skipif(
+        os.environ.get("MEDIA_HYGIENE_E2E_BROWSER", "") != "1",
+        reason="browser tests run in CI only (MEDIA_HYGIENE_E2E_BROWSER=1)",
+    ),
+)
 PLAYWRIGHT: Final = "1.57.0"
 # Microsoft's image ships the browsers, not the Python package: a layer adds it, once.
 _BROWSER_BASE: Final = f"mcr.microsoft.com/playwright/python:v{PLAYWRIGHT}-jammy"
