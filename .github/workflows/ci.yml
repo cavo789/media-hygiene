@@ -55,9 +55,16 @@ jobs:
           uv run pre-commit run --all-files --hook-stage manual --show-diff-on-failure
           --config .config/.pre-commit-config.yaml
 
+  # The tests in two halves running side by side (0734: the single job, median 392 s over 6
+  # green runs of main on 2026-11-12, was the critical path, e2e 224 s). Each half writes its
+  # coverage data without judging it; `coverage` combines both and keeps the 90 % threshold.
   tests:
-    name: Tests
+    name: Tests (${{ matrix.suite }})
     runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [unit, integration]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -91,9 +98,40 @@ jobs:
         # (`tests`, `check`), as the maintainer's PC suffers under load. worksteal: an idle
         # worker takes the tests still queued on a busy one (the last 7 % took 82 s of 319 s
         # on 6cc9187, three workers waiting); --durations names the slowest ones in the log.
+        # Half the suite covers less than 90 %: the threshold is judged once, combined.
+        env:
+          COVERAGE_FILE: .coverage.${{ matrix.suite }}
+          SUITE: ${{ matrix.suite }}
         run: >-
-          uv run pytest -n auto --dist worksteal --durations=15
-          --cov --cov-report=term-missing:skip-covered
+          uv run pytest "tests/${SUITE}" -n auto --dist worksteal --durations=15
+          --cov --cov-report= --cov-fail-under=0
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage-${{ matrix.suite }}
+          path: .coverage.${{ matrix.suite }}
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  coverage:
+    name: Tests
+    needs: [tests]
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: Install the locked environment
+        run: uv sync --locked
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: coverage-*
+          merge-multiple: true
+      - name: Combined coverage (90 % of branches, pyproject.toml)
+        run: |
+          uv run coverage combine .coverage.unit .coverage.integration
+          uv run coverage report
 
   image:
     name: Image end-to-end tests
@@ -191,7 +229,7 @@ jobs:
   publish:
     name: Publish to Docker Hub
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [lint, tests, image, build-amd64, build-arm64]
+    needs: [lint, coverage, image, build-amd64, build-arm64]
     runs-on: ubuntu-26.04
     permissions:
       contents: write # the GitHub Release of the tag, its last step

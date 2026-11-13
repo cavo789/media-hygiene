@@ -26,3 +26,22 @@ two parallel jobs (`tests/unit` and `tests/integration`), a small `coverage comb
 the 90 % threshold. Medians *measured* over the 6 last green runs of `main` (2026-11-12,
 `gh run view --json jobs`): Tests 392 s, Image end-to-end tests 224 s. Expected: Tests ≈ 6.5 →
 ≈ 4 min (*estimated*: the longer half, then e2e becomes the critical path).
+
+## Status — PARTIAL (2026-11-13)
+
+### Done
+- Tests job split (`.github/workflows/ci.yml`): a matrix `Tests (unit)` / `Tests (integration)`,
+  each `pytest tests/<suite> -n auto --dist worksteal`, same pinned ffmpeg, coverage written to
+  `.coverage.<suite>` with `--cov-fail-under=0` (half the suite alone is under 90 %), uploaded as
+  an artifact; a `coverage` job (named `Tests`) combines both and runs `coverage report`, which
+  keeps `fail_under = 90` (branches) from `pyproject.toml`. `publish` now needs `coverage`.
+- Checked: YAML loads; actionlint 1.7.7 (docker, stdin) reports nothing on the new jobs (only the
+  pre-existing unknown `ubuntu-26.04` label and YAML-anchor findings of that old release); the
+  commit gate passes; `tests/unit/test_dockerfile.py` passes.
+
+### Not done
+- Medians of `Tests (unit)`, `Tests (integration)` and the combine job over at least three green
+  runs, against the 392 s before. **Reason:** only CI runs measure it (first proof: the pull
+  request of `iterate/2026-11-13`).
+- Options for the documentation library if a half stays the critical path. **Reason:** decided
+  only once the medians above are known.
