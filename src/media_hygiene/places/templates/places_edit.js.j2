@@ -116,10 +116,15 @@
     send(ordered);
   });
   byId("delete").addEventListener("click", async () => {
+    // Its photos placed by hand go back to their GPS: nothing restores that, so it asks.
+    // Without them nothing is lost: no question, the toast's Undo saves it again (0744).
     const hand = (editing.hand || []).length;
-    const question = hand ? fill(counted(T.confirmDeleteHand, hand), { name: editing.name }) : fill(T.confirmDelete, { name: editing.name });
-    if (!await window.mhAsk({ lines: [question], yes: T.deleteYes, danger: true })) return;
-    send(state.places.filter((place) => place.key !== editing.key));
+    const question = fill(counted(T.confirmDeleteHand, hand), { name: editing.name });
+    if (hand && !await window.mhAsk({ lines: [question], yes: T.deleteYes, danger: true })) return;
+    const gone = { ...editing, key: null };
+    await send(state.places.filter((place) => place.key !== editing.key));
+    if (hand || state.places.some((place) => place.name === gone.name)) return;  // not saved
+    window.mhUndoToast(fill(T.placeDeleted, { name: gone.name }), () => send([...state.places, gone]), { keys: true });
   });
 
   let searching = null;

@@ -2991,10 +2991,6 @@ msgstr[1] ""
 "leur GPS. Les photos restent où elles sont."
 
 #, python-brace-format
-msgid "Delete the place {name}? The photos stay where they are."
-msgstr "Supprimer le lieu {name} ? Les photos restent où elles sont."
-
-#, python-brace-format
 msgid ""
 "Delete {n} album? Your photos stay where they are: only the albums file "
 "changes."
@@ -9050,6 +9046,10 @@ msgstr ""
 #, python-brace-format
 msgid "Place of {folder} written back in config.toml."
 msgstr "Position de {folder} réécrite dans config.toml."
+
+#, python-brace-format
+msgid "Place {name} deleted. The photos stay where they are."
+msgstr "Lieu {name} supprimé. Les photos restent où elles sont."
 
 msgid "Placed"
 msgstr "Placés"
