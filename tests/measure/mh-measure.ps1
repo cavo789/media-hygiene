@@ -3648,6 +3648,11 @@ wrap(sf, 'read_runs', 'read_runs')
 wrap(sc, 'safety_key', 'safety_key')
 wrap(sf, 'reread_counts', 'reread_counts')
 wrap(sf, 'last_push', 'last_push')
+import media_hygiene.services.status as st
+import media_hygiene.cli.home_reports as hr
+for name in ('load_summaries', 'read_runs', 'last_walk', 'quarantine_state', 'review_state', 'sort_state', 'tag_coverage', 'face_coverage', 'disk_progress', 'mounted_quarantines'):
+    wrap(st, name, 'status.' + name)
+wrap(hr, 'report_folders', 'reports.report_folders')
 for run in (1, 2):
     for route, call in (('state', lambda: hs.home_state(runtime)), ('safety', lambda: ss.page_safety(runtime))):
         spent.clear()
@@ -3657,6 +3662,8 @@ for run in (1, 2):
         parts = ', '.join(f'{n} {s * 1000:.0f}' for n, s in sorted(spent.items(), key=lambda x: -x[1]))
         print(f'46b. {route} call {run}: {total:.0f} ms ({parts})')
 folders = mounted_quarantines(runtime).folders
+reports = runtime.locations.reports_dir
+print(f'46g. report folders: {sum(1 for p in reports.iterdir() if p.is_dir()) if reports.is_dir() else 0}; journals: {len(list(runtime.locations.journal_dir.glob("*.jsonl")))}')
 print(f'46c. quarantines mounted: {len(folders)}; cache file present: {(runtime.locations.cache_dir / sc.SAFETY_CACHE_NAME).is_file()}')
 '@
         $encoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($code))

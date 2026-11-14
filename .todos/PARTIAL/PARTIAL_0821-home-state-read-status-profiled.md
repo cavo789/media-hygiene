@@ -34,3 +34,17 @@ the page waits for it. Which part of `read_status` costs the time is **not known
 - [ ] Step 46 names each part of `read_status` and `latest_reports` (measured, maintainer's PC)
 - [ ] `/api/state` under 0.5 s warm on the maintainer's PC, or the reason it cannot be
 - [ ] Same state as before (equivalence test), one test per invalidation event if a cache is added
+
+## Status — PARTIAL (2026-11-14)
+
+### Done
+- Step 46 of `mh-measure.ps1` also times each part of `read_status` (`status.load_summaries`,
+  `read_runs`, `last_walk`, `quarantine_state`, `review_state`, `sort_state`,
+  `tag_coverage`, `face_coverage`, `disk_progress`, `mounted_quarantines`) and of
+  `latest_reports` (`reports.report_folders`), and counts the report folders and journals
+  (line 46g). Checked in the devcontainer on the demo tree (every part listed, read_status
+  6 ms there: synthetic data says nothing of Docker Desktop).
+
+### Not done
+- The maintainer's run of step 46 with these lines, then the fix of the dominant part.
+  **Reason:** the cost only shows through Docker Desktop's file sharing on the real folders.
