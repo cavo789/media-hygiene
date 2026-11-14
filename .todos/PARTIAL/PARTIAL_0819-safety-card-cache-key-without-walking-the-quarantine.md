@@ -31,3 +31,22 @@ still sees; the known lag of 0692 (counted until the next audit) may cover them.
 - [ ] `safety_key` under 0.5 s on the maintainer's PC (step 46), card under 1 s warm
 - [ ] One test per invalidation event kept or dropped, the dropped ones written in the docstring
 - [ ] Same facts as before (equivalence test on the demo tree)
+
+## Status — PARTIAL (2026-11-14)
+
+### Done
+- `safety_key` walks the quarantine folders (`_tree`) only when the count asks the disk
+  (no index, `/cache` not kept). With an index the count reads journals and index alone
+  (`only_count`), so the walk bought nothing there: the key keeps the runs, each journal's
+  stamp, the NAS cover and the index stamp.
+- Events, with an index: a file set aside removed by hand in Explorer no longer refreshes
+  the card at once (seen at the next audit, which stamps the index; the count never looked
+  at that file anyway); `clean`, `undo`, `purge`, journal restored or lost, quarantine
+  plugged in still do (their tests unchanged). Without an index: as before.
+- Test `test_indexed_key_does_not_walk_the_quarantine` (no walk; a hand removal keeps the
+  key; an audit changes it). 29 tests of the module and its importers pass.
+
+### Not done
+- Step 46 again on the maintainer's PC: `safety_key` expected under 0.5 s (*estimated*: what
+  remains is one `stat` per run journal, 83 runs, plus two files; measured before: 10.0 s).
+  **Reason:** only the maintainer's machine (Windows + Docker Desktop, real quarantine).
