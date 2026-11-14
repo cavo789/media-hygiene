@@ -167,7 +167,6 @@ One `/todo:run NNNN` each, highest priority first.
 | 0804 | Heavy page states kept while the index and config.toml are unchanged | [PARTIAL_0804-page-states-kept-while-the-index-is-unchanged.md](PARTIAL/PARTIAL_0804-page-states-kept-while-the-index-is-unchanged.md) |
 | 0806 | Folder tree counted by SQLite, not by a Python walk of every row | [PARTIAL_0806-folder-tree-from-one-sql-aggregate.md](PARTIAL/PARTIAL_0806-folder-tree-from-one-sql-aggregate.md) |
 | 0807 | SQLite reads of the pages use the PC's RAM: cache and memory map measured | [PARTIAL_0807-sqlite-read-cache-sized-for-the-pc.md](PARTIAL/PARTIAL_0807-sqlite-read-cache-sized-for-the-pc.md) |
-| 0821 | Home page: `read_status` and `latest_reports` profiled, then made cheap | [PARTIAL_0821-home-state-read-status-profiled.md](PARTIAL/PARTIAL_0821-home-state-read-status-profiled.md) |
 
 ## Anomalies
 

@@ -76,3 +76,9 @@ the page waits for it. Which part of `read_status` costs the time is **not known
   reports now read once (`status.report_folders` 0.22-0.28 s, `latest_reports` 1-3 ms).
   Left: `read_runs` 0.28-0.60 s, `report_folders` 0.22-0.28 s, `sort_state` 0.13-0.14 s,
   `tag_coverage` 0.07 s. Second start by stopwatch: 3.7 s.
+
+## Closed — DONE (2026-11-14)
+- The goal of 0.5 s is not pursued: what is left is paid per file kept (611 journals, 616
+  reports) through Docker Desktop, and an automatic retention would save ~0.4 s (*estimated*)
+  of an update the user does not see (the page is drawn at once from its last state, 0692).
+  The maintainer judged it negligible: no retention TODO filed. Do not re-propose it for speed.
