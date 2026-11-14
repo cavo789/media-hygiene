@@ -50,6 +50,7 @@ Load the `photo-picking-pages` skill first: the bar is shared, so the change goe
 ## Questions for the maintainer
 
 - The grouping above, or another one? (Shown as a mock-up first, in the PR.)
+  → the grouping as shipped is kept (maintainer, inbox 2026-11-14).
 
 ## Where the user gains
 
@@ -97,6 +98,7 @@ and 3 buttons at the same place on every page (estimated 60 → 25 visible contr
   column. **Reason:** it acts on every file found, not the picking; moving it into the
   picking's menu needs the maintainer's choice.
 - The grouping itself awaits the maintainer's review (the TODO's question, mock-up = the PR).
+  → kept as shipped (maintainer, inbox 2026-11-14).
 - The browser cap (40) is an estimate until the first CI run prints the real count.
   → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - `docs_screenshots` should run (bar and left column changed).
