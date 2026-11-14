@@ -24,6 +24,15 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - ✅ DO: a TODO that touches a template listed in `OVERSIZED_TEMPLATES` (`tests/unit/test_page_frame.py`:
   over 400 lines) splits it first, in its own step (rendered output identical, as 0668 proved for
   the places page), then removes its entry from that list. ❌ DON'T: file one TODO per template.
+- ✅ DO: answer a question about a stored format, a file's meaning or a behaviour from the
+  module docstring (`config/*.py`, `index/schema.py`, the package `__init__`), one grep away.
+  ❌ DON'T: "it looks like a hash" from recollection: the maintainer knows the code was designed
+  here and reads a guess as lost knowledge (2026-11-14, the `id` of `people/*.toml`).
+- ✅ DO: when a lesson is learnt (a rerun, a fix-up, a correction by the user), write it where it
+  will be read next time, in the same turn: a way of working → this file; a kind of file → the
+  path-scoped rule (`pages.md`, `powershell.md`, `documentation.md`, `python.md`, `bash.md`); a
+  page contract → the `photo-picking-pages` skill; the maintainer's preferences → memory.
+  ❌ DON'T: leave it in a feedback file only: 45 of them hold lessons no session reads again.
 - ✅ DO: when a cache or index starts trusting more (reusing a listing, a stat, a digest), list
   every event that used to invalidate it — rename, move, atomic save (new inode), in-place
   write, copy keeping the mtime, `touch` — and keep one test per event.
