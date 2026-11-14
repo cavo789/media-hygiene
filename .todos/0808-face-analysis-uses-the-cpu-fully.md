@@ -46,3 +46,14 @@ factor; nothing else changes (pages are not concerned).
   `C:\Photos` read-only, per photo decode / detect / embed / turn guess, a 1280 px decode
   compared (faces counted both ways), then photos/s for processes x ONNX threads
   (4x1, N/2x1, Nx1, N/2x2, N/4x4). Checked in the devcontainer on 12 synthetic photos.
+
+## Measured on the maintainer's PC (2026-11-14, step 49, 100 random photos, 3.0 MB average, 16 CPUs)
+- One process, ms per photo: turn guess 65, decode 65, find 35 (detect 18, embed 10,
+  alignment ~7); total ~165 ms. A 1280 px decode: 37 ms instead of 65, same face count on
+  98 of 98 photos (46 faces both ways; boxes and vectors not compared yet).
+- Processes x ONNX threads, photos/s: 4x1 22.1, 4x4 13.1, 8x1 37.6, 8x2 25.5, 16x1 **43.1**.
+  The current setting (one process per CPU, one thread each) is the fastest: no thread
+  change, no setting.
+- Left to try, each worth >= 10 % (*estimated* from the split): the turn guess on a reduced
+  picture (65 ms, 39 %), the 1280 px decode (-28 ms, 17 %), with the equivalence test
+  (boxes within a pixel scaled back, cosine >= 0.999).
