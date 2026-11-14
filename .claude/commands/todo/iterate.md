@@ -75,7 +75,11 @@ The prompt gives the subagent everything it needs, since it starts cold:
   changed files; the full suite and the image tests run in CI on the pull request, not here (the
   user's PC suffers under heavy load). Run the whole unit suite (fast) once before committing.";
 - "A TODO not ready (a question to the user, data you cannot reach): do not ask — skip it, and
-  say why in your report.";
+  say why in your report. Never widen a scope the TODO decided (a file kind, a page, a tier):
+  implement what it says, and put the wider case in the feedback file as a question.";
+- "A red commit gate is fixed, never bypassed: `--no-verify` is forbidden (a hook refuses it);
+  a new constant that a user with another collection might want to change stays a constant and
+  is named in the feedback file under *Settings to consider*, never added as a setting unasked.";
 - "Append the section of each TODO to `<feedback file>` (template in
   `.claude/commands/todo/iterate.md`).";
 - "Then `git fsck --no-dangling`, one commit for the lot on the current branch (code, tests,
