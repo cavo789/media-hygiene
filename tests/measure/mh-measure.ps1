@@ -3652,7 +3652,8 @@ import media_hygiene.services.status as st
 import media_hygiene.cli.home_reports as hr
 for name in ('report_folders', 'read_runs', 'last_walk', 'quarantine_state', 'review_state', 'sort_state', 'tag_coverage', 'face_coverage', 'disk_progress', 'mounted_quarantines'):
     wrap(st, name, 'status.' + name)
-wrap(hr, 'report_folders', 'reports.report_folders')
+if hasattr(hr, 'report_folders'):  # read once in read_status since 0821
+    wrap(hr, 'report_folders', 'reports.report_folders')
 for run in (1, 2):
     for route, call in (('state', lambda: hs.home_state(runtime)), ('safety', lambda: ss.page_safety(runtime))):
         spent.clear()
