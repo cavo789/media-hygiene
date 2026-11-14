@@ -70,3 +70,9 @@ the page waits for it. Which part of `read_status` costs the time is **not known
   fewer files. **Reason:** a decision for the maintainer: 616 reports and 611 journals are
   kept forever unless `mh reports --prune N` is typed — an automatic retention (a setting?)
   would cut every one of these costs in proportion.
+
+### Measured after the change (maintainer's PC, step 46, 2026-11-14 22:04)
+- `home_state` 2.14 → 1.76 s (first call), 1.79 → 1.47 s (second): **-18 %** each; the
+  reports now read once (`status.report_folders` 0.22-0.28 s, `latest_reports` 1-3 ms).
+  Left: `read_runs` 0.28-0.60 s, `report_folders` 0.22-0.28 s, `sort_state` 0.13-0.14 s,
+  `tag_coverage` 0.07 s. Second start by stopwatch: 3.7 s.
