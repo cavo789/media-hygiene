@@ -293,6 +293,27 @@ partir de lui. Sous 20 pixels, la page dit que le cadre est trop petit et n'écr
 sur une zone vide n'écrit rien non plus. Quand rien n'est trouvé, mettez la photo de côté toute seule (Suppr dans sa grande
 vue).
 
+## Photos à redresser
+
+En cherchant les visages, `people` remarque aussi une photo couchée sur le côté : ses visages ne
+sont droits qu'une fois la photo tournée (🤖 le modèle de visages local, YuNet : une supposition).
+La page **Photos à redresser** de la page d'accueil (*Trier*, *Aller plus loin*) montre chacune
+**tournée comme elle le serait**, une vignette par photo, choisie comme dans [`browse`](browse.md) :
+clic, Ctrl+clic, Maj+clic, un rectangle, Ctrl+A, I pour inverser, Entrée ou un double clic pour la
+grande vue.
+
+- **↻ Tourner ces photos** tourne maintenant les photos choisies : seule leur balise d'orientation
+  (deux octets) est écrite, journalisée, chacune relue ; le **↶ Annuler** du message (ou
+  `mh undo <run>`) rend chaque fichier octet pour octet.
+- **✋ Ne jamais tourner celles-ci** garde un refus : la photo n'est plus jamais proposée, même
+  renommée ou déplacée par `sort`.
+- **✅ Appliquer** (ouverte depuis la page d'accueil) tourne toutes les photos que la page montre,
+  dans la fenêtre de `mh`, après sa question.
+
+Les photos d'un dossier protégé ou d'une sauvegarde, et tout fichier qui n'est pas un JPEG, ne sont
+jamais tournés ni montrés. Voie rapide pour une grande collection, toutes les photos d'un coup sans
+les montrer : `mh people --straighten` (une question, le même journal).
+
 ## Options
 
 | Option | Rôle |
@@ -302,6 +323,7 @@ vue).
 | `--forget` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun ; demande avant de supprimer aussi les noms de `config.toml`. |
 | `--names` | Avec `--forget` : supprimer aussi les noms de `config.toml` et les visages ignorés, sans demander ; le fichier précédent est conservé dans `/config/.history/`. |
 | `--expect N/M` | Avec `--names` : les noms et visages ignorés que la confirmation a listés (la page d'accueil l'ajoute) ; refuse, sans rien supprimer, si `config.toml` a changé depuis. |
+| `--straighten` | Tourner toutes les photos trouvées couchées sur le côté, après une question, journalisé (la page *Photos à redresser* les montre d'abord). |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 
 ## Votre vie privée

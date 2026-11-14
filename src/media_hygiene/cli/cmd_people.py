@@ -72,6 +72,17 @@ def people_command(  # pylint: disable=too-many-arguments
             show_default=False,
         ),
     ] = "",
+    straighten: Annotated[
+        bool,
+        typer.Option(
+            "--straighten",
+            help=_(
+                "Turn every photo found lying on its side (the page Photos to "
+                "straighten shows them first), after one question, journaled: "
+                "mh undo gives them back."
+            ),
+        ),
+    ] = False,
     port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Find the faces the cache lacks, group them, show and name them until Ctrl+C.
@@ -83,6 +94,7 @@ def people_command(  # pylint: disable=too-many-arguments
         forget: `--forget`.
         names: `--names`, with `--forget`.
         expect: `--expect`, with `--names`.
+        straighten: `--straighten`, turn the photos proposed instead.
         port: `--port`, inside the container.
 
     Raises:
@@ -101,6 +113,11 @@ def people_command(  # pylint: disable=too-many-arguments
     from media_hygiene.services.writable import ensure_writable
 
     runtime = runtime_of(ctx)
+    if straighten:
+        from media_hygiene.cli.people_straighten import straighten_flow
+
+        straighten_flow(runtime)
+        return
     port = review_options.page_port(runtime, port)
     output = runtime.output
     with user_errors(output):

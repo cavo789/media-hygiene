@@ -1154,6 +1154,11 @@ msgid "A trial: nothing is written, your choices stay."
 msgstr "Un essai : rien n'est écrit, vos choix restent."
 
 msgid ""
+"A turn changes two bytes of the photo (its orientation tag), journaled: "
+"'mh undo' of its run gives the file back byte for byte."
+msgstr "Tourner change deux octets de la photo (sa balise d'orientation), journalisé : 'mh undo' de son exécution rend le fichier octet pour octet."
+
+msgid ""
 "A word of yours (anniversaire Léa): kept in your settings, found by the "
 "search at once, written into the .xmp sidecars by 'xmp'."
 msgstr ""
@@ -1713,6 +1718,10 @@ msgstr ""
 "relatif est lu dans le dossier monté sur /reports. Le fichier est refusé "
 "si les dossiers, les paires ou les séries ont changé. Seul, --decisions "
 "lit decisions.json."
+
+#
+msgid "Apply turns every photo shown."
+msgstr "Appliquer tourne toutes les photos montrées."
 
 msgid "Apply your choices"
 msgstr "Appliquer vos choix"
@@ -3456,6 +3465,10 @@ msgstr "Chacun de ses fichiers serait vu deux fois, comme son propre doublon."
 msgid "Each one found or not, and the quarantine."
 msgstr "Chacun trouvé ou non, et la quarantaine."
 
+#
+msgid "Each one shown turned first; journaled, undo gives it back."
+msgstr "Chacune montrée tournée d'abord ; journalisé, annuler la rend."
+
 msgid ""
 "Each one was first proven on the PC by its content: in your library, in "
 "the folder of the import, or set aside before."
@@ -3465,6 +3478,11 @@ msgstr ""
 
 msgid "Each photo"
 msgstr "Chaque photo"
+
+msgid ""
+"Each photo people found lying on its side, from the faces it holds (🤖 a "
+"local face model, YuNet: a guess, look). Shown turned as it would be."
+msgstr "Chaque photo que people a trouvée couchée sur le côté, d'après ses visages (🤖 un modèle de visages local, YuNet : une supposition, regardez). Montrée tournée comme elle le serait."
 
 msgid ""
 "Each photo picked goes to its own month, with no event folder, journaled:"
@@ -4172,6 +4190,12 @@ msgid "Fast path, every file at once without showing them: mh clean --repair."
 msgstr ""
 "Chemin rapide, tous les fichiers d'un coup sans les montrer : mh clean "
 "--repair."
+
+#
+msgid ""
+"Fast path, every photo at once without showing them: mh people "
+"--straighten."
+msgstr "Voie rapide, toutes les photos d'un coup sans les montrer : mh people --straighten."
 
 msgid "February"
 msgstr "février"
@@ -6682,6 +6706,10 @@ msgstr ""
 "fichiers identiques ailleurs SONT donc supprimés (une « bibliothèque de "
 "référence »)."
 
+#
+msgid "Never propose a turn for the picked photos again"
+msgstr "Ne plus jamais proposer de rotation pour les photos choisies"
+
 msgid ""
 "Never propose the picked photos to this event again (kept in "
 "/config/events/)"
@@ -6696,6 +6724,14 @@ msgid "Never tried: a restore test from the NAS comes with mh pull."
 msgstr ""
 "Jamais essayée : un test de restauration depuis le NAS viendra avec mh "
 "pull."
+
+#
+msgid "Never turn these"
+msgstr "Ne jamais tourner celles-ci"
+
+#, python-brace-format
+msgid "Never turned, read back from the index at {time}: {count} photos."
+msgstr "Jamais tournées, relu dans l'index à {time} : {count} photos."
 
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
@@ -7324,6 +7360,14 @@ msgstr "Aucune photo à donner : aucune cochée, ou aucune accessible."
 msgid "No photo to prepare in the album {name}."
 msgstr "Aucune photo à préparer dans l'album {name}."
 
+msgid "No photo to straighten: nothing proposed, or every turn refused."
+msgstr "Aucune photo à redresser : rien de proposé, ou chaque rotation refusée."
+
+msgid ""
+"No photo to straighten: nothing proposed, or every turn written or "
+"refused."
+msgstr "Aucune photo à redresser : rien de proposé, ou chaque rotation écrite ou refusée."
+
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 "Aucune photo avec une position GPS dans l'index : la carte ne montre "
@@ -7689,6 +7733,10 @@ msgid "Not touched by this clean (decide later, if you want)"
 msgstr "Laissé par ce nettoyage (à décider plus tard, si vous voulez)"
 
 #, python-brace-format
+msgid "Not turned: {reasons}"
+msgstr "Pas tournées : {reasons}"
+
+#, python-brace-format
 msgid "Not undone: {error}"
 msgstr "Pas annulé : {error}"
 
@@ -8010,6 +8058,14 @@ msgstr "Rien n'a été enregistré (erreur {status})."
 #, python-brace-format
 msgid "Nothing was saved: {error}"
 msgstr "Rien n'a été enregistré : {error}"
+
+#, python-brace-format
+msgid "Nothing was turned (error {status})."
+msgstr "Rien n'a été tourné (erreur {status})."
+
+#, python-brace-format
+msgid "Nothing was turned: {error}"
+msgstr "Rien n'a été tourné : {error}"
 
 msgid "Nothing was written: run 'config --upgrade' to add them."
 msgstr "Rien n'a été écrit : lancez 'config --upgrade' pour les ajouter."
@@ -8984,6 +9040,10 @@ msgstr ""
 "sur sa durée) ; les autres fichiers de l'événement les suivent. Les "
 "photos plus petites (côté le plus court, en pixels) ne sont jamais "
 "envoyées : sur une vignette, le modèle invente des détails."
+
+#
+msgid "Photos to straighten"
+msgstr "Photos à redresser"
 
 msgid "Photos untouched"
 msgstr "Photos intactes"
@@ -11503,6 +11563,10 @@ msgstr[1] ""
 "Arrêt : les {count} fichiers en cours se terminent d'abord, pour que rien"
 " ne reste à moitié fait…"
 
+#
+msgid "Straighten the photos lying on their side"
+msgstr "Redresser les photos couchées sur le côté"
+
 msgid "Subject"
 msgstr "Sujet"
 
@@ -12695,8 +12759,8 @@ msgid ""
 "The names of config.toml changed since the page listed them: nothing was "
 "deleted."
 msgstr ""
-"Les noms de config.toml ont changé depuis que la page les a listés : rien "
-"n'a été supprimé."
+"Les noms de config.toml ont changé depuis que la page les a listés : rien"
+" n'a été supprimé."
 
 msgid ""
 "The names of the people go into the sidecars, next to the photos: anyone "
@@ -14198,6 +14262,11 @@ msgstr ""
 "GPS sauf si gardée, un dossier et un zip) : fermez cette page (Ctrl+C "
 "dans la fenêtre où tourne mh), puis tapez (copié) :"
 
+msgid ""
+"To see them turned first: the page Photos to straighten of the home page "
+"(mh home)."
+msgstr "Pour les voir tournées d'abord : la page Photos à redresser de la page d'accueil (mh home)."
+
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
 "Pour écarter toutes les photos, appuyez sur X : toute la rafale part en "
@@ -14343,11 +14412,49 @@ msgstr ""
 msgid "Try stopped: its drafts are removed, nothing was changed."
 msgstr "Essai arrêté : ses brouillons sont supprimés, rien n'a changé."
 
+msgid ""
+"Turn every photo found lying on its side (the page Photos to straighten "
+"shows them first), after one question, journaled: mh undo gives them "
+"back."
+msgstr "Tourner toutes les photos trouvées couchées sur le côté (la page Photos à redresser les montre d'abord), après une question, journalisé : mh undo les rend."
+
 msgid "Turn into dates"
 msgstr "Convertir en dates"
 
+#
+msgid ""
+"Turn the picked photos now: two bytes of each written, journaled, read "
+"back (Enter opens the large view)"
+msgstr "Tourner maintenant les photos choisies : deux octets de chacune écrits, journalisés, relus (Entrée ouvre la grande vue)"
+
+#
+msgid "Turn these photos"
+msgstr "Tourner ces photos"
+
+#, python-brace-format
+msgid ""
+"Turn these {count} photos? Only their orientation tag is written, "
+"journaled."
+msgstr "Tourner ces {count} photos ? Seule leur balise d'orientation est écrite, journalisée."
+
+#, python-brace-format
+msgid "Turned and read back at {time}: {count} photos."
+msgstr "Tournées et relues à {time} : {count} photos."
+
+#, python-brace-format
+msgid "Turned {degrees}° clockwise"
+msgstr "Tournée de {degrees}° dans le sens horaire"
+
+#, python-brace-format
+msgid "Turned, read back: {count} photos."
+msgstr "Tournées, relues : {count} photos."
+
 msgid "Turning"
 msgstr "Rotation"
+
+#
+msgid "Turning…"
+msgstr "Rotation…"
 
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
@@ -14513,6 +14620,10 @@ msgid "Undo this run and move {moved} files back?"
 msgid_plural "Undo these {count} runs and move {moved} files back?"
 msgstr[0] "Annuler ce passage et remettre {moved} fichiers en place ?"
 msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
+
+#, python-brace-format
+msgid "Undo: mh undo {run} (each photo back byte for byte)."
+msgstr "Annuler : mh undo {run} (chaque photo rendue octet pour octet)."
 
 #, python-brace-format
 msgid "Undo: mh undo {run} (the damaged files come back)."
@@ -15019,8 +15130,8 @@ msgid ""
 "With --names: what the confirmation listed (names/ignored, e.g. 3/12); "
 "refuses, deleting nothing, when config.toml changed since."
 msgstr ""
-"Avec --names : ce que la confirmation a listé (noms/ignorés, p. ex. "
-"3/12) ; refuse, sans rien supprimer, si config.toml a changé depuis."
+"Avec --names : ce que la confirmation a listé (noms/ignorés, p. ex. 3/12)"
+" ; refuse, sans rien supprimer, si config.toml a changé depuis."
 
 msgid "With --people: do not ask, go on."
 msgstr "Avec --people : ne pas demander, continuer."
@@ -16225,6 +16336,10 @@ msgstr "chaque photo a son GPS"
 
 msgid "every photo of the group"
 msgstr "toutes les photos du groupe"
+
+#
+msgid "every photo of the page"
+msgstr "toutes les photos de la page"
 
 msgid "every shot of the series"
 msgstr "toutes les photos de la série"
@@ -18137,6 +18252,9 @@ msgstr ""
 "examinées, après avoir dit combien de temps cela prend et demandé, comme "
 "'audit --people'."
 
+msgid "turn rotate straighten orientation sideways upright"
+msgstr "tourner pivoter redresser orientation couchée droite"
+
 #, python-brace-format
 msgid "two people are named '{name}'"
 msgstr "deux personnes s'appellent « {name} »"
@@ -19833,6 +19951,10 @@ msgid ""
 msgstr ""
 "{count} photos à montrer à {model}, environ {time}. Chaque choix est "
 "gardé aussitôt : un arrêt ne perd rien, le passage suivant continue."
+
+#, python-brace-format
+msgid "{count} photos to straighten"
+msgstr "{count} photos à redresser"
 
 #, python-brace-format
 msgid "{count} report deleted."

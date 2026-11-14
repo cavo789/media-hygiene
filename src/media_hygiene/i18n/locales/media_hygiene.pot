@@ -898,6 +898,11 @@ msgid "A trial: nothing is written, your choices stay."
 msgstr ""
 
 msgid ""
+"A turn changes two bytes of the photo (its orientation tag), journaled: "
+"'mh undo' of its run gives the file back byte for byte."
+msgstr ""
+
+msgid ""
 "A word of yours (anniversaire Léa): kept in your settings, found by the "
 "search at once, written into the .xmp sidecars by 'xmp'."
 msgstr ""
@@ -1356,6 +1361,9 @@ msgid ""
 " (photos set aside). A relative path is read from the folder mounted on "
 "/reports. The file is refused if the folders, the pairs or the series "
 "changed. Alone, --decisions reads decisions.json."
+msgstr ""
+
+msgid "Apply turns every photo shown."
 msgstr ""
 
 msgid "Apply your choices"
@@ -2838,12 +2846,20 @@ msgstr ""
 msgid "Each one found or not, and the quarantine."
 msgstr ""
 
+msgid "Each one shown turned first; journaled, undo gives it back."
+msgstr ""
+
 msgid ""
 "Each one was first proven on the PC by its content: in your library, in "
 "the folder of the import, or set aside before."
 msgstr ""
 
 msgid "Each photo"
+msgstr ""
+
+msgid ""
+"Each photo people found lying on its side, from the faces it holds (🤖 a "
+"local face model, YuNet: a guess, look). Shown turned as it would be."
 msgstr ""
 
 msgid ""
@@ -3406,6 +3422,11 @@ msgid "Failed"
 msgstr ""
 
 msgid "Fast path, every file at once without showing them: mh clean --repair."
+msgstr ""
+
+msgid ""
+"Fast path, every photo at once without showing them: mh people "
+"--straighten."
 msgstr ""
 
 msgid "February"
@@ -5549,6 +5570,9 @@ msgid ""
 "files elsewhere ARE deleted (a \"master library\")."
 msgstr ""
 
+msgid "Never propose a turn for the picked photos again"
+msgstr ""
+
 msgid ""
 "Never propose the picked photos to this event again (kept in "
 "/config/events/)"
@@ -5558,6 +5582,13 @@ msgid "Never sorted: analysed and cleaned as usual, left where it is."
 msgstr ""
 
 msgid "Never tried: a restore test from the NAS comes with mh pull."
+msgstr ""
+
+msgid "Never turn these"
+msgstr ""
+
+#, python-brace-format
+msgid "Never turned, read back from the index at {time}: {count} photos."
 msgstr ""
 
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
@@ -6097,6 +6128,14 @@ msgstr ""
 msgid "No photo to prepare in the album {name}."
 msgstr ""
 
+msgid "No photo to straighten: nothing proposed, or every turn refused."
+msgstr ""
+
+msgid ""
+"No photo to straighten: nothing proposed, or every turn written or "
+"refused."
+msgstr ""
+
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 
@@ -6417,6 +6456,10 @@ msgid "Not touched by this clean (decide later, if you want)"
 msgstr ""
 
 #, python-brace-format
+msgid "Not turned: {reasons}"
+msgstr ""
+
+#, python-brace-format
 msgid "Not undone: {error}"
 msgstr ""
 
@@ -6692,6 +6735,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "Nothing was saved: {error}"
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing was turned (error {status})."
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing was turned: {error}"
 msgstr ""
 
 msgid "Nothing was written: run 'config --upgrade' to add them."
@@ -7466,6 +7517,9 @@ msgid ""
 "Photos that answer for each event (the sharpest, spread over its span); "
 "the other files of the event follow them. Smaller photos (shorter side, "
 "in pixels) are never sent: the model invents details on thumbnails."
+msgstr ""
+
+msgid "Photos to straighten"
 msgstr ""
 
 msgid "Photos untouched"
@@ -9610,6 +9664,9 @@ msgid_plural ""
 "halfway…"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Straighten the photos lying on their side"
+msgstr ""
 
 msgid "Subject"
 msgstr ""
@@ -11809,6 +11866,11 @@ msgid ""
 "where mh runs), then type (copied):"
 msgstr ""
 
+msgid ""
+"To see them turned first: the page Photos to straighten of the home page "
+"(mh home)."
+msgstr ""
+
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
 
@@ -11928,10 +11990,45 @@ msgstr ""
 msgid "Try stopped: its drafts are removed, nothing was changed."
 msgstr ""
 
+msgid ""
+"Turn every photo found lying on its side (the page Photos to straighten "
+"shows them first), after one question, journaled: mh undo gives them "
+"back."
+msgstr ""
+
 msgid "Turn into dates"
 msgstr ""
 
+msgid ""
+"Turn the picked photos now: two bytes of each written, journaled, read "
+"back (Enter opens the large view)"
+msgstr ""
+
+msgid "Turn these photos"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Turn these {count} photos? Only their orientation tag is written, "
+"journaled."
+msgstr ""
+
+#, python-brace-format
+msgid "Turned and read back at {time}: {count} photos."
+msgstr ""
+
+#, python-brace-format
+msgid "Turned {degrees}° clockwise"
+msgstr ""
+
+#, python-brace-format
+msgid "Turned, read back: {count} photos."
+msgstr ""
+
 msgid "Turning"
+msgstr ""
+
+msgid "Turning…"
 msgstr ""
 
 msgid ""
@@ -12072,6 +12169,10 @@ msgid "Undo this run and move {moved} files back?"
 msgid_plural "Undo these {count} runs and move {moved} files back?"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Undo: mh undo {run} (each photo back byte for byte)."
+msgstr ""
 
 #, python-brace-format
 msgid "Undo: mh undo {run} (the damaged files come back)."
@@ -13541,6 +13642,9 @@ msgid "every photo has GPS"
 msgstr ""
 
 msgid "every photo of the group"
+msgstr ""
+
+msgid "every photo of the page"
 msgstr ""
 
 msgid "every shot of the series"
@@ -15266,6 +15370,9 @@ msgid ""
 " after saying how long it takes and asking, as 'audit --people' does."
 msgstr ""
 
+msgid "turn rotate straighten orientation sideways upright"
+msgstr ""
+
 #, python-brace-format
 msgid "two people are named '{name}'"
 msgstr ""
@@ -16622,6 +16729,10 @@ msgstr ""
 msgid ""
 "{count} photos to show to {model}, about {time}. Each pick is kept at "
 "once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} photos to straighten"
 msgstr ""
 
 #, python-brace-format

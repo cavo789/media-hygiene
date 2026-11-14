@@ -268,6 +268,26 @@ this photo only*; no other photo is searched from it. Under 20 pixels, the page 
 too small and writes nothing; a box on an empty area writes nothing either. When nothing is
 found, set the photo aside on its own (Delete in its large view).
 
+## Photos to straighten
+
+While it looks for faces, `people` also notices a photo lying on its side: its faces stand
+upright only once the photo is turned (🤖 the local face model, YuNet: a guess). The page
+**Photos to straighten** of the home page (*Sort out*, *Go further*) shows each of them
+**turned as it would be**, a tile per photo, picked as in [`browse`](browse.md): click, Ctrl+click,
+Shift+click, a rectangle, Ctrl+A, I to invert, Enter or a double click for the large view.
+
+- **↻ Turn these photos** turns the photos picked now: only their orientation tag (two bytes) is
+  written, journaled, each read back; the message's **↶ Undo** (or `mh undo <run>`) gives each
+  file back byte for byte.
+- **✋ Never turn these** keeps a refusal: the photo is never proposed again, even renamed or
+  moved by `sort`.
+- **✅ Apply** (opened from the home page) turns every photo the page shows, in the window of
+  `mh`, after its question.
+
+Photos of a protected folder or of a backup, and any file that is not a JPEG, are never turned
+nor shown. Fast path for a large collection, every photo at once without showing them:
+`mh people --straighten` (one question, the same journal).
+
 ## Options
 
 | Option | What it does |
@@ -277,6 +297,7 @@ found, set the photo aside on its own (Delete in its large view).
 | `--forget` | Delete every face from the cache, then show that none is left; asks before deleting the names of `config.toml` too. |
 | `--names` | With `--forget`: delete the names of `config.toml` and the faces ignored too, without asking; the previous file is kept in `/config/.history/`. |
 | `--expect N/M` | With `--names`: the names and faces ignored the confirmation listed (the home page adds it); refuses, deleting nothing, when `config.toml` changed since. |
+| `--straighten` | Turn every photo found lying on its side, after one question, journaled (the page *Photos to straighten* shows them first). |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 
 ## Your privacy
