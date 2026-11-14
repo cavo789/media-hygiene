@@ -48,3 +48,25 @@ the page waits for it. Which part of `read_status` costs the time is **not known
 ### Not done
 - The maintainer's run of step 46 with these lines, then the fix of the dominant part.
   **Reason:** the cost only shows through Docker Desktop's file sharing on the real folders.
+
+## Status — PARTIAL (2026-11-14, second pass)
+
+### Measured on the maintainer's PC (step 46, 616 report folders, 611 journals)
+- `home_state` 2.14 s / 1.79 s: `read_runs` 0.49 / 0.30 s (one `stat` per journal, facts
+  cached already), `load_summaries` 0.47 / 0.21 s and `report_folders` 0.22 / 0.26 s (the
+  same 616 `summary.json` read **twice**), `sort_state` 0.15 s (a third glob of the 616
+  folders), `tag_coverage` 0.08-0.10 s; the rest under 50 ms.
+
+### Done
+- The reports are read once per state: `read_status` keeps them (`Status.reports`) and
+  `latest_reports` links from them. Test `test_home_reports_read_once.py`; 315 tests of the
+  changed modules and importers pass. Gain *estimated* from the figures above: 0.21-0.26 s
+  of 1.8 s (-12 to -14 %).
+
+### Not done
+- Step 46 again after this change. **Reason:** maintainer's PC only.
+- `sort_state`'s own glob (0.15 s) and `read_runs`' 611 stats (0.3 s, also paid by the
+  safety card): the floor is one `stat` per file through Docker Desktop; going lower means
+  fewer files. **Reason:** a decision for the maintainer: 616 reports and 611 journals are
+  kept forever unless `mh reports --prune N` is typed — an automatic retention (a setting?)
+  would cut every one of these costs in proportion.

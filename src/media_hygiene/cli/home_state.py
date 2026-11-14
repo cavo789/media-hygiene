@@ -95,7 +95,7 @@ def home_state(runtime: Runtime) -> HomeState:
         folders=home_folders(runtime),
         quarantine=home_quarantine(status),
         undo=home_undo(status, menu),
-        reports=latest_reports(reports) if reports else (),
+        reports=latest_reports(status.reports) if reports else (),
         index=f"{REPORTS_PREFIX}{REPORT_INDEX_FILE_NAME}"
         if reports and (reports / REPORT_INDEX_FILE_NAME).is_file()
         else None,

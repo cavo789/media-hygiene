@@ -3650,7 +3650,7 @@ wrap(sf, 'reread_counts', 'reread_counts')
 wrap(sf, 'last_push', 'last_push')
 import media_hygiene.services.status as st
 import media_hygiene.cli.home_reports as hr
-for name in ('load_summaries', 'read_runs', 'last_walk', 'quarantine_state', 'review_state', 'sort_state', 'tag_coverage', 'face_coverage', 'disk_progress', 'mounted_quarantines'):
+for name in ('report_folders', 'read_runs', 'last_walk', 'quarantine_state', 'review_state', 'sort_state', 'tag_coverage', 'face_coverage', 'disk_progress', 'mounted_quarantines'):
     wrap(st, name, 'status.' + name)
 wrap(hr, 'report_folders', 'reports.report_folders')
 for run in (1, 2):
