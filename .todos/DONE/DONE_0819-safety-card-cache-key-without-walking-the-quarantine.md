@@ -50,3 +50,9 @@ still sees; the known lag of 0692 (counted until the next audit) may cover them.
 - Step 46 again on the maintainer's PC: `safety_key` expected under 0.5 s (*estimated*: what
   remains is one `stat` per run journal, 83 runs, plus two files; measured before: 10.0 s).
   **Reason:** only the maintainer's machine (Windows + Docker Desktop, real quarantine).
+
+## Measured on the maintainer's PC (2026-11-14, step 46, Windows + Docker Desktop) — DONE
+- `safety_key` 10.0 s → 18 ms; the card in the container 10.7 s → 0.61 s (-94 %);
+  `GET /api/safety` from Windows 11.86 s → 0.91 s (-92 %). Second start: page drawn in 4 s.
+- Step 46f (the card's stopwatch) removed: the card is drawn at once from its last answer,
+  so there was nothing a stopwatch could see.

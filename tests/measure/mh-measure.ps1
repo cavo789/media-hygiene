@@ -3677,12 +3677,9 @@ print(f'46c. quarantines mounted: {len(folders)}; cache file present: {(runtime.
     Write-Host "46 : dernier test, au chronometre (celui du telephone suffit) :"
     Write-Host "     1. dans l'autre fenetre, arretez mh avec Ctrl+C ;"
     Write-Host "     2. tapez mh et lancez le chronometre en appuyant sur Entree ;"
-    Write-Host "     3. notez les secondes quand la page d'accueil s'affiche (premier temps),"
-    Write-Host "        puis quand la carte 'Mes photos sont-elles en securite ?' montre ses chiffres (second temps)."
-    $drawn = Read-Host "46e. Premier temps, page affichee, en secondes (avant 0692 : environ 30)"
-    $card = Read-Host "46f. Second temps, carte de securite remplie, en secondes"
+    Write-Host "     3. arretez le chronometre quand la page d'accueil s'affiche."
+    $drawn = Read-Host "46e. Secondes jusqu'a la page affichee (avant 0692 : environ 30)"
     Log "   46e. second start, page drawn, stopwatch, seconds (before: about 30): $drawn"
-    Log "   46f. second start, safety card filled, stopwatch, seconds: $card"
     $ErrorActionPreference = $saved
 }
 
