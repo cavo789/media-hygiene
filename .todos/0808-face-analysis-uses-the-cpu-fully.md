@@ -65,3 +65,13 @@ factor; nothing else changes (pages are not concerned).
   N of M photos guessed — the equivalence proof, on the maintainer's photos.
 - Waits for: step 49 on an image built from this commit (expected `turn` 65 → ~15 ms,
   *estimated*; kept only if 49e shows the same turns).
+
+## Variant 1 measured (maintainer's PC, step 49, 2026-11-14 22:17, image of a978b683)
+- Turn guess 61 → 52 ms per photo (-15 %), same turn on 60 of 60 photos guessed. Smaller
+  than estimated: the three detections themselves are ~51 ms (17 ms each), the full-size
+  turning was only ~9 ms of it. Kept (equivalent, cheaper).
+- Throughput 16x1: 43.1 → 52.7 photos/s (+22 %), but the other rows moved +7 to +9 %
+  between the two runs (noise, a warmer disk): the part due to the change is ~+10 %.
+- Not done, a decision: the 1280 px decode (56 → 37 ms, same face count on 98/98) changes
+  the pictures the vectors are computed from; vectors not compared yet (cosine >= 0.999
+  needed, else the groups already named may move).
