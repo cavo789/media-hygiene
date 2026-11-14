@@ -3600,16 +3600,24 @@ if (Wanted 46) {
     $ErrorActionPreference = "Continue"
     Log ""
     Log "== 46. the home page ready at once after a restart (0692)"
-    Write-Host "46 : dans une AUTRE fenetre (image de la branche) : mh, attendez la page d'accueil, puis revenez ici."
-    $null = Read-Host "46. Entree quand la page d'accueil est affichee"
+    Write-Host "46 : ouvrez une AUTRE fenetre PowerShell et tapez : mh"
+    Write-Host "     Attendez que la page d'accueil s'affiche dans le navigateur. Laissez mh tourner."
+    $null = Read-Host "46. Revenez ici et appuyez sur Entree"
     $page = @(& docker ps --quiet --filter "label=media-hygiene.page")
     if ($page.Count -eq 0) {
         Log "   46a. no home page container running (label media-hygiene.page): step skipped"
     } else {
         $id = $page[0]
+        # mh alone publishes its page on the PC's home-network address (0367), not on 127.0.0.1.
+        $hostAddress = "127.0.0.1"
         $port = "8088"
-        $mapped = "$(& docker port $id 2>$null)"
-        if ($mapped -match ':(\d+)\s*$') { $port = $Matches[1] }
+        $mapped = @(& docker port $id 2>$null) | Where-Object { "$_" -match '-> (\d+\.\d+\.\d+\.\d+):(\d+)' } | Select-Object -First 1
+        if ("$mapped" -match '-> (\d+\.\d+\.\d+\.\d+):(\d+)') {
+            $hostAddress = $Matches[1]
+            $port = $Matches[2]
+            if ($hostAddress -eq "0.0.0.0") { $hostAddress = "127.0.0.1" }
+        }
+        Write-Host "46 : mesure en cours dans le conteneur, environ une minute, rien a faire..."
         $code = @'
 import time
 from media_hygiene.i18n import install
@@ -3657,7 +3665,7 @@ print(f'46c. quarantines mounted: {len(folders)}; cache file present: {(runtime.
         foreach ($path in "/api/state", "/api/safety") {
             $watch = [Diagnostics.Stopwatch]::StartNew()
             try {
-                $answer = Invoke-WebRequest -Uri "http://127.0.0.1:$port$path" -UseBasicParsing -TimeoutSec 300
+                $answer = Invoke-WebRequest -Uri "http://${hostAddress}:$port$path" -UseBasicParsing -TimeoutSec 300
                 $watch.Stop()
                 Log ("   46d. GET {0}: {1:N2} s, {2} bytes" -f $path, $watch.Elapsed.TotalSeconds, $answer.RawContentLength)
             } catch {
@@ -3665,9 +3673,14 @@ print(f'46c. quarantines mounted: {len(folders)}; cache file present: {(runtime.
             }
         }
     }
-    Write-Host "46 : fermez mh (Ctrl+C), puis relancez mh, photos inchangees. Chronometrez jusqu'a la page dessinee."
-    $drawn = Read-Host "46e. Secondes entre Entree et la page dessinee (avant : environ 30)"
-    $card = Read-Host "46f. Secondes jusqu'a la carte 'Mes photos sont-elles en securite ?' remplie"
+    Write-Host ""
+    Write-Host "46 : dernier test, au chronometre (celui du telephone suffit) :"
+    Write-Host "     1. dans l'autre fenetre, arretez mh avec Ctrl+C ;"
+    Write-Host "     2. tapez mh et lancez le chronometre en appuyant sur Entree ;"
+    Write-Host "     3. notez les secondes quand la page d'accueil s'affiche (premier temps),"
+    Write-Host "        puis quand la carte 'Mes photos sont-elles en securite ?' montre ses chiffres (second temps)."
+    $drawn = Read-Host "46e. Premier temps, page affichee, en secondes (avant 0692 : environ 30)"
+    $card = Read-Host "46f. Second temps, carte de securite remplie, en secondes"
     Log "   46e. second start, page drawn, stopwatch, seconds (before: about 30): $drawn"
     Log "   46f. second start, safety card filled, stopwatch, seconds: $card"
     $ErrorActionPreference = $saved
