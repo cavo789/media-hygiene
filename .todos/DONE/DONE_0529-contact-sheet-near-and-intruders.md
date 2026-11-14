@@ -33,9 +33,13 @@ The three pages use the one sheet template, same keys (test of the keys table).
 - Left: the intruders page. It shows no pictures (zips, docx, pdf: "nothing to look at"), so a
   contact sheet of tiles has nothing to show. Needs maintainer: drop that part, or say what a
   row of an intruder case should show (an icon per file?).
+  → dropped: the intruders page keeps its list (maintainer, inbox 2026-11-14).
 - The burst sheet keeps its own rows (`review_board.js.j2`): only its sizing, click and keys
   moved to the shared templates.
 
 ## Decided (2026-11-03, review of PR #61)
 
 By the maintainer: the intruders part is dropped (files without a picture: nothing to show on a sheet); in a group of 3+ versions a click keeps the first other version, as built.
+
+## Closed — DONE (2026-11-14, inbox)
+- The intruders' sheet dropped by the maintainer; the rest was done.
