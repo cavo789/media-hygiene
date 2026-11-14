@@ -3866,6 +3866,8 @@ if (Wanted 49) {
 import multiprocessing, os, random, sys, time
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+from media_hygiene.faces.onnx_module import no_telemetry
+no_telemetry()  # before the import, as mh does
 import onnxruntime as ort
 from media_hygiene.faces.engine import FaceEngine
 from media_hygiene.faces.turn_guess import Seen, turn_of
