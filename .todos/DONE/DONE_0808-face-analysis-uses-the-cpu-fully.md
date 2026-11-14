@@ -75,3 +75,7 @@ factor; nothing else changes (pages are not concerned).
 - Not done, a decision: the 1280 px decode (56 → 37 ms, same face count on 98/98) changes
   the pictures the vectors are computed from; vectors not compared yet (cosine >= 0.999
   needed, else the groups already named may move).
+
+## Closed — DONE (2026-11-14)
+- The maintainer's decision: the 1280 px decode (~12 %) is not worth the risk to the
+  named groups; not pursued. Threads: one per process stays (fastest, measured). No setting.
