@@ -99,3 +99,7 @@ Why, from reading the code (not measured):
   (`read_runs` 0.2-0.4 s). From Windows: `GET /api/state` 1.83 s, `GET /api/safety` 11.86 s.
 - So the cache never saves time there: its key walks every quarantine folder (`_tree`,
   `os.walk` + `stat` through the Docker Desktop bind mount) and costs what it saves. Filed: 0819.
+
+## Closed — DONE (2026-11-14, inbox)
+- Measured on the maintainer's PC (sections above): page drawn in 3.7-4 s at the second
+  start (was ~30 s); the card's route 11.9 s → 0.9 s after 0819. The code left is 0779.
