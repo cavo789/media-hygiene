@@ -40,3 +40,9 @@ decodes a photo, then runs the two ONNX models with `intra_op_num_threads = 1`
 
 Unknown until measured: a first full analysis of the library faster by the measured
 factor; nothing else changes (pages are not concerned).
+
+## Progress (2026-11-14)
+- Step 49 of `mh-measure.ps1` written (`-Only 49 -Count 1`): 100 random JPEG/HEIC of
+  `C:\Photos` read-only, per photo decode / detect / embed / turn guess, a 1280 px decode
+  compared (faces counted both ways), then photos/s for processes x ONNX threads
+  (4x1, N/2x1, Nx1, N/2x2, N/4x4). Checked in the devcontainer on 12 synthetic photos.

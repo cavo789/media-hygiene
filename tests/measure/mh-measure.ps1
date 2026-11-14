@@ -152,6 +152,8 @@
 #  47. the start of mh from its Desktop icon, piece by piece: PowerShell with and without your profile,
 #      mh.ps1 loaded, one docker call, Start-Job, Invoke-WebRequest on a closed port, docker run --help,
 #      then a home page container until its port answers (polled every 100 ms)
+#  49. faces on 100 of your photos (read-only): decode, detection, description, turn guess per
+#      photo, a 1280 px decode compared, then photos/s for several processes x ONNX threads (0808)
 #      (as before) or once Docker removed the first container (after): seconds to bind
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -197,6 +199,7 @@
 #   .\mh-measure.ps1 -Only 36 -Count 1   (the home page by hand, three yes/no questions: 0355, 0366)
 #   .\mh-measure.ps1 -Only 46 -Count 1   (the home page after a restart, the safety card apart: 0692)
 #   .\mh-measure.ps1 -Only 48 -Count 1   (photos shown sideways, guessed by their faces: 0711)
+#   .\mh-measure.ps1 -Only 49 -Count 1   (faces: time per step, processes x threads, 100 photos read-only: 0808)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -3850,6 +3853,107 @@ print(f'48d. page written: {sys.argv[1]}')
     } else {
         Log "   48d. no page written: step failed (see the lines above)"
     }
+    $ErrorActionPreference = $saved
+}
+
+if (Wanted 49) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 49. faces: where a photo's time goes, then processes x ONNX threads (0808; read-only)"
+    Write-Host "49 : 100 photos de $Photos analysees plusieurs fois, environ 5 a 10 minutes, rien a faire..."
+    $code = @'
+import multiprocessing, os, random, sys, time
+from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
+import onnxruntime as ort
+from media_hygiene.faces.engine import FaceEngine
+from media_hygiene.faces.turn_guess import Seen, turn_of
+from media_hygiene.faces.weights import DETECTOR, EMBEDDER, ensure_model
+from media_hygiene.faces import worker
+from media_hygiene.faces.worker import FaceJob, OnnxRecipe, find_faces
+from media_hygiene.report.thumbnails import upright_picture
+EXT = {'.jpg', '.jpeg', '.heic'}
+root = Path(sys.argv[1])
+count = int(sys.argv[2])
+models = Path('/cache/models')
+if not (models / DETECTOR.name).is_file():
+    models = Path('/tmp/models')
+    models.mkdir(exist_ok=True)
+recipe = OnnxRecipe(ensure_model(models, DETECTOR), ensure_model(models, EMBEDDER))
+paths = sorted(p for p in root.rglob('*') if p.suffix.lower() in EXT)
+random.Random(808).shuffle(paths)
+paths = paths[:count]
+cpus = os.cpu_count() or 1
+size = sum(p.stat().st_size for p in paths) / max(len(paths), 1) / 1e6
+print(f'49a. {len(paths)} photos (JPEG/HEIC, random), {size:.1f} MB each on average; {cpus} CPUs in the container')
+spent = {}
+def timed(label, call):
+    def run(*args):
+        began = time.perf_counter()
+        result = call(*args)
+        spent[label] = spent.get(label, 0.0) + time.perf_counter() - began
+        return result
+    return run
+base = recipe.build()
+engine = FaceEngine(timed('detect', base.detector), timed('embed', base.embedder), base.least)
+faces_full, faces_small, total = {}, {}, time.perf_counter()
+for path in paths:
+    began = time.perf_counter()
+    try:
+        picture = upright_picture(path)
+    except Exception:
+        continue
+    spent['decode'] = spent.get('decode', 0.0) + time.perf_counter() - began
+    before = dict(spent)
+    began = time.perf_counter()
+    found = engine.find(picture)
+    spent['find'] = spent.get('find', 0.0) + time.perf_counter() - began
+    began = time.perf_counter()
+    turn_of(Seen(path, picture, len(found)), engine)
+    spent['turn'] = spent.get('turn', 0.0) + time.perf_counter() - began
+    faces_full[path] = len(found)
+    began = time.perf_counter()
+    small = upright_picture(path, 1280)
+    spent['decode_1280'] = spent.get('decode_1280', 0.0) + time.perf_counter() - began
+    faces_small[path] = len(base.find(small))
+done = max(len(faces_full), 1)
+per = ', '.join(f'{k} {v / done * 1000:.0f}' for k, v in sorted(spent.items(), key=lambda kv: -kv[1]))
+print(f'49b. one process, ms per photo: {per}')
+print('     (find = detect + embed + alignment; turn = the extra detections of the turn guess; decode_1280 = a decode at 1280 px instead)')
+same = sum(1 for p in faces_full if faces_full[p] == faces_small[p])
+print(f'49c. faces at full size {sum(faces_full.values())}, from the 1280 px decode {sum(faces_small.values())}; same count on {same} of {len(faces_full)} photos')
+BASE = ort.SessionOptions
+class Threads(BASE):
+    wanted = 1
+    @property
+    def intra_op_num_threads(self):
+        return BASE.intra_op_num_threads.__get__(self)
+    @intra_op_num_threads.setter
+    def intra_op_num_threads(self, value):
+        BASE.intra_op_num_threads.__set__(self, Threads.wanted)
+def start(threads):
+    Threads.wanted = threads
+    ort.SessionOptions = Threads
+    worker.finder_of.cache_clear()
+jobs = [FaceJob(p, p.stat().st_size, p.stat().st_mtime_ns, recipe) for p in paths]
+plans = sorted({(min(4, cpus), 1), (cpus // 2, 1), (cpus, 1), (cpus // 2, 2), (cpus // 4, 4)})
+for workers, threads in plans:
+    if workers < 1:
+        continue
+    context = multiprocessing.get_context('fork')
+    began = time.perf_counter()
+    with ProcessPoolExecutor(workers, mp_context=context, initializer=start, initargs=(threads,)) as pool:
+        list(pool.map(find_faces, jobs[:workers]))
+        warm = time.perf_counter()
+        results = list(pool.map(find_faces, jobs))
+    seconds = time.perf_counter() - warm
+    print(f'49d. {workers} processes x {threads} ONNX threads: {len(jobs) / seconds:.2f} photos/s ({seconds:.0f} s for {len(jobs)}; models loaded in {warm - began:.1f} s)')
+'@
+    $encoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($code))
+    $mounts = @("-v", "${Photos}:/data/c/Photos:ro", "-v", "${Cache}:/cache:ro")
+    $lines = & docker run --rm @mounts --entrypoint python $Image -c "import base64, sys; sys.argv = ['x', '/data/c/Photos', '100']; exec(base64.b64decode('$encoded'))" 2>&1
+    foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
     $ErrorActionPreference = $saved
 }
 
