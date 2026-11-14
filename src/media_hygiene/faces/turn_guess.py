@@ -1,7 +1,10 @@
 """Guess a photo's turn in the `people` worker, from the picture it decoded (0725).
 
 The faces found as stored are counted once, by the face run itself; only a photo worth
-guessing (`straighten.worth_guessing`) is looked at in its three other turns.
+guessing (`straighten.worth_guessing`) is looked at in its three other turns, on a copy
+reduced to twice the detector's side: the detector shrinks every picture to that side
+anyway, and turning the full picture three times was 65 ms of a photo's 165 (measured,
+step 49 on the maintainer's PC, 100 photos, 0808).
 """
 
 from __future__ import annotations
@@ -12,6 +15,7 @@ from typing import TYPE_CHECKING, Final
 from PIL import Image
 
 from media_hygiene.classify.rules.matchers import screenshot_name
+from media_hygiene.faces.detect import DETECT_SIDE
 from media_hygiene.faces.straighten import (
     Candidate,
     Turn,
@@ -29,6 +33,7 @@ if TYPE_CHECKING:
 _MAKE: Final = 0x010F
 _ORIENTATION: Final = 0x0112
 NO_TURN: Final = 0
+GUESS_EDGE: Final = 2 * DETECT_SIDE  # the turned copies' longest side, at most
 
 
 def candidate_of(path: Path) -> Candidate | None:
@@ -77,8 +82,10 @@ def turn_of(seen: Seen, finder: FaceFinder) -> int:
     candidate = candidate_of(seen.path)
     if seen.faces or candidate is None or not worth_guessing(candidate):
         return NO_TURN
+    small = seen.picture.copy()
+    small.thumbnail((GUESS_EDGE, GUESS_EDGE))
     faces = {Turn.NONE: seen.faces} | {
-        turn: len(finder.find(turned(seen.picture, turn)))
+        turn: len(finder.find(turned(small, turn)))
         for turn in (Turn.QUARTER, Turn.HALF, Turn.THREE_QUARTERS)
     }
     turn = proposed_turn(faces)

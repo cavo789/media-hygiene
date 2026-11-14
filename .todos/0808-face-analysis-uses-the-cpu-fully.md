@@ -57,3 +57,11 @@ factor; nothing else changes (pages are not concerned).
 - Left to try, each worth >= 10 % (*estimated* from the split): the turn guess on a reduced
   picture (65 ms, 39 %), the 1280 px decode (-28 ms, 17 %), with the equivalence test
   (boxes within a pixel scaled back, cosine >= 0.999).
+
+## Variant 1 implemented (2026-11-14): the turn guess on a reduced copy
+- `turn_of` turns a copy at most `GUESS_EDGE` (2 x the detector's 640) wide instead of the
+  full picture. Test `test_turns_are_guessed_on_a_reduced_copy`. Step 49 now also runs the
+  old full-size guess on the same photos (`turn_full_size`) and prints 49e: same turn on
+  N of M photos guessed — the equivalence proof, on the maintainer's photos.
+- Waits for: step 49 on an image built from this commit (expected `turn` 65 → ~15 ms,
+  *estimated*; kept only if 49e shows the same turns).

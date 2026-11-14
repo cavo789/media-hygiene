@@ -3870,7 +3870,8 @@ from media_hygiene.faces.onnx_module import no_telemetry
 no_telemetry()  # before the import, as mh does
 import onnxruntime as ort
 from media_hygiene.faces.engine import FaceEngine
-from media_hygiene.faces.turn_guess import Seen, turn_of
+from media_hygiene.faces.turn_guess import Seen, candidate_of, turn_of
+from media_hygiene.faces.straighten import Turn, proposed_turn, turned, worth_guessing
 from media_hygiene.faces.weights import DETECTOR, EMBEDDER, ensure_model
 from media_hygiene.faces import worker
 from media_hygiene.faces.worker import FaceJob, OnnxRecipe, find_faces
@@ -3899,7 +3900,7 @@ def timed(label, call):
     return run
 base = recipe.build()
 engine = FaceEngine(timed('detect', base.detector), timed('embed', base.embedder), base.least)
-faces_full, faces_small, total = {}, {}, time.perf_counter()
+faces_full, faces_small, total, guessed = {}, {}, time.perf_counter(), []
 for path in paths:
     began = time.perf_counter()
     try:
@@ -3912,8 +3913,15 @@ for path in paths:
     found = engine.find(picture)
     spent['find'] = spent.get('find', 0.0) + time.perf_counter() - began
     began = time.perf_counter()
-    turn_of(Seen(path, picture, len(found)), engine)
+    new_turn = turn_of(Seen(path, picture, len(found)), engine)
     spent['turn'] = spent.get('turn', 0.0) + time.perf_counter() - began
+    candidate = candidate_of(path)
+    if not found and candidate is not None and worth_guessing(candidate):
+        began = time.perf_counter()
+        seen = {Turn.NONE: 0} | {t: len(base.find(turned(picture, t))) for t in (Turn.QUARTER, Turn.HALF, Turn.THREE_QUARTERS)}
+        old = proposed_turn(seen)
+        spent['turn_full_size'] = spent.get('turn_full_size', 0.0) + time.perf_counter() - began
+        guessed.append((0 if old is None else int(old)) == new_turn)
     faces_full[path] = len(found)
     began = time.perf_counter()
     small = upright_picture(path, 1280)
@@ -3922,8 +3930,9 @@ for path in paths:
 done = max(len(faces_full), 1)
 per = ', '.join(f'{k} {v / done * 1000:.0f}' for k, v in sorted(spent.items(), key=lambda kv: -kv[1]))
 print(f'49b. one process, ms per photo: {per}')
-print('     (find = detect + embed + alignment; turn = the extra detections of the turn guess; decode_1280 = a decode at 1280 px instead)')
+print('     (find = detect + embed + alignment; turn = the turn guess (reduced copy since 0808), turn_full_size = the old way; decode_1280 = a decode at 1280 px instead)')
 same = sum(1 for p in faces_full if faces_full[p] == faces_small[p])
+print(f'49e. turn guess on the reduced copy vs the full picture: same turn on {sum(guessed)} of {len(guessed)} photos guessed')
 print(f'49c. faces at full size {sum(faces_full.values())}, from the 1280 px decode {sum(faces_small.values())}; same count on {same} of {len(faces_full)} photos')
 BASE = ort.SessionOptions
 class Threads(BASE):
