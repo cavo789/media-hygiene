@@ -41,6 +41,10 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   and the user's (a folder renamed in Explorer). Test it.
 - ✅ DO: when pairing files by content, break ties between identical copies (by name) and
   test with the demo tree's copies.
+- ✅ DO: before estimating the gain of removing a part, split that part's own time too (what
+  the change removes vs what stays). ❌ DON'T: estimate from the part's total (2026-11-14: the
+  turn guess's 65 ms were estimated to fall to 15; its three detections were 51 ms of it, the
+  change saved 9).
 - ✅ DO: every figure in a TODO, commit message or summary says *measured* (how, where) or
   *estimated* (from what). ❌ DON'T: state a fact about a third-party product unchecked.
 - ✅ DO: end a work session with **where the user gains**: before → after, in % when possible,
