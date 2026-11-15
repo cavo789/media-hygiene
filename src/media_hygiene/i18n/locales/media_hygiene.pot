@@ -1477,6 +1477,9 @@ msgstr ""
 msgid "Auto"
 msgstr ""
 
+msgid "Avoid some people"
+msgstr ""
+
 msgid "B"
 msgstr ""
 
@@ -6405,6 +6408,9 @@ msgstr ""
 msgid "Not saved (error {status})."
 msgstr ""
 
+msgid "Not saved: config.toml rules out no name for this face."
+msgstr ""
+
 #, python-brace-format
 msgid "Not saved: config.toml still says this is not {name}."
 msgstr ""
@@ -6485,6 +6491,12 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "Not {name}: take this name off the photo (saved in config.toml)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Not {name}: takes the name off this face (no other name guessed); it "
+"stays to name"
 msgstr ""
 
 #, python-brace-format
@@ -7502,6 +7514,10 @@ msgid ""
 "its size); the id is what counts, the path is kept current by sort, undo "
 "and each audit. A photo edited since falls back to its GPS. Deleting a "
 "place on the map deletes its entry."
+msgstr ""
+
+#, python-brace-format
+msgid "Photos left out: {n} ({names})"
 msgstr ""
 
 msgid ""
@@ -8696,6 +8712,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Saved in config.toml, read back: nobody is named {name}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Saved in config.toml, read back: this face is not {names}; it stays to "
+"name."
 msgstr ""
 
 #, python-brace-format
@@ -10752,6 +10774,9 @@ msgstr ""
 msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr ""
 
+msgid "The people could not be avoided: try again."
+msgstr ""
+
 msgid "The period after"
 msgstr ""
 
@@ -11378,6 +11403,14 @@ msgstr ""
 msgid ""
 "Their photos are found by their face; you check them before setting them "
 "aside."
+msgstr ""
+
+msgid ""
+"Their photos are set out of this show, greyed below; nothing is saved, "
+"the TV is told nothing."
+msgstr ""
+
+msgid "Their photos stay off the TV for this show only; nothing is kept."
 msgstr ""
 
 msgid "Their size, their quality, and whether they keep the GPS position."
@@ -17859,7 +17892,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} photo set out for them."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} photos of these days stay with the rule '{rule}'."
+msgstr ""
+
+#, python-brace-format
+msgid "{n} photos set out for them."
 msgstr ""
 
 #, python-brace-format

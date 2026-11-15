@@ -25,6 +25,7 @@ from media_hygiene.people.naming import How, face_id, id_of, name_all
 from media_hygiene.people.people_memo import PeopleMemo
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
+from media_hygiene.person.unguess import unname
 from media_hygiene.services.kept_state import KeptState
 
 if TYPE_CHECKING:
@@ -44,7 +45,7 @@ class NameAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["name", "move", "reject"]
+    action: Literal["name", "move", "reject", "unname"]  # unname: no guess
     name: str = Field(min_length=1, max_length=_NAME_LENGTH)
     faces: tuple[int, ...] = Field(min_length=1)
     source: str = Field(default="", max_length=_NAME_LENGTH)  # "move": shown under
@@ -99,15 +100,10 @@ class FaceNames:
         """
         asked = NameAsked.model_validate_json(body)
         ids = tuple(self._ids(asked.faces))
-        if self.config_file is None:
-            said = _(
-                "names are kept in config.toml: mount a folder of yours on /config"
-            )
+        if (said := self._refused(ids)) or self.config_file is None:
             return {"error": said}
-        if not ids:
-            return {
-                "error": _("This face was found by a second look: it cannot be named.")
-            }
+        if asked.action == "unname":
+            return unname(self, asked.faces[0])
         naming = Naming(asked.name.strip(), ids)
         try:
             original = read_people(self.config_file)
@@ -129,6 +125,23 @@ class FaceNames:
             line = proof_line(back, Change(asked.action, naming, asked.source))
         return {"saved": line, "people": [person.name for person in back.person]}
 
+    def _refused(self, ids: tuple[str, ...]) -> str:
+        """Why faces cannot be named: no `config.toml`, or none in the index.
+
+        Args:
+            ids: Their face ids.
+
+        Returns:
+            The reason; empty when they can.
+        """
+        if self.config_file is None:
+            return _(
+                "names are kept in config.toml: mount a folder of yours on /config"
+            )
+        if not ids:
+            return _("This face was found by a second look: it cannot be named.")
+        return ""
+
     def tags(self, keys: list[int]) -> dict[int, dict[str, object]]:
         """The name of each face, as the file and the index say now.
 
@@ -138,7 +151,7 @@ class FaceNames:
         Returns:
             By number: `name`, `how` (confirmed or assigned), `not` (names ruled out).
         """
-        stored = {key: face for key in keys if (face := self._stored(key)) is not None}
+        stored = {key: face for key in keys if (face := self.stored(key)) is not None}
         known = self.known()
         names = name_all(tuple(stored.values()), known)
         tags: dict[int, dict[str, object]] = {}
@@ -149,7 +162,7 @@ class FaceNames:
                 tags[key] = {"name": name, "how": str(named.how), "not": ruled_out}
         return tags
 
-    def _stored(self, key: int) -> StoredFace | None:
+    def stored(self, key: int) -> StoredFace | None:
         """The face of the index a shelf number names.
 
         Args:
@@ -175,4 +188,4 @@ class FaceNames:
         Returns:
             The ids, in order.
         """
-        return [id_of(face) for key in keys if (face := self._stored(key)) is not None]
+        return [id_of(face) for key in keys if (face := self.stored(key)) is not None]

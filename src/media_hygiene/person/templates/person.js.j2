@@ -56,6 +56,7 @@ function showFaces(faces, again) {
     box.dataset.key = face.key;
     box.append(picture, faceTag(face.named)); // person_names.js.j2
     if (face.drawn) box.append(forgetButton(face.key)); // person_draw.js.j2
+    else if (face.named && face.named.name && state.writable) box.append(notNameButton(face)); // person_names.js.j2
     box.addEventListener("click", () => chooseFace(face.key, face.named));
     return box;
   }));

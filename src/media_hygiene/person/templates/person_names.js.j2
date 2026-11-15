@@ -50,6 +50,19 @@ function faceTag(named) {
   return tag;
 }
 
+// × on a named face the tool found: no name any more ("? nobody" at once: each name the tool
+// would guess in turn is ruled out, `person/unguess.py`), the faces as the file says now.
+function notNameButton(face) {
+  const out = element("button", "plain forget writes", "×");
+  out.type = "button";
+  out.title = fill(TEXTS.notThisFace, { name: face.named.name });
+  out.addEventListener("click", async (event) => {
+    event.stopPropagation(); // never chooses the face
+    if (await send({ action: "unname", name: face.named.name, faces: [Number(face.key)] })) await render();
+  });
+  return out;
+}
+
 // The name line under the faces: "This face is… [combo] [Name]".
 function showNamer(key, named) {
   const source = named && named.name ? named.name : "";
