@@ -16,7 +16,7 @@ def _template(package: str, name: str) -> str:
 
 def test_the_home_page_shows_one_entry_and_three_shortcuts_at_most() -> None:
     """Never one button per album: the entry counts them, the recent ones are capped."""
-    script = _template("review", "home_run.js.j2")
+    script = _template("review", "home_tv.js.j2")
     drawn = script.split("function tvAlbums()")[1].split("function tvChoices()")[0]
     assert "const TV_RECENT = 3;" in script
     assert ".slice(0, TV_RECENT)" in drawn
@@ -32,7 +32,7 @@ def test_a_tap_on_the_albums_page_shows_the_album_on_the_tv() -> None:
     assert '"tv" in window.mhView.get({ tv: "text" })' in script
     assert "`${P.home}?tv=${encodeURIComponent(name)}`" in script
     assert 'window.mhView.get({ tv: "text" }).tv' in _template(
-        "review", "home_run.js.j2"
+        "review", "home_tv.js.j2"
     )
 
 

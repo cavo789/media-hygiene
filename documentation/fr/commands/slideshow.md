@@ -113,6 +113,21 @@ rien de mis de côté. Ses
 deux choix : la **durée** (30 min, 1 h, 2 h : 1 h à 8 s par photo fait environ 450 photos) et les
 **années** (tout, les 5 dernières années ou une période). Chaque appui est un nouveau diaporama.
 
+**Éviter certaines personnes**, replié au-dessus des choix télé dès que quelqu'un est nommé sur le
+PC (`/people`), propose une case par nom : cochez-en une et aucune de ses photos n'arrive à la télé,
+quel que soit le choix envoyé (au hasard, un dossier, un mois). Large exprès : les visages nommés
+comme les siens et tout visage proche de leur moyenne (la ressemblance de `/person`), si bien qu'une
+photo oubliée est rare et que quelques photos en trop sont écartées. Le téléphone le dit avant
+d'ouvrir sa télécommande (« Photos écartées : 1 234 (Antoine) ») ; la télé n'en montre rien, et rien
+n'est gardé : les cases sont redemandées à chaque diaporama. Le téléphone ne nomme jamais personne
+(nommer reste sur le PC).
+
+Le même **Éviter certaines personnes** se trouve sur la télécommande (`/slideshow`, sur le PC et le
+téléphone) : il marche quelle que soit l'entrée du diaporama, le ▶ *Sur ce PC* ou *Sur la télé* de la
+bibliothèque, un album, un choix télé. Cocher un nom retire ses photos du diaporama, comme *Ne pas
+montrer* : elles restent grisées dans la grille dessous, vous voyez ce qui est écarté ; décochez et
+elles reviennent (une photo retirée à la main reste retirée).
+
 **Depuis toute page de vignettes, sans album** : dans [`library`](library.md) et la revue des rafales ouverts depuis la page d'accueil, (et `/person`, les vignettes des albums), **▶ Diaporama ▾** dans la barre montre
 les photos et vidéos choisies ou, rien de choisi, tous les fichiers que montre la page (le
 résultat de la recherche, les fichiers du dossier), 3000 au plus (au-delà : affinez la

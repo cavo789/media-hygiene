@@ -16,15 +16,20 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.i18n import _
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search import statements as sql
 from media_hygiene.search.days import NAME as DAY
+from media_hygiene.services.slideshow_avoid import avoided, named_people, stated
 from media_hygiene.services.slideshow_folders import labelled, newest_first
-from media_hygiene.services.slideshow_random_pick import RandomAsk, random_files
+from media_hygiene.services.slideshow_random_pick import (
+    RandomAsk,
+    dated_photos,
+    random_files,
+)
 from media_hygiene.services.slideshow_selection import selected
 from media_hygiene.share.album_api import too_many
 
@@ -47,6 +52,7 @@ _MONTHS: Final = (
 )
 _IN_DAYS: Final = f"SELECT path FROM files WHERE {sql.DAYS}"  # noqa: S608
 _MAX_TEXT: Final = 4096
+_MAX_AVOIDED: Final = 200  # names a phone may tick at once
 
 
 class Chosen(BaseModel):
@@ -58,6 +64,7 @@ class Chosen(BaseModel):
     first: date | None = None
     last: date | None = None
     random: RandomAsk | None = None  # a random show through time (0508)
+    avoid: tuple[str, ...] = Field(default=(), max_length=_MAX_AVOIDED)  # 0825
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,7 +90,10 @@ class Chooser:
                 for name, label in labelled(newest_first(runtime, search))
             ]
             months = [row[0] for row in search.connection.execute(_MONTHS)]
-            return json_response(HTTPStatus.OK, {"folders": listed, "months": months})
+            people = named_people(runtime)
+            body: dict[str, object] = {"folders": listed, "months": months}
+            body["people"] = people
+            return json_response(HTTPStatus.OK, body)
         if request.method != "POST" or request.path != CHOOSE_PATH:
             return None
         if not request.headers.get("content-type", "").startswith(ContentType.JSON):
@@ -104,27 +114,33 @@ class Chooser:
             The remote's page; 409 with the reason when nothing is shown.
         """
         runtime, search = self.opened()
+        avoid = avoided(runtime, chosen.avoid)
         if chosen.random is not None:
-            files = random_files(runtime, search, chosen.random)
+            dated = dated_photos(runtime, search)
+            shown = [pair for pair in dated if pair[0] not in avoid.paths]
+            files = random_files(runtime, shown, chosen.random)
             if not files:
                 return _refused(_("No dated photo to show at random."))
-            return selected(self.begin, files, ordered=True)
+            left = len(dated) - len(shown)
+            return stated(selected(self.begin, files, ordered=True), avoid, left)
         if chosen.folder is not None:
             inside = _folders(runtime, search).get(chosen.folder[:_MAX_TEXT])
             if inside is None:
                 return _refused(_("This folder is not among the folders analysed."))
             bounds = (f"{inside}/", f"{inside}{_AFTER_SLASH}")
             rows = search.connection.execute(sql.FOLDER_FILES, bounds)
-            files = tuple(Path(row[1]) for row in rows)
+            every = (Path(row[1]) for row in rows)
         elif chosen.first is not None:
             days = (chosen.first.isoformat(), (chosen.last or chosen.first).isoformat())
             rows = search.connection.execute(_IN_DAYS, days)
-            files = tuple(Path(row[0]) for row in rows)
-            if not files:
-                return _refused(_("No photo or video was taken in this period."))
+            every = (Path(row[0]) for row in rows)
         else:
             return Response(HTTPStatus.BAD_REQUEST)
-        return too_many(files) or selected(self.begin, files)
+        kept, left = avoid.kept(every)
+        if not kept and chosen.folder is None:
+            return _refused(_("No photo or video was taken in this period."))
+        files = tuple(kept)
+        return too_many(files) or stated(selected(self.begin, files), avoid, left)
 
 
 def _folders(runtime: Runtime, search: SearchIndex) -> dict[str, Path]:

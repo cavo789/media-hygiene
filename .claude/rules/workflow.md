@@ -60,6 +60,13 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   adds it **to the shared part**, so every page of the same kind gets it in the same change.
   ❌ DON'T: a page-local copy or a second version "for this page only": two versions drift apart
   (2026-11-12: S/M/L/XL on /person, S/M/L on /library; 👤 in one large view, not in another).
+- ✅ DO: a feature belongs to a kind of page or action, not to the page where it was asked:
+  before designing it, list every page and entry point of that kind (grep the routes, menus,
+  templates that lead there: tiles → size switch; a large view → name people; anything that
+  starts a slideshow → avoid people) and put it on all of them, best in the one page they all
+  reach or the shared part; name each one checked in the report. ❌ DON'T: build it where the
+  request names it only (2026-11-15, 0825: on the home's TV choices, not the library's ▶ nor
+  the /slideshow remote).
 - ✅ DO: before changing a design the user chose (mounts, data layout, a dependency), list
   what the change loses, and ask.
 

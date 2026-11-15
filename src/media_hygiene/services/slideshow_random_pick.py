@@ -28,6 +28,7 @@ from media_hygiene.services.slideshow_pick import MAX_SLIDES
 from media_hygiene.services.slideshow_random import Journey, journey
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from datetime import datetime
 
     from media_hygiene.search.fts import SearchIndex
@@ -53,13 +54,13 @@ class RandomAsk(BaseModel):
 
 
 def random_files(
-    runtime: Runtime, search: SearchIndex, ask: RandomAsk
+    runtime: Runtime, dated: Sequence[tuple[Path, datetime]], ask: RandomAsk
 ) -> tuple[Path, ...]:
     """The files of a random show, in its order; a new seed each time.
 
     Args:
         runtime: Settings, mount points and the host mapper.
-        search: The open index.
+        dated: The photos it may take (`dated_photos`, those avoided left out: 0825).
         ask: The length and the years.
 
     Returns:
@@ -75,7 +76,7 @@ def random_files(
         settings.classify.session_gap_hours, settings.classify.merge_gap_hours, 1
     )
     asked = Journey(min(slides, MAX_SLIDES), rules, years, time.time_ns())
-    return tuple(journey(dated_photos(runtime, search), asked))
+    return tuple(journey(dated, asked))
 
 
 def dated_photos(runtime: Runtime, search: SearchIndex) -> list[tuple[Path, datetime]]:

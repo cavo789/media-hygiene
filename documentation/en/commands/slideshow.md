@@ -105,6 +105,20 @@ their EXIF): no video, no undated photo, no screenshot, document or picture save
 nothing set aside. Its two choices: the **length** (30 min, 1 h, 2 h: 1 h at 8 s a photo is about
 450 photos) and the **years** (everything, the last 5 years, or a period). Each tap is a new show.
 
+**Avoid some people**, folded above the TV choices once someone is named on the PC (`/people`),
+lists one box per name: tick one and none of their photos reaches the TV, whichever choice is sent
+(at random, a folder, a month). Generous on purpose: the faces named as theirs and every face close
+to their mean (the likeness of `/person`), so a photo missed is rare and a few extra ones are left
+out. The phone says it before its remote opens ("Photos left out: 1 234 (Antoine)"); the TV shows
+nothing of it, and nothing is kept: the boxes are asked again for each show. The phone never names
+anyone (naming stays on the PC).
+
+The same **Avoid some people** sits on the remote (`/slideshow`, on the PC and the phone), so it
+works whichever way the show started: the library's ▶ *On this PC* or *On the TV*, an album, a TV
+choice. Ticking a name sets their photos out of the show, as *Do not show*: they stay greyed in the
+grid below, so you see what was left out; untick it and they come back (a photo you set out by hand
+stays out).
+
 **From any page of tiles, no album needed**: in [`library`](library.md) and the burst
 series review opened from the home page (and `/person`, the albums' tiles), **▶ Slideshow ▾** in the
 bar shows the photos and videos picked, or, nothing picked, every file the page shows (the search's

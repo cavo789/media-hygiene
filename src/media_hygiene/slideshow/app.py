@@ -7,9 +7,8 @@
 - `GET /`: the remote; `GET /api/slides`: the photos; `GET /api/show/<version>`: the
   show once past that version; `POST /api/show`: next, previous, a photo, play, pause,
   the interval, "do not show"; `POST /api/screens`: the code a TV shows, to pair it.
-  The PC and the paired phones only; `GET /api/lan` (the address, the code and the QR
-  code for the PC's page) the PC only. Under HTTPS the TV comes by the plain door
-  instead (`tv_door`): the phone's remote stays HTTPS.
+  The PC and the paired phones only, as `/api/avoid` (0825); `GET /api/lan` the PC
+  only. Under HTTPS the TV comes by the plain door (`tv_door`): the remote stays HTTPS.
 - `GET /tv/<key>.jpg` (the TV's picture), `/thumb/<key>.jpg` and `/film/<key>.<ext>` (a
   video, 0292): the show's files only.
 
@@ -33,6 +32,7 @@ from media_hygiene.review.page_settings import SETTING_PATHS, setting_response
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.review.videos import NEAR_POLICY
+from media_hygiene.slideshow.avoid_desk import AVOID_PATH, NO_AVOID, AvoidDesk
 from media_hygiene.slideshow.door import Visitor, screen_token
 from media_hygiene.slideshow.pictures import slides_view
 from media_hygiene.slideshow.routes import SCREENS_PATH, SHOW_PATH, SLIDES_PATH
@@ -66,6 +66,7 @@ class SlideshowApp:
     door: Door
     pages: ShowPages
     pictures: ShowPictures
+    avoid: AvoidDesk = NO_AVOID
 
     async def handle(self, request: Request) -> Response:
         """Route a request by who sent it.
@@ -167,8 +168,9 @@ class SlideshowApp:
                 policy=pages.policy,
                 referrer=pages.referrer,
             )
-        if path == SLIDES_PATH:
-            return json_response(HTTPStatus.OK, slides_view(self.desk))
+        if path in {SLIDES_PATH, AVOID_PATH}:  # AVOID_PATH: people kept off (0825)
+            view = slides_view(self.desk) if path == SLIDES_PATH else self.avoid.view()
+            return json_response(HTTPStatus.OK, view)
         if path.startswith(f"{SHOW_PATH}/"):
             since = path.removeprefix(f"{SHOW_PATH}/")
             await self.desk.settle(int(since) if since.isdigit() else 0)
@@ -192,4 +194,6 @@ class SlideshowApp:
             return self.desk.ask(request.body)
         if request.path == SCREENS_PATH:
             return pair_screen(self.desk, request.body)
+        if request.path == AVOID_PATH:
+            return self.avoid.ask(self.desk, request.body)
         return Response(HTTPStatus.NOT_FOUND)

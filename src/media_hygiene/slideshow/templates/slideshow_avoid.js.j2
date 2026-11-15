@@ -1,0 +1,38 @@
+{# Avoid some people (0825): one checkbox per person seen on the show's photos, with their
+   count; each change sends every name ticked, the server sets their photos out of the show ("Do not show"), and the long poll
+   greys them in the grid. Nobody seen: the block stays hidden. Nothing is stored. #}
+(() => {
+  const block = document.getElementById("avoid");
+  const names = document.getElementById("avoidNames");
+  const said = document.getElementById("avoidSaid");
+  const PATH = {{ avoid_path | tojson }};
+  const FORMS = [{{ _("{n} photo set out for them.") | tojson }}, {{ _("{n} photos set out for them.") | tojson }}];
+  const failed = {{ _("The people could not be avoided: try again.") | tojson }};
+  const tell = (view) => { said.textContent = view.ticked.length ? FORMS[view.out === 1 ? 0 : 1].replace("{n}", view.out) : ""; };
+  const send = () => {
+    const ticked = [...names.querySelectorAll("input:checked")].map((box) => box.value);
+    fetch(PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ names: ticked }) })
+      .then((response) => (response.ok ? response.json().then(tell) : Promise.reject(response)))
+      .catch(() => { said.textContent = failed; });
+  };
+  fetch(PATH, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((view) => {
+      if (!view || view.people.length === 0) return;
+      for (const person of view.people) {
+        const label = document.createElement("label");
+        const box = document.createElement("input");
+        box.type = "checkbox";
+        box.value = person.name;
+        box.checked = view.ticked.includes(person.name);
+        box.addEventListener("change", send);
+        // ✓ a face named as theirs, ≈ only guessed (close to their mean): the signs of /person.
+        const counts = [person.sure ? `✓ ${person.sure}` : "", person.guessed ? `≈ ${person.guessed}` : ""].filter(Boolean).join(" · ");
+        label.append(box, `${person.sure ? "✓" : "≈"} ${person.name} (${counts})`);
+        names.append(label);
+      }
+      block.hidden = false;
+      tell(view);
+    })
+    .catch(() => {});
+})();

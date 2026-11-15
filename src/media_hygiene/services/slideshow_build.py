@@ -20,7 +20,9 @@ from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.presence import PRESENCE_PATH
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.slideshow_map import map_tiles
+from media_hygiene.services.slideshow_people import avoid_desk
 from media_hygiene.slideshow.app import ShowPages, SlideshowApp
+from media_hygiene.slideshow.avoid_desk import AVOID_PATH
 from media_hygiene.slideshow.chapters import BANNER_SECONDS, TITLE_SECONDS
 from media_hygiene.slideshow.pictures import ShowPictures
 from media_hygiene.slideshow.routes import SCREENS_PATH, SHOW_PATH, SLIDES_PATH
@@ -90,6 +92,7 @@ def show_app(runtime: Runtime, desk: Desk, serving: Serving) -> SlideshowApp:
         "slides_path": _relative(SLIDES_PATH),
         "show_path": _relative(SHOW_PATH),
         "screens_path": _relative(SCREENS_PATH),
+        "avoid_path": _relative(AVOID_PATH),
         "lan_path": _relative(LAN_PATH),
         "wait_prefix": _relative(WAIT_PREFIX),
         "code_shown": CODE_SHOWN,
@@ -133,4 +136,5 @@ def show_app(runtime: Runtime, desk: Desk, serving: Serving) -> SlideshowApp:
         ScreenJob(runtime.settings.slideshow.screen_px, previews),
         serving.executor,
     )
-    return SlideshowApp(desk, serving.door, pages, pictures)
+    avoid = avoid_desk(runtime, desk, serving.search)
+    return SlideshowApp(desk, serving.door, pages, pictures, avoid)
