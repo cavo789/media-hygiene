@@ -147,7 +147,10 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   whole path and a link to the original); ← → (on a
   phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, L the landmark it
   shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Identify someone** names someone on the photo shown, or finds every photo of them
-  ([`people`](people.md#from-any-photo-name-or-set-aside-someone)).
+  ([`people`](people.md#from-any-photo-name-or-set-aside-someone)). Each face found is outlined on the
+  photo with its name under it (✓ confirmed, ≈ guessed, ? not named); **Hide names** / **Show names**
+  turns the names off or on (remembered). Hovering a face of the line under the photo outlines it on
+  the photo; a click on a face, under the photo or on it, names it right there (on a phone: names only).
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,

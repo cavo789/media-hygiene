@@ -4141,6 +4141,9 @@ msgstr ""
 msgid "Hide"
 msgstr ""
 
+msgid "Hide names"
+msgstr ""
+
 #, python-brace-format
 msgid "Hide {tile}"
 msgstr ""
@@ -9267,6 +9270,9 @@ msgid "Show its photos"
 msgstr ""
 
 msgid "Show more"
+msgstr ""
+
+msgid "Show names"
 msgstr ""
 
 msgid "Show on the TV"

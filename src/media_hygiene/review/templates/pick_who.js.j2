@@ -8,8 +8,10 @@
    "👤 Its other photos" opens /person on that face. Read-only (a phone, no config.toml): the
    names only. Included by `pick_viewer.js.j2` and `people_viewer.js.j2` (needs `$`, `element`,
    `fill`); `#viewerWho` (`pick_viewer.html.j2`) holds the words; a page that shows names
-   listens to the `mh-named` event of `document`. #}
+   listens to the `mh-named` event of `document`. Each face is outlined on the photo, its name
+   under it (`pick_who_boxes.js.j2`, 0838). #}
 {% include "combo_list.js.j2" %}
+{% include "pick_who_boxes.js.j2" %}
 let whoAsked = 0;   // the latest photo asked: an answer for an earlier one is dropped
 let whoFile = null; // the file whose faces are shown
 
@@ -27,16 +29,22 @@ async function showWho(file) {
   who.hidden = true;
   who.replaceChildren();
   $("viewerWhoName").replaceChildren();
+  whoClear();
   if (!file.path || file.video) return;
   const result = await whoAsk("/person/api/photo", { path: file.path });
   const faces = result && asked === whoAsked ? result.faces || [] : [];
   if (!faces.length) return;
   const writable = Boolean(result.writable) && !document.documentElement.hasAttribute("data-phone");
+  const name = writable ? (face, at) => whoNamer(face, at, result.people || []) : null;
   who.append("👤 ");
   faces.forEach((face, at) => {
     if (at) who.append(" · ");
-    who.append(whoFace(face, writable ? () => whoNamer(face, at, result.people || []) : null));
+    const chip = who.appendChild(whoFace(face, name ? () => name(face, at) : null));
+    chip.addEventListener("mouseenter", () => whoLight(at, true));
+    chip.addEventListener("mouseleave", () => whoLight(at, false));
   });
+  if (faces.some((face) => face.box)) who.append(" ", whoSwitch());
+  whoDraw(faces, name);
   who.hidden = false;
 }
 
@@ -98,5 +106,7 @@ function whoNamer(face, at, people) {
   others.target = "_blank";
   others.rel = "noopener";
   $("viewerWhoName").replaceChildren(element("span", "", said), box, button, others);
+  whoLit = at; // outlined on the photo while it is named
+  whoLight(at, false);
   input.focus();
 }

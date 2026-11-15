@@ -5033,6 +5033,9 @@ msgstr "Masquées :"
 msgid "Hide"
 msgstr "Masquer"
 
+msgid "Hide names"
+msgstr "Masquer les noms"
+
 #, python-brace-format
 msgid "Hide {tile}"
 msgstr "Masquer {tile}"
@@ -11101,6 +11104,9 @@ msgstr "Voir ses photos"
 
 msgid "Show more"
 msgstr "En montrer plus"
+
+msgid "Show names"
+msgstr "Afficher les noms"
 
 msgid "Show on the TV"
 msgstr "Montrer sur la télé"

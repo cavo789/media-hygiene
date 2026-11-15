@@ -15,6 +15,7 @@ from media_hygiene.i18n import _
 from media_hygiene.people.naming import id_of
 from media_hygiene.people.remembered import aside_date
 from media_hygiene.person.drawing import search_vector
+from media_hygiene.person.face_frame import box_fractions, upright_size
 from media_hygiene.person.likeness import FaceRows, kept_rows, likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.person.shelf import ShelfFace, face_view
@@ -83,13 +84,17 @@ class PersonFinder:
         if path is None:
             message = _("{path} is not a photo of the folders this page shows.")
             return {"said": message.format(path=typed.strip(_QUOTES)), "faces": []}
+        size = upright_size(self.faces.file, path)
+        views = []
+        for face in self.faces.of(path):
+            view = face_view(self._number(face), face.number)
+            if size is not None:  # where it is on the photo, for the large view (0838)
+                view["box"] = box_fractions(face.box, size)
+            views.append(view)
         return {
             "photo": self.place.mapper.to_host(path),
             "scanned": self.faces.scanned(path),
-            "faces": [
-                face_view(self._number(face), face.number)
-                for face in self.faces.of(path)
-            ],
+            "faces": views,
         }
 
     def like(self, key: str, aside: AsideDesk | None) -> dict[str, object]:

@@ -158,7 +158,11 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   plein écran, L le monument qu'elle montre
   ([`spots`](spots.md#-taper-soi-même-le-monument--touche-l)), ? toutes les touches, Échap la ferme. **👤 Identifier quelqu'un** nomme quelqu'un de la photo affichée, ou trouve
   toutes ses photos
-  ([`people`](people.md#depuis-nimporte-quelle-photo--nommer-ou-mettre-de-côté-quelquun)).
+  ([`people`](people.md#depuis-nimporte-quelle-photo--nommer-ou-mettre-de-côté-quelquun)). Chaque visage
+  trouvé est entouré sur la photo, son nom dessous (✓ confirmé, ≈ deviné, ? sans nom) ; **Masquer les noms**
+  / **Afficher les noms** les cache ou les montre (retenu). Survoler un visage de la ligne sous la photo
+  l'entoure sur la photo ; un clic sur un visage, sous la photo ou sur elle, le nomme sur place (sur un
+  téléphone : les noms seulement).
 
 - **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
   période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date. *Du*
