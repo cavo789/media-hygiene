@@ -18833,6 +18833,10 @@ msgid "✓ Confirmed as this person"
 msgstr ""
 
 #, python-brace-format
+msgid "✓ It is {name}"
+msgstr ""
+
+#, python-brace-format
 msgid "✓ Yes, this face is {name}"
 msgid_plural "✓ Yes, these {n} faces are {name}"
 msgstr[0] ""

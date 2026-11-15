@@ -7290,8 +7290,8 @@ msgstr "Aucun quasi-doublon : rien à passer en revue."
 
 msgid "No new face found, even turned: draw the one missed."
 msgstr ""
-"Aucun nouveau visage trouvé, même en tournant la photo : tracez celui qui "
-"manque."
+"Aucun nouveau visage trouvé, même en tournant la photo : tracez celui qui"
+" manque."
 
 #, python-brace-format
 msgid ""
@@ -22349,6 +22349,10 @@ msgstr[1] "✓ Confirmer les noms devinés : {n}"
 
 msgid "✓ Confirmed as this person"
 msgstr "✓ Confirmée comme cette personne"
+
+#, python-brace-format
+msgid "✓ It is {name}"
+msgstr "✓ C'est bien {name}"
 
 #, python-brace-format
 msgid "✓ Yes, this face is {name}"

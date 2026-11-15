@@ -49,6 +49,8 @@ async function showWho(file) {
     chip.addEventListener("mouseenter", () => whoLight(at, true));
     chip.addEventListener("mouseleave", () => whoLight(at, false));
   });
+  const guessed = name ? faces.filter((face) => face.named && face.named.name && face.named.how !== "confirmed") : [];
+  if (guessed.length) who.append(" ", whoConfirm(guessed));
   if (faces.some((face) => face.box)) who.append(" ", whoSwitch());
   whoDraw(faces, name);
   who.hidden = false;
@@ -85,19 +87,7 @@ function whoNamer(face, at, people) {
   const input = element("input");
   input.placeholder = who.dataset.placeholder;
   input.setAttribute("aria-label", said);
-  const go = async (name) => {
-    if (!name) return;
-    const line = $("viewerSaid");
-    line.className = "";
-    line.textContent = who.dataset.saving;
-    const body = { action: "move", name: name, faces: [Number(face.key)], source: source };
-    const saved = await whoAsk("/person/api/names", body);
-    line.className = saved && !saved.error ? "" : "error";
-    line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
-    if (!saved || saved.error) return;
-    document.dispatchEvent(new CustomEvent("mh-named"));
-    if (whoFile === file) showWho(file); // the names as the file says now
-  };
+  const go = (name) => (name ? whoSave(file, [{ name: name, keys: [Number(face.key)], source: source }]) : null);
   const box = comboAttach(input, () => people, (row) => go(row.value));
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") go(input.value.trim());
@@ -111,8 +101,50 @@ function whoNamer(face, at, people) {
   others.href = "/person?path=" + encodeURIComponent(file.path) + "&face=" + at;
   others.target = "_blank";
   others.rel = "noopener";
-  $("viewerWhoName").replaceChildren(element("span", "", said), box, button, others);
+  const parts = [element("span", "", said), box, button, others];
+  if (source && face.named.how !== "confirmed") { // ≈ guessed: "✓ It is Chloé", one click
+    const sure = element("button", "", fill(who.dataset.sure, { name: source }));
+    sure.type = "button";
+    sure.addEventListener("click", () => whoSave(file, [{ name: source, keys: [Number(face.key)], source: "" }]));
+    parts.unshift(sure);
+  }
+  $("viewerWhoName").replaceChildren(...parts);
   whoLit = at; // outlined on the photo while it is named
   whoLight(at, false);
   input.focus();
+}
+
+// Saves names ({name, keys, source} each, as /person does: `move`), says the line read back
+// from config.toml, then the faces as the file says now.
+async function whoSave(file, changes) {
+  const who = $("viewerWho");
+  const line = $("viewerSaid");
+  line.className = "";
+  line.textContent = who.dataset.saving;
+  let saved = null;
+  for (const change of changes) {
+    const body = { action: "move", name: change.name, faces: change.keys, source: change.source };
+    saved = await whoAsk("/person/api/names", body);
+    if (!saved || saved.error) break;
+  }
+  line.className = saved && !saved.error ? "" : "error";
+  line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
+  if (!saved || saved.error) return;
+  document.dispatchEvent(new CustomEvent("mh-named"));
+  if (whoFile === file) showWho(file);
+}
+
+// "✓ Confirm the names guessed: N": every ≈ face of the photo, as the tool named it.
+function whoConfirm(guessed) {
+  const who = $("viewerWho");
+  const file = whoFile;
+  const words = guessed.length === 1 ? who.dataset.sureOne : who.dataset.sureMany;
+  const button = element("button", "whoConfirm", fill(words, { n: guessed.length }));
+  button.type = "button";
+  button.addEventListener("click", () => {
+    const byName = new Map();
+    for (const face of guessed) byName.set(face.named.name, [...(byName.get(face.named.name) || []), Number(face.key)]);
+    whoSave(file, [...byName].map(([name, keys]) => ({ name: name, keys: keys, source: "" })));
+  });
+  return button;
 }

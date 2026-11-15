@@ -3,7 +3,8 @@
    itself), keeps it in the index flagged drawn, and the page then names and searches it
    like any face of the photo; too small or blurred, it says so and writes nothing; on a face
    the photo already has, that face is chosen, nothing written. A face drawn shows a ×: drawn
-   by mistake or twice, it is forgotten (the index and the names, read back). #}
+   by mistake or twice, it is forgotten (the index and the names, read back). The faces the
+   photo already has are outlined in the dialog with their names: who is left is seen at once. #}
 const drawing = { start: null, box: null };
 
 function drawSay(text) {
@@ -17,8 +18,24 @@ async function openDrawing() {
   if (!result.picture) { sideSay(result.said || ""); return; }
   $("drawPicture").src = result.picture;
   $("drawBox").hidden = true;
+  drawKnown();
   drawSay(TEXTS.drawHint);
   $("drawFace").showModal();
+}
+
+// The faces already found, outlined over the picture with their names (✓ ≈ ?), never in the way.
+function drawKnown() {
+  for (const old of $("drawFrame").querySelectorAll(".drawKnown")) old.remove();
+  for (const face of shownFaces) {
+    if (!face.box) continue;
+    const box = element("div", "drawKnown");
+    box.style.left = face.box.x * 100 + "%";
+    box.style.top = face.box.y * 100 + "%";
+    box.style.width = face.box.w * 100 + "%";
+    box.style.height = face.box.h * 100 + "%";
+    box.append(faceTag(face.named)); // person_names.js.j2
+    $("drawFrame").append(box);
+  }
 }
 
 function drawPoint(event) {

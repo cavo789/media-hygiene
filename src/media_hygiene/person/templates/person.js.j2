@@ -46,7 +46,9 @@ async function post(path, body) {
 }
 
 // The faces of the photo, each with its name (or ?), to choose one: one alone is chosen at once.
+let shownFaces = []; // the photo's faces, also outlined in the ✏ dialog (person_draw.js.j2)
 function showFaces(faces, again) {
+  shownFaces = faces;
   showGuesses(faces); // person_names.js.j2
   $("faces").replaceChildren(...faces.map((face) => {
     const box = element("figure", "face");
