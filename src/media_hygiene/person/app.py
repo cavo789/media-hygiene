@@ -11,7 +11,8 @@ page's own origin.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import asyncio
+from dataclasses import dataclass, field
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
@@ -73,7 +74,7 @@ class LikeAsked(BaseModel):
 
 
 @dataclass(frozen=True, slots=True)
-class PersonApp:
+class PersonApp:  # pylint: disable=too-many-instance-attributes
     """Answers `/person` from the index, the worker pool and the decisions file."""
 
     page: Page
@@ -83,6 +84,9 @@ class PersonApp:
     aside: AsideDesk | None = None  # None: no reports folder to set photos aside in
     previews: Path | None = None  # the cache folder of previews, if any
     apply: ApplyDesk | None = None  # *Apply now*: the page was opened from home
+    # One question or choice at a time, in the order sent, off the event loop: the
+    # thumbnails and the other pages keep being served meanwhile (2026-11-15).
+    turn: asyncio.Lock = field(default_factory=asyncio.Lock)
 
     async def handle(self, request: Request) -> Response:
         """Route a request below `/person`.
@@ -119,15 +123,17 @@ class PersonApp:
             The JSON answer; 400 for a body that is not a question.
         """
         try:
-            found = await self._found(path, body)
+            async with self.turn:
+                found = await self._found(path, body)
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
         if found is not None:
             return json_response(HTTPStatus.OK, found)
         if path == APPLY_PATH and self.apply is not None:
             return await self.apply.answer()
-        if path == ASIDE_PATH and self.aside is not None:
-            said = self.aside.answer(self.finder.shelf, body)
+        if path == ASIDE_PATH and (aside := self.aside) is not None:
+            async with self.turn:
+                said = await asyncio.to_thread(aside.answer, self.finder.shelf, body)
             return (
                 said
                 if isinstance(said, Response)
@@ -150,14 +156,15 @@ class PersonApp:
         """
         if path == LIKE_PATH:
             key = str(LikeAsked.model_validate_json(body).key)
-            return tagged(self.finder.names, self.finder.like(key, self.aside))
-        if path == NAMES_PATH and self.finder.names is not None:
-            return self.finder.names.answer(body)
+            liked = await asyncio.to_thread(self.finder.like, key, self.aside)
+            return await asyncio.to_thread(tagged, self.finder.names, liked)
+        if path == NAMES_PATH and (names := self.finder.names) is not None:
+            return await asyncio.to_thread(names.answer, body)
         if path in {DRAW_PATH, FORGET_PATH}:  # a face drawn by hand, or forgotten
             return (
                 await drawn(self, body)
                 if path == DRAW_PATH
-                else forgotten(self.finder, body)
+                else await asyncio.to_thread(forgotten, self.finder, body)
             )
         if path not in {PHOTO_PATH, LOOK_PATH, SCAN_PATH}:
             return None
@@ -166,4 +173,7 @@ class PersonApp:
             answer = looked_again if path == LOOK_PATH else scanned_now
             return await answer(self, typed)
         chosen = 0 if self.aside is None else len(self.aside.paths())
-        return tagged(self.finder.names, {**self.finder.photo(typed), "chosen": chosen})
+        found = await asyncio.to_thread(self.finder.photo, typed)
+        return await asyncio.to_thread(
+            tagged, self.finder.names, {**found, "chosen": chosen}
+        )

@@ -63,10 +63,16 @@ function faceNamer(keys, source, done) {
   input.placeholder = TEXTS.placeholder;
   input.disabled = !state.writable;
   input.setAttribute("aria-label", said);
+  let busy = false; // Enter on a name offered: the list and the key both ask, once saved
   const go = async (name) => {
-    if (!name) return;
-    const saved = await moveFaces(keys, name, source);
-    if (saved && done) done(saved);
+    if (!name || busy) return;
+    busy = true;
+    try {
+      const saved = await moveFaces(keys, name, source);
+      if (saved && done) done(saved);
+    } finally {
+      busy = false;
+    }
   };
   const box = comboAttach(input, () => state.people, (row) => go(row.value));
   input.addEventListener("keydown", (event) => {

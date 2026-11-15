@@ -13,8 +13,8 @@ from __future__ import annotations
 import tomllib
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.config.face_refs import face_keys
-from media_hygiene.config.stamped_text import stamped_text
+from media_hygiene.config.people_parsed import parsed_file
+from media_hygiene.config.stamped_text import stamped_value
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 
@@ -149,12 +149,9 @@ def read_lists(config_dir: Path, relative: str) -> dict[str, list[object]]:
         "{file} is missing: restore it, or remove the line file = '{file}' "
         "of config.toml (its faces are then forgotten)"
     )
-    loaded = load_linked(linked_path(config_dir, relative), relative, missing)
-    lists: dict[str, list[object]] = {}
-    for key in (FACES, REJECTED):
-        value = loaded.get(key, [])
-        lists[key] = face_keys(value, None) if isinstance(value, list) else [value]
-    return lists
+    path = linked_path(config_dir, relative)
+    load_linked(path, relative, missing)  # says what is wrong with the file
+    return {key: list(keys) for key, keys in parsed_file(path).lists.items()}
 
 
 def load_linked(path: Path, relative: str, missing: str) -> dict[str, object]:
@@ -172,7 +169,7 @@ def load_linked(path: Path, relative: str, missing: str) -> dict[str, object]:
         ValueError: The file is missing or not valid TOML.
     """
     try:
-        return tomllib.loads(stamped_text(path))
+        return stamped_value(path, tomllib.loads)
     except FileNotFoundError:
         raise ValueError(missing.format(file=relative)) from None
     except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:

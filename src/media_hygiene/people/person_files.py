@@ -25,6 +25,7 @@ from media_hygiene.config.photo_ref import write_refs
 from media_hygiene.file_history import keep_previous
 from media_hygiene.i18n import _
 from media_hygiene.people.face_ids import known_ids
+from media_hygiene.people.unchanged_file import person_header, unchanged
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -111,9 +112,14 @@ def write_files(
         OSError: A file cannot be written.
     """
     files, mapper = file_names(wanted.person), face_mapper()
+    changed = [
+        (person, file)
+        for person, file in zip(wanted.person, files, strict=True)
+        if moves or not unchanged(config_dir, file, person)
+    ]
     every = (
         *wanted.ignored,
-        *(k for p in wanted.person for k in (*p.faces, *p.rejected)),
+        *(k for p, _f in changed for k in (*p.faces, *p.rejected)),
     )
     ids = known_ids(config_dir, every, moves)
 
@@ -128,13 +134,9 @@ def write_files(
         """
         return [face_line(key, ids, mapper) for key in keys]
 
-    for person, file in zip(wanted.person, files, strict=True):
-        header = _(
-            "The faces of {name}, saved by the people page; "
-            "config.toml links this file."
-        )
+    for person, file in changed:
         lists = {FACES: lines(person.faces), REJECTED: lines(person.rejected)}
-        _write(linked_path(config_dir, file), header.format(name=person.name), lists)
+        _write(linked_path(config_dir, file), person_header(person.name), lists)
     if not wanted.ignored:
         return Links(files)
     header = _("The faces ignored on the people page; config.toml links this file.")

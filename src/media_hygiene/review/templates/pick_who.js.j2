@@ -87,7 +87,14 @@ function whoNamer(face, at, people) {
   const input = element("input");
   input.placeholder = who.dataset.placeholder;
   input.setAttribute("aria-label", said);
-  const go = (name) => (name ? whoSave(file, [{ name: name, keys: [Number(face.key)], source: source }]) : null);
+  let busy = false; // Enter on a name offered: the list and the key both ask, once saved
+  const go = (name) => {
+    if (!name || busy) return null;
+    busy = true;
+    return whoSave(file, [{ name: name, keys: [Number(face.key)], source: source }]).finally(() => {
+      busy = false;
+    });
+  };
   const box = comboAttach(input, () => people, (row) => go(row.value));
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") go(input.value.trim());

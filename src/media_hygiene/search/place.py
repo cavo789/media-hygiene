@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import asyncio
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -47,3 +48,5 @@ class SearchPlace:  # pylint: disable=too-many-instance-attributes
     places: PlaceDesk | None = None  # the Place filter, *📍 Place…* (0553)
     undo: PageUndo | None = None  # the Undo of a move or of *Apply now* (0601)
     landmark: LandmarkDesk | None = None  # *📍 Landmark…* of the large view (0649)
+    # The page's questions, one at a time off the event loop (`post_now`).
+    turn: asyncio.Lock = field(default_factory=asyncio.Lock)

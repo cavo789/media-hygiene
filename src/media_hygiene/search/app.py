@@ -24,17 +24,17 @@ from media_hygiene.search.events_choose import SORT_POSTS, events_get, sort_post
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.former_page import LIBRARY_PAGE, moved_page
-from media_hygiene.search.found_answer import awaited_answer, found_answer
+from media_hygiene.search.found_answer import awaited_answer
 from media_hygiene.search.landmark_desk import LANDMARK_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
     FACE_CROP_PREFIX,
     PEOPLE_WHY_PATH,
     crop_answer,
-    why_answer,
 )
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.place_desk import PLACE_PATH
+from media_hygiene.search.post_now import answer_in_turn
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
 from media_hygiene.search.sort_folder_desk import SORT_FOLDER_PATH
@@ -139,20 +139,7 @@ class SearchApp:
                 if request.path in SORT_POSTS
                 else go_answer(self.place.rules, request.path, request.body)
             )
-        answers: dict[str, Callable[[bytes], Response]] = {
-            CHOSEN_PATH: self.place.chosen.answer,
-            PEOPLE_REJECT_PATH: self.place.names.answer,
-            PEOPLE_WHY_PATH: partial(why_answer, self.place.names),
-            **self.place.rules.posts(),
-            **({HAND: self.place.tags.answer} if self.place.tags else {}),
-            **({PLACE_PATH: self.place.places.answer} if self.place.places else {}),
-            **(self.place.sort_setup.posts() if self.place.sort_setup else {}),
-        }
-        if request.path in answers:
-            return answers[request.path](request.body)
-        if request.path in FOLDER_POSTS:
-            return self.place.folders.answer(request.path, request.body)
-        return found_answer(self.place, self.coverage, request.body)
+        return await answer_in_turn(self.place, self.coverage, request)
 
     async def _get(self, request: Request) -> Response:
         """Serve a page, what is set aside, the tree, a picture or a video.
