@@ -3594,6 +3594,9 @@ msgstr ""
 msgid "Find in short"
 msgstr ""
 
+msgid "Find its faces now"
+msgstr ""
+
 msgid ""
 "Find photos by their words in your browser (or as a table): the words "
 "'tags' gave them."
@@ -5020,6 +5023,9 @@ msgid "Looking at the photos…"
 msgstr ""
 
 msgid "Looking for the face in the box…"
+msgstr ""
+
+msgid "Looking for the faces of this photo…"
 msgstr ""
 
 #, python-brace-format
@@ -10357,8 +10363,8 @@ msgid "The faces ignored on the people page; config.toml links this file."
 msgstr ""
 
 msgid ""
-"The faces of this photo were never looked for: run 'audit --people', or "
-"look again, slower."
+"The faces of this photo were never looked for: find them now, as 'audit "
+"--people' does."
 msgstr ""
 
 #, python-brace-format
@@ -10590,6 +10596,9 @@ msgid "The identical copies are set aside"
 msgstr ""
 
 msgid "The image on Docker Hub"
+msgstr ""
+
+msgid "The index cannot be written: try again."
 msgstr ""
 
 msgid ""
@@ -11695,6 +11704,11 @@ msgid ""
 " as it is, with the same folders."
 msgstr ""
 
+msgid ""
+"This is a video: faces are looked for in photos only. Give the path of a "
+"photo of this person."
+msgstr ""
+
 msgid "This is not a classify workbook, or it was damaged."
 msgstr ""
 
@@ -11754,6 +11768,9 @@ msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr ""
 
 msgid "This page is not in the documentation of this version."
+msgstr ""
+
+msgid "This photo cannot be read."
 msgstr ""
 
 msgid "This photo is not in the index yet: run 'audit --people' first."

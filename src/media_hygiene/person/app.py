@@ -1,23 +1,22 @@
 """`/person` on every page's server: one photo, its faces, then that person's photos.
 
 `POST /person/api/photo` the faces of a photo (its path typed or sent by a page),
-`/api/look` a second look at it (`second_look`, in the worker pool), `/api/draw` and
-`/api/forget` a face drawn by hand, `/api/like` the photos of a face, `/api/aside` sets
-them aside (or takes them back) and remembers the face, like the people page
-(`AsideDesk`). `GET /person/face/<n>.jpg` a face, `/thumb/` and `/preview/` its photo
-(`pictures`). Loopback hosts only, JSON bodies only, from the page's own origin.
+`/api/look` a second look at it, `/api/scan` its faces found now (`scan_route`),
+`/api/draw` and `/api/forget` a face drawn by hand, `/api/like` the photos of a face,
+`/api/aside` sets them aside (or takes them back) and remembers the face, like the
+people page (`AsideDesk`). `GET /person/face/<n>.jpg` a face, `/thumb/` and
+`/preview/` its photo (`pictures`). Loopback hosts only, JSON bodies only, from the
+page's own origin.
 """
 
 from __future__ import annotations
 
-import asyncio
 from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.i18n import _
 from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.person.draw_route import drawn
 from media_hygiene.person.forget_route import forgotten
@@ -34,10 +33,10 @@ from media_hygiene.person.routes import (
     NAMES_PATH,
     PAGE_PATH,
     PHOTO_PATH,
+    SCAN_PATH,
     UNDO_PATH,
 )
-from media_hygiene.person.second_look import LookJob, second_look
-from media_hygiene.person.shelf import ShelfFace, face_view
+from media_hygiene.person.scan_route import looked_again, scanned_now
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.search.undo_api import undo_route
@@ -160,41 +159,11 @@ class PersonApp:
                 if path == DRAW_PATH
                 else forgotten(self.finder, body)
             )
-        if path not in {PHOTO_PATH, LOOK_PATH}:
+        if path not in {PHOTO_PATH, LOOK_PATH, SCAN_PATH}:
             return None
         typed = PhotoAsked.model_validate_json(body).path
-        if path == LOOK_PATH:
-            return await self._look(typed)
+        if path != PHOTO_PATH:  # looked at again, or its faces found now and kept
+            answer = looked_again if path == LOOK_PATH else scanned_now
+            return await answer(self, typed)
         chosen = 0 if self.aside is None else len(self.aside.paths())
         return tagged(self.finder.names, {**self.finder.photo(typed), "chosen": chosen})
-
-    async def _look(self, typed: str) -> dict[str, object]:
-        """Look again at a photo, turned and less strict, in the worker pool.
-
-        Args:
-            typed: Its path.
-
-        Returns:
-            The faces found, numbered; a sentence when there are none.
-        """
-        path = self.finder.place.resolve(typed)
-        if path is None:
-            return self.finder.photo(typed)  # it says why
-        recipe = self.recipe()
-        if recipe is None:
-            said = _(
-                "The face models are not in the cache yet: run 'audit --people' once."
-            )
-            return {"faces": [], "said": said}
-        loop = asyncio.get_running_loop()
-        found = await loop.run_in_executor(
-            self.executor, second_look, LookJob(path, recipe)
-        )
-        shelf = self.finder.shelf
-        keys = [
-            shelf.add(ShelfFace(path, face.embedding, crop=face.crop)) for face in found
-        ]
-        if keys:
-            return {"faces": [face_view(key) for key in keys]}
-        said = _("No face found, even turned: set this photo aside on its own.")
-        return {"faces": [], "said": said}

@@ -21,7 +21,8 @@
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
   "chooseFace": _("Click the face of the person to name or set aside."),
   "noFace": _("No face was found on this photo when its faces were analysed: look again, slower."),
-  "notScanned": _("The faces of this photo were never looked for: run 'audit --people', or look again, slower."),
+  "notScanned": _("The faces of this photo were never looked for: find them now, as 'audit --people' does."),
+  "scanning": _("Looking for the faces of this photo…"),
   "looking": _("Looking at the photo turned, one angle after the other…"),
   "photos": [ngettext("{n} photo of this person", "{n} photos of this person", 1), ngettext("{n} photo of this person", "{n} photos of this person", 2)],
   "known": _("the person set aside on {date}"),
@@ -114,6 +115,7 @@
     <div id="faces"></div>
     <button id="confirmGuesses" type="button" hidden></button>
     <div id="namer"></div>
+    <button id="scanNow" type="button" hidden>{{ _("Find its faces now") }}</button>
     <button id="lookAgain" class="plain" type="button" hidden>{{ _("Look again, slower: the photo turned, less strict") }}</button>
     <button id="drawOpen" class="plain" type="button" hidden>{{ _("✏ Draw a face the tool missed") }}</button>
 {% endblock %}

@@ -4387,6 +4387,9 @@ msgstr "Trouver les doublons exacts et les fichiers cassés."
 msgid "Find in short"
 msgstr "Retrouver en bref"
 
+msgid "Find its faces now"
+msgstr "Chercher ses visages maintenant"
+
 msgid ""
 "Find photos by their words in your browser (or as a table): the words "
 "'tags' gave them."
@@ -6051,6 +6054,9 @@ msgstr "Les photos sont regardées…"
 
 msgid "Looking for the face in the box…"
 msgstr "Recherche du visage dans le cadre…"
+
+msgid "Looking for the faces of this photo…"
+msgstr "Recherche des visages de cette photo…"
 
 #, python-brace-format
 msgid "Looking for the files of {folder} in OneDrive's cloud only…"
@@ -12380,11 +12386,11 @@ msgstr ""
 " fichier."
 
 msgid ""
-"The faces of this photo were never looked for: run 'audit --people', or "
-"look again, slower."
+"The faces of this photo were never looked for: find them now, as 'audit "
+"--people' does."
 msgstr ""
-"Les visages de cette photo n'ont jamais été cherchés : lancez 'audit "
-"--people', ou regardez encore, plus lentement."
+"Les visages de cette photo n'ont jamais été cherchés : cherchez-les "
+"maintenant, comme le fait 'audit --people'."
 
 #, python-brace-format
 msgid ""
@@ -12678,6 +12684,9 @@ msgstr "Les copies identiques sont de côté"
 
 msgid "The image on Docker Hub"
 msgstr "L'image sur Docker Hub"
+
+msgid "The index cannot be written: try again."
+msgstr "L'index ne peut pas être écrit : réessayez."
 
 msgid ""
 "The index is the memory of mh: what it already knows about each photo. An"
@@ -14061,6 +14070,13 @@ msgstr ""
 "Cette image est construite sur place : rien à télécharger. mh est réécrit"
 " à partir d'elle telle quelle, avec les mêmes dossiers."
 
+msgid ""
+"This is a video: faces are looked for in photos only. Give the path of a "
+"photo of this person."
+msgstr ""
+"C'est une vidéo : les visages ne sont cherchés que dans les photos. Donnez "
+"le chemin d'une photo de cette personne."
+
 msgid "This is not a classify workbook, or it was damaged."
 msgstr "Ce n'est pas un classeur de 'classify', ou il a été abîmé."
 
@@ -14125,6 +14141,9 @@ msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
 
 msgid "This page is not in the documentation of this version."
 msgstr "Cette page n'est pas dans la documentation de cette version."
+
+msgid "This photo cannot be read."
+msgstr "Cette photo est illisible."
 
 msgid "This photo is not in the index yet: run 'audit --people' first."
 msgstr ""

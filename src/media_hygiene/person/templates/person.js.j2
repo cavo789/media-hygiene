@@ -71,17 +71,29 @@ async function find(typed) {
   seed = null;
   showFiles([]);
   $("status").textContent = TEXTS.start;
-  if (result.said) { sideSay(result.said); $("faces").replaceChildren(); $("lookAgain").hidden = true; $("drawOpen").hidden = true; return; }
+  if (result.said) { sideSay(result.said); $("faces").replaceChildren(); $("lookAgain").hidden = true; $("drawOpen").hidden = true; $("scanNow").hidden = true; return; }
   photo = result.photo;
   learn(result);
   $("namer").replaceChildren();
   if (window.mhApplyNow) window.mhApplyNow(result.chosen > 0); // apply_now.html.j2, opened from home
   $("lookAgain").hidden = false;
   $("drawOpen").hidden = false;
+  $("scanNow").hidden = result.scanned;
   sideSay(result.faces.length ? "" : (result.scanned ? TEXTS.noFace : TEXTS.notScanned));
   showFaces(result.faces);
   const face = $("faces").children[wanted.face]; // a "?" of the large view (0714)
   if (wanted.face !== undefined && face) { delete wanted.face; face.click(); }
+}
+
+// Its faces found now and kept in the index, as the audit does (`scan_route.py`).
+async function scanNow() {
+  sideSay(TEXTS.scanning);
+  $("scanNow").disabled = true;
+  const result = await post(ROUTES.scan, { path: photo });
+  $("scanNow").disabled = false;
+  if (!result) return;
+  if (result.said) { sideSay(result.said); return; }
+  await find(photo);
 }
 
 async function lookAgain() {
@@ -150,6 +162,7 @@ $("find").addEventListener("submit", (event) => {
   if ($("path").value.trim()) find($("path").value.trim());
 });
 $("lookAgain").addEventListener("click", lookAgain);
+$("scanNow").addEventListener("click", scanNow);
 const wanted = window.mhView.get({ path: "path", face: "int" }); // `path`, and `face` once
 const asked = wanted.path;
 $("status").textContent = TEXTS.start;

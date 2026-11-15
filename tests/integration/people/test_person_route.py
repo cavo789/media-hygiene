@@ -44,6 +44,8 @@ if TYPE_CHECKING:
 
 NAMES = "POST /person/api/names"
 FORGET = "POST /person/api/forget"
+GONE = "%IMG_2.png"  # a photo whose faces the audit never looked for
+CLIP = "C:\\Holidays\\DSC_0008.AVI"
 
 
 @dataclass(frozen=True, slots=True)
@@ -517,3 +519,41 @@ def test_a_name_is_on_a_photo_once_and_its_cross_takes_a_confirmed_name_off(
     left = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
     assert isinstance(left, list)
     assert [(face["named"] or {}).get("name") or None for face in left] == [None, None]
+
+
+def test_a_photo_never_analysed_gets_its_faces_now_kept_in_the_index(
+    person: PersonApp, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Not scanned → `/api/scan` finds its face, keeps it: the photo is scanned now."""
+    typed = "C:\\Holidays\\IMG_2.png"
+    index = person.finder.faces.file
+    assert index is not None
+    with FactsRepository.open(index) as repository:  # as if the audit never saw it
+        repository.connection.execute("DELETE FROM faces WHERE path LIKE ?", (GONE,))
+        repository.connection.execute(
+            "DELETE FROM face_scans WHERE path LIKE ?", (GONE,)
+        )
+        repository.connection.commit()
+    person.finder.faces.refresh()
+    before = photo(person, typed)
+    assert (before["faces"], before["scanned"]) == ([], False)
+    monkeypatch.setattr(people_models, "models_present", lambda _runtime: True)
+    monkeypatch.setattr(people_models, "face_recipe", lambda _runtime: FakeRecipe())
+    scanned = answer(person, "POST /person/api/scan", {"path": typed})
+    assert scanned["scanned"] is True
+    assert isinstance(scanned["faces"], list)
+    assert len(scanned["faces"]) == 1
+    again = photo(person, typed)  # read back from the index
+    assert (len(again["faces"]), again["scanned"]) == (1, True)  # type: ignore[arg-type]
+
+
+def test_a_video_is_said_to_be_one_never_analysed(
+    person: PersonApp, locations: Locations
+) -> None:
+    """A video's path: one sentence (faces in photos only), for every route."""
+    clip = locations.data_dir / "c" / "Holidays" / "DSC_0008.AVI"
+    clip.write_bytes(b"RIFF0000AVI ")
+    for route in ("photo", "scan", "look"):
+        said = answer(person, f"POST /person/api/{route}", {"path": CLIP})
+        assert said["faces"] == []
+        assert "This is a video" in str(said["said"])

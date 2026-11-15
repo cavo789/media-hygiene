@@ -112,7 +112,7 @@ function open() {
   if (typeof infoExtra === "function") $("viewerInfo").append(...infoExtra(file)); // a page's own facts
   $("viewerSaid").textContent = "";
   $("originalLink").href = file.original;
-  $("personLink").hidden = !file.path; // `/person`, served by every page (0351)
+  $("personLink").hidden = !file.path || Boolean(file.video); // `/person` (0351): photos only
   if (file.path) $("personLink").href = "/person?path=" + encodeURIComponent(file.path);
   showWho(file); // pick_who.js.j2: who is on it, asked now (0714)
   // Opening pushes a step of the history: Back closes the view, as Esc (0666); ← → replace nothing.

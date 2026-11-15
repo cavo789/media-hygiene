@@ -18,6 +18,7 @@ from media_hygiene.person.drawing import search_vector
 from media_hygiene.person.face_frame import box_fractions, upright_size
 from media_hygiene.person.likeness import FaceRows, kept_rows, likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
+from media_hygiene.person.scan_route import video_said
 from media_hygiene.person.shelf import ShelfFace, face_view
 from media_hygiene.review.versioned import versioned_on_disk
 
@@ -84,6 +85,8 @@ class PersonFinder:
         if path is None:
             message = _("{path} is not a photo of the folders this page shows.")
             return {"said": message.format(path=typed.strip(_QUOTES)), "faces": []}
+        if (video := video_said(path)) is not None:
+            return {"said": video, "faces": []}
         size = upright_size(self.faces.file, path)
         views = []
         for face in self.faces.of(path):

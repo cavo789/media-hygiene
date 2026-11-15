@@ -50,6 +50,7 @@ _PAGE_TEMPLATE: Final = "person.html.j2"
 _PATHS: Final = {
     "photo": routes.PHOTO_PATH,
     "look": routes.LOOK_PATH,
+    "scan": routes.SCAN_PATH,
     "draw": routes.DRAW_PATH,
     "forget": routes.FORGET_PATH,
     "like": routes.LIKE_PATH,
