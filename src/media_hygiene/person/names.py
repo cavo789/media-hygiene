@@ -16,15 +16,15 @@ from typing import TYPE_CHECKING, Final, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.i18n import _
-from media_hygiene.people.changes import Naming, give_name, reject_faces
+from media_hygiene.people.changes import Naming
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.known import Known
-from media_hygiene.people.moving import move_faces
 from media_hygiene.people.naming import How, face_id, id_of, name_all
 from media_hygiene.people.people_memo import PeopleMemo
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
+from media_hygiene.person.one_face_each import section_after
 from media_hygiene.person.unguess import unname
 from media_hygiene.services.kept_state import KeptState
 
@@ -109,12 +109,8 @@ class FaceNames:
             original = read_people(self.config_file)
             present = {str(face.path) for face in self.faces.every}
             written = follow_ids(original, {}, present)
-            if asked.action == "reject":
-                wanted = reject_faces(written, naming)
-            elif asked.action == "move":
-                wanted = move_faces(written, naming, asked.source)
-            else:
-                wanted = give_name(written, naming)
+            change = Change(asked.action, naming, asked.source)
+            wanted = section_after(self, written, change)
             save_people(self.config_file, wanted)
             back = read_people(self.config_file)
         except (ValueError, OSError) as error:
@@ -122,7 +118,7 @@ class FaceNames:
         if asked.action == "reject":
             line = rejected_line(back, naming, again=False)
         else:
-            line = proof_line(back, Change(asked.action, naming, asked.source))
+            line = proof_line(back, change)
         return {"saved": line, "people": [person.name for person in back.person]}
 
     def _refused(self, ids: tuple[str, ...]) -> str:

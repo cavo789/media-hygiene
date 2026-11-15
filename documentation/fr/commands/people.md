@@ -293,12 +293,17 @@ partir de lui. Sous 20 pixels, la page dit que le cadre est trop petit et n'écr
 sur une zone vide n'écrit rien non plus. Quand rien n'est trouvé, mettez la photo de côté toute seule (Suppr dans sa grande
 vue).
 
+Une personne figure une seule fois sur une photo : nommer un visage *Stéphanie* retire ce nom
+de tout autre visage de la même photo (deux personnes du même prénom : distinguez-les,
+*Stéphanie 1*, *Stéphanie 2*). Le **×** d'un visage nommé, nom confirmé (✓) ou deviné (≈),
+retire le nom : le visage reste, à nommer.
+
 ## Photos à redresser
 
 En cherchant les visages, `people` remarque aussi une photo couchée sur le côté : ses visages ne
 sont droits qu'une fois la photo tournée (🤖 le modèle de visages local, YuNet : une supposition).
 La page **Photos à redresser** de la page d'accueil (*Trier*, *Aller plus loin*) montre chacune
-**tournée comme elle le serait**, une vignette par photo, choisie comme dans [`browse`](browse.md) :
+**tournée comme elle le serait**, une vignette par photo, choisie comme dans [`library`](library.md) :
 clic, Ctrl+clic, Maj+clic, un rectangle, Ctrl+A, I pour inverser, Entrée ou un double clic pour la
 grande vue.
 

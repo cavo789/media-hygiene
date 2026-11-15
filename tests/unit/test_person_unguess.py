@@ -63,7 +63,7 @@ def test_every_guess_is_ruled_out_at_once() -> None:
     assert ruled == ("Marc", "Valery")
     assert name_all((face,), Known.of(every, after))[0] == NOBODY
     assert not after.person[2].rejected
-    assert "Marc, Valery" in unguessed_line(after, face)
+    assert "Marc, Valery" in unguessed_line(after, face, ruled)
 
 
 def test_a_face_nobody_is_guessed_for_is_left_alone() -> None:
@@ -73,4 +73,4 @@ def test_a_face_nobody_is_guessed_for_is_left_alone() -> None:
     after, ruled = without_guesses(face, every, alone)
     assert not ruled
     assert after == alone
-    assert unguessed_line(after, face).startswith("Not saved")
+    assert unguessed_line(after, face, ruled).startswith("Not saved")

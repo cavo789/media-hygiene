@@ -268,12 +268,17 @@ this photo only*; no other photo is searched from it. Under 20 pixels, the page 
 too small and writes nothing; a box on an empty area writes nothing either. When nothing is
 found, set the photo aside on its own (Delete in its large view).
 
+A person is on a photo once: naming a face *Stéphanie* takes that name off any other face of
+the same photo (two people of the same name: tell them apart, *Stéphanie 1*, *Stéphanie 2*). The
+**×** of a named face, the name confirmed (✓) or guessed (≈), takes the name off: the face stays,
+to name.
+
 ## Photos to straighten
 
 While it looks for faces, `people` also notices a photo lying on its side: its faces stand
 upright only once the photo is turned (🤖 the local face model, YuNet: a guess). The page
 **Photos to straighten** of the home page (*Sort out*, *Go further*) shows each of them
-**turned as it would be**, a tile per photo, picked as in [`browse`](browse.md): click, Ctrl+click,
+**turned as it would be**, a tile per photo, picked as in [`library`](library.md): click, Ctrl+click,
 Shift+click, a rectangle, Ctrl+A, I to invert, Enter or a double click for the large view.
 
 - **↻ Turn these photos** turns the photos picked now: only their orientation tag (two bytes) is

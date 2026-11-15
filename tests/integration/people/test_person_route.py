@@ -17,6 +17,7 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.people.config_file import read_people
 from media_hygiene.person.app import PersonApp
 from media_hygiene.person.door import with_person
+from media_hygiene.person.shelf import ShelfFace
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.apply_api import ApplyOffer, ApplyStep, applying_door
 from media_hygiene.review.http import Request, Response
@@ -126,6 +127,9 @@ def test_a_typed_path_finds_the_photo_its_face_and_that_persons_photos(
     assert isinstance(faces, list)
     assert len(faces) == 1
     key = faces[0]["key"]
+    box = faces[0]["box"]  # where it is on the photo, for the large view (0838)
+    assert set(box) == {"x", "y", "w", "h"}
+    assert all(0 <= value <= 1 for value in box.values())
     assert call(person, f"GET {faces[0]['face']}").status is HTTPStatus.OK
     liked = answer(person, "POST /person/api/like", {"key": key})
     files = liked["files"]
@@ -451,3 +455,62 @@ def test_a_face_drawn_by_mistake_is_forgotten_with_its_name_read_back(
     assert "Only a face drawn by hand" in str(refused["error"])
     assert len(photo(person, "C:\\Holidays\\IMG_2.png")["faces"]) == 1  # type: ignore[arg-type]
     assert call(person, FORGET, {"key": -1}).status is HTTPStatus.BAD_REQUEST
+
+
+def test_two_faces_drawn_too_blurred_are_named_and_forgotten_apart(
+    person: PersonApp,
+) -> None:
+    """Two blurred faces drawn share an empty vector: each keeps its own key."""
+    path = person.finder.place.resolve("C:\\Holidays\\IMG_2.png")
+    index = person.finder.faces
+    assert path is not None
+    assert index.file is not None
+    person.finder.shelf.add(ShelfFace(path, b""))  # the photo shown to draw on
+    for one in (1, 2):
+        blurred = dataclasses.replace(face_of(one, (40, 40)), sharpness=1.0)
+        with FactsRepository.open(index.file) as repository:
+            assert add_drawn(repository.connection, index.model, (path, blurred))
+    index.refresh()
+    faces = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(faces, list)
+    keys = [face["key"] for face in faces if face["drawn"]]
+    assert len(set(keys)) == 2, faces
+    for key, name in zip(keys, ("Steph", "Paula"), strict=True):
+        body = {"action": "name", "name": name, "faces": [key]}
+        assert "1 confirmed face" in str(answer(person, NAMES, body)["saved"])
+    said = answer(person, FORGET, {"key": keys[1]})
+    assert "this photo has 2 faces now" in str(said["saved"]), said
+    left = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(left, list)
+    assert [face["named"]["name"] for face in left if face["drawn"]] == ["Steph"]
+
+
+def test_a_name_is_on_a_photo_once_and_its_cross_takes_a_confirmed_name_off(
+    person: PersonApp,
+) -> None:
+    """Naming a face Ann takes Ann off its photo's other face; the cross clears it."""
+    path = person.finder.place.resolve("C:\\Holidays\\IMG_2.png")
+    index = person.finder.faces
+    assert path is not None
+    assert index.file is not None
+    with FactsRepository.open(index.file) as repository:
+        assert add_drawn(
+            repository.connection, index.model, (path, face_of(1, (40, 40)))
+        )
+    index.refresh()
+    faces = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(faces, list)
+    first, second = faces[0]["key"], faces[1]["key"]
+    for key in (first, second):
+        answer(person, NAMES, {"action": "name", "name": "Ann", "faces": [key]})
+    named = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(named, list)
+    assert [(face["named"] or {}).get("name") or None for face in named] == [
+        None,
+        "Ann",
+    ]
+    body = {"action": "unname", "name": "Ann", "faces": [second]}
+    assert "is not Ann" in str(answer(person, NAMES, body)["saved"])
+    left = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(left, list)
+    assert [(face["named"] or {}).get("name") or None for face in left] == [None, None]
