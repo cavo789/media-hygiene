@@ -40,6 +40,7 @@ from media_hygiene.person.routes import (
 from media_hygiene.person.scan_route import looked_again, scanned_now
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.slow_log import timed
 from media_hygiene.search.undo_api import undo_route
 
 if TYPE_CHECKING:
@@ -157,7 +158,9 @@ class PersonApp:  # pylint: disable=too-many-instance-attributes
         if path == LIKE_PATH:
             key = str(LikeAsked.model_validate_json(body).key)
             liked = await asyncio.to_thread(self.finder.like, key, self.aside)
-            return await asyncio.to_thread(tagged, self.finder.names, liked)
+            return await timed(
+                "names of a like", asyncio.to_thread(tagged, self.finder.names, liked)
+            )
         if path == NAMES_PATH and (names := self.finder.names) is not None:
             return await asyncio.to_thread(names.answer, body)
         if path in {DRAW_PATH, FORGET_PATH}:  # a face drawn by hand, or forgotten

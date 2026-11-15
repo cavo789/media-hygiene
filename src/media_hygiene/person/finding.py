@@ -20,6 +20,7 @@ from media_hygiene.person.likeness import FaceRows, kept_rows, likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.person.scan_route import video_said
 from media_hygiene.person.shelf import ShelfFace, face_view
+from media_hygiene.review.slow_log import Laps
 from media_hygiene.review.versioned import versioned_on_disk
 
 if TYPE_CHECKING:
@@ -119,14 +120,20 @@ class PersonFinder:
             return {"files": [], "known": None}
         memory = None if aside is None else aside.memory
         people = () if memory is None else memory.people()
-        every = FaceRows(self.faces.every, self.faces.vectors)
-        found = likeness(seed.embedding, kept_rows(every, self.kept(key)), people)
+        laps, every = Laps("like"), FaceRows(self.faces.every, self.faces.vectors)
+        rows = kept_rows(every, self.kept(key))
+        laps.lap("kept")
+        found = likeness(seed.embedding, rows, people)
+        laps.lap("likeness")
         chosen = frozenset() if aside is None else aside.paths()
-        others = (face for face in found.faces if face.path != seed.path)
         files = [self._card(int(key), seed.path, chosen)]
         files.extend(
-            self._card(self._number(face), face.path, chosen) for face in others
+            self._card(self._number(face), face.path, chosen)
+            for face in found.faces
+            if face.path != seed.path
         )
+        laps.lap(f"{len(files)} cards")
+        laps.said()
         known = found.known
         if known is None:
             return {"files": files, "known": None}
