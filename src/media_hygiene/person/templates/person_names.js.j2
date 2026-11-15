@@ -119,6 +119,8 @@ function toConfirm(listed) {
 function showSteps() {
   $("steps").hidden = !seedName || !state.writable;
   $("stepsSaid").textContent = fill(TEXTS.steps, { name: seedName });
+  const menus = seedName && state.writable && window.mhPersonMenu ? [window.mhPersonMenu.menu(seedName)] : []; // person_menu.html.j2
+  $("personMenuSlot").replaceChildren(...menus);
   $("showWhich").parentElement.title = TEXTS.showHint;
 }
 
@@ -210,3 +212,8 @@ function nameCard(node, file) {
   showPathTag(node, file); // person_paths.js.j2
   return node;
 }
+// A person renamed or merged from the naming line: the faces again, the line read back said.
+window.addEventListener("mh-person-changed", (event) => {
+  sayNames(event.detail);
+  if (photo) render();
+});

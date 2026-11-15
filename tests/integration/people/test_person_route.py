@@ -15,6 +15,7 @@ import pytest
 from media_hygiene.index.drawn_faces import add_drawn
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.people.config_file import read_people
+from media_hygiene.people.person_actions import RenameDoor
 from media_hygiene.person.app import PersonApp
 from media_hygiene.person.door import with_person
 from media_hygiene.person.shelf import ShelfFace
@@ -102,8 +103,10 @@ def person(
 
 
 def _unwrapped(person: object) -> object:
-    """The person page inside its albums route (0657)."""
-    return person.app if isinstance(person, WithAlbums) else person
+    """The person page inside its rename (0827) and albums (0657) routes."""
+    while isinstance(person, WithAlbums | RenameDoor):
+        person = person.app
+    return person
 
 
 def photo(app: PersonApp, typed: str) -> dict[str, object]:

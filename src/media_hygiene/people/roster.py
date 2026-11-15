@@ -137,11 +137,19 @@ class Roster:
             wanted = give_name(written, change.naming)
         save_people(self._file, wanted)
         back = read_people(self._file)
+        self.adopt(back)
+        return proof_line(back, change) + followed_line(original, written)
+
+    def adopt(self, back: PeopleSettings) -> None:
+        """Take the names read back from the disk, and name the faces again.
+
+        Args:
+            back: `[people]` as the file holds it now.
+        """
         self._settings = self._settings.model_copy(
             update={"person": back.person, "ignored": back.ignored}
         )
         self._named = self._name()
-        return proof_line(back, change) + followed_line(original, written)
 
     def _name(self) -> Named:
         """Name every face, and note who each one was taken out of.

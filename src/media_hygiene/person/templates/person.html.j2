@@ -124,6 +124,7 @@
     {% include "album_bar.html.j2" %}
     <div id="steps" hidden>
     <span id="stepsSaid"></span>
+    <span id="personMenuSlot"></span>
     <button id="confirmNames" type="button"></button>
     <button id="rejectNames" type="button" hidden></button>
     <label>{{ _("Show") }} <select id="showWhich">
@@ -143,6 +144,8 @@
 {% endblock %}
 {% block after %}
 {% include "undo_toast.html.j2" %}
+{% set person_menu = {"rename": paths.rename | default("")} %}
+{% include "person_menu.html.j2" %}
 {% include "pick_viewer.html.j2" %}
 <dialog id="drawFace" aria-labelledby="drawTitle">
   <p id="drawTitle"><strong>{{ _("✏ Draw a face the tool missed") }}</strong></p>

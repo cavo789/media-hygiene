@@ -5,7 +5,6 @@
 // the home page ends, and this phone follows to the slideshow's remote once it answers.
 const TV_STEP = "slideshow-album";
 const TV_WAIT_MS = 120000;
-const TV_SAID_MS = 4000; // the count left out, read before the remote opens (0825)
 // Asked once per visit: each render of the home page asked it again (2026-11-02).
 // The home page stays short whatever the collection (0548): one "Albums (N)" entry, opening the
 // albums page where a tap shows an album on the TV, and the TV_RECENT albums shown last from any
@@ -51,23 +50,11 @@ function tvChoices() {
       const pick = (id, label, values) => (values.length
         ? `<div class="tv-choice"><label class="muted" for="${esc(id)}">${esc(label)}</label><select id="${esc(id)}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${esc(id)}">${icon("play")} ${esc(T.tvShow)}</button></div>`
         : "");
-      box.innerHTML = tvAvoidBox(lists.people || [], lists.remembered || []) + tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
+      box.innerHTML = tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
       $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
       $("#tvEra", box).addEventListener("change", () => { $("#tvPeriod", box).hidden = $("#tvEra", box).value !== "period"; });
     })
     .catch(() => { box.innerHTML = ""; });
-}
-// Avoid some people (0825): one block for every TV choice, the names of [[people.person]] only
-// (no link to /people: the phone stays read-only). Those of [slideshow] avoid (0834, the
-// remote's list, one source) start ticked and are said; a change here is for this show only.
-function tvAvoidBox(people, remembered) {
-  if (!people.length) return "";
-  const box = (name) => `<label><input type="checkbox" data-avoid="${esc(name)}"${remembered.includes(name) ? " checked" : ""}> ${esc(name)}</label>`;
-  const kept = remembered.length ? `<p class="muted">${esc(fill(T.tvRemembered, { names: remembered.join(", ") }))}</p>` : "";
-  return `<details class="tv-choice" id="tvAvoid"${remembered.length ? " open" : ""}><summary class="muted">${esc(T.tvAvoid)}</summary><p class="muted">${esc(T.tvAvoidNote)}</p>${kept}${people.map(box).join("")}</details>`;
-}
-function tvAvoided() {
-  return $$("[data-avoid]").filter((box) => box.checked).map((box) => box.dataset.avoid);
 }
 // 🎲 At random (0508): a length and, optionally, the years; the PC chooses the photos.
 function tvRandomBox() {
@@ -99,17 +86,11 @@ function tvChoose(id) {
   tvSend(body);
 }
 function tvSend(asked) {
-  const avoid = tvAvoided();
-  const body = avoid.length ? Object.assign({ avoid: avoid }, asked) : asked;
+  const body = asked;  // people to avoid: ticked on the remote it opens (0825, 0834)
   $$("[data-choose]").forEach((button) => { button.disabled = true; });
   toast(T.tvStarting);
   post(P.tvChoose, body)
     .then((reply) => {
-      if (reply.ok && reply.body.page && reply.body.avoided) {  // said before the remote opens
-        toast(fill(T.tvLeftOut, { n: count(reply.body.left_out), names: reply.body.avoided.join(", ") }));
-        window.setTimeout(() => window.location.assign(reply.body.page), TV_SAID_MS);
-        return;
-      }
       if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }
       $$("[data-choose]").forEach((button) => { button.disabled = false; });
       toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");

@@ -113,23 +113,19 @@ rien de mis de côté. Ses
 deux choix : la **durée** (30 min, 1 h, 2 h : 1 h à 8 s par photo fait environ 450 photos) et les
 **années** (tout, les 5 dernières années ou une période). Chaque appui est un nouveau diaporama.
 
-**Éviter certaines personnes**, replié au-dessus des choix télé dès que quelqu'un est nommé sur le
-PC (`/people`), propose une case par nom : cochez-en une et aucune de ses photos n'arrive à la télé,
-quel que soit le choix envoyé (au hasard, un dossier, un mois). Large exprès : les visages nommés
-comme les siens et tout visage proche de leur moyenne (la ressemblance de `/person`), si bien qu'une
-photo oubliée est rare et que quelques photos en trop sont écartées. Le téléphone le dit avant
-d'ouvrir sa télécommande (« Photos écartées : 1 234 (Antoine) ») ; la télé n'en montre rien. Les
-personnes retenues sur le PC (plus bas) sont cochées d'emblée ; un changement sur le téléphone ne
-vaut que pour ce diaporama. Le téléphone ne nomme jamais personne (nommer reste sur le PC).
-
-Le même **Éviter certaines personnes** se trouve sur la télécommande (`/slideshow`, sur le PC et le
+**Éviter certaines personnes** se trouve sur la télécommande (`/slideshow`, sur le PC et le
 téléphone) : il marche quelle que soit l'entrée du diaporama, le ▶ *Sur ce PC* ou *Sur la télé* de la
-bibliothèque, un album, un choix télé. Cocher un nom retire ses photos du diaporama, comme *Ne pas
-montrer*  : elles passent dans le groupe *Ne seront pas montrées* en fin de grille, chacune avec le nom
-(✓ nommé, ≈ deviné), vous voyez ce qui est écarté ; décochez et elles reviennent à leur place (une
-photo retirée à la main reste retirée, une remontrée à la main reste montrée). Sur l'onglet d'écran du PC lui-même, le même bloc s'ouvre devant la première photo,
-le diaporama en pause, dès que quelqu'un y est vu : cochez, puis **Démarrer** (Entrée) ; **P** le rouvre
-pendant le diaporama.
+bibliothèque, un album, un choix télé de la page d'accueil (le téléphone ouvre la télécommande juste
+après). Il ne liste que les personnes vues sur les photos du diaporama, par ordre alphabétique, chacune
+avec son compte : ✓ un visage nommé comme le sien, ≈ un visage seulement proche de sa moyenne (la
+ressemblance de `/person` ; large exprès, pour qu'une photo oubliée soit rare — un nom vu seulement
+par ≈ peut être quelqu'un qui lui ressemble). Cocher un nom retire ses photos du diaporama, comme
+*Ne pas montrer* : elles passent dans le groupe *Ne seront pas montrées* en fin de grille, chacune
+avec le nom, vous voyez ce qui est écarté ; décochez et elles reviennent à leur place (une photo
+retirée à la main reste retirée, une remontrée à la main reste montrée). La télé n'en montre rien,
+et le téléphone ne nomme jamais personne. Sur l'onglet d'écran du PC lui-même, le même bloc s'ouvre
+devant la première photo, le diaporama en pause, dès que quelqu'un y est vu : cochez, puis
+**Démarrer** (Entrée) ; **P** le rouvre pendant le diaporama.
 
 **Retenus pour tous les diaporamas** : un nom coché sur le PC (la télécommande ou l'onglet d'écran du
 PC) est écrit dans `config.toml` (`[slideshow] avoid = ["Antoine"]`), relu et annoncé dans le bloc
@@ -202,7 +198,9 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
   344 · Pâques · avril 2026 · …*), et le nom de son groupe est coloré. Chaque événement a une case,
   cochée : décochez-la pour retirer toutes ses photos du diaporama, recochez-la pour remettre
   celles qu'elle avait retirées (une photo retirée à la main reste retirée). Choisissez une année
-  entière, puis retirez les événements dont vous ne voulez pas.
+  entière, puis retirez les événements dont vous ne voulez pas. Un événement sans plus aucune photo
+  à montrer est caché (jamais « 0 photo »), mais celui que vous avez décoché garde son nom et sa
+  case, pour être recoché.
 - En dernier, **Ne seront pas montrées** réunit toutes les photos retirées, chacune disant
   pourquoi : la personne évitée, l'événement décoché, ou *à la main*.
 - Une vignette touchée montre cette photo sur la télé.

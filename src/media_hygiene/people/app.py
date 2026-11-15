@@ -101,7 +101,7 @@ class PeopleApp:
         if path == PAGE_PATH:
             return Response(HTTPStatus.OK, page_of(self.page), ContentType.HTML)
         if path == GROUPS_PATH:
-            return json_response(HTTPStatus.OK, self._state())
+            return json_response(HTTPStatus.OK, self.state())
         for prefix, key in ((SECTION_PREFIX, "faces"), (SAMPLE_PREFIX, "shown")):
             if path.startswith(prefix):
                 return json_response(HTTPStatus.OK, {key: self._faces(path, prefix)})
@@ -129,13 +129,13 @@ class PeopleApp:
                 "name",
                 "move",
             }:  # never confirm a face of a photo set aside
-                faces = not_aside(board, faces, self._view())
+                faces = not_aside(board, faces, self.view())
             naming = Naming(asked.name, board.ids(faces), board.ids(asked.removed))
             change = Change(asked.action, naming, asked.source)
             saved = self.roster.change(change)
         except (ValueError, TypeError, OSError) as exc:  # ValidationError included
             return save_refused(exc)
-        return json_response(HTTPStatus.OK, {**self._state(), "saved": saved})
+        return json_response(HTTPStatus.OK, {**self.state(), "saved": saved})
 
     def _aside(self, request: Request) -> Response:
         """Set aside the photos of a group, or take them back, then send the state.
@@ -151,21 +151,21 @@ class PeopleApp:
         said = self.aside.answer(self.roster.board, request.body)
         if isinstance(said, Response):
             return said
-        return json_response(HTTPStatus.OK, {**self._state(), "aside": said})
+        return json_response(HTTPStatus.OK, {**self.state(), "aside": said})
 
-    def _state(self) -> dict[str, object]:
+    def state(self) -> dict[str, object]:
         """The groups, how many of their photos are set aside, the faces like theirs.
 
         Returns:
             The state the page reads.
         """
-        view = self._view()
+        view = self.view()
         state = self.roster.state(view)
         alike = [] if self.alike is None else self.alike.view(view)
         can = self.aside is not None
         return {**state, "can_aside": can, "chosen": len(view.aside), "alike": alike}
 
-    def _view(self) -> PageView:
+    def view(self) -> PageView:
         """Host paths, and the files set aside as the decisions file holds them.
 
         Returns:
@@ -184,7 +184,7 @@ class PeopleApp:
         Returns:
             Them; none for a number no section shows.
         """
-        found = self.roster.section(path.removeprefix(prefix), self._view())
+        found = self.roster.section(path.removeprefix(prefix), self.view())
         if found is None:
             return []
         host, board = self.mapper.to_host, self.roster.board

@@ -951,6 +951,9 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+msgid "Actions on this person"
+msgstr ""
+
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
@@ -1106,7 +1109,15 @@ msgstr ""
 msgid "Album"
 msgstr ""
 
+#, python-brace-format
+msgid "Album '{album}': {n} photos of {name}."
+msgstr ""
+
 msgid "Album folder"
+msgstr ""
+
+#, python-brace-format
+msgid "Album in memory of {name}"
 msgstr ""
 
 #, python-brace-format
@@ -1126,6 +1137,11 @@ msgid "Albums ({n})"
 msgstr ""
 
 msgid "Albums folder"
+msgstr ""
+
+msgid ""
+"Albums keep their names, and XMP sidecars the names they hold until 'xmp'"
+" runs again."
 msgstr ""
 
 msgid "All"
@@ -1780,6 +1796,9 @@ msgstr ""
 msgid "Changes the orientation tag of the photos."
 msgstr ""
 
+msgid "Check"
+msgstr ""
+
 msgid ""
 "Check any group yourself: 'Check it yourself' gives the command printing "
 "its SHA-256 with your system's own tool (PowerShell's Get-FileHash on "
@@ -2077,6 +2096,11 @@ msgstr[1] ""
 msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 
+msgid ""
+"Confirmed for one, ruled out for the other: ticked = confirmed, unticked "
+"= not them."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Confirms as {name} the face that matched on each photo ticked in the "
@@ -2239,6 +2263,10 @@ msgstr ""
 msgid ""
 "Covered by the copy the last mh push found on the NAS, gone from this PC:"
 " the next push moves it into .removed, which does not count as a copy."
+msgstr ""
+
+#, python-brace-format
+msgid "Create the album of these {n}"
 msgstr ""
 
 msgid ""
@@ -2766,6 +2794,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Drop it from these photos ({n})"
+msgstr ""
+
+msgid "Drop the name too (its file goes to .history; Undo puts it back)"
 msgstr ""
 
 msgid "Drop the ticked tags…"
@@ -5116,6 +5147,9 @@ msgstr ""
 msgid "Menu of Media Hygiene"
 msgstr ""
 
+msgid "Merge"
+msgstr ""
+
 msgid "Merge into…"
 msgstr ""
 
@@ -6125,6 +6159,10 @@ msgstr ""
 msgid "No photo of the index below these folders."
 msgstr ""
 
+#, python-brace-format
+msgid "No photo of {name} to set aside."
+msgstr ""
+
 msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
 
@@ -7103,6 +7141,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "Only the first {n} photos fit in one save."
+msgstr ""
+
+#, python-brace-format
 msgid "Only the last run can be undone from this page: {run_id}."
 msgstr ""
 
@@ -7538,10 +7580,6 @@ msgid ""
 "its size); the id is what counts, the path is kept current by sort, undo "
 "and each audit. A photo edited since falls back to its GPS. Deleting a "
 "place on the map deletes its entry."
-msgstr ""
-
-#, python-brace-format
-msgid "Photos left out: {n} ({names})"
 msgstr ""
 
 msgid ""
@@ -8135,10 +8173,6 @@ msgid "Remember as a rule"
 msgstr ""
 
 #, python-brace-format
-msgid "Remembered for every show: {names}"
-msgstr ""
-
-#, python-brace-format
 msgid "Remembered for every show: {names}."
 msgstr ""
 
@@ -8194,7 +8228,15 @@ msgid "Rename"
 msgstr ""
 
 #, python-brace-format
+msgid "Rename {name}"
+msgstr ""
+
+#, python-brace-format
 msgid "Renamed on the backup (moved, or set aside in .removed): {count}."
+msgstr ""
+
+#, python-brace-format
+msgid "Renamed there too: {where}."
 msgstr ""
 
 #, python-brace-format
@@ -8767,6 +8809,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "Saved in config.toml, read back: {name} is named again."
+msgstr ""
+
+#, python-brace-format
 msgid "Saved in config.toml, read back: {name} is on this photo again."
 msgstr ""
 
@@ -9121,6 +9167,10 @@ msgstr ""
 msgid "Set aside on {date}, still recoverable with mh undo {run} until mh purge."
 msgstr ""
 
+#, python-brace-format
+msgid "Set aside the photos of {name}"
+msgstr ""
+
 msgid "Set aside the picked files (Delete)"
 msgstr ""
 
@@ -9129,6 +9179,10 @@ msgid "Set aside their {n} photo"
 msgid_plural "Set aside their {n} photos"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Set aside these {n}"
+msgstr ""
 
 #, python-brace-format
 msgid "Set aside: {aside} · decided: {decided} of {total}"
@@ -10759,6 +10813,9 @@ msgstr ""
 msgid "The page cannot reach mh: is it still running?"
 msgstr ""
 
+msgid "The page cannot reach the tool."
+msgstr ""
+
 msgid "The page could not tell mh what to delete: try again."
 msgstr ""
 
@@ -11458,11 +11515,6 @@ msgstr ""
 msgid ""
 "Their photos are set out of this show; those ticked are remembered for "
 "every show (config.toml) until unticked."
-msgstr ""
-
-msgid ""
-"Their photos stay off the TV; a change here is for this show only, the "
-"people remembered are changed on the PC's remote."
 msgstr ""
 
 msgid "Their size, their quality, and whether they keep the GPS position."
@@ -12574,6 +12626,9 @@ msgstr ""
 msgid "Where the photos of this event were taken"
 msgstr ""
 
+msgid "Where they are alone: ticked are set aside, untick to keep"
+msgstr ""
+
 msgid "Where to start"
 msgstr ""
 
@@ -12708,6 +12763,9 @@ msgid "With at least this share of black pixels"
 msgstr ""
 
 msgid "With at least this share of white pixels"
+msgstr ""
+
+msgid "With others: kept, not touched"
 msgstr ""
 
 msgid "With tidy: remove the ticked entries, after a copy of config.toml."
@@ -14499,6 +14557,10 @@ msgstr ""
 msgid "no photo of this camera was taken on these dates"
 msgstr ""
 
+#, python-brace-format
+msgid "no photo of {name} is ticked"
+msgstr ""
+
 msgid "no preview"
 msgstr ""
 
@@ -14506,6 +14568,10 @@ msgid "no preview kept"
 msgstr ""
 
 msgid "no shot kept from its series is left"
+msgstr ""
+
+#, python-brace-format
+msgid "nobody is named {name}"
 msgstr ""
 
 #, python-brace-format
@@ -17582,6 +17648,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} face in both is kept once."
+msgid_plural "{n} faces in both are kept once."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} face kept as not this person."
 msgid_plural "{n} faces kept as not this person."
 msgstr[0] ""
@@ -18097,6 +18169,14 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{n} → {folder}"
+msgstr ""
+
+#, python-brace-format
+msgid "{old} ({n} faces) joins {into} ({m} faces)."
+msgstr ""
+
+#, python-brace-format
+msgid "{old} becomes {new}; every face is kept."
 msgstr ""
 
 #, python-brace-format
@@ -18712,6 +18792,9 @@ msgid ""
 "from that device."
 msgstr ""
 
+msgid "✎ Rename or merge…"
+msgstr ""
+
 msgid "✏ Draw a face the tool missed"
 msgstr ""
 
@@ -18879,6 +18962,9 @@ msgstr ""
 msgid "📍 {name}, read back from its sidecar."
 msgstr ""
 
+msgid "📚 Album in memory…"
+msgstr ""
+
 #, python-brace-format
 msgid "📚 Album of the file found"
 msgid_plural "📚 Album of the {n} found"
@@ -18992,6 +19078,9 @@ msgid "🖼 {made} new thumbnail ready: the library opens at once."
 msgid_plural "🖼 {made} new thumbnails ready: the library opens at once."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "🗑 Set aside this person…"
+msgstr ""
 
 #, python-brace-format
 msgid ""

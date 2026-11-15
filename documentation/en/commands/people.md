@@ -183,6 +183,31 @@ The same `decisions.json` keeps what [`library`](library.md#set-photos-aside) an
 [`review`](review.md) set aside: one `clean --decisions` applies everything. A photo changed
 since you chose it is left in place.
 
+## A person's actions: rename, merge, set aside, album
+
+Each name of the people list has a small **⋯** menu (↓ opens it, then the letter):
+
+- **✎ Rename or merge… (R)**: type the new name, then *Check*: the page says what will
+  happen before it runs. A name that is already someone's (whatever its case) is a
+  **merge**: "Maria-Angelaela (12 faces) joins Maria-Angela (340 faces): 3 faces in both
+  are kept once." A face confirmed for one and ruled out for the other is shown with its
+  photo: ticked, it stays confirmed; unticked, it is not them. Nothing is written until
+  you chose. The name follows in `[slideshow] avoid`, in `[[classify.rules]]` and in the
+  events remembered (`/config/events/`); albums keep their own names, and XMP sidecars
+  keep the names they hold until `xmp` runs again. The previous files stay in
+  `/config/.history/`. The same menu sits on `/person`'s naming line (rename there).
+- **🗑 Set aside this person… (S)**: their photos are shown first. Those where they are
+  the only face found are ticked: untick the ones to keep. Those where others are too
+  are listed and never touched. *Drop the name too* is checked by default. *Set aside
+  these N* writes the decisions file: *Apply now* (or `clean --decisions`) moves the
+  photos to the quarantine, `undo` brings them back; the toast's *Undo* takes back the
+  photos and puts the name, its file and its link in `config.toml` back.
+- **📚 Album in memory… (A)**: every photo of the person in one album, named after them
+  (you may change the name); the photos are shown before it is saved, and what
+  `albums.json` holds is read back.
+
+On the phone and the TV, none of this is offered: they only read.
+
 ## From any photo: name or set aside someone
 
 A photo shows someone the people page never asked you about ("this is Aunt Juliette"), or

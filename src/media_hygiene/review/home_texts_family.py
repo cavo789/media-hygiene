@@ -51,13 +51,6 @@ def family_texts() -> dict[str, str]:
         "tvEraPeriod": _("A period"),
         "tvEraFirst": _("From"),
         "tvEraLast": _("to"),
-        "tvAvoid": _("Avoid some people"),
-        "tvAvoidNote": _(
-            "Their photos stay off the TV; a change here is for this show only, "
-            "the people remembered are changed on the PC's remote."
-        ),
-        "tvRemembered": _("Remembered for every show: {names}"),
-        "tvLeftOut": _("Photos left out: {n} ({names})"),
         "tvStarting": _("The show starts on the PC…"),
         "tvLate": _("The show did not start: look at the window of mh on the PC."),
     }

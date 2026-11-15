@@ -21,6 +21,7 @@ from media_hygiene.person.door import with_person
 from media_hygiene.review.apply_api import ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
 from media_hygiene.services.names_file import names_file
+from media_hygiene.services.people_actions import with_actions
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.reviewing import address_tip, page_url
 
@@ -70,7 +71,8 @@ def serve_people(
         app, aside = people_app(runtime, result, build)
         offer = ApplyOffer(start.apply, lambda: bool(aside.paths()))
         roster = app.roster
-        door = applying_door(app, offer, runtime.locations.reports_dir)
+        acting = with_actions(app, runtime, (build.names, aside))
+        door = applying_door(acting, offer, runtime.locations.reports_dir)
         door = with_person(door, runtime, executor)
         with contextlib.suppress(KeyboardInterrupt):
             code = asyncio.run(

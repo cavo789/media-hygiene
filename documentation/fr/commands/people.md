@@ -199,6 +199,34 @@ Le même `decisions.json` garde ce que [`library`](library.md#mettre-des-photos-
 [`review`](review.md) ont mis de côté : un seul `clean --decisions` applique tout. Une photo
 modifiée depuis votre choix reste en place.
 
+## Les actions d'une personne : renommer, fusionner, mettre de côté, album
+
+Chaque nom de la liste des personnes a un petit menu **⋯** (↓ l'ouvre, puis la lettre) :
+
+- **✎ Renommer ou fusionner… (R)** : tapez le nouveau nom, puis *Vérifier* : la page dit
+  ce qui va se passer avant de le faire. Un nom qui est déjà celui de quelqu'un (quelle
+  que soit la casse) est une **fusion** : « Maria-Angelaela (12 visages) rejoint
+  Maria-Angela (340 visages). 3 visages communs aux deux sont gardés une fois. » Un visage
+  confirmé pour l'un et écarté pour l'autre est montré avec sa photo : coché, il reste
+  confirmé ; décoché, ce n'est pas cette personne. Rien n'est écrit avant votre choix. Le
+  nom suit dans `[slideshow] avoid`, dans `[[classify.rules]]` et dans les événements
+  retenus (`/config/events/`) ; les albums gardent leur propre nom, et les fichiers XMP
+  les noms qu'ils contiennent jusqu'au prochain `xmp`. Les fichiers précédents restent
+  dans `/config/.history/`. Le même menu se trouve sur la ligne de nommage de `/person`
+  (pour y renommer).
+- **🗑 Mettre cette personne de côté… (S)** : ses photos sont d'abord montrées. Celles où
+  elle est le seul visage trouvé sont cochées : décochez celles à garder. Celles où
+  d'autres apparaissent sont listées et jamais touchées. *Retirer aussi le nom* est coché
+  par défaut. *Mettre de côté ces N* écrit le fichier de décisions : *Appliquer
+  maintenant* (ou `clean --decisions`) déplace les photos vers la quarantaine, `undo` les
+  ramène ; *Annuler* dans le message reprend les photos et remet le nom, son fichier et
+  son lien dans `config.toml`.
+- **📚 Album en souvenir… (A)** : toutes les photos de la personne dans un album, à son
+  nom (modifiable) ; les photos sont montrées avant l'enregistrement, et ce que contient
+  `albums.json` est relu.
+
+Sur le téléphone et la télévision, rien de tout cela n'est proposé : ils ne font que lire.
+
 ## Depuis n'importe quelle photo : nommer ou mettre de côté quelqu'un
 
 Une photo montre quelqu'un que la page people ne vous a jamais demandé (« c'est tante

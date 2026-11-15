@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
+from media_hygiene.people.app import PeopleApp
 from media_hygiene.review.apply_api import ApplyingApp
 from media_hygiene.services import people as people_service
 from media_hygiene.services import people_page
@@ -37,7 +38,10 @@ def served(groups: list[object], doors: list[EndingDoor]) -> Callable[..., objec
 
     async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> None:
         assert isinstance(door.app, ApplyingApp)
-        groups.append(door.app.app)
+        app = door.app.app
+        while not isinstance(app, PeopleApp) and hasattr(app, "app"):
+            app = app.app  # the persons' actions around it (0836)
+        groups.append(app)
         doors.append(door)
         ready(PORT)
         raise KeyboardInterrupt

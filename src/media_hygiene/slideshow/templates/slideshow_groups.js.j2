@@ -1,6 +1,8 @@
 {# The remote's grid in groups (0831, 0832): one per event of the show, i.e. its folder (the
    chapters of 0448, not the library's 🗂 Events tab), each with its count and a box ticked by
-   default that sets its photos out of the show or back in (`untick` / `tick`); then, last,
+   default that sets its photos out of the show or back in (`untick` / `tick`); a group with
+   no photo left is hidden, never "0 photos", but an event unticked keeps its heading and box
+   to be ticked back; then, last,
    *Will not be shown*: every photo out, each with why (✓ ≈ a person avoided, an event
    unticked, by hand) and *Show it again*. The group of the photo on the TV is marked. The
    look of the phone page's folders (`tile_groups.css.j2`). Included inside slideshow.js.j2's
@@ -76,8 +78,13 @@
     const unticked = new Set(show.unticked || []);
     const shownFolder = show.current === null ? null : folderOf.get(show.current);
     for (const group of [...groups.values(), outGroup]) {
-      group.count.textContent = plural(TEXTS.photos, counts.get(group) || 0);
-      if (group.box) group.box.checked = !unticked.has(group.folder);
+      const count = counts.get(group) || 0;
+      const off = group.box !== null && unticked.has(group.folder);
+      // No "0 photos": a group with none shown is hidden, but an event unticked keeps its
+      // heading and box (its photos are under *Will not be shown*), so it can be ticked back.
+      group.section.hidden = count === 0 && !off;
+      group.count.textContent = count === 0 ? "" : plural(TEXTS.photos, count);
+      if (group.box) group.box.checked = !off;
       group.section.classList.toggle("current", group.folder !== null && group.folder === shownFolder);
     }
   }

@@ -105,21 +105,18 @@ their EXIF): no video, no undated photo, no screenshot, document or picture save
 nothing set aside. Its two choices: the **length** (30 min, 1 h, 2 h: 1 h at 8 s a photo is about
 450 photos) and the **years** (everything, the last 5 years, or a period). Each tap is a new show.
 
-**Avoid some people**, folded above the TV choices once someone is named on the PC (`/people`),
-lists one box per name: tick one and none of their photos reaches the TV, whichever choice is sent
-(at random, a folder, a month). Generous on purpose: the faces named as theirs and every face close
-to their mean (the likeness of `/person`), so a photo missed is rare and a few extra ones are left
-out. The phone says it before its remote opens ("Photos left out: 1 234 (Antoine)"); the TV shows
-nothing of it. The people remembered on the PC (below) start ticked; a change on the phone is for
-this show only. The phone never names anyone (naming stays on the PC).
-
-The same **Avoid some people** sits on the remote (`/slideshow`, on the PC and the phone), so it
-works whichever way the show started: the library's ▶ *On this PC* or *On the TV*, an album, a TV
-choice. Ticking a name sets their photos out of the show, as *Do not show*: they move to the
-*Will not be shown* group at the end of the grid, each with the name (✓ named, ≈ guessed), so you see
-what was left out; untick it and they come back in their place (a photo you set out by hand stays
-out, one you showed again by hand stays in). On this PC's own screen tab, the same block opens over the first photo, the show
-paused, when someone is seen on it: tick, then **Start** (Enter); **P** opens it again during the show.
+**Avoid some people** sits on the remote (`/slideshow`, on the PC and the phone), so it works
+whichever way the show started: the library's ▶ *On this PC* or *On the TV*, an album, a TV
+choice of the home page (the phone opens the remote right after). It lists only the people seen
+on the show's photos, alphabetical, each with its count: ✓ a face named as theirs, ≈ a face only
+close to their mean (the likeness of `/person`; generous on purpose, so a photo missed is rare —
+a name seen only by ≈ may be someone who looks like them). Ticking a name sets their photos out
+of the show, as *Do not show*: they move to the *Will not be shown* group at the end of the grid,
+each with the name, so you see what was left out; untick it and they come back in their place
+(a photo you set out by hand stays out, one you showed again by hand stays in). The TV shows
+nothing of it, and the phone never names anyone. On this PC's own screen tab, the same block opens
+over the first photo, the show paused, when someone is seen on it: tick, then **Start** (Enter);
+**P** opens it again during the show.
 
 **Remembered for every show**: a name ticked on the PC (the remote or this PC's screen tab) is
 written to `config.toml` (`[slideshow] avoid = ["Antoine"]`), read back and said in the block
@@ -182,7 +179,9 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
   status line names the event of the photo on the TV (*Photo 17 of 344 · Easter · April 2026 ·
   …*), and its group's name is coloured. Each event has a box, ticked: untick it to set all its
   photos out of the show, tick it again to bring back those it had set out (a photo you set out by
-  hand stays out). Choose a whole year, then take out the events you do not want.
+  hand stays out). Choose a whole year, then take out the events you do not want. An event with
+  no photo left to show is hidden (never "0 photos"), but one you unticked keeps its name and box,
+  to be ticked back.
 - Last, **Will not be shown** holds every photo set out, each saying why: the person avoided, the
   event unticked, or *by hand*.
 - A tap on a thumbnail shows that photo on the TV.

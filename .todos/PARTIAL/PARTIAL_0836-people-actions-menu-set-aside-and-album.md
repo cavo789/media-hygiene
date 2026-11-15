@@ -44,3 +44,30 @@ added later without crowding the page:
 - Set aside: all selected by default; unselected photos stay; counts shown = files quarantined; `.toml` and link gone; undo restores all three.
 - Album: created with every photo of the person, read back.
 - Docs en + fr, `.po` complete; `docs_screenshots` to rerun (page changed).
+
+## Status — PARTIAL (2026-11-15)
+
+### Done
+- A ⋯ menu per person on /people (Rename/Merge of 0827, Set aside, Album), from one shared
+  template (`review/templates/person_menu.html.j2`); /person's naming line has it with
+  Rename only.
+- Set aside, default of *Needs maintainer* applied: only the photos where the person is the
+  only face found, shown ticked (untickable); photos with others listed, never touched.
+  Goes to the decisions file: *Apply now*, `clean --decisions` journal, `undo` of the files.
+  *Drop the name* ticked by default; its `.toml` and `config.toml` saved to `.history` first.
+- Album in memory: every photo of the person, shown before saving, read back from
+  `albums.json`; capped at 3000 per save, said in the dialog.
+- Phone: the new routes are not reachable from the LAN. 17 tests
+  (`test_people_rename_merge.py`, `test_people_actions_menu.py`).
+
+### Not done
+- `mh undo` of the clean run does not bring the dropped name back (only the page's Undo
+  toast does, from a copy in memory). **Reason:** needs `clean --decisions` to journal the
+  name; maintainer to decide.
+- Seeing first: the photos are tiles with boxes in a dialog, not the shared pick grid nor a
+  library filtered on the person. **Reason:** deviation; move to the shared grid
+  (`photo-picking-pages`).
+- /person's menu offers Rename only, not Set aside / Album (feature follows its kind).
+  **Reason:** needs the people board's numbering on /person.
+- The ⋯ menu's JavaScript never ran in a browser. **Reason:** no node/Chromium used here.
+- *Needs maintainer*: confirm the default (alone only) for Set aside.

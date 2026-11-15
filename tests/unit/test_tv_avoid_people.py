@@ -25,7 +25,7 @@ from media_hygiene.search.fts import SearchIndex
 from media_hygiene.services import slideshow_avoid, slideshow_here
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer
-from media_hygiene.services.slideshow_avoid import Avoided, avoided
+from media_hygiene.services.slideshow_avoid import PersonPhotos, paths_by_name
 from media_hygiene.services.slideshow_here import SlideshowHere
 from tests.support.indexed_photos import indexed_photos
 from tests.support.runtime import make_locations, make_runtime
@@ -123,72 +123,38 @@ def _shown(here: SlideshowHere) -> list[int]:
     return sorted(slide["key"] for slide in json.loads(answer.body)["slides"])
 
 
-def test_the_choices_list_the_people_named(here: SlideshowHere) -> None:
-    """The phone's block lists every name of `[[people.person]]`."""
+def test_the_home_choices_carry_no_people_any_more(here: SlideshowHere) -> None:
+    """The home's TV block is gone: people are avoided on the remote it opens."""
     lists = json.loads(_ask(here, Request("GET", "/slideshow/choices", _HOST)).body)
-    assert lists["people"] == ["Antoine", "Léa"]
-
-
-def test_a_random_show_drops_the_named_and_the_look_alike_photos(
-    here: SlideshowHere,
-) -> None:
-    """IMG_0 (named) and IMG_1 (close to his mean) left out; IMG_2, IMG_3 stay."""
-    answer = _choose(here, {"random": {"minutes": 30}, "avoid": ["antoine"]})
-    assert answer.status is HTTPStatus.OK
-    body = json.loads(answer.body)
-    assert body["left_out"] == 2  # the stated count is the photos dropped
-    assert body["avoided"] == ["Antoine"]
-    assert _shown(here) == [3, 4]
-
-
-@pytest.mark.parametrize(
-    "chosen",
-    [{"first": "2025-11-01", "last": "2025-11-30"}, {"folder": "C:\\Trip"}],
-)
-def test_a_folder_or_a_month_drops_them_the_same_way(
-    here: SlideshowHere, chosen: dict[str, str]
-) -> None:
-    """A month or a folder: the same two photos left out, the count stated."""
-    if "folder" in chosen:
-        lists = json.loads(_ask(here, Request("GET", "/slideshow/choices", _HOST)).body)
-        chosen = {"folder": lists["folders"][0]["value"]}
-    answer = _choose(here, {**chosen, "avoid": ["Antoine"]})
-    assert answer.status is HTTPStatus.OK
-    assert json.loads(answer.body)["left_out"] == 2
-    assert _shown(here) == [3, 4]
-
-
-def test_an_unknown_name_is_ignored_and_nothing_is_said(here: SlideshowHere) -> None:
-    """Nobody is named Zoé: every photo shown, no count in the answer."""
-    answer = _choose(
-        here, {"first": "2025-11-01", "last": "2025-11-30", "avoid": ["Zoé"]}
-    )
-    assert answer.status is HTTPStatus.OK
-    assert "left_out" not in json.loads(answer.body)
-    assert _shown(here) == [1, 2, 3, 4]
-
-
-def test_a_person_without_faces_is_stated_with_nothing_left_out(
-    runtime: Runtime, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Léa has no face in the index: named, nothing dropped."""
-    monkeypatch.setattr(slideshow_avoid, "FaceIndex", lambda _file: _Faces(()))
-    assert avoided(runtime, ["Léa"]) == Avoided(names=("Léa",))
-
-
-def test_no_person_named_shows_no_avoid_block() -> None:
-    """The block is drawn only with names; no link to /people from it."""
+    assert "people" not in lists
+    answer = _choose(here, {"first": "2025-11-01", "avoid": ["Antoine"]})
+    assert answer.status is HTTPStatus.BAD_REQUEST
     script = (
         Path(__file__).resolve().parents[2]
         / "src/media_hygiene/review/templates/home_tv.js.j2"
     ).read_text("utf-8")
-    block = script[
-        script.index("function tvAvoidBox") : script.index("function tvAvoided")
-    ]
-    assert 'if (!people.length) return "";' in block
-    assert "/people" not in block
-    assert "tvAvoidBox(lists.people || [], lists.remembered || [])" in script
-    assert "avoid: avoid" in script
+    assert "tvAvoid" not in script
+
+
+def test_the_named_and_the_look_alike_photos_are_theirs(runtime: Runtime) -> None:
+    """IMG_0 named Antoine (✓), IMG_1 close to his mean (≈); IMG_2 someone else."""
+    trip = runtime.locations.data_dir / "c" / "Trip"
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(slideshow_avoid, "FaceIndex", lambda _f: _Faces(_faces(trip)))
+        found = paths_by_name(runtime, ["antoine", "Zoé"])
+    assert found == {
+        "Antoine": PersonPhotos(
+            frozenset({trip / "IMG_0.jpg"}), frozenset({trip / "IMG_1.jpg"})
+        )
+    }
+
+
+def test_a_person_without_faces_has_no_photo(
+    runtime: Runtime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Léa has no face in the index: named, nothing of hers."""
+    monkeypatch.setattr(slideshow_avoid, "FaceIndex", lambda _file: _Faces(()))
+    assert paths_by_name(runtime, ["Léa"]) == {"Léa": PersonPhotos()}
 
 
 def test_the_remote_offers_only_the_people_on_the_show(here: SlideshowHere) -> None:
@@ -228,8 +194,6 @@ def test_a_tick_on_the_pc_is_remembered_for_the_next_show(
     _choose(here, month)
     view = _avoid_view(here)
     assert (view["ticked"], view["out"], view["phone"]) == (["Antoine"], 2, False)
-    lists = json.loads(_ask(here, Request("GET", "/slideshow/choices", _HOST)).body)
-    assert lists["remembered"] == ["Antoine"]  # the home's TV block: one source
 
 
 def test_unticking_on_the_pc_removes_the_name_from_the_file(
