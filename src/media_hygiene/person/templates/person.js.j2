@@ -83,6 +83,7 @@ async function find(typed) {
   $("scanNow").hidden = result.scanned;
   sideSay(result.faces.length ? "" : (result.scanned ? TEXTS.noFace : TEXTS.notScanned));
   showFaces(result.faces);
+  if (seed === null && result.card) { showFiles([result.card]); $("status").textContent = TEXTS.chooseFace; }
   const face = $("faces").children[wanted.face]; // a "?" of the large view (0714)
   if (wanted.face !== undefined && face) { delete wanted.face; face.click(); }
 }

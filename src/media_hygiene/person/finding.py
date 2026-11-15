@@ -89,8 +89,9 @@ class PersonFinder:
             return {"said": video, "faces": []}
         size = upright_size(self.faces.file, path)
         views = []
-        for face in self.faces.of(path):
-            view = face_view(self._number(face), face.number)
+        keys = [self._number(face) for face in self.faces.of(path)]
+        for key, face in zip(keys, self.faces.of(path), strict=True):
+            view = face_view(key, face.number)
             if size is not None:  # where it is on the photo, for the large view (0838)
                 view["box"] = box_fractions(face.box, size)
             views.append(view)
@@ -98,6 +99,8 @@ class PersonFinder:
             "photo": self.place.mapper.to_host(path),
             "scanned": self.faces.scanned(path),
             "faces": views,
+            # the photo itself in the grid, until a face is chosen
+            "card": self._card(keys[0], path, frozenset()) if keys else None,
         }
 
     def like(self, key: str, aside: AsideDesk | None) -> dict[str, object]:
