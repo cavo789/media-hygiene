@@ -14,14 +14,13 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.people.naming import id_of
 from media_hygiene.people.remembered import aside_date
+from media_hygiene.person.cards import grid_cards
 from media_hygiene.person.drawing import search_vector
 from media_hygiene.person.face_frame import box_fractions, upright_size
 from media_hygiene.person.likeness import FaceRows, kept_rows, likeness
-from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.person.scan_route import video_said
 from media_hygiene.person.shelf import ShelfFace, face_view
 from media_hygiene.review.slow_log import Laps
-from media_hygiene.review.versioned import versioned_on_disk
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -101,7 +100,11 @@ class PersonFinder:
             "scanned": self.faces.scanned(path),
             "faces": views,
             # the photo itself in the grid, until a face is chosen
-            "card": self._card(keys[0], path, frozenset()) if keys else None,
+            "card": (
+                grid_cards(self.place.mapper, [(keys[0], path)], frozenset())[0]
+                if keys
+                else None
+            ),
         }
 
     def like(self, key: str, aside: AsideDesk | None) -> dict[str, object]:
@@ -121,25 +124,21 @@ class PersonFinder:
         memory = None if aside is None else aside.memory
         people = () if memory is None else memory.people()
         laps, every = Laps("like"), FaceRows(self.faces.every, self.faces.vectors)
-        rows = kept_rows(every, self.kept(key))
-        laps.lap("kept")
-        found = likeness(seed.embedding, rows, people)
+        found = likeness(seed.embedding, kept_rows(every, self.kept(key)), people)
         laps.lap("likeness")
         chosen = frozenset() if aside is None else aside.paths()
-        files = [self._card(int(key), seed.path, chosen)]
-        files.extend(
-            self._card(self._number(face), face.path, chosen)
-            for face in found.faces
-            if face.path != seed.path
-        )
+        shown = [(int(key), seed.path)]
+        shown += [(self._number(f), f.path) for f in found.faces if f.path != seed.path]
+        files = grid_cards(self.place.mapper, shown, chosen)
         laps.lap(f"{len(files)} cards")
         laps.said()
-        known = found.known
-        if known is None:
+        if (known := found.known) is None:
             return {"files": files, "known": None}
         date = aside_date(known.aside)
-        said = {"aside": known.aside, "label": known.label, "date": date}
-        return {"files": files, "known": said}
+        return {
+            "files": files,
+            "known": {"aside": known.aside, "label": known.label, "date": date},
+        }
 
     def kept(self, key: str) -> tuple[StoredFace, ...]:
         """Every face of the index but those said not to be the face's name (0714).
@@ -174,27 +173,3 @@ class PersonFinder:
         return self.shelf.add(
             ShelfFace(face.path, search_vector(face), face.box, number=face.number)
         )
-
-    def _card(self, key: int, path: Path, chosen: frozenset[str]) -> dict[str, object]:
-        """One photo of the grid, by the number of its face.
-
-        Args:
-            key: The face's number.
-            path: Its photo.
-            chosen: The host paths set aside.
-
-        Returns:
-            What `pick_grid.js.j2` reads of a file.
-        """
-        host = self.place.mapper.to_host(path)
-        return {
-            "key": key,
-            "name": path.name,
-            "thumb": versioned_on_disk(f"{THUMB_PREFIX}{key}{JPEG}", path),
-            "preview": versioned_on_disk(f"{PREVIEW_PREFIX}{key}{JPEG}", path),
-            "original": versioned_on_disk(f"{PREVIEW_PREFIX}{key}{JPEG}", path),
-            "where": host,
-            "path": host,  # 👤: `/person` again, from this photo
-            "face": f"{FACE_PREFIX}{key}{JPEG}",  # the face that matched (0714)
-            "chosen": host in chosen,
-        }
