@@ -4388,7 +4388,7 @@ msgid "Find in short"
 msgstr "Retrouver en bref"
 
 msgid "Find its faces now"
-msgstr "Chercher ses visages maintenant"
+msgstr "Chercher les visages maintenant"
 
 msgid ""
 "Find photos by their words in your browser (or as a table): the words "

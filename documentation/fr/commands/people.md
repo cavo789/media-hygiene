@@ -383,7 +383,7 @@ SHA-256 : il n'envoie rien sur vos photos.
   une fois de plus par le prochain `people` (ou `audit --people`) : seuls les visages qui leur
   manquent sont ajoutés, après les leurs, et chaque nom donné reste sur son visage
   (*N photos déjà analysées, regardées à nouveau : M visages ajoutés*). Pour une seule photo,
-  *Chercher ses visages maintenant* sur la page *Identifier quelqu'un* fait de même.
+  *Chercher les visages maintenant* sur la page *Identifier quelqu'un* fait de même.
 - Les vidéos ne sont pas encore analysées.
 - Sans réseau, l'erreur nomme les deux fichiers de modèle à enregistrer à la main dans le dossier
   `models` du cache.

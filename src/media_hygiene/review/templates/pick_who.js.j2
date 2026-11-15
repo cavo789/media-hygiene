@@ -9,11 +9,17 @@
    names only. Included by `pick_viewer.js.j2` and `people_viewer.js.j2` (needs `$`, `element`,
    `fill`); `#viewerWho` (`pick_viewer.html.j2`) holds the words; a page that shows names
    listens to the `mh-named` event of `document`. Each face is outlined on the photo, its name
-   under it (`pick_who_boxes.js.j2`, 0838). #}
+   under it (`pick_who_boxes.js.j2`, 0838). Back on the tab, the faces are asked again. #}
 {% include "combo_list.js.j2" %}
 {% include "pick_who_boxes.js.j2" %}
 let whoAsked = 0;   // the latest photo asked: an answer for an earlier one is dropped
 let whoFile = null; // the file whose faces are shown
+
+// Back on this tab (a face named in the /person tab "Identify someone" opened): the names as
+// they are now, asked again for the photo still open.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && whoFile && $("viewer").classList.contains("open")) showWho(whoFile);
+});
 
 async function whoAsk(url, body) {
   const options = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
