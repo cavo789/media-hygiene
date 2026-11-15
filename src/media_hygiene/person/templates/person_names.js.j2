@@ -165,8 +165,15 @@ function showGuesses(faces) {
 $("confirmGuesses").addEventListener("click", async () => {
   const byName = new Map();
   for (const face of guesses) byName.set(face.named.name, [...(byName.get(face.named.name) || []), Number(face.key)]);
-  for (const [name, keys] of byName) if (!(await send({ action: "move", name: name, faces: keys, source: "" }))) return;
-  await render();
+  const [[name, keys], ...more] = byName; // one request, one write (`also`)
+  const also = more.map(([other, faces]) => ({ name: other, faces: faces }));
+  const button = $("confirmGuesses");
+  button.disabled = true; // until the page shows what the file holds now
+  try {
+    if (await send({ action: "move", name: name, faces: keys, source: "", also: also })) await render();
+  } finally {
+    button.disabled = false;
+  }
 });
 
 $("confirmNames").addEventListener("click", async () => {

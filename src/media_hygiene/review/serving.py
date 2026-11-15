@@ -21,6 +21,7 @@ from media_hygiene.review.http import (
     read_request,
 )
 from media_hygiene.review.respond import RUN_TAG, write_response
+from media_hygiene.review.slow_log import timed
 from media_hygiene.review.versioned import asked_from
 
 if TYPE_CHECKING:
@@ -110,8 +111,7 @@ async def _answered(
 ) -> Response:
     """Answer a request; an unexpected error is logged with its trace, then said.
 
-    Without it the connection closed unanswered: the page said it was not running
-    any more, though its server ran and had done the work (a move, 2026-11-02).
+    Unanswered, the page said it was not running any more (a move, 2026-11-02).
 
     Args:
         request: The request.
@@ -121,7 +121,7 @@ async def _answered(
         The answer; 500 with the sentence to show after an unexpected error.
     """
     try:
-        return await handle(request)
+        return await timed(f"{request.method} {request.path}", handle(request))
     except Exception as exc:  # pylint: disable=broad-exception-caught  # logged, answered
         _LOGGER.exception("%s %s", request.method, request.path)
         said = _(

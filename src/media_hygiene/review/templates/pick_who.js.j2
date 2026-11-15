@@ -121,12 +121,11 @@ async function whoSave(file, changes) {
   const line = $("viewerSaid");
   line.className = "";
   line.textContent = who.dataset.saving;
-  let saved = null;
-  for (const change of changes) {
-    const body = { action: "move", name: change.name, faces: change.keys, source: change.source };
-    saved = await whoAsk("/person/api/names", body);
-    if (!saved || saved.error) break;
-  }
+  // One request, one write, whatever the number of names (`also`: 4 s each before).
+  const [first, ...more] = changes;
+  const also = more.map((change) => ({ name: change.name, faces: change.keys }));
+  const body = { action: "move", name: first.name, faces: first.keys, source: first.source, also: also };
+  const saved = await whoAsk("/person/api/names", body);
   line.className = saved && !saved.error ? "" : "error";
   line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
   if (!saved || saved.error) return;
@@ -144,7 +143,10 @@ function whoConfirm(guessed) {
   button.addEventListener("click", () => {
     const byName = new Map();
     for (const face of guessed) byName.set(face.named.name, [...(byName.get(face.named.name) || []), Number(face.key)]);
-    whoSave(file, [...byName].map(([name, keys]) => ({ name: name, keys: keys, source: "" })));
+    button.disabled = true; // one click: the names are saved in one write
+    whoSave(file, [...byName].map(([name, keys]) => ({ name: name, keys: keys, source: "" }))).finally(() => {
+      button.disabled = false;
+    });
   });
   return button;
 }

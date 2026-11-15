@@ -14,8 +14,9 @@ import pytest
 
 from media_hygiene.index.drawn_faces import add_drawn
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.people.config_file import read_people
+from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.person_actions import RenameDoor
+from media_hygiene.person import name_save
 from media_hygiene.person.app import PersonApp
 from media_hygiene.person.door import with_person
 from media_hygiene.person.shelf import ShelfFace
@@ -33,10 +34,12 @@ from tests.support.runtime import make_runtime, thread_pool
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from pathlib import Path
 
     from PIL import Image
     from typer.testing import CliRunner
 
+    from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.faces.models import Face
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.ending import EndingDoor
@@ -586,3 +589,37 @@ def test_a_photo_scanned_before_0841_is_topped_up_its_face_not_doubled(
         face["box"]
         for face in before["faces"]  # type: ignore[attr-defined]
     ]
+
+
+def test_names_confirmed_together_are_saved_in_one_write(
+    person: PersonApp, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """*Confirm the names guessed: N*: one request, `[people]` written once."""
+    key = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]["key"]  # type: ignore[index]
+    files = answer(person, "POST /person/api/like", {"key": key})["files"]
+    assert isinstance(files, list)
+    keys = [file["key"] for file in files[:3]]
+    writes: list[object] = []
+
+    def counted(config_file: Path, wanted: PeopleSettings) -> None:
+        writes.append(wanted)
+        save_people(config_file, wanted)
+
+    monkeypatch.setattr(name_save, "save_people", counted)
+    body = {
+        "action": "move",
+        "name": "Ann",
+        "faces": [keys[0]],
+        "source": "",
+        "also": [
+            {"name": "Bob", "faces": [keys[1]]},
+            {"name": "Cy", "faces": [keys[2]]},
+        ],
+    }
+    saved = answer(person, "POST /person/api/names", body)
+    assert len(writes) == 1
+    people = saved["people"]
+    assert isinstance(people, list)
+    assert sorted(people) == ["Ann", "Bob", "Cy"]
+    for name in ("Ann", "Bob", "Cy"):
+        assert f"{name}, 1 confirmed face" in str(saved["saved"])

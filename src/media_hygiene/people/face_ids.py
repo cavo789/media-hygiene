@@ -15,8 +15,9 @@ import tomllib
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.config.face_refs import face_mapper, ids_by_key, split_key
-from media_hygiene.config.people_files import ENCODING, FACES, FOLDER, REJECTED
+from media_hygiene.config.people_files import FACES, FOLDER, REJECTED
 from media_hygiene.config.photo_ref import content_id
+from media_hygiene.config.stamped_text import stamped_text
 from media_hygiene.paths.locations import Locations
 
 if TYPE_CHECKING:
@@ -42,7 +43,7 @@ def written_ids(config_dir: Path, mapper: HostPathMapper) -> dict[str, str]:
     ids: dict[str, str] = {}
     for file in sorted((config_dir / FOLDER).glob(_PATTERN)):
         try:
-            loaded = tomllib.loads(file.read_text(ENCODING))
+            loaded = tomllib.loads(stamped_text(file))
             for key in (FACES, REJECTED):
                 value = loaded.get(key, [])
                 ids.update(ids_by_key(value if isinstance(value, list) else [], mapper))

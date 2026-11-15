@@ -14,6 +14,7 @@ import tomllib
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.config.face_refs import face_keys
+from media_hygiene.config.stamped_text import stamped_text
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 
@@ -171,7 +172,7 @@ def load_linked(path: Path, relative: str, missing: str) -> dict[str, object]:
         ValueError: The file is missing or not valid TOML.
     """
     try:
-        return tomllib.loads(path.read_text(ENCODING))
+        return tomllib.loads(stamped_text(path))
     except FileNotFoundError:
         raise ValueError(missing.format(file=relative)) from None
     except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:

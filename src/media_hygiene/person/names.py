@@ -17,14 +17,12 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming
-from media_hygiene.people.config_file import read_people, save_people
-from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.known import Known
 from media_hygiene.people.naming import How, face_id, id_of, name_all
 from media_hygiene.people.people_memo import PeopleMemo
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
-from media_hygiene.person.one_face_each import section_after
+from media_hygiene.person.name_save import save_changes
 from media_hygiene.person.unguess import unname
 from media_hygiene.services.kept_state import KeptState
 
@@ -40,6 +38,15 @@ _NAME_LENGTH: Final = 100
 _NAMED: Final = frozenset({How.CONFIRMED, How.ASSIGNED})
 
 
+class NameGroup(BaseModel):
+    """More faces of one naming: *Confirm the names guessed* sends them all at once."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    name: str = Field(min_length=1, max_length=_NAME_LENGTH)
+    faces: tuple[int, ...] = Field(min_length=1)
+
+
 class NameAsked(BaseModel):
     """`POST /person/api/names`: these faces are someone, or are not someone."""
 
@@ -49,6 +56,7 @@ class NameAsked(BaseModel):
     name: str = Field(min_length=1, max_length=_NAME_LENGTH)
     faces: tuple[int, ...] = Field(min_length=1)
     source: str = Field(default="", max_length=_NAME_LENGTH)  # "move": shown under
+    also: tuple[NameGroup, ...] = ()  # "move": more names, saved in the same write
 
 
 @dataclass(frozen=True, slots=True)
@@ -105,20 +113,21 @@ class FaceNames:
         if asked.action == "unname":
             return unname(self, asked.faces[0])
         naming = Naming(asked.name.strip(), ids)
+        changes = [Change(asked.action, naming, asked.source)]
+        groups = asked.also if asked.action == "move" else ()
+        changes.extend(
+            Change("move", Naming(group.name.strip(), more), "")
+            for group in groups
+            if (more := tuple(self._ids(group.faces)))
+        )
         try:
-            original = read_people(self.config_file)
-            present = {str(face.path) for face in self.faces.every}
-            written = follow_ids(original, {}, present)
-            change = Change(asked.action, naming, asked.source)
-            wanted = section_after(self, written, change)
-            save_people(self.config_file, wanted)
-            back = read_people(self.config_file)
+            back = save_changes(self, self.config_file, changes)
         except (ValueError, OSError) as error:
             return {"error": str(error)}
         if asked.action == "reject":
             line = rejected_line(back, naming, again=False)
         else:
-            line = proof_line(back, change)
+            line = " ".join(proof_line(back, change) for change in changes)
         return {"saved": line, "people": [person.name for person in back.person]}
 
     def _refused(self, ids: tuple[str, ...]) -> str:
