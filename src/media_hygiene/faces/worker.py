@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from functools import cache
 from typing import TYPE_CHECKING, Protocol, override
 
-from media_hygiene.faces.detect import MIN_SCORE
+from media_hygiene.faces.detect import MIN_SCORE, OVERLAP
 from media_hygiene.faces.engine import FaceEngine
 from media_hygiene.faces.models import PhotoFaces
 from media_hygiene.faces.onnx_runner import onnx_runner
@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.faces.engine import FaceFinder
+    from media_hygiene.faces.models import Face, FaceBox
 
 
 class FinderRecipe(Protocol):
@@ -66,6 +67,8 @@ class FaceJob:
     mtime_ns: int
     recipe: FinderRecipe
     turn_only: bool = False  # faces kept already: only the turn is guessed (0725)
+    # A top-up (0841): the boxes the photo has; only faces apart from them come back.
+    beside: tuple[FaceBox, ...] | None = None
 
 
 def find_faces(job: FaceJob) -> PhotoFaces | None:
@@ -98,9 +101,26 @@ def find_faces(job: FaceJob) -> PhotoFaces | None:
     except unreadable_errors():
         return None
     faces = finder.find(picture)
+    if job.beside is not None:  # its turn was guessed already
+        new = tuple(face for face in faces if not _known(face, job.beside))
+        seconds = time.monotonic() - started
+        return PhotoFaces(job.path, job.size, job.mtime_ns, new, seconds, NO_TURN)
     turn = turn_of(Seen(job.path, picture, len(faces)), finder)
     seconds = time.monotonic() - started
     return PhotoFaces(job.path, job.size, job.mtime_ns, faces, seconds, turn)
+
+
+def _known(face: Face, boxes: tuple[FaceBox, ...]) -> bool:
+    """Tell whether a face found is one the photo has already.
+
+    Args:
+        face: The face found.
+        boxes: The boxes of the faces the photo has.
+
+    Returns:
+        True when it overlaps one of them as much as two boxes of one face do.
+    """
+    return any(face.box.overlap(box) > OVERLAP for box in boxes)
 
 
 @cache

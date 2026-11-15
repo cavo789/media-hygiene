@@ -9,6 +9,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.faces.detect import MIN_SCORE
+from media_hygiene.index.face_tops import topped_versions
+
 if TYPE_CHECKING:
     import sqlite3
     from collections.abc import Iterable, Sequence
@@ -89,14 +92,17 @@ def unread(
 
     Returns:
         The paths whose current version was scanned for faces; the photos not
-        scanned, or whose turn is not guessed, in their order.
+        scanned, or whose turn is not guessed, or whose faces were looked for
+        above `MIN_SCORE` only (a top-up, 0841), in their order.
     """
     found = scanned_versions(connection, model)
-    turned = guessed_versions(connection, model)
+    done = guessed_versions(connection, model) & topped_versions(
+        connection, model, MIN_SCORE
+    )
     scanned = {photo.path for photo in photos if version_of(photo) in found}
     missing = tuple(
         photo
         for photo in photos
-        if photo.path not in scanned or version_of(photo) not in turned
+        if photo.path not in scanned or version_of(photo) not in done
     )
     return scanned, missing

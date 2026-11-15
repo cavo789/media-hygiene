@@ -1,8 +1,8 @@
 """What the console says of the photos a `people` run analyses (0803).
 
-The photos never analysed and those analysed before whose turn only is still to guess
-(a run after the version that guesses turns) are counted apart: the second are no new
-photos, and go faster.
+The photos never analysed and those analysed before whose turn is still to guess (0803)
+or whose faces further away are still to add (0841) are counted apart: the second are
+no new photos.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 def show_missing(output: Output, work: PeopleWork) -> None:
-    """Say how many photos are still to analyse, and whose turn is still to guess.
+    """Say how many photos are still to analyse, and how many to look at again.
 
     Args:
         output: Where to print.
@@ -38,10 +38,10 @@ def show_missing(output: Output, work: PeopleWork) -> None:
     if work.turn_only:
         output.info(
             ngettext(
-                "{count} photo of {total} whose turn is still to guess (analysed "
-                "before, not new).",
-                "{count} photos of {total} whose turn is still to guess (analysed "
-                "before, not new).",
+                "{count} photo of {total} to look at again (analysed before, not "
+                "new): its turn, or faces further away.",
+                "{count} photos of {total} to look at again (analysed before, not "
+                "new): their turn, or faces further away.",
                 work.turn_only,
             ).format(count=human_number(work.turn_only), total=total)
         )

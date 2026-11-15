@@ -557,3 +557,27 @@ def test_a_video_is_said_to_be_one_never_analysed(
         said = answer(person, f"POST /person/api/{route}", {"path": CLIP})
         assert said["faces"] == []
         assert "This is a video" in str(said["said"])
+
+
+def test_a_photo_scanned_before_0841_is_topped_up_its_face_not_doubled(
+    person: PersonApp, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Scanned, not topped: offered again; the scan adds nothing it has already."""
+    typed = "C:\\Holidays\\IMG_2.png"
+    index = person.finder.faces.file
+    assert index is not None
+    with FactsRepository.open(index) as repository:
+        repository.connection.execute("DELETE FROM face_tops")
+        repository.connection.commit()
+    before = photo(person, typed)
+    assert (len(before["faces"]), before["scanned"]) == (1, False)  # type: ignore[arg-type]
+    monkeypatch.setattr(people_models, "models_present", lambda _runtime: True)
+    monkeypatch.setattr(people_models, "face_recipe", lambda _runtime: FakeRecipe())
+    scanned = answer(person, "POST /person/api/scan", {"path": typed})
+    assert scanned["scanned"] is True
+    faces = scanned["faces"]
+    assert isinstance(faces, list)
+    assert [face["box"] for face in faces] == [  # the same face, not doubled
+        face["box"]
+        for face in before["faces"]  # type: ignore[attr-defined]
+    ]

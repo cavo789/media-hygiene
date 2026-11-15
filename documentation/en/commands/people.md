@@ -16,8 +16,9 @@ them. The faces stay in the [cache](../reference-glossary.md#cache), never sent 
 after new photos: only those are analysed. From the home page, past the first run, the page
 opens at once on the groups already known and analyses up to 1 000 new photos itself, with
 their progress and a Stop button; the groups are kept in the cache and not recomputed.
-Photos analysed by an older version, whose turn only is still to guess, are counted apart
-(*N photos whose turn is still to guess*), in the console and on the page: they are not new.
+Photos analysed by an older version, whose turn is still to guess or whose faces further away
+are still to add, are counted apart (*N photos to look at again*), in the console and on the
+page: they are not new.
 
 **Try it**:
 
@@ -344,6 +345,12 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
   `classify`, XMP), unless you confirmed them: nothing is analysed again.
 - `audit --people` looks for the faces right after an audit, once you agreed to the time it
   takes; `with_audit = true` in `[people]` does it at every audit.
+- Faces a few metres away, in group photos, are kept since November 2026: twice as many faces
+  on a family event, almost all named at once after the people you named already. Photos
+  analysed before are looked at once more by the next `people` (or `audit --people`): it only
+  adds the faces they lack, after their own, so every name you gave stays on its face
+  (*N photos analysed before, looked at again: M faces added*). On a single photo, *Find its
+  faces now* on the page *Identify someone* does the same.
 - Videos are not analysed yet.
 - Without network, the error names the two model files to save by hand into the `models` folder
   of the cache.

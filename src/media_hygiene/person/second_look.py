@@ -1,7 +1,7 @@
 """A second look at one photo whose faces the audit missed: turned, and less strict.
 
-The audit looks at each photo upright, with the detector's usual score (0.9): a face
-tilted, lying, or blurred is not found. Asked for one photo, the page looks again at
+The audit looks at each photo upright, from the score `MIN_SCORE`: a face tilted,
+lying, or blurred is not found. Asked for one photo, the page looks again at
 the picture turned by `ANGLES`, keeping the faces down to `LOOSE_SCORE`. Measured
 2026-10-24 on 9 real photos of one person, none with a face in the index: 6 show his
 face at one of these angles (0.50 to 0.71 from the mean of his faces set aside), one at

@@ -44,7 +44,7 @@ class PeopleWork:
     photos: tuple[PhotoVersion, ...]
     missing: tuple[PhotoVersion, ...]
     absent: int = 0  # in the index, not on disk: their folder is not mounted
-    # Of `missing`, those analysed before whose turn only is to guess (0803).
+    # Of `missing`, those analysed before: turn to guess (0803), or a top-up (0841).
     turn_only: int = 0
 
     @property
@@ -138,7 +138,13 @@ class PeopleStep:
         with self._runtime.executor_factory() as executor:
             turns = TurnStore(self.store.connection, self._model)
             deps = FindDeps(
-                recipe, self.store, executor, progress, answering.stopped, turns
+                recipe,
+                self.store,
+                executor,
+                progress,
+                answering.stopped,
+                turns,
+                self._model,
             )
             progress.start(
                 Step(_("Finding faces"), _("two small local models: nothing is sent")),

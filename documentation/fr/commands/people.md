@@ -18,9 +18,9 @@ nouveau après de nouvelles photos : seules celles-là sont analysées. Depuis l
 analyse, la page s'ouvre aussitôt sur les groupes déjà connus et analyse elle-même jusqu'à
 1 000 nouvelles photos, avec leur progression et un bouton Arrêter ; les groupes sont gardés
 dans le cache, sans être recalculés.
-Les photos analysées par une version plus ancienne, dont seule la rotation reste à deviner,
-sont comptées à part (*N photos dont la rotation reste à deviner*), dans la console et sur la
-page : ce ne sont pas des nouvelles photos.
+Les photos analysées par une version plus ancienne, dont la rotation reste à deviner ou dont
+les visages plus lointains restent à ajouter, sont comptées à part (*N photos à regarder à
+nouveau*), dans la console et sur la page : ce ne sont pas des nouvelles photos.
 
 **Essayer** :
 
@@ -374,6 +374,13 @@ SHA-256 : il n'envoie rien sur vos photos.
   `classify`, XMP), sauf si vous les avez confirmés : rien n'est analysé à nouveau.
 - `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
   temps que ça prend ; `with_audit = true` dans `[people]` le fait à chaque audit.
+- Les visages pris à quelques mètres, sur les photos de groupe, sont gardés depuis novembre
+  2026 : deux fois plus de visages sur une fête de famille, presque tous nommés d'emblée
+  d'après les personnes que vous avez déjà nommées. Les photos analysées avant sont regardées
+  une fois de plus par le prochain `people` (ou `audit --people`) : seuls les visages qui leur
+  manquent sont ajoutés, après les leurs, et chaque nom donné reste sur son visage
+  (*N photos déjà analysées, regardées à nouveau : M visages ajoutés*). Pour une seule photo,
+  *Chercher ses visages maintenant* sur la page *Identifier quelqu'un* fait de même.
 - Les vidéos ne sont pas encore analysées.
 - Sans réseau, l'erreur nomme les deux fichiers de modèle à enregistrer à la main dans le dossier
   `models` du cache.

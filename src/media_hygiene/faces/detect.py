@@ -22,7 +22,10 @@ if TYPE_CHECKING:
 
 DETECT_SIDE: Final = 640
 STRIDES: Final = (8, 16, 32)
-MIN_SCORE: Final = 0.9  # OpenCV's default: below, mostly not a face
+# The least score of a face kept (0841). OpenCV's default is 0.9; faces a few metres
+# away score 0.70-0.90. Measured on a real event (215 photos, 2026-11-15): 234 faces
+# at 0.9, 497 at 0.6, 488 of those (98 %) close to a person named: faces, not patterns.
+MIN_SCORE: Final = 0.6
 OVERLAP: Final = 0.3  # a box overlapping a better one more than this is the same face
 # Columns of a decoded row: box (x, y, width, height), 10 landmark values, score.
 BOX: Final = slice(0, 4)

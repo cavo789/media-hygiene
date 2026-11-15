@@ -16,7 +16,9 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.faces.worker import FaceJob, find_faces
 from media_hygiene.i18n import _
+from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.face_rows import FaceStore
+from media_hygiene.index.face_tops import add_found, boxes_of, mark_topped
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.person.second_look import LookJob, second_look
 from media_hygiene.person.shelf import ShelfFace, face_view
@@ -26,6 +28,7 @@ from media_hygiene.scan.filters import media_kind
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.faces.worker import FinderRecipe
     from media_hygiene.person.app import PersonApp
 
 
@@ -66,20 +69,49 @@ async def scanned_now(app: PersonApp, typed: str) -> dict[str, object]:
     if recipe is None or index is None:
         said = _("The face models are not in the cache yet: run 'audit --people' once.")
         return {"faces": [], "said": said}
+    try:
+        with FactsRepository.open(index) as repository:
+            unread = await _kept(app, (path, recipe), repository.connection)
+    except sqlite3.Error:
+        return {"faces": [], "said": _("The index cannot be written: try again.")}
+    if unread is not None:
+        return {"faces": [], "said": unread}
+    finder.faces.refresh()
+    return finder.photo(typed)
+
+
+async def _kept(
+    app: PersonApp, asked: tuple[Path, FinderRecipe], connection: sqlite3.Connection
+) -> str | None:
+    """Find a photo's faces and keep them: all of them, or those an older scan lacks.
+
+    Args:
+        app: The page.
+        asked: The photo, in the container, and the recipe of the finder.
+        connection: The index, writable.
+
+    Returns:
+        None once kept; a sentence for a photo that cannot be read.
+    """
+    path, recipe = asked
+    model = app.finder.faces.model
     stat = path.stat()
-    job = FaceJob(path, stat.st_size, stat.st_mtime_ns, recipe)
+    version = (str(path), stat.st_size, stat.st_mtime_ns)
+    store = FaceStore(connection, model)
+    photo = PhotoVersion(path, stat.st_size, stat.st_mtime_ns)
+    beside = boxes_of(connection, model, version) if store.scanned(photo) else None
+    job = FaceJob(path, stat.st_size, stat.st_mtime_ns, recipe, beside=beside)
     found = await asyncio.get_running_loop().run_in_executor(
         app.executor, find_faces, job
     )
     if found is None:
-        return {"faces": [], "said": _("This photo cannot be read.")}
-    try:
-        with FactsRepository.open(index) as repository:
-            FaceStore(repository.connection, finder.faces.model).put(found)
-    except sqlite3.Error:
-        return {"faces": [], "said": _("The index cannot be written: try again.")}
-    finder.faces.refresh()
-    return finder.photo(typed)
+        return _("This photo cannot be read.")
+    if beside is None:
+        store.put(found)
+        mark_topped(connection, model, found)
+    else:  # scanned before 0841: only the faces it lacks, after its own
+        add_found(connection, model, found)
+    return None
 
 
 async def looked_again(app: PersonApp, typed: str) -> dict[str, object]:
