@@ -14,7 +14,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.services.slideshow_avoid import named_people, paths_by_name
-from media_hygiene.slideshow.avoid_desk import AvoidDesk, Seen
+from media_hygiene.slideshow.avoid_desk import AvoidDesk, Memory
+from media_hygiene.slideshow.avoid_memory import known_of, remembered
+from media_hygiene.slideshow.avoid_seen import Seen
 
 if TYPE_CHECKING:
     from media_hygiene.search.fts import SearchIndex
@@ -31,7 +33,8 @@ def avoid_desk(runtime: Runtime, desk: Desk, search: SearchIndex) -> AvoidDesk:
         search: The open index, naming the file of each key.
 
     Returns:
-        The desk, finding the people of the show when the remote first asks.
+        The desk, finding the people of the show when the remote first asks,
+        starting from those `[slideshow] avoid` remembers (read from the disk).
     """
 
     def present() -> dict[str, Seen]:
@@ -56,4 +59,6 @@ def avoid_desk(runtime: Runtime, desk: Desk, search: SearchIndex) -> AvoidDesk:
         }
         return {name: on for name, on in seen.items() if on.sure or on.guessed}
 
-    return AvoidDesk(present)
+    config_file = runtime.locations.config_file
+    names = known_of(remembered(config_file), named_people(runtime))
+    return AvoidDesk(present, memory=Memory(config_file, names))

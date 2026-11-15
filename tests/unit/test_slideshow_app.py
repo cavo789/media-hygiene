@@ -33,13 +33,14 @@ from media_hygiene.review.lan_phones import PhoneBook
 from media_hygiene.review.lan_tls import certificates, secure_door
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.pictures import Pictures
-from media_hygiene.slideshow.app import ShowPages, SlideshowApp
+from media_hygiene.slideshow.app import SlideshowApp
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door, Visitor
 from media_hygiene.slideshow.pictures import ShowPictures
 from media_hygiene.slideshow.screen_jpeg import ScreenJob
 from media_hygiene.slideshow.screens import MAX_FAILURES, SCREEN_COOKIE, Screens
 from media_hygiene.slideshow.show import Show
+from media_hygiene.slideshow.show_pages import ShowPages
 from media_hygiene.slideshow.slides import Slide, Timing
 from media_hygiene.slideshow.tv_door import TvDoor
 
@@ -486,3 +487,23 @@ def test_the_screen_on_this_pc_shows_the_show_without_a_code(
     assert json.loads(_ask(app, _request("/api/wait/0", sender=tv)).body)["code"]
     refused = _ask(app, _request("/api/show", sender=tv, body={"action": "next"}))
     assert refused.status is HTTPStatus.FORBIDDEN  # only the PC's keys drive it
+
+
+def test_a_phone_sees_who_is_on_a_photo_and_names_no_one(app: SlideshowApp) -> None:
+    """0830: the remote marked read-only, `/person/api/photo` only, never a name."""
+    asked: list[str] = []
+
+    async def person(request: Request) -> Response:
+        asked.append(request.path)
+        return Response(HTTPStatus.OK, b"{}")
+
+    page = ShowPages(b"<html lang=en><p>remote</p>", _SCREEN)
+    phone_app = dataclasses.replace(app, pages=page, person=person)
+    remote = _ask(phone_app, _request("/", sender=_PHONE)).body
+    assert remote.startswith(b"<html data-phone ")  # pick_who.js: names only
+    photo = _request("/person/api/photo", sender=_PHONE, body={"path": "x.jpg"})
+    assert _ask(phone_app, photo).status is HTTPStatus.OK
+    names = _request("/person/api/names", sender=_PHONE, body={"action": "move"})
+    assert _ask(phone_app, names).status is HTTPStatus.NOT_FOUND
+    assert asked == ["/person/api/photo"]
+    assert _ask(phone_app, _request("/", sender=_PC)).body.startswith(b"<html lang")

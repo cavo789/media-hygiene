@@ -32,6 +32,7 @@ from media_hygiene.services.slideshow_random_pick import (
 )
 from media_hygiene.services.slideshow_selection import selected
 from media_hygiene.share.album_api import too_many
+from media_hygiene.slideshow.avoid_memory import known_of, remembered
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -93,6 +94,8 @@ class Chooser:
             people = named_people(runtime)
             body: dict[str, object] = {"folders": listed, "months": months}
             body["people"] = people
+            saved = remembered(runtime.locations.config_file)
+            body["remembered"] = known_of(saved, people)  # 0834: ticked at first
             return json_response(HTTPStatus.OK, body)
         if request.method != "POST" or request.path != CHOOSE_PATH:
             return None

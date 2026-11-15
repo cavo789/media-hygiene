@@ -36,6 +36,9 @@ msgstr ""
 msgid "  … and {count} more: the HTML report lists them all."
 msgstr ""
 
+msgid " (every file found)"
+msgstr ""
+
 #, python-brace-format
 msgid " {count} other file is one you set aside or deleted before: not proposed."
 msgid_plural ""
@@ -1955,7 +1958,8 @@ msgstr ""
 
 msgid ""
 "Click the photo for full screen. Keys: ← → previous and next, Space pause"
-" and play, Esc leaves full screen, S stops the show."
+" and play, Esc leaves full screen, S stops the show, P avoids some "
+"people."
 msgstr ""
 
 #, python-brace-format
@@ -4254,7 +4258,10 @@ msgstr ""
 
 msgid ""
 "How many seconds each photo stays while the slideshow plays (2 to 600); "
-"the phone changes it for the evening."
+"the phone changes it for the evening. avoid = [\"Antoine\"] (names of "
+"[[people.person]]): the people set out of every show, written by the PC's"
+" remote when you tick or untick someone in Avoid some people; the phone "
+"ticks for one show only."
 msgstr ""
 
 msgid "How much to log."
@@ -6283,6 +6290,9 @@ msgstr ""
 msgid "Nobody is named {names} yet: name their group on the 'people' page first."
 msgstr ""
 
+msgid "Nobody is remembered for every show."
+msgstr ""
+
 msgid "Nobody was given this face yet: click it to name it."
 msgstr ""
 
@@ -6632,6 +6642,9 @@ msgstr ""
 msgid "Nothing on the phone that the PC holds: nothing to free."
 msgstr ""
 
+msgid "Nothing picked: every file found"
+msgstr ""
+
 msgid ""
 "Nothing runs after the import ([imports] then is empty): mh audit adds "
 "the new files to your library."
@@ -6884,6 +6897,11 @@ msgid "On the phone's remote, type the code of this TV:"
 msgstr ""
 
 msgid "On the phone, everything is read-only: albums change on the PC."
+msgstr ""
+
+msgid ""
+"On the phone, for this show only: the people remembered are changed on "
+"the PC."
 msgstr ""
 
 msgid "On this PC"
@@ -7312,6 +7330,9 @@ msgid ""
 "Other phones (Pixel…): Settings > Security > More settings > Encryption "
 "and credentials > Install a certificate > CA certificate > Install "
 "anyway."
+msgstr ""
+
+msgid "Other photos"
 msgstr ""
 
 msgid "Our photos"
@@ -8108,6 +8129,14 @@ msgid "Reload the home page: its confirmation lists them again."
 msgstr ""
 
 msgid "Remember as a rule"
+msgstr ""
+
+#, python-brace-format
+msgid "Remembered for every show: {names}"
+msgstr ""
+
+#, python-brace-format
+msgid "Remembered for every show: {names}."
 msgstr ""
 
 msgid "Remove"
@@ -9204,9 +9233,6 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-msgid "Show again"
-msgstr ""
-
 msgid "Show an album on the TV"
 msgstr ""
 
@@ -9229,6 +9255,9 @@ msgid "Show every setting, where it comes from, and the mount points."
 msgstr ""
 
 msgid "Show it"
+msgstr ""
+
+msgid "Show it again"
 msgstr ""
 
 msgid "Show it on the TV now? (y/N)"
@@ -9280,6 +9309,9 @@ msgid "Show the version and exit."
 msgstr ""
 
 msgid "Show this album on the TV"
+msgstr ""
+
+msgid "Show this event"
 msgstr ""
 
 msgid "Show this face for this person again"
@@ -9528,6 +9560,9 @@ msgid "Stage {stage} of the cycle"
 msgstr ""
 
 msgid "Start"
+msgstr ""
+
+msgid "Start (Enter)"
 msgstr ""
 
 msgid "Start fresh: carry no edit of a previous workbook over."
@@ -10774,6 +10809,9 @@ msgstr ""
 msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr ""
 
+msgid "The people avoided could not be saved in config.toml."
+msgstr ""
+
 msgid "The people could not be avoided: try again."
 msgstr ""
 
@@ -11406,11 +11444,19 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Their photos are set out of this show, greyed below; nothing is saved, "
-"the TV is told nothing."
+"Their photos are set out of this show, in the group “Will not be shown” "
+"below; the TV is told nothing. Ticked on the PC, they are remembered for "
+"every show (config.toml) until unticked."
 msgstr ""
 
-msgid "Their photos stay off the TV for this show only; nothing is kept."
+msgid ""
+"Their photos are set out of this show; those ticked are remembered for "
+"every show (config.toml) until unticked."
+msgstr ""
+
+msgid ""
+"Their photos stay off the TV; a change here is for this show only, the "
+"people remembered are changed on the PC's remote."
 msgstr ""
 
 msgid "Their size, their quality, and whether they keep the GPS position."
@@ -12584,6 +12630,9 @@ msgstr ""
 msgid "Will be moved to the quarantine from"
 msgstr ""
 
+msgid "Will not be shown"
+msgstr ""
+
 msgid "Windows"
 msgstr ""
 
@@ -13344,6 +13393,9 @@ msgid "by folder"
 msgstr ""
 
 msgid "by folder pair"
+msgstr ""
+
+msgid "by hand"
 msgstr ""
 
 msgid "cache"
@@ -14764,6 +14816,9 @@ msgstr ""
 msgid "reference-safety/"
 msgstr ""
 
+msgid "remembered, on none of these photos"
+msgstr ""
+
 msgid "remove folder forget"
 msgstr ""
 
@@ -14881,6 +14936,9 @@ msgid "sharpness"
 msgstr ""
 
 msgid "shortcut desktop icon start"
+msgstr ""
+
+msgid "show that photo on the TV"
 msgstr ""
 
 msgid "sidecar (.xmp)"
@@ -17901,6 +17959,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{n} photos set out for them."
+msgstr ""
+
+#, python-brace-format
+msgid "{n} picked of {total} found (only {n} are shown)."
 msgstr ""
 
 #, python-brace-format

@@ -117,8 +117,10 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **Pick**, as on every page of photos: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
-  in the bar takes every file the search finds, not only the 240 shown; **🔀 Invert the picking**
-  (or I) picks the others.
+  in the bar takes every file the search finds, not only the 240 shown (a message says so the
+  moment the 240 shown are picked, with the same button); **🔀 Invert the picking** (or I) picks
+  the others. Every button acts on what is picked: the 240, or all N once *Pick all* is clicked.
+  ▶ Slideshow with nothing picked shows every file found, and its menu says so.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into

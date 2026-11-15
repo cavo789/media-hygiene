@@ -6,11 +6,12 @@ import asyncio
 import contextlib
 import json
 import sqlite3
+import tomllib
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 from http import HTTPStatus
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, cast
 
 import numpy as np
 import pytest
@@ -186,7 +187,7 @@ def test_no_person_named_shows_no_avoid_block() -> None:
     ]
     assert 'if (!people.length) return "";' in block
     assert "/people" not in block
-    assert "tvAvoidBox(lists.people || [])" in script
+    assert "tvAvoidBox(lists.people || [], lists.remembered || [])" in script
     assert "avoid: avoid" in script
 
 
@@ -199,3 +200,64 @@ def test_the_remote_offers_only_the_people_on_the_show(here: SlideshowHere) -> N
     payload = json.dumps({"names": ["Antoine"]}).encode()
     ticked = _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
     assert json.loads(ticked.body)["out"] == 2
+
+
+def _avoid_view(here: SlideshowHere) -> dict[str, object]:
+    view: dict[str, object] = json.loads(
+        _ask(here, Request("GET", "/slideshow/api/avoid", _HOST)).body
+    )
+    return view
+
+
+def _remembered_on_disk(runtime: Runtime) -> object:
+    return tomllib.loads(runtime.locations.config_file.read_text("utf-8"))["slideshow"][
+        "avoid"
+    ]
+
+
+def test_a_tick_on_the_pc_is_remembered_for_the_next_show(
+    here: SlideshowHere, runtime: Runtime
+) -> None:
+    """0834: the tick is written, read back; a new show starts with it set out."""
+    month = {"first": "2025-11-01", "last": "2025-11-30"}
+    _choose(here, month)
+    payload = json.dumps({"names": ["Antoine"]}).encode()
+    ticked = _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
+    assert json.loads(ticked.body)["remembered"] == ["Antoine"]
+    assert _remembered_on_disk(runtime) == ["Antoine"]
+    _choose(here, month)
+    view = _avoid_view(here)
+    assert (view["ticked"], view["out"], view["phone"]) == (["Antoine"], 2, False)
+    lists = json.loads(_ask(here, Request("GET", "/slideshow/choices", _HOST)).body)
+    assert lists["remembered"] == ["Antoine"]  # the home's TV block: one source
+
+
+def test_unticking_on_the_pc_removes_the_name_from_the_file(
+    here: SlideshowHere, runtime: Runtime
+) -> None:
+    """0834: an untick takes the name out of `[slideshow] avoid`."""
+    _choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
+    for names in (["Antoine"], []):
+        payload = json.dumps({"names": names}).encode()
+        _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
+    assert _remembered_on_disk(runtime) == []
+
+
+def test_a_remembered_person_on_no_photo_is_listed_and_ticked(
+    runtime: Runtime, here: SlideshowHere
+) -> None:
+    """0834: Léa, on none of the photos, is offered ticked; a renamed one ignored."""
+    config = runtime.locations.config_file
+    config.write_text(
+        config.read_text("utf-8") + "[slideshow]\navoid = ['Léa', 'Gone']\n",
+        "utf-8",
+    )
+    _choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
+    view = _avoid_view(here)
+    assert {"name": "Léa", "sure": 0, "guessed": 0} in cast(
+        "list[object]", view["people"]
+    )
+    assert (view["ticked"], view["remembered"]) == (["Léa"], ["Léa"])
+    payload = json.dumps({"names": ["Léa", "Antoine"]}).encode()
+    _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
+    assert _remembered_on_disk(runtime) == ["Gone", "Antoine", "Léa"]

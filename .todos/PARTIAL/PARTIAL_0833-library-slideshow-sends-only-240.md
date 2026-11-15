@@ -30,3 +30,24 @@ affichés". Nothing picked, ▶ Slideshow ▾ → 📺 *On the TV*: the remote s
 - A search of 300 files, nothing picked, ▶ On the TV: the show holds every showable file,
   and the button's count equals the show's total (or the difference is said).
 - Same for 🖥 On this PC and for *everything* picked (Ctrl+A).
+
+## Status — PARTIAL (2026-11-15)
+
+### Done
+- Server side checked: 344 dated files, the page's body (`all: true`, 2026 dates) →
+  `SearchPicker` returns 344; a send of 300 found / 240 shown starts a show of 300
+  (`tests/unit/test_tv_all_found.py`).
+- Real bug fixed: Ctrl+A or *Invert* picks the 240 shown (`everything` false) → only those
+  240 were sent. New `showing()` in `pick_grid.js.j2`: nothing picked or every shown file
+  picked on a partial search = every file found (`all`, counted as `total`); the menu's
+  count (`pick_slideshow.js.j2`) and `toTv` use it, so the count stated is what is sent.
+- Other entry points checked (albums, album edit, /person, phone, events span 📺, random /
+  folder / period choices): none shows fewer files than found.
+
+### Not done
+- The exact report (nothing picked → 240) not reproduced: needs the maintainer's answer
+  (was anything picked?) or a DevTools capture of the `POST /api/albums` body.
+  **Reason:** the server and the client code for "nothing picked" both behave.
+- The remote does not say when the show holds fewer files than sent (videos, sidecars,
+  files not indexed). **Reason:** `services/slideshow_here.py` is at the 200-line cap and
+  `begin` returns a bool: needs its own split.

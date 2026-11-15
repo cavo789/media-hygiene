@@ -3,7 +3,9 @@
 `screen_px`: the width of the TV's picture, in pixels; each photo is sent fitted into
 `screen_px` x `screen_px * 9 / 16` (1920: a Full HD TV, 3840: a 4K one). A smaller
 picture loads and decodes faster on an old TV. `interval_seconds`: how long each photo
-stays when the slideshow plays, until the phone changes it. The port is the one of
+stays when the slideshow plays, until the phone changes it. `avoid`: the people
+(names of `[[people.person]]`) set out of every show, ticked on the PC's remote (0834,
+`slideshow.avoid_memory`); a name nobody bears is ignored. The port is the one of
 every page, `[review] port`: a TV's bookmark keeps working while it does not change.
 """
 
@@ -30,3 +32,4 @@ class SlideshowSettings(BaseModel):
     interval_seconds: int = Field(
         default=INTERVAL_SECONDS, ge=SHORTEST_INTERVAL, le=LONGEST_INTERVAL
     )
+    avoid: tuple[str, ...] = ()

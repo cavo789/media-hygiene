@@ -65,7 +65,7 @@ class Film:
 
 
 @dataclass(frozen=True, slots=True)
-class Slide:
+class Slide:  # pylint: disable=too-many-instance-attributes  # one per fact shown
     """One photo or video: its key in the index (names its pictures), its day."""
 
     key: int
@@ -75,6 +75,16 @@ class Slide:
     place: str = ""  # where it was taken, when its event does not say it (0472)
     notes: Notes | None = None  # what the storyteller reads (0449)
     tag: str = ""  # its file's version, from the index: `?v=` of its pictures (0723)
+    path: str = ""  # its file: who is on it, in the remote's large view (0830)
+
+    @property
+    def folder(self) -> str:
+        """The folder of its event: the key of its group on the remote (0832).
+
+        Returns:
+            It; empty for a slide of no event.
+        """
+        return "" if self.chapter is None else self.chapter.folder
 
 
 @dataclass(frozen=True, slots=True)

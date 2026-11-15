@@ -47,6 +47,7 @@ class Chapter:
     period: str = ""
     place: str = ""
     map: EventMap | None = None  # the phone's small map (0449), not sent to the TV
+    folder: str = ""  # its folder: one group of the remote per folder (0832)
 
     @property
     def has_card(self) -> bool:

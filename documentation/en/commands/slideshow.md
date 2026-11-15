@@ -110,14 +110,23 @@ lists one box per name: tick one and none of their photos reaches the TV, whiche
 (at random, a folder, a month). Generous on purpose: the faces named as theirs and every face close
 to their mean (the likeness of `/person`), so a photo missed is rare and a few extra ones are left
 out. The phone says it before its remote opens ("Photos left out: 1 234 (Antoine)"); the TV shows
-nothing of it, and nothing is kept: the boxes are asked again for each show. The phone never names
-anyone (naming stays on the PC).
+nothing of it. The people remembered on the PC (below) start ticked; a change on the phone is for
+this show only. The phone never names anyone (naming stays on the PC).
 
 The same **Avoid some people** sits on the remote (`/slideshow`, on the PC and the phone), so it
 works whichever way the show started: the library's ▶ *On this PC* or *On the TV*, an album, a TV
-choice. Ticking a name sets their photos out of the show, as *Do not show*: they stay greyed in the
-grid below, so you see what was left out; untick it and they come back (a photo you set out by hand
-stays out).
+choice. Ticking a name sets their photos out of the show, as *Do not show*: they move to the
+*Will not be shown* group at the end of the grid, each with the name (✓ named, ≈ guessed), so you see
+what was left out; untick it and they come back in their place (a photo you set out by hand stays
+out, one you showed again by hand stays in). On this PC's own screen tab, the same block opens over the first photo, the show
+paused, when someone is seen on it: tick, then **Start** (Enter); **P** opens it again during the show.
+
+**Remembered for every show**: a name ticked on the PC (the remote or this PC's screen tab) is
+written to `config.toml` (`[slideshow] avoid = ["Antoine"]`), read back and said in the block
+("Remembered for every show: Antoine"); every later show starts with their photos in *Will not be
+shown* and the name ticked, listed even when they are on none of its photos ("remembered, on none of
+these photos"), until you untick it. On the phone the ticks are for that show only, and it says so.
+A name no longer among the people named (renamed, removed) is ignored.
 
 **From any page of tiles, no album needed**: in [`library`](library.md) and the burst
 series review opened from the home page (and `/person`, the albums' tiles), **▶ Slideshow ▾** in the
@@ -168,9 +177,24 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
   long a photo stays while playing.
   **Keep as the default** (PC only) writes that pace to `[slideshow] interval_seconds`, shows what
   `config.toml` holds as read back, and applies to the next shows.
+- The thumbnails are grouped by **event** (the photos of one folder, named as on the TV's title
+  card: *Easter · April 2026*, with their count; photos of no event under *Other photos*). The
+  status line names the event of the photo on the TV (*Photo 17 of 344 · Easter · April 2026 ·
+  …*), and its group's name is coloured. Each event has a box, ticked: untick it to set all its
+  photos out of the show, tick it again to bring back those it had set out (a photo you set out by
+  hand stays out). Choose a whole year, then take out the events you do not want.
+- Last, **Will not be shown** holds every photo set out, each saying why: the person avoided, the
+  event unticked, or *by hand*.
 - A tap on a thumbnail shows that photo on the TV.
+- A double click on a thumbnail (or Enter) opens it **large**, as in [`library`](library.md): ← →
+  for the others, F full screen, Esc closes; under it, **who is on it**, ✓ named, ≈ only guessed,
+  ? nobody. On the PC, a click on a face names it or takes a wrong name off (*Not Paul, this face
+  is…*), read back from the disk, and **👤 Its other photos** opens `/person` in a new tab, the show
+  going on; the counts of **Avoid some people** follow at once. On the phone, the names only. The
+  thumbnails take **S/M/L/XL** and **◀ Hide the panel**, as every page of thumbnails.
 - **Do not show** sets the photo on the TV out of the show (the TV moves on); a thumbnail's own
-  button does the same for any photo, and **Show again** sets it back.
+  button does the same for any photo, and **Show it again** sets it back, even while its event is
+  unticked or its person avoided (a choice by hand wins).
 - A video's thumbnail is one of its frames (decoded once, kept in the cache), marked **▶**. On the TV, it plays to its end, then the show moves on;
   **❚❚ Pause** pauses it too. A video the TV cannot play is labelled under its thumbnail
   (*Not on the TV: its format (hevc) does not play there.*) and passed over.
@@ -232,6 +256,7 @@ remote:
 | Space | Pause / play |
 | Esc | Leaves full screen |
 | S | Stops the show and goes back to the home page (opened by hand: closes the tab) |
+| P | Avoid some people: the block of the remote, the show paused; Enter starts again |
 
 Move the mouse: a small bar shows the same buttons (◀ ⏯ ▶ ⛶ ✕), and hides after 3 seconds still.
 Same show, title cards and videos as on a TV; a paired phone still drives it.

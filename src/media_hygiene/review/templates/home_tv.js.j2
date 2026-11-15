@@ -51,18 +51,20 @@ function tvChoices() {
       const pick = (id, label, values) => (values.length
         ? `<div class="tv-choice"><label class="muted" for="${esc(id)}">${esc(label)}</label><select id="${esc(id)}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${esc(id)}">${icon("play")} ${esc(T.tvShow)}</button></div>`
         : "");
-      box.innerHTML = tvAvoidBox(lists.people || []) + tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
+      box.innerHTML = tvAvoidBox(lists.people || [], lists.remembered || []) + tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
       $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
       $("#tvEra", box).addEventListener("change", () => { $("#tvPeriod", box).hidden = $("#tvEra", box).value !== "period"; });
     })
     .catch(() => { box.innerHTML = ""; });
 }
 // Avoid some people (0825): one block for every TV choice, the names of [[people.person]] only
-// (no link to /people: the phone stays read-only); asked each time, nothing stored.
-function tvAvoidBox(people) {
+// (no link to /people: the phone stays read-only). Those of [slideshow] avoid (0834, the
+// remote's list, one source) start ticked and are said; a change here is for this show only.
+function tvAvoidBox(people, remembered) {
   if (!people.length) return "";
-  const boxes = people.map((name) => `<label><input type="checkbox" data-avoid="${esc(name)}"> ${esc(name)}</label>`).join("");
-  return `<details class="tv-choice" id="tvAvoid"><summary class="muted">${esc(T.tvAvoid)}</summary><p class="muted">${esc(T.tvAvoidNote)}</p>${boxes}</details>`;
+  const box = (name) => `<label><input type="checkbox" data-avoid="${esc(name)}"${remembered.includes(name) ? " checked" : ""}> ${esc(name)}</label>`;
+  const kept = remembered.length ? `<p class="muted">${esc(fill(T.tvRemembered, { names: remembered.join(", ") }))}</p>` : "";
+  return `<details class="tv-choice" id="tvAvoid"${remembered.length ? " open" : ""}><summary class="muted">${esc(T.tvAvoid)}</summary><p class="muted">${esc(T.tvAvoidNote)}</p>${kept}${people.map(box).join("")}</details>`;
 }
 function tvAvoided() {
   return $$("[data-avoid]").filter((box) => box.checked).map((box) => box.dataset.avoid);

@@ -123,8 +123,10 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
   fichiers affichés, puis **Choisir les N fichiers trouvés** dans la barre prend tous les fichiers
-  que la recherche trouve, pas seulement les 240 affichés ; **🔀 Inverser la sélection** (ou I)
-  choisit les autres.
+  que la recherche trouve, pas seulement les 240 affichés (un message le dit dès que les 240
+  affichés sont choisis, avec le même bouton) ; **🔀 Inverser la sélection** (ou I) choisit les
+  autres. Chaque bouton agit sur ce qui est choisi : les 240, ou les N après *Choisir les N*.
+  ▶ Diaporama sans rien de choisi montre tous les fichiers trouvés, et son menu le dit.
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
   vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
   le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui

@@ -46,15 +46,8 @@
 {% set keys_safe = _("Ticking deletes nothing: only the red button does, after a question, each file copied again and compared first. Every tick is saved at once in %(place)s.", place=place) %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
-  /* One group per folder of the phone, each its own grid of tiles (0312). */
-  main#grid { display: block; }
-  .folder { margin-bottom: 18px; scroll-margin-top: 110px; }
-  .folderBar { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin-bottom: 8px; }
-  .folderBar h2 { margin: 0; font-size: 1rem; }
-  .folderBar input { width: 20px; height: 20px; margin: 0; accent-color: var(--bad); cursor: pointer; }
-  .fold { padding: 0 6px; }
-  .folder.folded .tiles { display: none; }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(170px * var(--tile-scale))), 1fr)); gap: 10px; }
+{% include "tile_groups.css.j2" %}
+  .folderBar input { accent-color: var(--bad); }
   .file .empty { font-size: 2rem; }
   /* Ticked: leaves the phone once Delete is pressed. */
   .file:has(.badge) { border-style: dashed; border-color: var(--bad); }

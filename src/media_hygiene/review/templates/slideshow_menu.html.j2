@@ -7,7 +7,8 @@
    own *Show on the TV* buttons. Its script: pick_slideshow.js.j2. #}
 <details id="showBar" class="barPanel closesOnChoice" hidden
          data-paired="{{ tv_paired_path | default('') }}"
-         data-one="{{ ngettext('{n} photo', '{n} photos', 1) }}" data-many="{{ ngettext('{n} photo', '{n} photos', 2) }}">
+         data-one="{{ ngettext('{n} photo', '{n} photos', 1) }}" data-many="{{ ngettext('{n} photo', '{n} photos', 2) }}"
+         data-every="{{ _(' (every file found)') }}">
   <summary id="showOpen" class="plain" title="{{ _('Show the files picked as a slideshow, on this PC or on the TV; nothing picked: every file of the page') }}" aria-label="{{ _('Slideshow') }}">▶ <span class="showWord">{{ _("Slideshow") }}</span> ▾</summary>
   <div class="panelBody">
   <span class="panelRow" id="showTargets" role="menu">
@@ -18,6 +19,7 @@
             data-sent="{{ _('Sent to the TV: its remote opens.') }}"
             data-sending="{{ _('Starting the show on the TV…') }}">📺 {{ _("On the TV") }} · <span class="showCount"></span></button>
   </span>
+  <p id="showNone" class="muted" hidden>{{ _("Nothing picked: every file found") }}</p>
   <p id="showHow" hidden>{{ _("No TV paired:") }} {% if header is defined and header.slideshow %}<a href="{{ header.slideshow }}" target="_blank" rel="noopener">{{ _("how") }}</a>{% else %}{{ _("see the slideshow chapter.") }}{% endif %}</p>
   </div>
 </details>

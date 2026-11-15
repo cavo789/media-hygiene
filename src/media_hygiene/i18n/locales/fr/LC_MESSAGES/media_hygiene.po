@@ -58,6 +58,9 @@ msgstr "  … et {count} de plus."
 msgid "  … and {count} more: the HTML report lists them all."
 msgstr "  … et {count} de plus."
 
+msgid " (every file found)"
+msgstr " (tous les fichiers trouvés)"
+
 #, python-brace-format
 msgid " {count} other file is one you set aside or deleted before: not proposed."
 msgid_plural ""
@@ -2394,11 +2397,12 @@ msgstr ""
 
 msgid ""
 "Click the photo for full screen. Keys: ← → previous and next, Space pause"
-" and play, Esc leaves full screen, S stops the show."
+" and play, Esc leaves full screen, S stops the show, P avoids some "
+"people."
 msgstr ""
 "Cliquez la photo pour le plein écran. Touches : ← → précédente et "
 "suivante, Espace pause et lecture, Échap quitte le plein écran, S arrête "
-"le diaporama."
+"le diaporama, P évite certaines personnes."
 
 #, python-brace-format
 msgid ""
@@ -5175,10 +5179,17 @@ msgstr "Combien de rapports garder ?"
 
 msgid ""
 "How many seconds each photo stays while the slideshow plays (2 to 600); "
-"the phone changes it for the evening."
+"the phone changes it for the evening. avoid = [\"Antoine\"] (names of "
+"[[people.person]]): the people set out of every show, written by the PC's"
+" remote when you tick or untick someone in Avoid some people; the phone "
+"ticks for one show only."
 msgstr ""
 "Combien de secondes chaque photo reste affichée pendant le diaporama (2 à"
-" 600) ; le téléphone le change pour la soirée."
+" 600) ; le téléphone le change pour la soirée. avoid = [\"Antoine\"] "
+"(noms de [[people.person]]) : les personnes écartées de tous les "
+"diaporamas, écrites par la télécommande du PC quand vous cochez ou "
+"décochez quelqu’un dans Éviter certaines personnes ; le téléphone coche "
+"pour un seul diaporama."
 
 msgid "How much to log."
 msgstr "Niveau de détail des journaux."
@@ -7545,6 +7556,9 @@ msgstr ""
 "Personne ne s'appelle encore {names} : nommez d'abord son groupe sur la "
 "page de 'people'."
 
+msgid "Nobody is remembered for every show."
+msgstr "Personne n’est retenu pour tous les diaporamas."
+
 msgid "Nobody was given this face yet: click it to name it."
 msgstr "Ce visage n'est encore à personne : cliquez dessus pour le nommer."
 
@@ -7946,6 +7960,9 @@ msgstr "Rien sur la télé : chaque photo est retirée du diaporama."
 msgid "Nothing on the phone that the PC holds: nothing to free."
 msgstr "Rien sur le téléphone que le PC détienne : rien à libérer."
 
+msgid "Nothing picked: every file found"
+msgstr "Rien de choisi : tous les fichiers trouvés"
+
 msgid ""
 "Nothing runs after the import ([imports] then is empty): mh audit adds "
 "the new files to your library."
@@ -8244,6 +8261,13 @@ msgid "On the phone, everything is read-only: albums change on the PC."
 msgstr ""
 "Sur le téléphone, tout est en lecture seule : les albums changent sur le "
 "PC."
+
+msgid ""
+"On the phone, for this show only: the people remembered are changed on "
+"the PC."
+msgstr ""
+"Sur le téléphone, pour ce diaporama seulement : les personnes retenues se"
+" changent sur le PC."
 
 msgid "On this PC"
 msgstr "Sur ce PC"
@@ -8797,6 +8821,9 @@ msgstr ""
 "Autres téléphones (Pixel…) : Paramètres > Sécurité > Autres paramètres > "
 "Chiffrement et identifiants > Installer un certificat > Certificat CA > "
 "Installer quand même."
+
+msgid "Other photos"
+msgstr "Autres photos"
 
 msgid "Our photos"
 msgstr "Nos photos"
@@ -9724,6 +9751,14 @@ msgstr "Rechargez la page d'accueil : sa confirmation les liste à nouveau."
 
 msgid "Remember as a rule"
 msgstr "Retenir comme règle"
+
+#, python-brace-format
+msgid "Remembered for every show: {names}"
+msgstr "Retenus pour tous les diaporamas : {names}"
+
+#, python-brace-format
+msgid "Remembered for every show: {names}."
+msgstr "Retenus pour tous les diaporamas : {names}."
 
 msgid "Remove"
 msgstr "Supprimer"
@@ -11027,9 +11062,6 @@ msgstr ""
 msgid "Show"
 msgstr "Afficher"
 
-msgid "Show again"
-msgstr "Remontrer"
-
 msgid "Show an album on the TV"
 msgstr "Montrer un album sur la télé"
 
@@ -11057,6 +11089,9 @@ msgstr "Affiche chaque réglage, son origine, et les points de montage."
 
 msgid "Show it"
 msgstr "La voir"
+
+msgid "Show it again"
+msgstr "La montrer à nouveau"
 
 msgid "Show it on the TV now? (y/N)"
 msgstr "Le montrer sur la télé maintenant ? (o/N)"
@@ -11118,6 +11153,9 @@ msgstr "Affiche la version et quitte."
 
 msgid "Show this album on the TV"
 msgstr "Montrer cet album sur la télé"
+
+msgid "Show this event"
+msgstr "Montrer cet événement"
 
 msgid "Show this face for this person again"
 msgstr "Proposer de nouveau ce visage pour cette personne"
@@ -11406,6 +11444,9 @@ msgstr "Étape {stage} du cycle"
 
 msgid "Start"
 msgstr "Lancer"
+
+msgid "Start (Enter)"
+msgstr "Démarrer (Entrée)"
 
 msgid "Start fresh: carry no edit of a previous workbook over."
 msgstr ""
@@ -12898,6 +12939,9 @@ msgstr ""
 msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr "Le mot de passe de {share} est gardé : mh folders remove l'oublie."
 
+msgid "The people avoided could not be saved in config.toml."
+msgstr "Les personnes évitées n’ont pas pu être enregistrées dans config.toml."
+
 msgid "The people could not be avoided: try again."
 msgstr "Ces personnes n'ont pas pu être évitées : réessayez."
 
@@ -13720,16 +13764,30 @@ msgstr ""
 "mettre de côté."
 
 msgid ""
-"Their photos are set out of this show, greyed below; nothing is saved, "
-"the TV is told nothing."
+"Their photos are set out of this show, in the group “Will not be shown” "
+"below; the TV is told nothing. Ticked on the PC, they are remembered for "
+"every show (config.toml) until unticked."
 msgstr ""
-"Leurs photos sont retirées de ce diaporama, grisées ci-dessous ; rien "
-"n'est enregistré, la télé n'en sait rien."
+"Leurs photos sont écartées de ce diaporama, dans le groupe « Ne seront "
+"pas montrées » ci-dessous ; la TV n’en sait rien. Cochées sur le PC, ces "
+"personnes sont retenues pour tous les diaporamas (config.toml) jusqu’à ce"
+" que vous les décochiez."
 
-msgid "Their photos stay off the TV for this show only; nothing is kept."
+msgid ""
+"Their photos are set out of this show; those ticked are remembered for "
+"every show (config.toml) until unticked."
 msgstr ""
-"Leurs photos restent hors de la télé pour ce diaporama seulement ; rien "
-"n'est gardé."
+"Leurs photos sont écartées de ce diaporama ; les personnes cochées sont "
+"retenues pour tous les diaporamas (config.toml) jusqu’à ce que vous les "
+"décochiez."
+
+msgid ""
+"Their photos stay off the TV; a change here is for this show only, the "
+"people remembered are changed on the PC's remote."
+msgstr ""
+"Leurs photos restent hors de la TV ; un changement ici vaut pour ce "
+"diaporama seulement, les personnes retenues se changent sur la "
+"télécommande du PC."
 
 msgid "Their size, their quality, and whether they keep the GPS position."
 msgstr "Leur taille, leur qualité, et si elles gardent la position GPS."
@@ -15110,6 +15168,9 @@ msgstr "Sera déplacé en quarantaine"
 msgid "Will be moved to the quarantine from"
 msgstr "Seront déplacées en quarantaine depuis"
 
+msgid "Will not be shown"
+msgstr "Ne seront pas montrées"
+
 msgid "Windows"
 msgstr "Windows"
 
@@ -16021,6 +16082,9 @@ msgstr "par dossier"
 
 msgid "by folder pair"
 msgstr "par paire de dossiers"
+
+msgid "by hand"
+msgstr "à la main"
 
 msgid "cache"
 msgstr "cache"
@@ -17575,6 +17639,9 @@ msgstr "fr/reference-commands/"
 msgid "reference-safety/"
 msgstr "fr/reference-safety/"
 
+msgid "remembered, on none of these photos"
+msgstr "retenu, sur aucune de ces photos"
+
 msgid "remove folder forget"
 msgstr "retirer dossier oublier"
 
@@ -17705,6 +17772,9 @@ msgstr "netteté"
 
 msgid "shortcut desktop icon start"
 msgstr "raccourci bureau icône démarrer"
+
+msgid "show that photo on the TV"
+msgstr "montrer cette photo sur la télé"
 
 msgid "sidecar (.xmp)"
 msgstr "fichier compagnon (.xmp)"
@@ -21305,6 +21375,10 @@ msgstr "{n} photos de ces jours restent avec la règle '{rule}'."
 #, python-brace-format
 msgid "{n} photos set out for them."
 msgstr "{n} photos retirées du diaporama."
+
+#, python-brace-format
+msgid "{n} picked of {total} found (only {n} are shown)."
+msgstr "{n} choisis sur {total} trouvés (seuls {n} sont affichés)."
 
 #, python-brace-format
 msgid "{n} place named: the slideshow shows it on the TV."

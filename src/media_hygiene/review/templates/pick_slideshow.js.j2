@@ -6,10 +6,6 @@ if ($("showBar")) {
   menu.hidden = !["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname);
   const lastTarget = () => { try { return window.localStorage.getItem(LAST_TARGET); } catch { return null; } };
   const remember = (target) => { try { window.localStorage.setItem(LAST_TARGET, target); } catch { /* private mode */ } };
-  const shown = () => {
-    if (picked.size > 0 || everything) return everything ? total : picked.size;
-    return Math.max(total || 0, files.length);
-  };
   const tvPaired = () => (menu.dataset.paired
     ? fetch(menu.dataset.paired, { cache: "no-store" }).then((answer) => (answer.ok ? answer.json() : {})).then((said) => Boolean(said.paired)).catch(() => false)
     : Promise.resolve(false));
@@ -17,8 +13,10 @@ if ($("showBar")) {
     if (!menu.open) return;
     const first = lastTarget() === "tv" ? $("showTv") : $("showHere");
     $("showTargets").prepend(first);
-    const n = shown();
-    for (const count of menu.querySelectorAll(".showCount")) count.textContent = fill(n === 1 ? menu.dataset.one : menu.dataset.many, { n: n });
+    const { count: n, all } = showing();  // pick_grid.js.j2: what the show takes (0833)
+    const said = fill(n === 1 ? menu.dataset.one : menu.dataset.many, { n: n }) + (all ? menu.dataset.every : "");
+    for (const count of menu.querySelectorAll(".showCount")) count.textContent = said;
+    $("showNone").hidden = picked.size > 0 || everything;  // taught once: nothing picked = every file
     $("showHere").disabled = n === 0;
     $("showTv").disabled = true;
     tvPaired().then((yes) => { $("showTv").disabled = !yes || n === 0; $("showHow").hidden = yes; });

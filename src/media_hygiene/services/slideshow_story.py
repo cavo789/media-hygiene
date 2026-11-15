@@ -72,6 +72,7 @@ def told_slides(
             event_period(slide.day for slide in slides),
             places.named(located),
             event_map(located, places.towns),
+            str(folder),
         )
         told.extend(
             replace(

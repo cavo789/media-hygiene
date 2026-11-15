@@ -21,7 +21,7 @@ from media_hygiene.review.presence import PRESENCE_PATH
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.slideshow_map import map_tiles
 from media_hygiene.services.slideshow_people import avoid_desk
-from media_hygiene.slideshow.app import ShowPages, SlideshowApp
+from media_hygiene.slideshow.app import SlideshowApp
 from media_hygiene.slideshow.avoid_desk import AVOID_PATH
 from media_hygiene.slideshow.chapters import BANNER_SECONDS, TITLE_SECONDS
 from media_hygiene.slideshow.pictures import ShowPictures
@@ -33,6 +33,7 @@ from media_hygiene.slideshow.screen_api import (
     WAIT_PREFIX,
 )
 from media_hygiene.slideshow.screen_jpeg import ScreenJob
+from media_hygiene.slideshow.show_pages import ShowPages
 from media_hygiene.slideshow.tv_door import SCREEN_PATH
 
 if TYPE_CHECKING:
@@ -137,4 +138,5 @@ def show_app(runtime: Runtime, desk: Desk, serving: Serving) -> SlideshowApp:
         serving.executor,
     )
     avoid = avoid_desk(runtime, desk, serving.search)
+    avoid.start(desk)  # the people remembered (0834): set out from the first photo
     return SlideshowApp(desk, serving.door, pages, pictures, avoid)

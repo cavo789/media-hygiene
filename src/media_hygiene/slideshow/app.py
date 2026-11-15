@@ -12,7 +12,8 @@
 - `GET /tv/<key>.jpg` (the TV's picture), `/thumb/<key>.jpg` and `/film/<key>.<ext>` (a
   video, 0292): the show's files only.
 
-Nothing changes a photo: no route writes anything but the show held in memory.
+Nothing changes a photo; only the PC's `/api/avoid` writes (`[slideshow] avoid`).
+A phone asks who is on a photo (`/person/api/photo`, 0830), its page marked read-only.
 """
 
 from __future__ import annotations
@@ -22,16 +23,16 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
-from media_hygiene.i18n.live import Page, page_of
-from media_hygiene.review.http import NO_REFERRER, ContentType, Response
+from media_hygiene.i18n.live import page_of
+from media_hygiene.person.routes import PHOTO_PATH
+from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan import PAIR_PREFIX
 from media_hygiene.review.lan_card import lan_response
-from media_hygiene.review.lan_paths import LAN_PATH
+from media_hygiene.review.lan_paths import LAN_PATH, phone_marked
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_settings import SETTING_PATHS, setting_response
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page
-from media_hygiene.review.videos import NEAR_POLICY
 from media_hygiene.slideshow.avoid_desk import AVOID_PATH, NO_AVOID, AvoidDesk
 from media_hygiene.slideshow.door import Visitor, screen_token
 from media_hygiene.slideshow.pictures import slides_view
@@ -41,21 +42,13 @@ from media_hygiene.slideshow.tv_door import SCREEN_PATH, screen_page
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
+    from media_hygiene.review.shared_routes import Answering
     from media_hygiene.slideshow.desk import Desk
     from media_hygiene.slideshow.door import Door
     from media_hygiene.slideshow.pictures import ShowPictures
+    from media_hygiene.slideshow.show_pages import ShowPages
 
 _GET, _POST = "GET", "POST"
-
-
-@dataclass(frozen=True, slots=True)
-class ShowPages:
-    """The two pages: the remote (phone, PC) and the screen (TV)."""
-
-    remote: Page
-    screen: Page
-    policy: str = NEAR_POLICY  # the remote's: allows `[places] tiles` when set (0449)
-    referrer: str = NO_REFERRER
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,6 +60,7 @@ class SlideshowApp:
     pages: ShowPages
     pictures: ShowPictures
     avoid: AvoidDesk = NO_AVOID
+    person: Answering | None = None  # a phone's `/person/api/photo` (0830)
 
     async def handle(self, request: Request) -> Response:
         """Route a request by who sent it.
@@ -108,8 +102,11 @@ class SlideshowApp:
         Returns:
             The response.
         """
-        if visitor is Visitor.PHONE:
-            return await asset_or_page(self.door.local(request), self._remote)
+        if visitor is Visitor.PHONE:  # read-only: who is on a photo, never named
+            passed = self.door.local(request)
+            if self.person is not None and request.path == PHOTO_PATH:
+                return await self.person(passed)
+            return phone_marked(await asset_or_page(passed, self._remote))
         if visitor is Visitor.PC:
             local = request.path == LAN_PATH
             return self._lan() if local else await self._remote(request)
@@ -169,7 +166,8 @@ class SlideshowApp:
                 referrer=pages.referrer,
             )
         if path in {SLIDES_PATH, AVOID_PATH}:  # AVOID_PATH: people kept off (0825)
-            view = slides_view(self.desk) if path == SLIDES_PATH else self.avoid.view()
+            avoid = path == AVOID_PATH
+            view = self.avoid.view(request) if avoid else slides_view(self.desk)
             return json_response(HTTPStatus.OK, view)
         if path.startswith(f"{SHOW_PATH}/"):
             since = path.removeprefix(f"{SHOW_PATH}/")
@@ -195,5 +193,5 @@ class SlideshowApp:
         if request.path == SCREENS_PATH:
             return pair_screen(self.desk, request.body)
         if request.path == AVOID_PATH:
-            return self.avoid.ask(self.desk, request.body)
+            return self.avoid.ask(self.desk, request)
         return Response(HTTPStatus.NOT_FOUND)
