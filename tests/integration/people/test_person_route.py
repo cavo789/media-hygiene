@@ -159,7 +159,7 @@ def test_a_path_that_is_not_a_photo_here_is_said_in_one_sentence(
 def test_a_second_look_finds_a_face_on_a_photo_lying_on_its_side(
     person: PersonApp, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """No face upright; turned by 90°, one: shown with its picture, never stored."""
+    """No face upright; turned by 90°, one: kept in the index, then named like any."""
     lying = locations.data_dir / "c" / "Holidays" / "IMG_0.png"
     found = photo(person, "C:\\Family\\IMG_9.png")  # nobody on it, upright
     assert (found["faces"], found["scanned"]) == ([], True)
@@ -178,6 +178,11 @@ def test_a_second_look_finds_a_face_on_a_photo_lying_on_its_side(
     liked = answer(person, "POST /person/api/like", {"key": faces[0]["key"]})
     assert names(liked["files"])[0] == "IMG_9.png"
     assert len(names(liked["files"])) == 5  # its photo, then person 0's four
+    again = photo(person, "C:\\Family\\IMG_9.png")  # read back from the index
+    assert len(again["faces"]) == 1  # type: ignore[arg-type]
+    twice = answer(person, "POST /person/api/look", {"path": "C:\\Family\\IMG_9.png"})
+    assert len(twice["faces"]) == 1  # type: ignore[arg-type]  # nothing new: not doubled
+    assert "No new face" in str(twice["said"])
 
 
 def test_the_photos_set_aside_are_saved_read_back_and_the_person_remembered(

@@ -301,9 +301,12 @@ sans `config.toml` à vous, les noms seulement.
 
 **Pas de visage sur la photo ?** Un visage penché, couché ou flou échappe souvent à l'audit, qui
 regarde chaque photo droite. **Regarder encore, plus lentement** regarde cette seule photo
-tournée (jusqu'à 90° de chaque côté) et moins exigeante ; ce qu'elle trouve est montré pour
-choisir, jamais enregistré. Mesuré sur 9 vraies photos d'une même personne manquées par
-l'audit : 6 retrouvées, 1 tout juste à la limite, 2 non (très floues). Toujours rien, alors que
+tournée (jusqu'à 90° de chaque côté) et moins exigeante (jusqu'à une certitude de 0,4, contre
+0,6 pour l'audit) : les visages trouvés que la photo n'avait pas sont gardés dans l'index, une
+fois chacun, et nommés d'après les personnes que vous connaissez, comme les autres : confirmez
+ou corrigez. Sur une fête de famille (215 vraies photos), 3 à 5 visages sur 6 trouvés sous la
+certitude de l'audit sont bien des personnes : les autres, un motif ou un reflet, restent
+simplement sans nom. Toujours rien, alors que
 vous voyez le visage ? **✏ Tracer un visage manqué par l'outil** montre la photo : tracez un
 cadre autour du visage. L'outil le cherche dans ce cadre, agrandi, ou prend le cadre lui-même ;
 le visage est alors gardé dans l'index comme un visage trouvé (marqué *tracé*, un nouvel audit

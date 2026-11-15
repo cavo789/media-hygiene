@@ -102,8 +102,8 @@ async function lookAgain() {
   const result = await post(ROUTES.look, { path: photo });
   $("lookAgain").disabled = false;
   if (!result) return;
+  if (result.photo) await find(photo); // the new faces are kept: shown, named (0841)
   sideSay(result.said || "");
-  showFaces(result.faces);
 }
 
 // The faces again, their names as the file says now (after a save).

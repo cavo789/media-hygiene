@@ -7107,11 +7107,6 @@ msgstr "Plus aucun événement à trier après celui-ci."
 msgid "No event matches these filters."
 msgstr "Aucun événement ne correspond à ces filtres."
 
-msgid "No face found, even turned: set this photo aside on its own."
-msgstr ""
-"Aucun visage trouvé, même en tournant la photo : mettez-la de côté toute "
-"seule."
-
 msgid "No face looked for: 'people', or the next 'audit --people', does it later."
 msgstr ""
 "Aucun visage cherché : 'people', ou le prochain 'audit --people', s'en "
@@ -7292,6 +7287,11 @@ msgstr "Plus de nom : ressemblance {score}, sous {threshold}."
 
 msgid "No near duplicates: nothing to review."
 msgstr "Aucun quasi-doublon : rien à passer en revue."
+
+msgid "No new face found, even turned: draw the one missed."
+msgstr ""
+"Aucun nouveau visage trouvé, même en tournant la photo : tracez celui qui "
+"manque."
 
 #, python-brace-format
 msgid ""

@@ -276,9 +276,11 @@ without a `config.toml` of yours, the names only.
 
 **No face on the photo?** A face tilted, lying on its side or blurred is often missed by the
 audit, which looks at each photo upright. **Look again, slower** looks at that one photo turned
-(up to 90° each way) and less strictly; what it finds is shown to choose from, never stored.
-Measured on 9 real photos of one person missed by the audit: 6 found, 1 just at the limit, 2
-not (very blurred). Still nothing, though you see the face? **✏ Draw a face the tool missed**
+(up to 90° each way) and less strictly (down to a detector score of 0.4, the audit's being
+0.6): the faces it finds that the photo did not have are kept in the index, each once, and
+named after the people you know like the others: confirm or correct them. On a family event
+(215 real photos), 3 to 5 faces in 6 found below the audit's score are still people: the
+others, a pattern or a reflection, you simply leave without a name. Still nothing, though you see the face? **✏ Draw a face the tool missed**
 shows the photo: drag a box around the face. The tool looks for it in that box, enlarged, or
 takes the box itself; the face is then kept in the index like a face found (flagged *drawn*, so
 a new audit keeps it), named and searched like the others. A box drawn on a face the photo

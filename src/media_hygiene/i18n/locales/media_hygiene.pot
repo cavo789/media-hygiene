@@ -5913,9 +5913,6 @@ msgstr ""
 msgid "No event matches these filters."
 msgstr ""
 
-msgid "No face found, even turned: set this photo aside on its own."
-msgstr ""
-
 msgid "No face looked for: 'people', or the next 'audit --people', does it later."
 msgstr ""
 
@@ -6071,6 +6068,9 @@ msgid "No name any more: resemblance {score}, below {threshold}."
 msgstr ""
 
 msgid "No near duplicates: nothing to review."
+msgstr ""
+
+msgid "No new face found, even turned: draw the one missed."
 msgstr ""
 
 #, python-brace-format
