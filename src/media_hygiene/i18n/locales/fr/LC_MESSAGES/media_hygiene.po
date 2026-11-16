@@ -22368,6 +22368,10 @@ msgid "✕ hides a tile, ← and → move it; saved at once."
 msgstr "✕ masque une tuile, ← et → la déplacent ; enregistré aussitôt."
 
 #, python-brace-format
+msgid "✗ It is not {name}"
+msgstr "✗ Ce n'est pas {name}"
+
+#, python-brace-format
 msgid "✨ All done: {count} new photo or video in your library"
 msgid_plural "✨ All done: {count} new photos and videos in your library"
 msgstr[0] "✨ Tout est fait : {count} nouvelle photo ou vidéo dans votre photothèque"

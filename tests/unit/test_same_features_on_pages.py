@@ -62,6 +62,8 @@ _VIEWER_PARTS: Final = (
     'id="viewerWhoName"',
     "function whoNamer(",
     "function showWho(",
+    "function whoPost(",  # ✗ It is not …: a face left with no name (2026-11-16)
+    "data-unsure=",
 )
 
 

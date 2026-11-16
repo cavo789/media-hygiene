@@ -163,6 +163,8 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   / **Afficher les noms** les cache ou les montre (retenu). Survoler un visage de la ligne sous la photo
   l'entoure sur la photo ; un clic sur un visage, sous la photo ou sur elle, le nomme sur place (sur un
   téléphone : les noms seulement).
+  Un visage qui a un nom, deviné ou confirmé, propose **✓ C'est bien …** et **✗ Ce n'est pas …** : le
+  second laisse le visage sans nom (? sans nom), sans en taper un autre.
 
 - **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
   période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date. *Du*

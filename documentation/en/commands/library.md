@@ -151,6 +151,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   photo with its name under it (✓ confirmed, ≈ guessed, ? not named); **Hide names** / **Show names**
   turns the names off or on (remembered). Hovering a face of the line under the photo outlines it on
   the photo; a click on a face, under the photo or on it, names it right there (on a phone: names only).
+  A face with a name, guessed or confirmed, offers **✓ It is …** and **✗ It is not …**: the second
+  leaves the face with no name (? not named), without typing another one.
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,

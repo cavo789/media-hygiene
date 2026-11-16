@@ -109,6 +109,12 @@ function whoNamer(face, at, people) {
   others.target = "_blank";
   others.rel = "noopener";
   const parts = [element("span", "", said), box, button, others];
+  if (source) { // "✗ It is not Chloé": the face left with no name, nothing typed
+    const notThem = element("button", "", fill(who.dataset.unsure, { name: source }));
+    notThem.type = "button";
+    notThem.addEventListener("click", () => whoPost(file, { action: "unname", name: source, faces: [Number(face.key)], source: "" }));
+    parts.unshift(notThem);
+  }
   if (source && face.named.how !== "confirmed") { // ≈ guessed: "✓ It is Chloé", one click
     const sure = element("button", "", fill(who.dataset.sure, { name: source }));
     sure.type = "button";
@@ -123,15 +129,20 @@ function whoNamer(face, at, people) {
 
 // Saves names ({name, keys, source} each, as /person does: `move`), says the line read back
 // from config.toml, then the faces as the file says now.
-async function whoSave(file, changes) {
+function whoSave(file, changes) {
+  // One request, one write, whatever the number of names (`also`: 4 s each before).
+  const [first, ...more] = changes;
+  const also = more.map((change) => ({ name: change.name, faces: change.keys }));
+  return whoPost(file, { action: "move", name: first.name, faces: first.keys, source: first.source, also: also });
+}
+
+// Sends a naming (`move`) or *✗ It is not …* (`unname`: no name left guessed, as the cross
+// of /person), says the line read back, then the faces as the file says now.
+async function whoPost(file, body) {
   const who = $("viewerWho");
   const line = $("viewerSaid");
   line.className = "";
   line.textContent = who.dataset.saving;
-  // One request, one write, whatever the number of names (`also`: 4 s each before).
-  const [first, ...more] = changes;
-  const also = more.map((change) => ({ name: change.name, faces: change.keys }));
-  const body = { action: "move", name: first.name, faces: first.keys, source: first.source, also: also };
   const saved = await whoAsk("/person/api/names", body);
   line.className = saved && !saved.error ? "" : "error";
   line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
