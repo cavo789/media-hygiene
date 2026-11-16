@@ -8,11 +8,9 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MountError
-from media_hygiene.review.apply_relay import home_relay
 from media_hygiene.review.home_paths import HOME_PATHS
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
-from media_hygiene.review.slow_log import Laps
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
@@ -20,13 +18,17 @@ from media_hygiene.search.former_page import moved_page
 from media_hygiene.services.console_here import ReadOnlyHere
 from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
+from media_hygiene.services.library_people import (
+    built_library,
+    faces_only,
+    follow_faces,
+)
 from media_hygiene.services.pages_here import pages_here
 from media_hygiene.services.people_here import people_door
 from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
 from media_hygiene.services.review_here import ReviewHere
 from media_hygiene.services.review_kinds import REVIEWS
 from media_hygiene.services.search import open_search
-from media_hygiene.services.search_app import SearchBuild, search_app
 from media_hygiene.services.shrink_here import ShrinkHere
 from media_hygiene.services.slideshow_here import SLIDESHOW_PREFIX, SlideshowHere
 from media_hygiene.services.slideshow_selection import TvSlot
@@ -81,24 +83,19 @@ class SearchHere:
             It; None while the cache holds no index (an audit makes one).
         """
         runtime = self._fresh.runtime()
-        if self._app is not None and runtime is self._built_for:
+        if self._app and self._built_for and faces_only(self._built_for, runtime):
+            if runtime is not self._built_for:
+                follow_faces(self._app, runtime)  # faces named: no build again
+                self._built_for = runtime
             return self._app
-        laps = Laps("library built" + (" again" if self._app else ""))
         try:
             search = self._stack.enter_context(open_search(runtime, words=False))
         except MountError as error:
             self.refused = error
             return None
-        self.refused, s = None, self._server
-        laps.lap("index")
-        relay = home_relay(runtime.locations.reports_dir)
-        build = SearchBuild(
-            SEARCH_PAGE_PATH, s.apply, s.ending, s.executor, relay, s.tv
-        )
-        self._app = search_app(runtime, search, build)
+        self.refused = None
+        self._app = built_library(runtime, search, self._server)
         self._built_for = runtime
-        laps.lap("desks")
-        laps.said()
         return self._app
 
     async def answer(self, request: Request, home: Handling) -> Response:
