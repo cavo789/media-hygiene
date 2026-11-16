@@ -28,7 +28,8 @@ from media_hygiene.config.people_files import (
 from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.config.stamped_text import stamped_text
 from media_hygiene.file_history import replace_text
-from media_hygiene.people.person_files import Links, remove_unlinked, write_files
+from media_hygiene.people.person_files import Links, write_files
+from media_hygiene.people.unlinked_files import remove_unlinked
 
 if TYPE_CHECKING:
     from collections.abc import Mapping

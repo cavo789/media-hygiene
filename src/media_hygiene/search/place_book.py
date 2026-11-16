@@ -11,13 +11,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.hand_placed import Candidate, hand_placed
 from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.config.place_files import FOLDER
 from media_hygiene.places.config_file import read_places
 from media_hygiene.places.config_photos import read_place_photos
 from media_hygiene.review.slow_log import Laps
 from media_hygiene.search.place_boxes import near_a_zone
+from media_hygiene.search.placed_where import placed_where
 
 if TYPE_CHECKING:
     import sqlite3
@@ -114,8 +114,7 @@ class PlaceBook:
         laps.lap("settings")
         if given:
             rows = self.connection.execute(_FILES)
-            candidates = (Candidate(Path(p), size, sha) for p, size, sha in rows)
-            for path, name in hand_placed(candidates, given).items():
+            for path, name in placed_where(rows, given).items():
                 by_hand[name.casefold()].add(path)
         laps.lap(f"{len(given)} given by hand")
         hand = {path for paths in by_hand.values() for path in paths}
