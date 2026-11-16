@@ -114,10 +114,11 @@
       <input id="path" type="text" placeholder="C:\Photos\…\IMG_1234.jpg" autocomplete="off" spellcheck="false">
       <button type="submit">{{ _("Find their photos") }}</button>
     </form>
-    <p id="sideSaid">{{ _("Their photos are found by their face; you check them before setting them aside.") }}</p>
     <div id="faces"></div>
     <button id="confirmGuesses" type="button" hidden></button>
     <div id="namer"></div>
+    {# Below the faces: its text changes at each save, the faces never move under the pointer. #}
+    <p id="sideSaid">{{ _("Their photos are found by their face; you check them before setting them aside.") }}</p>
     <button id="scanNow" type="button" hidden>{{ _("Find its faces now") }}</button>
     <button id="lookAgain" class="plain" type="button" hidden>{{ _("Look again, slower: the photo turned, less strict") }}</button>
     <button id="drawOpen" class="plain" type="button" hidden>{{ _("✏ Draw a face the tool missed") }}</button>

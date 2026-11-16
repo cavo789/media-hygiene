@@ -19,11 +19,12 @@ from typing import TYPE_CHECKING, Final, Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.people.changes import Naming, give_name, put_back, reject_faces
+from media_hygiene.people.changes import Naming, give_name
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
+from media_hygiene.people.unnamed import left_unnamed, named_again
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
@@ -129,7 +130,7 @@ class PeopleDesk:
             if not ids:
                 raise ValueError(_("nothing to put back"))
             naming = Naming(asked.name, ids)
-            save_people(config, put_back(written, naming, confirmed))
+            save_people(config, named_again(written, naming, confirmed))
             named[asked.name] = tuple(dict.fromkeys((*named.get(asked.name, ()), *ids)))
         else:
             naming = Naming(asked.name, seen.ids(path, asked.name, asked.face))
@@ -139,7 +140,7 @@ class PeopleDesk:
                 confirmed = tuple(
                     k for k in naming.faces if _confirmed(written, naming, k)
                 )
-                save_people(config, reject_faces(written, naming))
+                save_people(config, left_unnamed(written, naming))
                 self.undo[asked.key, asked.name] = (naming.faces, confirmed)
                 left = tuple(k for k in named[asked.name] if k not in naming.faces)
                 named[asked.name] = left

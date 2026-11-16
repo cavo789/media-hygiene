@@ -13,10 +13,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
-from media_hygiene.people.changes import Naming, reject_faces
+from media_hygiene.people.changes import Naming
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.naming import How, id_of, name_all
+from media_hygiene.people.unnamed import left_unnamed
 from media_hygiene.review.slow_log import Laps
 
 if TYPE_CHECKING:
@@ -47,10 +48,7 @@ def without_guesses(
     named = name_all((face,), known)[0]
     if named.how not in _TAKEN_OFF or not named.name:
         return section, ()
-    key = id_of(face)
-    ruled = reject_faces(section, Naming(named.name, (key,)))
-    marked = (*ruled.unguessed, key) if key not in ruled.unguessed else ruled.unguessed
-    return ruled.model_copy(update={"unguessed": marked}), (named.name,)
+    return left_unnamed(section, Naming(named.name, (id_of(face),))), (named.name,)
 
 
 def unguessed_line(back: PeopleSettings, face: StoredFace, ruled: Sequence[str]) -> str:
