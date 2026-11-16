@@ -27,6 +27,7 @@ from media_hygiene.people.roster import Change
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
+from media_hygiene.review.slow_log import Laps
 from media_hygiene.search.people_seen import Seen
 from media_hygiene.search.people_words import words_of
 
@@ -117,9 +118,12 @@ class PeopleDesk:
             raise ValueError(
                 _("names are kept in config.toml: mount a folder of yours on /config")
             )
+        laps = Laps(f"people {asked.action} {asked.name}")
         seen = self.faces()
+        laps.lap("faces")
         named = seen.named.setdefault(path, {})
         written = follow_ids(read_people(config), seen.moves, seen.present())
+        laps.lap("read")
         if asked.action == "back":
             ids, confirmed = self.undo.pop((asked.key, asked.name), ((), ()))
             if not ids:
@@ -141,9 +145,13 @@ class PeopleDesk:
                 named[asked.name] = left
                 if not left:
                     named.pop(asked.name)
+        laps.lap("write")
         self.search.name_people(words_of(seen.named, self.place.settings))
+        laps.lap("search words")
         back = read_people(config)
         seen.renamed(back)
+        laps.lap("read back")
+        laps.said()
         if asked.action == "confirm":
             return proof_line(back, Change("name", naming))
         return rejected_line(back, naming, again=asked.action == "back")

@@ -12,6 +12,7 @@ from media_hygiene.review.apply_relay import home_relay
 from media_hygiene.review.home_paths import HOME_PATHS
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.slow_log import Laps
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
@@ -82,23 +83,22 @@ class SearchHere:
         runtime = self._fresh.runtime()
         if self._app is not None and runtime is self._built_for:
             return self._app
+        laps = Laps("library built" + (" again" if self._app else ""))
         try:
             search = self._stack.enter_context(open_search(runtime, words=False))
         except MountError as error:
             self.refused = error
             return None
-        self.refused = None
-        server = self._server
+        self.refused, s = None, self._server
+        laps.lap("index")
+        relay = home_relay(runtime.locations.reports_dir)
         build = SearchBuild(
-            SEARCH_PAGE_PATH,
-            server.apply,
-            server.ending,
-            server.executor,
-            home_relay(runtime.locations.reports_dir),
-            server.tv,
+            SEARCH_PAGE_PATH, s.apply, s.ending, s.executor, relay, s.tv
         )
         self._app = search_app(runtime, search, build)
         self._built_for = runtime
+        laps.lap("desks")
+        laps.said()
         return self._app
 
     async def answer(self, request: Request, home: Handling) -> Response:

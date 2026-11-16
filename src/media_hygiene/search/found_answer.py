@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any
 from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
+from media_hygiene.review.slow_log import Laps
 from media_hygiene.search.album_filter import aimed_query, album_paths, marked
 from media_hygiene.search.asked import read_asked
 from media_hygiene.search.date_desk import DATE_PATH
@@ -44,8 +45,10 @@ def found_answer(place: SearchPlace, coverage: CoverageKept, body: bytes) -> Res
     asked = read_asked(body)
     if isinstance(asked, Response):
         return asked
+    laps = Laps(f"search {asked.query()!r}")
     query = read_query(place.index, asked.query())
     query = place.chosen.narrow(query, asked.aside)
+    laps.lap("query")
     if asked.near:
         query = among(place.index, query, asked.near)  # 0554
     if asked.missing == "date" and place.dates is not None:
@@ -62,16 +65,20 @@ def found_answer(place: SearchPlace, coverage: CoverageKept, body: bytes) -> Res
         query = place.places.narrow(
             query, asked.place, unplaced=asked.missing == "place"
         )
+    laps.lap("filters")
+    hits = place.index.find(query, asked.shown)
+    laps.lap(f"find {asked.shown}")
     found = found_view(
-        with_facts(place.index, place.index.find(query, asked.shown)),
-        place.mapper,
-        place.chosen.paths(),
+        with_facts(place.index, hits), place.mapper, place.chosen.paths()
     )
+    laps.lap("tiles")
     if aimed is not None:
         found = marked(found, paths)
     unknown = search_note(asked.query(), query, place.people)
     note = {} if unknown is None else {"note": unknown}
     seen = {"coverage": coverage.of(place.index)}
+    laps.lap("coverage")
+    laps.said()
     return json_response(HTTPStatus.OK, {**found, **note, **seen})
 
 
