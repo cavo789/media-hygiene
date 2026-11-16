@@ -31,14 +31,14 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
     from pathlib import Path
 
-    from media_hygiene.search.fts import SearchIndex
+    from media_hygiene.search.picture_sources import Sources
 
 
 @dataclass(frozen=True, slots=True)
 class Pictures:
     """Renders the previews in the worker pool, kept in the cache folder."""
 
-    index: SearchIndex
+    index: Sources  # the page's index, or the library's own lookups
     previews: Path | None  # the cache folder of previews, if any
     executor: Executor
 

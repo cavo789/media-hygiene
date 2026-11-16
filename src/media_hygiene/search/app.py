@@ -32,6 +32,7 @@ from media_hygiene.search.people_why import (
     PEOPLE_WHY_PATH,
     crop_answer,
 )
+from media_hygiene.search.picture_sources import PictureSources
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.place_desk import PLACE_PATH
 from media_hygiene.search.post_now import answer_in_turn, in_turn
@@ -82,6 +83,11 @@ class SearchApp:
     pages: SearchPages
     executor: Executor
     coverage: CoverageKept = field(default_factory=CoverageKept)  # 0344
+    sources: PictureSources = field(init=False)  # the thumbnails' own connection
+
+    def __post_init__(self) -> None:
+        """Give the thumbnails their own lookups (`picture_sources`)."""
+        object.__setattr__(self, "sources", PictureSources(self.place.index))
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -178,7 +184,7 @@ class SearchApp:
             return events
         if path.startswith(FACE_CROP_PREFIX):
             return await crop_answer(self.place.names, path, self.executor)
-        pictures = Pictures(self.place.index, self.place.previews, self.executor)
+        pictures = Pictures(self.sources, self.place.previews, self.executor)
         if path.startswith(VIDEO_PREFIX):
             return await video_response(request, pictures.source)
         answer = await pictures.answer(path)
