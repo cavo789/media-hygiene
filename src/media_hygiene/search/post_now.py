@@ -45,6 +45,23 @@ async def answer_in_turn(
         return await asyncio.to_thread(answer_now, place, coverage, request)
 
 
+async def in_turn[T](place: SearchPlace, work: Callable[[], T]) -> T:
+    """Run work that reads the index's connection, in the same turn as the questions.
+
+    The connection is shared: a `GET` answered on the event loop while a question ran
+    in its thread failed (`create_function` beside an open statement, 2026-11-16).
+
+    Args:
+        place: What the library knows, its turn included.
+        work: The work.
+
+    Returns:
+        What it returned.
+    """
+    async with place.turn:
+        return await asyncio.to_thread(work)
+
+
 def answer_now(
     place: SearchPlace, coverage: CoverageKept, request: Request
 ) -> Response:

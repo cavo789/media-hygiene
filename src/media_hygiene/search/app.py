@@ -34,7 +34,7 @@ from media_hygiene.search.people_why import (
 )
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.place_desk import PLACE_PATH
-from media_hygiene.search.post_now import answer_in_turn
+from media_hygiene.search.post_now import answer_in_turn, in_turn
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
 from media_hygiene.search.sort_folder_desk import SORT_FOLDER_PATH
@@ -129,17 +129,19 @@ class SearchApp:
         Returns:
             The response.
         """
-        if (awaited := awaited_answer(self.place, request)) is not None:
-            return await awaited
-        if request.path == UNDO_PATH and self.place.undo is not None:  # 0601
-            return await undo_answer(self.place.undo, request.body)
-        if request.path in GO_PATHS | SORT_POSTS:  # a rule's GO, the Events (0438)
-            return await (
+        awaited = awaited_answer(self.place, request)
+        if awaited is None and request.path == UNDO_PATH and self.place.undo:  # 0601
+            awaited = undo_answer(self.place.undo, request.body)
+        if awaited is None and request.path in GO_PATHS | SORT_POSTS:  # GO, Events
+            awaited = (
                 sort_post(self.place.events, request)
                 if request.path in SORT_POSTS
                 else go_answer(self.place.rules, request.path, request.body)
             )
-        return await answer_in_turn(self.place, self.coverage, request)
+        if awaited is None:
+            return await answer_in_turn(self.place, self.coverage, request)
+        async with self.place.turn:  # the index's connection: never beside a search
+            return await awaited
 
     async def _get(self, request: Request) -> Response:
         """Serve a page, what is set aside, the tree, a picture or a video.
@@ -170,8 +172,8 @@ class SearchApp:
             **(self.place.sort_setup.gets() if self.place.sort_setup else {}),
         }
         if path in states:
-            return states[path]()
-        events = events_get(self.place.events, path)
+            return await in_turn(self.place, states[path])
+        events = await in_turn(self.place, partial(events_get, self.place.events, path))
         if events is not None:  # the Events view (0437, 0438)
             return events
         if path.startswith(FACE_CROP_PREFIX):
