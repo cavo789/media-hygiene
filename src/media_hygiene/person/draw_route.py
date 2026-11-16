@@ -158,7 +158,7 @@ def _kept(app: PersonApp, path: Path, found: Drawn) -> dict[str, object]:
         except sqlite3.Error:
             number = None
     if number is None:
-        said = _("This photo is not in the index yet: run 'audit --people' first.")
+        said = _("This photo cannot be read.")
         return {"faces": [], "said": said}
     index.refresh()
     shelf = app.finder.shelf

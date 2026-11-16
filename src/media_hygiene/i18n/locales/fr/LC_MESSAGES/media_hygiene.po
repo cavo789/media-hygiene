@@ -14147,11 +14147,6 @@ msgstr "Cette page n'est pas dans la documentation de cette version."
 msgid "This photo cannot be read."
 msgstr "Cette photo est illisible."
 
-msgid "This photo is not in the index yet: run 'audit --people' first."
-msgstr ""
-"Cette photo n'est pas encore dans l'index : lancez d'abord 'audit "
-"--people'."
-
 #, python-brace-format
 msgid "This photo is not in your library: {warning} Tick it anyway?"
 msgstr ""

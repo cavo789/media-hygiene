@@ -11775,9 +11775,6 @@ msgstr ""
 msgid "This photo cannot be read."
 msgstr ""
 
-msgid "This photo is not in the index yet: run 'audit --people' first."
-msgstr ""
-
 #, python-brace-format
 msgid "This photo is not in your library: {warning} Tick it anyway?"
 msgstr ""
