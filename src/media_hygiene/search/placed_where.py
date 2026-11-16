@@ -14,9 +14,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from media_hygiene.classify.hand_placed import Candidate, hand_placed
+from media_hygiene.classify.hand_placed import Candidate, digest_of, hand_placed
 from media_hygiene.config.face_refs import container_of, face_mapper
 from media_hygiene.config.photo_ref import size_of
+from media_hygiene.review.slow_log import Laps
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
@@ -52,4 +53,22 @@ def placed_where(
             found[path] = here[1]
         else:
             others.append(Candidate(path, size, digest))
-    return {**hand_placed(others, given), **found}
+    read: list[Path] = []
+
+    def counted(candidate: Candidate) -> str | None:
+        """A candidate's digest, counted for the slow line.
+
+        Args:
+            candidate: The file.
+
+        Returns:
+            Its SHA-256, as `digest_of` gives it.
+        """
+        read.append(candidate.path)
+        return digest_of(candidate)
+
+    laps = Laps(f"{len(listed)} listed by hand, {len(found)} at their path")
+    placed = hand_placed(others, given, counted)
+    laps.lap(f"{len(read)} digests, {sum(1 for c in others if c.digest)} kept")
+    laps.said()
+    return {**placed, **found}
