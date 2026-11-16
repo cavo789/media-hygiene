@@ -64,6 +64,8 @@
 {% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
+  #findBox { margin-top: 12px; }
+  #findBox summary { cursor: pointer; color: var(--muted); }
   #find { display: flex; flex-direction: column; gap: 6px; }
   #find input { width: 100%; padding: 4px 8px; font: inherit; border: 1px solid var(--line);
                 border-radius: 6px; background: var(--bg); color: var(--text); }
@@ -109,11 +111,6 @@
     padding: 1px 6px; border-radius: 4px; background: rgba(0, 0, 0, .7); color: #fff; font-size: .8rem; }
 {% endblock %}
 {% block side %}
-    <form id="find">
-      <label for="path">{{ _("A photo of this person: its path") }}</label>
-      <input id="path" type="text" placeholder="C:\Photos\…\IMG_1234.jpg" autocomplete="off" spellcheck="false">
-      <button type="submit">{{ _("Find their photos") }}</button>
-    </form>
     <div id="faces"></div>
     <button id="confirmGuesses" type="button" hidden></button>
     <div id="namer"></div>
@@ -122,6 +119,15 @@
     <button id="scanNow" type="button" hidden>{{ _("Find its faces now") }}</button>
     <button id="lookAgain" class="plain" type="button" hidden>{{ _("Look again, slower: the photo turned, less strict") }}</button>
     <button id="drawOpen" class="plain" type="button" hidden>{{ _("✏ Draw a face the tool missed") }}</button>
+    {# Folded once a photo is given (from a large view): the eye goes to the faces, not here. #}
+    <details id="findBox" open>
+      <summary>{{ _("Start from another photo") }}</summary>
+      <form id="find">
+        <label for="path">{{ _("A photo of this person: its path") }}</label>
+        <input id="path" type="text" placeholder="C:\Photos\…\IMG_1234.jpg" autocomplete="off" spellcheck="false">
+        <button type="submit">{{ _("Find their photos") }}</button>
+      </form>
+    </details>
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}

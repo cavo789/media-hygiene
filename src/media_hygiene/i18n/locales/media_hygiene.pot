@@ -9636,6 +9636,9 @@ msgstr ""
 msgid "Start fresh: carry no edit of a previous workbook over."
 msgstr ""
 
+msgid "Start from another photo"
+msgstr ""
+
 msgid "Start here: the audit changes nothing"
 msgstr ""
 

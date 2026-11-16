@@ -11525,6 +11525,9 @@ msgstr ""
 "Repartir de zéro : ne reprendre aucune modification d'un classeur "
 "précédent."
 
+msgid "Start from another photo"
+msgstr "Partir d'une autre photo"
+
 msgid "Start here: the audit changes nothing"
 msgstr "Commencez ici : l'audit ne change rien"
 

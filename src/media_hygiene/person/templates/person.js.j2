@@ -169,4 +169,4 @@ $("scanNow").addEventListener("click", scanNow);
 const wanted = window.mhView.get({ path: "path", face: "int" }); // `path`, and `face` once
 const asked = wanted.path;
 $("status").textContent = TEXTS.start;
-if (asked) { $("path").value = asked; find(asked); }
+if (asked) { $("path").value = asked; $("findBox").open = false; find(asked); }
