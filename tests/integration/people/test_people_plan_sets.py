@@ -6,13 +6,9 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.index.turn_rows import TurnStore
-from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services import people as people_service
 from media_hygiene.services.people import PeopleStep, PeopleWork
 from media_hygiene.services.people_files import people_photos, present_photos
-from media_hygiene.services.subject_answers import Answering
-from tests.support.faces import FakeRecipe
-from tests.support.runtime import make_runtime
+from tests.support.people_found import faces_found
 
 if TYPE_CHECKING:
     import pytest
@@ -44,9 +40,7 @@ def test_the_same_work_as_one_query_per_photo(
 ) -> None:
     """Unscanned, changed (other mtime), turn-missing, other model: same work."""
     del cli  # the coloured tree, audited
-    monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
-    with PeopleStep(make_runtime(locations)) as people:
-        people.find(people.plan(()).missing, Answering(True, NullProgress()))  # noqa: FBT003
+    with faces_found(locations, monkeypatch) as people:
         connection = people.store.connection
         paths = [str(p.path) for p in people.plan(()).photos]
         assert len(paths) >= 4

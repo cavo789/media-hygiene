@@ -11,6 +11,7 @@ from media_hygiene.services import people as people_service
 from media_hygiene.services.people import PeopleStep
 from media_hygiene.services.subject_answers import Answering
 from tests.support.faces import FakeRecipe
+from tests.support.people_found import faces_found
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
@@ -57,9 +58,7 @@ def test_a_top_up_without_faces_marks_the_photo_and_keeps_its_count(
 ) -> None:
     """Nothing new: the photo is marked, its count of faces unchanged."""
     del cli
-    monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
-    with PeopleStep(make_runtime(locations)) as people:
-        people.find(people.plan(()).missing, Answering(True, NullProgress()))  # noqa: FBT003
+    with faces_found(locations, monkeypatch) as people:
         connection = people.store.connection
         photo = people.plan(()).photos[0]
         connection.execute("DELETE FROM face_tops")

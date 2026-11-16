@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
-import asyncio
-import contextlib
 import json
 import sqlite3
 import tomllib
-from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 from http import HTTPStatus
 from pathlib import Path
@@ -19,23 +16,19 @@ import pytest
 from media_hygiene.faces.models import FaceBox
 from media_hygiene.index.face_rows import StoredFace
 from media_hygiene.person.likeness import stacked
-from media_hygiene.review.ending import Ending
-from media_hygiene.review.http import Request, Response
-from media_hygiene.search.fts import SearchIndex
-from media_hygiene.services import slideshow_avoid, slideshow_here
-from media_hygiene.services.fresh_runtime import FreshRuntime
-from media_hygiene.services.home_pages import HomeServer
+from media_hygiene.review.http import Request
+from media_hygiene.services import slideshow_avoid
 from media_hygiene.services.slideshow_avoid import PersonPhotos, paths_by_name
-from media_hygiene.services.slideshow_here import SlideshowHere
 from tests.support.indexed_photos import indexed_photos
 from tests.support.runtime import make_locations, make_runtime
+from tests.support.slideshow_serving import HOST, ask, choose, search_in, slideshow_of
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import Iterator
 
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.services.slideshow_here import SlideshowHere
 
-_HOST: Final = {"host": "127.0.0.1:8088", "content-type": "application/json"}
 _PHOTOS: Final = 4  # IMG_0 named Antoine, IMG_1 looks like him, IMG_2 someone else
 _BOX: Final = FaceBox(0, 0, 60, 60)
 
@@ -93,41 +86,15 @@ def here(
         connection.commit()
     every = _faces(trip)
     monkeypatch.setattr(slideshow_avoid, "FaceIndex", lambda _file: _Faces(every))
-
-    @contextlib.contextmanager
-    def opened(_runtime: Runtime, *, words: bool) -> Iterator[SearchIndex]:
-        assert not words
-        with SearchIndex.open(index) as search:
-            yield search
-
-    monkeypatch.setattr(slideshow_here, "open_search", opened)
-    with ThreadPoolExecutor(1) as executor:
-        built = SlideshowHere(
-            FreshRuntime(runtime), HomeServer(None, Ending(), executor)
-        )
-        yield built
-        built.close()
-
-
-def _ask(here: SlideshowHere, request: Request) -> Response:
-    return asyncio.run(here.handle(request))
-
-
-def _choose(here: SlideshowHere, body: Mapping[str, object]) -> Response:
-    payload = json.dumps(body).encode()
-    return _ask(here, Request("POST", "/slideshow/choose", _HOST, payload))
-
-
-def _shown(here: SlideshowHere) -> list[int]:
-    answer = _ask(here, Request("GET", "/slideshow/api/slides", _HOST))
-    return sorted(slide["key"] for slide in json.loads(answer.body)["slides"])
+    search_in(monkeypatch, index)
+    yield from slideshow_of(runtime)
 
 
 def test_the_home_choices_carry_no_people_any_more(here: SlideshowHere) -> None:
     """The home's TV block is gone: people are avoided on the remote it opens."""
-    lists = json.loads(_ask(here, Request("GET", "/slideshow/choices", _HOST)).body)
+    lists = json.loads(ask(here, Request("GET", "/slideshow/choices", HOST)).body)
     assert "people" not in lists
-    answer = _choose(here, {"first": "2025-11-01", "avoid": ["Antoine"]})
+    answer = choose(here, {"first": "2025-11-01", "avoid": ["Antoine"]})
     assert answer.status is HTTPStatus.BAD_REQUEST
     script = (
         Path(__file__).resolve().parents[2]
@@ -159,18 +126,18 @@ def test_a_person_without_faces_has_no_photo(
 
 def test_the_remote_offers_only_the_people_on_the_show(here: SlideshowHere) -> None:
     """Antoine named on IMG_0, guessed on IMG_1, Léa on none: only Antoine."""
-    answer = _choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
+    answer = choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
     assert answer.status is HTTPStatus.OK
-    view = json.loads(_ask(here, Request("GET", "/slideshow/api/avoid", _HOST)).body)
+    view = json.loads(ask(here, Request("GET", "/slideshow/api/avoid", HOST)).body)
     assert view["people"] == [{"name": "Antoine", "sure": 1, "guessed": 1}]
     payload = json.dumps({"names": ["Antoine"]}).encode()
-    ticked = _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
+    ticked = ask(here, Request("POST", "/slideshow/api/avoid", HOST, payload))
     assert json.loads(ticked.body)["out"] == 2
 
 
 def _avoid_view(here: SlideshowHere) -> dict[str, object]:
     view: dict[str, object] = json.loads(
-        _ask(here, Request("GET", "/slideshow/api/avoid", _HOST)).body
+        ask(here, Request("GET", "/slideshow/api/avoid", HOST)).body
     )
     return view
 
@@ -186,12 +153,12 @@ def test_a_tick_on_the_pc_is_remembered_for_the_next_show(
 ) -> None:
     """0834: the tick is written, read back; a new show starts with it set out."""
     month = {"first": "2025-11-01", "last": "2025-11-30"}
-    _choose(here, month)
+    choose(here, month)
     payload = json.dumps({"names": ["Antoine"]}).encode()
-    ticked = _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
+    ticked = ask(here, Request("POST", "/slideshow/api/avoid", HOST, payload))
     assert json.loads(ticked.body)["remembered"] == ["Antoine"]
     assert _remembered_on_disk(runtime) == ["Antoine"]
-    _choose(here, month)
+    choose(here, month)
     view = _avoid_view(here)
     assert (view["ticked"], view["out"], view["phone"]) == (["Antoine"], 2, False)
 
@@ -200,10 +167,10 @@ def test_unticking_on_the_pc_removes_the_name_from_the_file(
     here: SlideshowHere, runtime: Runtime
 ) -> None:
     """0834: an untick takes the name out of `[slideshow] avoid`."""
-    _choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
+    choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
     for names in (["Antoine"], []):
         payload = json.dumps({"names": names}).encode()
-        _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
+        ask(here, Request("POST", "/slideshow/api/avoid", HOST, payload))
     assert _remembered_on_disk(runtime) == []
 
 
@@ -216,12 +183,12 @@ def test_a_remembered_person_on_no_photo_is_listed_and_ticked(
         config.read_text("utf-8") + "[slideshow]\navoid = ['Léa', 'Gone']\n",
         "utf-8",
     )
-    _choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
+    choose(here, {"first": "2025-11-01", "last": "2025-11-30"})
     view = _avoid_view(here)
     assert {"name": "Léa", "sure": 0, "guessed": 0} in cast(
         "list[object]", view["people"]
     )
     assert (view["ticked"], view["remembered"]) == (["Léa"], ["Léa"])
     payload = json.dumps({"names": ["Léa", "Antoine"]}).encode()
-    _ask(here, Request("POST", "/slideshow/api/avoid", _HOST, payload))
+    ask(here, Request("POST", "/slideshow/api/avoid", HOST, payload))
     assert _remembered_on_disk(runtime) == ["Gone", "Antoine", "Léa"]

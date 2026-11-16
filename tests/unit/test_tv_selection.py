@@ -8,7 +8,6 @@ them in place of the show running.
 from __future__ import annotations
 
 import asyncio
-import contextlib
 import json
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -24,7 +23,6 @@ from media_hygiene.review.http import Request, Response
 from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.search.aside_filter import Kept
 from media_hygiene.search.fts import SearchIndex
-from media_hygiene.services import slideshow_here
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer
@@ -36,13 +34,13 @@ from media_hygiene.share.album_api import MAX_ADDED, AlbumAsked
 from media_hygiene.share.album_pickers import SearchPicker
 from tests.support.indexed_photos import indexed_photos
 from tests.support.runtime import make_locations, make_runtime
+from tests.support.slideshow_serving import search_in
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from media_hygiene.i18n.live import Page
     from media_hygiene.review.session import ReviewSession
-    from media_hygiene.services.runtime import Runtime
 
 _PHOTOS: Final = 4
 
@@ -60,14 +58,7 @@ def here(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Served]:
     """The home server's slideshow, listening, over an index of four photos."""
     index = tmp_path / "index.sqlite"
     indexed_photos(index, tmp_path / "photos", _PHOTOS)
-
-    @contextlib.contextmanager
-    def opened(_runtime: Runtime, *, words: bool) -> Iterator[SearchIndex]:
-        assert not words
-        with SearchIndex.open(index) as search:
-            yield search
-
-    monkeypatch.setattr(slideshow_here, "open_search", opened)
+    search_in(monkeypatch, index)
     runtime = make_runtime(make_locations(tmp_path))
     with ThreadPoolExecutor(1) as executor:
         server = HomeServer(None, Ending(), executor)

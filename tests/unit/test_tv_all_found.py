@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
 import json
 from concurrent.futures import ThreadPoolExecutor
 from importlib.resources import files
@@ -13,7 +12,6 @@ from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.views import FIRST_HITS
-from media_hygiene.services import slideshow_here
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer
@@ -21,14 +19,13 @@ from media_hygiene.services.slideshow_here import SlideshowHere
 from media_hygiene.share.album_pickers import SearchPicker
 from tests.support.indexed_photos import indexed_photos
 from tests.support.runtime import make_locations, make_runtime
+from tests.support.slideshow_serving import search_in
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
     from pathlib import Path
 
     import pytest
 
-    from media_hygiene.services.runtime import Runtime
 
 _FOUND: Final = FIRST_HITS + 60
 
@@ -39,14 +36,7 @@ def test_every_file_found_reaches_the_show(
     """300 found, 240 shown, nothing picked: the show holds the 300."""
     index = tmp_path / "index.sqlite"
     indexed_photos(index, tmp_path / "photos", _FOUND)
-
-    @contextlib.contextmanager
-    def opened(_runtime: Runtime, *, words: bool) -> Iterator[SearchIndex]:
-        assert not words
-        with SearchIndex.open(index) as search:
-            yield search
-
-    monkeypatch.setattr(slideshow_here, "open_search", opened)
+    search_in(monkeypatch, index)
     runtime = make_runtime(make_locations(tmp_path))
     shown = [str(key) for key in range(1, FIRST_HITS + 1)]
     body = {"action": "tv", "album": "", "keys": shown, "all": True, "search": {}}
