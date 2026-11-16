@@ -187,3 +187,24 @@ def test_a_person_renamed_keeps_the_file_its_header_follows(tmp_path: Path) -> N
     save_people(config, back.model_copy(update={"person": (renamed,)}))
     first = (tmp_path / renamed.file).read_text(encoding="utf-8").split("\n")[0]
     assert "Chloé B." in first
+
+
+def test_the_faces_left_unguessed_have_their_own_file(tmp_path: Path) -> None:
+    """people/unguessed.toml: written, read back, gone once empty (a version kept)."""
+    config = tmp_path / "config.toml"
+    save_people(config, PeopleSettings(person=(CHLOE,), unguessed=("/z.jpg#2",)))
+    unguessed = tmp_path / "people" / "unguessed.toml"
+    assert unguessed.is_file()
+    assert "unguessed" not in config.read_text(encoding="utf-8")  # never linked
+    back = read_people(config)
+    assert back.unguessed == ("/z.jpg#2",)
+    save_people(config, back.model_copy(update={"unguessed": ()}))
+    assert not unguessed.exists()
+    assert read_people(config).unguessed == ()
+    assert list((tmp_path / ".history" / "people").glob("unguessed.toml.*"))
+
+
+def test_a_person_named_unguessed_never_takes_that_file() -> None:
+    """The name is free; its file is not the tool's own."""
+    name = file_names((Person(name="Unguessed", faces=("/a.jpg#0",)),))[0]
+    assert name.casefold() != "people/unguessed.toml"

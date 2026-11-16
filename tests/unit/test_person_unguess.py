@@ -3,19 +3,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import numpy as np
 
 from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.faces.models import EMBEDDING_SIZE, FaceBox
 from media_hygiene.index.face_rows import StoredFace
+from media_hygiene.people.changes import Naming, give_name
 from media_hygiene.people.known import Known
 from media_hygiene.people.naming import NOBODY, id_of, name_all
 from media_hygiene.person.unguess import unguessed_line, without_guesses
-
-if TYPE_CHECKING:
-    import pytest
 
 
 def _face(name: str, vector: np.ndarray) -> StoredFace:
@@ -59,63 +56,46 @@ def _scene() -> tuple[StoredFace, tuple[StoredFace, ...], PeopleSettings]:
     return face, (marc, valery, other, face), PeopleSettings(person=people)
 
 
-def test_every_guess_is_ruled_out_at_once() -> None:
-    """One click: Marc then Valery ruled out, the face is nobody's; Other untouched."""
+def test_the_name_shown_is_ruled_out_and_none_is_guessed_after() -> None:
+    """One click on ≈ Marc: Marc ruled out, the face marked, Valery never guessed."""
     face, every, section = _scene()
     assert name_all((face,), Known.of(every, section))[0].name == "Marc"
-    after, ruled = without_guesses(face, every, section)
-    assert ruled == ("Marc", "Valery")
-    assert name_all((face,), Known.of(every, after))[0] == NOBODY
+    after, ruled = without_guesses(face, Known.of(every, section), section)
+    assert ruled == ("Marc",)
+    assert after.unguessed == (id_of(face),)
+    assert id_of(face) in after.person[0].rejected
+    assert not after.person[1].rejected  # Valery's file is not touched
     assert not after.person[2].rejected
-    assert "Marc, Valery" in unguessed_line(after, face, ruled)
+    assert name_all((face,), Known.of(every, after))[0] == NOBODY
+    assert "Marc" in unguessed_line(after, face, ruled)
 
 
 def test_a_face_nobody_is_guessed_for_is_left_alone() -> None:
     """Nothing guessed: nothing written, the line says so."""
     face, every, section = _scene()
     alone = section.model_copy(update={"person": section.person[2:]})
-    after, ruled = without_guesses(face, every, alone)
+    after, ruled = without_guesses(face, Known.of(every, alone), alone)
     assert not ruled
     assert after == alone
     assert unguessed_line(after, face, ruled).startswith("Not saved")
 
 
-def test_the_references_are_gathered_once_for_many_wrong_guesses(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Four people alike: four names ruled out, the index's faces gathered once."""
-    rng = np.random.default_rng(5)
-    base = rng.standard_normal(EMBEDDING_SIZE)
-    alike = [
-        _face(f"p{n}", base + 0.1 * (n + 1) * rng.standard_normal(EMBEDDING_SIZE))
-        for n in range(4)
-    ]
-    face = _face("seen", base)
-    people = tuple(
-        Person(name=f"P{n}", faces=(id_of(one),)) for n, one in enumerate(alike)
-    )
-    every, section = (*alike, face), PeopleSettings(person=people)
-    calls: list[int] = []
-    real = Known.of
-
-    def counted(*args: object) -> Known:
-        calls.append(1)
-        return real(*args)  # type: ignore[arg-type]
-
-    monkeypatch.setattr(Known, "of", counted)
-    after, ruled = without_guesses(face, every, section)
-    assert len(ruled) == 4
-    assert len(calls) == 1
-    assert name_all((face,), real(every, after))[0] == NOBODY
-
-
-def test_a_confirmed_face_is_ruled_out_then_the_next_guess() -> None:
-    """Confirmed as Marc by mistake: Marc taken off, then Valery guessed, ruled out."""
+def test_a_confirmed_face_loses_its_name_and_stays_unnamed() -> None:
+    """Confirmed as Marc by mistake: taken off Marc, no other name guessed."""
     face, every, section = _scene()
     marc = section.person[0]
     confirmed = marc.model_copy(update={"faces": (*marc.faces, id_of(face))})
     section = section.model_copy(update={"person": (confirmed, *section.person[1:])})
-    after, ruled = without_guesses(face, every, section)
-    assert ruled == ("Marc", "Valery")
+    after, ruled = without_guesses(face, Known.of(every, section), section)
+    assert ruled == ("Marc",)
     assert id_of(face) not in after.person[0].faces
     assert name_all((face,), Known.of(every, after))[0] == NOBODY
+
+
+def test_naming_the_face_later_takes_the_mark_off() -> None:
+    """Named Valery afterwards: no longer unguessed, Valery's."""
+    face, every, section = _scene()
+    after, _ruled = without_guesses(face, Known.of(every, section), section)
+    named = give_name(after, Naming("Valery", (id_of(face),)))
+    assert not named.unguessed
+    assert name_all((face,), Known.of(every, named))[0].name == "Valery"

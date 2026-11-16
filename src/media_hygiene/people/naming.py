@@ -119,7 +119,8 @@ def _block(faces: Sequence[StoredFace], known: Known) -> list[FaceName]:
         if key in known.confirmed:
             names.append(known.confirmed[key])
             continue
-        if not known.rule.thresholds.recognisable(face):  # never shown: never named
+        # A cross said "no name" (`unguessed`), or never shown: never named.
+        if key in known.unguessed or not known.rule.thresholds.recognisable(face):
             names.append(NOBODY)
             continue
         scores = known.scores(key, similar[row])

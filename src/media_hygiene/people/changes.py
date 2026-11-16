@@ -73,7 +73,8 @@ def give_name(section: PeopleSettings, naming: Naming) -> PeopleSettings:
     else:
         people[found] = person
     ignored = tuple(key for key in section.ignored if key not in taken)
-    return _kept(section, people, ignored)
+    unguessed = tuple(key for key in section.unguessed if key not in taken)
+    return _kept(section, people, ignored).model_copy(update={"unguessed": unguessed})
 
 
 def ignore_faces(section: PeopleSettings, faces: tuple[str, ...]) -> PeopleSettings:

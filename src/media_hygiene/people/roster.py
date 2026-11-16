@@ -146,9 +146,7 @@ class Roster:
         Args:
             back: `[people]` as the file holds it now.
         """
-        self._settings = self._settings.model_copy(
-            update={"person": back.person, "ignored": back.ignored}
-        )
+        self._settings = self._settings.with_faces_of(back)
         self._named = self._name()
 
     def _name(self) -> Named:

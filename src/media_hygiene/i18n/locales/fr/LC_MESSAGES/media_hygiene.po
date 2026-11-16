@@ -12388,6 +12388,13 @@ msgstr ""
 " fichier."
 
 msgid ""
+"The faces no name is guessed for (a cross on a wrong guess); naming one "
+"takes it off."
+msgstr ""
+"Les visages pour lesquels aucun nom n'est deviné (une croix sur un nom "
+"deviné à tort) ; en nommer un l'en retire."
+
+msgid ""
 "The faces of this photo were not all looked for yet: find them now, as "
 "'audit --people' does."
 msgstr ""

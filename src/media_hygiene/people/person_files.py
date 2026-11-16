@@ -19,12 +19,14 @@ from media_hygiene.config.people_files import (
     FACES,
     FOLDER,
     REJECTED,
+    UNGUESSED,
     linked_path,
 )
 from media_hygiene.config.photo_ref import write_refs
 from media_hygiene.i18n import _
 from media_hygiene.people.face_ids import known_ids
 from media_hygiene.people.unchanged_file import person_header, unchanged
+from media_hygiene.people.unguessed_file import write_unguessed
 from media_hygiene.review.disk_tags import side_by_side
 from media_hygiene.review.slow_log import Laps
 
@@ -37,6 +39,7 @@ if TYPE_CHECKING:
 SUFFIX: Final = ".toml"
 IGNORED_NAME: Final = "ignored"
 IGNORED_PATH: Final = f"{FOLDER}/{IGNORED_NAME}{SUFFIX}"
+_OURS: Final = frozenset({IGNORED_NAME, UNGUESSED})  # never a person's file
 _FORBIDDEN: Final = re.compile(r'[<>:"/\\|?*\x00-\x1f]')  # refused by Windows
 _RESERVED: Final = frozenset(
     {"CON", "PRN", "AUX", "NUL"}
@@ -63,7 +66,7 @@ def safe_name(name: str) -> str:
     """
     cleaned = _FORBIDDEN.sub("_", name.strip()).rstrip(". ")
     stem = cleaned.split(".", 1)[0]
-    if not cleaned or stem.upper() in _RESERVED or stem.casefold() == IGNORED_NAME:
+    if not cleaned or stem.upper() in _RESERVED or stem.casefold() in _OURS:
         cleaned = f"_{cleaned}"
     return cleaned
 
@@ -121,6 +124,7 @@ def write_files(
     ]
     every = (
         *wanted.ignored,
+        *wanted.unguessed,
         *(k for p, _f in changed for k in (*p.faces, *p.rejected)),
     )
     laps.lap(f"{len(changed)} of {len(files)} changed")
@@ -150,6 +154,7 @@ def write_files(
             for p, f in changed
         ],
     )
+    write_unguessed(config_dir, lines(wanted.unguessed))
     laps.lap("written")
     if not wanted.ignored:
         laps.said()

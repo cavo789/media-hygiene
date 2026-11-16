@@ -78,7 +78,7 @@ class FaceNames:
         """
         settings = self.settings()
         every = self.faces.every
-        key = (settings.person, settings.ignored, every)  # the same objects: `is`
+        key = (settings.person, settings.ignored, settings.unguessed, every)
         return self.kept.value(lambda: key, lambda: Known.of(every, settings))
 
     def settings(self) -> PeopleSettings:
@@ -90,9 +90,7 @@ class FaceNames:
         if self.config_file is None:
             return self.base
         back = self.memo.read(self.config_file)
-        return self.base.model_copy(
-            update={"person": back.person, "ignored": back.ignored}
-        )
+        return self.base.with_faces_of(back)
 
     def answer(self, body: bytes) -> dict[str, object]:
         """Save a naming, read it back.

@@ -33,6 +33,8 @@ REJECTED: Final = "rejected"
 IGNORED: Final = "ignored"
 IGNORED_FILE: Final = "ignored_file"
 FOLDER: Final = "people"  # under the folder of config.toml
+UNGUESSED: Final = "unguessed"  # faces no name is guessed for (2026-11-16)
+UNGUESSED_PATH: Final = f"{FOLDER}/{UNGUESSED}.toml"  # never linked: always there
 ENCODING: Final = "utf-8"
 
 
@@ -79,6 +81,8 @@ def linked_section(
     inline = section.get(IGNORED, [])
     if isinstance(ignored_file, str) and ignored_file and isinstance(inline, list):
         resolved[IGNORED] = [*inline, *read_lists(config_dir, ignored_file)[FACES]]
+    if (config_dir / UNGUESSED_PATH).is_file():
+        resolved[UNGUESSED] = read_lists(config_dir, UNGUESSED_PATH)[FACES]
     people = section.get(PERSON)
     if isinstance(people, list):
         resolved[PERSON] = [_person(entry, config_dir) for entry in people]

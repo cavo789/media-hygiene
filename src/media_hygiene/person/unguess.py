@@ -1,22 +1,21 @@
 """The cross of a named face on `/person`: no name, confirmed or guessed, in one click.
 
-Ruling out the name guessed lets the next closest person be guessed, then the next:
-the user would click once per name. Here every name the tool would guess in turn is
-ruled out (`rejected` of each person, the format the people page already writes),
-until the face is nobody's; one save, read back. Naming the face later takes it out
-of that person's `rejected`, as always (`give_name`).
+"This is not Fleur, and I do not want to name it" (the maintainer, 2026-11-16). The
+name shown is ruled out (Fleur's `rejected`), and the face is marked `unguessed`: no
+other name is guessed for it, where ruling Fleur out alone let the next closest
+person be guessed at once. Until then, every name the tool would guess in turn was
+ruled out, one person's file each (5 to 13 files per cross on the maintainer's PC),
+for names the user never saw. Naming the face later takes both off (`give_name`).
 """
 
 from __future__ import annotations
 
-from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming, reject_faces
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
-from media_hygiene.people.known import Known
 from media_hygiene.people.naming import How, id_of, name_all
 from media_hygiene.review.slow_log import Laps
 
@@ -25,6 +24,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.index.face_rows import StoredFace
+    from media_hygiene.people.known import Known
     from media_hygiene.person.names import FaceNames
 
 # A confirmed name too: the cross says "not {name}" (2026-11-15: it left ✓ Stéphanie).
@@ -32,33 +32,25 @@ _TAKEN_OFF: Final = frozenset({How.CONFIRMED, How.ASSIGNED})
 
 
 def without_guesses(
-    face: StoredFace, every: Sequence[StoredFace], section: PeopleSettings
+    face: StoredFace, known: Known, section: PeopleSettings
 ) -> tuple[PeopleSettings, tuple[str, ...]]:
-    """Rule out each name the tool would give a face, until it gives none.
+    """Rule out the name the tool gives a face, and guess none for it any more.
 
     Args:
         face: The face of the index.
-        every: Every face of the index (the references among them).
-        section: `[people]`, the thresholds of the run with the names as written.
+        known: The references, as the page names the faces now.
+        section: `[people]` as written.
 
     Returns:
-        The section to write, and the names ruled out, in the order they were guessed.
+        The section to write, and the name ruled out (none when nobody was given).
     """
-    ruled: list[str] = []
+    named = name_all((face,), known)[0]
+    if named.how not in _TAKEN_OFF or not named.name:
+        return section, ()
     key = id_of(face)
-    known = Known.of(every, section)  # once: 40 000 faces' vectors (2026-11-16)
-    for _person in range(len(section.person)):  # each person is ruled out once at most
-        named = name_all((face,), known)[0]
-        if named.how not in _TAKEN_OFF or not named.name:
-            break
-        ruled.append(named.name)
-        section = reject_faces(section, Naming(named.name, (key,)))
-        if key in known.confirmed:  # a reference itself: the references change
-            known = Known.of(every, section)
-        else:  # only who it is not changes
-            not_them = known.rejected.get(key, frozenset()) | {named.name}
-            known = replace(known, rejected={**known.rejected, key: not_them})
-    return section, tuple(ruled)
+    ruled = reject_faces(section, Naming(named.name, (key,)))
+    marked = (*ruled.unguessed, key) if key not in ruled.unguessed else ruled.unguessed
+    return ruled.model_copy(update={"unguessed": marked}), (named.name,)
 
 
 def unguessed_line(back: PeopleSettings, face: StoredFace, ruled: Sequence[str]) -> str:
@@ -79,7 +71,8 @@ def unguessed_line(back: PeopleSettings, face: StoredFace, ruled: Sequence[str])
     gone = [
         name
         for name in ruled
-        if not any(p.name == name and key in p.faces for p in back.person)
+        if key in back.unguessed
+        and not any(p.name == name and key in p.faces for p in back.person)
     ]
     if not gone:
         return _("Not saved: config.toml rules out no name for this face.")
@@ -106,13 +99,10 @@ def unname(names: FaceNames, key: int) -> dict[str, object]:
         written = follow_ids(
             read_people(names.config_file), {}, {str(one.path) for one in every}
         )
-        merged = names.settings().model_copy(update={"person": written.person})
         laps.lap("read")
-        result, ruled = without_guesses(face, every, merged)
+        result, ruled = without_guesses(face, names.known(), written)
         laps.lap(f"{len(ruled)} ruled out")
-        save_people(
-            names.config_file, written.model_copy(update={"person": result.person})
-        )
+        save_people(names.config_file, result)
         laps.lap("write")
         back = read_people(names.config_file)
         laps.lap("read back")

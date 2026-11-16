@@ -85,7 +85,8 @@ their name. Faces still written `"/data/c/…#0"` (before this version) load as 
 their `id` at the next audit; over 50 photos the cache has not read, that audit says first
 *N named photos read once…*.
 
-The faces of strangers go to `people/ignored.toml`. Keep the `people` folder with
+The faces of strangers go to `people/ignored.toml`; the faces left unnamed by a **×** on a wrong
+guess, to `people/unguessed.toml` (no name is guessed for them; naming one takes it out). Keep the `people` folder with
 `config.toml` when you copy or back it up: a missing file stops the next run, with the line to
 fix. A `config.toml` written before this version, the faces inline, still loads; the page moves
 them to the files on its first save.

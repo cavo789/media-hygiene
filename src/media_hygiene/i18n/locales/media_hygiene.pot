@@ -10365,6 +10365,11 @@ msgid "The faces ignored on the people page; config.toml links this file."
 msgstr ""
 
 msgid ""
+"The faces no name is guessed for (a cross on a wrong guess); naming one "
+"takes it off."
+msgstr ""
+
+msgid ""
 "The faces of this photo were not all looked for yet: find them now, as "
 "'audit --people' does."
 msgstr ""

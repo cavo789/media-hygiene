@@ -47,6 +47,7 @@ class Known:
     confirmed: dict[str, FaceName]
     rejected: dict[str, frozenset[str]]  # face id → names it is not
     rule: Rule
+    unguessed: frozenset[str] = frozenset()  # face ids no name is guessed for
 
     @classmethod
     def of(
@@ -94,6 +95,7 @@ class Known:
             confirmed=confirmed,
             rejected={key: frozenset(names) for key, names in rejected.items()},
             rule=Rule(settings.similarity, Thresholds.of(settings)),
+            unguessed=frozenset(settings.unguessed),
         )
 
     @property

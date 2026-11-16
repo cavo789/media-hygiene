@@ -256,7 +256,9 @@ sans `config.toml` à vous, les noms seulement.
    comme visage confirmé, relu et affiché (*Enregistré dans config.toml, relu : Juliette, 1
    visage confirmé*) ; un nouveau nom crée la personne, un nom existant s'y ajoute. Quand l'outil a
    deviné des noms (≈), **✓ Confirmer les noms devinés : N** les confirme tous en un clic, tels
-   qu'affichés.
+   qu'affichés. Un nom faux que vous ne voulez pas remplacer : sa **×** (ou **✗ Ce n'est pas …**
+   dans la grande vue) laisse le visage **? sans nom**, et plus aucun nom ne lui est deviné,
+   jusqu'à ce que vous le nommiez vous-même.
 2. À droite, les photos de cette personne, les plus ressemblantes d'abord, en grille à choisir
    comme dans [les dossiers de `library`](library.md#parcourir-vos-dossiers) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
    et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la

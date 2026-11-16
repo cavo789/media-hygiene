@@ -57,6 +57,27 @@ class PeopleSettings(BaseModel):
     # The file holding the ignored faces, relative to the folder of config.toml.
     ignored_file: str = ""
     person: tuple[Person, ...] = ()
+    # Faces the tool must not guess a name for (the cross of a wrong guess, 2026-11-16):
+    # left to name, never shown as anybody's; naming one takes it off. Read from
+    # `people/unguessed.toml`, never written in config.toml.
+    unguessed: tuple[str, ...] = ()
+
+    def with_faces_of(self, back: PeopleSettings) -> PeopleSettings:
+        """These thresholds, with the names and faces of another (read back).
+
+        Args:
+            back: `[people]` as a file holds it now.
+
+        Returns:
+            The settings: `person`, `ignored`, `unguessed` taken from `back`.
+        """
+        return self.model_copy(
+            update={
+                "person": back.person,
+                "ignored": back.ignored,
+                "unguessed": back.unguessed,
+            }
+        )
 
     @model_validator(mode="after")
     def _names_once(self) -> Self:

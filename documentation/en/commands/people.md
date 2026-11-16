@@ -235,7 +235,9 @@ without a `config.toml` of yours, the names only.
    pick one in the list, Enter. It is saved in `config.toml` as a confirmed face, read back and
    shown (*Saved in config.toml, read back: Juliette, 1 confirmed face*); a new name creates the
    person, an existing one adds to them. When the tool guessed names (≈), **✓ Confirm the names
-   guessed: N** confirms them all in one click, as they are shown.
+   guessed: N** confirms them all in one click, as they are shown. A wrong name you do not want
+   to replace: its **×** (or **✗ It is not …** in the large view) leaves the face **? not named**
+   and no name is guessed for it any more, until you name it yourself.
 2. On the right, the photos of that person, the closest first, as a grid to pick like in
    [the folders of `library`](library.md#walk-through-your-folders): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
    its keys. If they look like someone you set aside before, the bar says so (*the person set
