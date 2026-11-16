@@ -45,7 +45,6 @@ def placed_where(
         if photo.path
     }
     laps.lap(f"{len(listed)} listed")
-    laps.lap(f"{len(listed)} listed")
     found: dict[Path, str] = {}
     others: list[Candidate] = []
     for text, size, digest in rows:
@@ -55,7 +54,6 @@ def placed_where(
             found[path] = here[1]
         else:
             others.append(Candidate(path, size, digest))
-    laps.lap(f"{len(found) + len(others)} rows, {len(found)} at their path")
     laps.lap(f"{len(found) + len(others)} rows, {len(found)} at their path")
     read: list[Path] = []
 
