@@ -26,6 +26,7 @@ from media_hygiene.file_history import keep_previous
 from media_hygiene.i18n import _
 from media_hygiene.people.face_ids import known_ids
 from media_hygiene.people.unchanged_file import person_header, unchanged
+from media_hygiene.review.slow_log import Laps
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -112,6 +113,7 @@ def write_files(
         OSError: A file cannot be written.
     """
     files, mapper = file_names(wanted.person), face_mapper()
+    laps = Laps("people files")
     changed = [
         (person, file)
         for person, file in zip(wanted.person, files, strict=True)
@@ -121,7 +123,9 @@ def write_files(
         *wanted.ignored,
         *(k for p, _f in changed for k in (*p.faces, *p.rejected)),
     )
+    laps.lap(f"{len(changed)} of {len(files)} changed")
     ids = known_ids(config_dir, every, moves)
+    laps.lap(f"ids of {len(every)} faces")
 
     def lines(keys: tuple[str, ...]) -> list[str]:
         """The faces as written.
@@ -137,12 +141,16 @@ def write_files(
     for person, file in changed:
         lists = {FACES: lines(person.faces), REJECTED: lines(person.rejected)}
         _write(linked_path(config_dir, file), person_header(person.name), lists)
+    laps.lap("written")
     if not wanted.ignored:
+        laps.said()
         return Links(files)
     header = _("The faces ignored on the people page; config.toml links this file.")
     _write(
         linked_path(config_dir, IGNORED_PATH), header, {FACES: lines(wanted.ignored)}
     )
+    laps.lap(f"{len(wanted.ignored)} ignored")
+    laps.said()
     return Links(files, IGNORED_PATH)
 
 

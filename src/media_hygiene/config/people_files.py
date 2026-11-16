@@ -10,6 +10,7 @@ and added to those of the file.
 
 from __future__ import annotations
 
+import functools
 import tomllib
 from typing import TYPE_CHECKING, Final
 
@@ -124,12 +125,28 @@ def linked_path(config_dir: Path, relative: str) -> Path:
     Raises:
         ValueError: The path leads out of the folder.
     """
-    root = config_dir.resolve()
-    path = (root / relative).resolve()
+    root = _resolved(config_dir)
+    path = _resolved(root / relative)
     if not path.is_relative_to(root):
         message = _("{file} is not inside the folder of config.toml")
         raise ValueError(message.format(file=relative))
     return path
+
+
+@functools.lru_cache(maxsize=4096)
+def _resolved(path: Path) -> Path:
+    """A path resolved once (2026-11-16).
+
+    Each `resolve` inspects every folder on the way: a few hundred `lstat` per
+    save, each one slow over Docker Desktop's file sharing.
+
+    Args:
+        path: The path.
+
+    Returns:
+        It, absolute, its links followed.
+    """
+    return path.resolve()
 
 
 def read_lists(config_dir: Path, relative: str) -> dict[str, list[object]]:
