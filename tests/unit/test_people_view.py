@@ -44,7 +44,7 @@ def test_turn_only_photos_are_counted_apart(locations: Locations) -> None:
     show_missing(runtime.output, PeopleWork(photos, photos[:5], turn_only=3))
     printed = " ".join(output_of(runtime).split())
     assert "2 photos of 10 to analyse" in printed
-    assert "3 photos of 10 whose turn is still to guess" in printed
+    assert "3 photos of 10 to look at again" in printed
 
 
 def _photo(number: int) -> PhotoVersion:

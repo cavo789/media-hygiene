@@ -27,6 +27,7 @@ _PATHS: Final = {
     "ended_prefix": "/api/ended/",
     "photos_only": "/photos",
     "show_path": "api/show",
+    "avoid_path": "api/avoid",
     "title_seconds": 3,
     "banner_seconds": 5,
 }
@@ -178,3 +179,16 @@ def test_the_screen_on_this_pc_keeps_the_home_server_up() -> None:
     assert "window.location.assign(HOME)" in script
     assert not post_es5(script)
     assert "var KEPT = false;" in _screen_script()  # a TV, or `mh slideshow` alone
+
+
+def test_the_screen_on_this_pc_offers_to_avoid_people() -> None:
+    """0829: the remote's block, behind `here=1`, opened before the show; P again."""
+    page = _screen_page()
+    assert '<div id="hereAvoid" class="hidden">' in page
+    assert '<div id="avoid" hidden>' in page
+    script = _screen_script()
+    assert script.index("here=1") < script.index('"api/avoid"')  # a TV never asks
+    assert "function avoidOpened" in script
+    assert 'typeof avoidOpened === "function"' in script
+    assert "key === 80" in script
+    assert "key === 13" in script

@@ -4,7 +4,6 @@
 - **Batch**: page-speed
 - **Depends**: —
 - **Files**: `.todos/PARTIAL/PARTIAL_0692-home-page-ready-at-once-after-a-restart.md`, `src/media_hygiene/review/templates/home.js.j2`, `src/media_hygiene/cli/home_state.py`, `src/media_hygiene/cli/status_safety.py`, `src/media_hygiene/services/safety.py`, `src/media_hygiene/services/only_copies.py`, `src/media_hygiene/review/home_app.py`
-- **Needs maintainer**: a second start of `mh` on Windows + Docker Desktop
 
 Split from section 0692 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-in-partial-todos.md`), as decided by the maintainer in the review of 2026-11-12 (one TODO per remaining section). Source TODO: `.todos/PARTIAL/PARTIAL_0692-home-page-ready-at-once-after-a-restart.md`.
 
@@ -14,6 +13,12 @@ Split from section 0692 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - The safety card shows the same facts as before (equivalence test), and follows each
 - No traceback, no endless spinner if the card's route fails (message in the card)
 - New strings through `_()` + French; both documentation languages if a capture changes
+
+## Measured (2026-11-14, maintainer's PC, step 46)
+
+- Second start of `mh`, by stopwatch: the page drawn in 4 s then 3.7 s (was about 30 s);
+  the safety card drawn at once from its last answer, its route 0.9 s after 0819. Only the
+  code items above are left.
 
 ## How to proceed
 

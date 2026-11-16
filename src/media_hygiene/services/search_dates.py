@@ -14,14 +14,10 @@ from media_hygiene.search.place_desk import PlaceDesk
 from media_hygiene.services.albums import album_narrow
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.date_sidecars import DateWriter
+from media_hygiene.services.indexed_points import indexed_points
 from media_hygiene.services.names_file import names_file
-from media_hygiene.services.xmp_towns import indexed_inputs
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-    from pathlib import Path
-
-    from media_hygiene.geo.distance import Point
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
@@ -46,19 +42,6 @@ def date_desk(
     return desk
 
 
-def _points(runtime: Runtime, search: SearchIndex) -> Mapping[Path, Point]:
-    """Where each located file was taken: its GPS, or its Takeout `.json`'s.
-
-    Args:
-        runtime: Mount points.
-        search: The open index.
-
-    Returns:
-        The positions.
-    """
-    return indexed_inputs(runtime, search.connection).points
-
-
 def place_book(runtime: Runtime, search: SearchIndex) -> PlaceBook:
     """Who is in which of my places, read when first asked.
 
@@ -72,7 +55,7 @@ def place_book(runtime: Runtime, search: SearchIndex) -> PlaceBook:
     return PlaceBook(
         search.connection,
         runtime.locations.config_file,
-        partial(_points, runtime, search),
+        partial(indexed_points, search.connection),
     )
 
 

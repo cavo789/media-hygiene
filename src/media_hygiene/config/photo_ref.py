@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING, Any, Final
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from media_hygiene.config.stamped_text import stamped_text
 from media_hygiene.file_history import replace_text
 
 if TYPE_CHECKING:
@@ -181,10 +182,10 @@ def write_refs(path: Path, header: str, lines: Mapping[str, Sequence[str]]) -> N
         text.extend(f"    {row}," for row in rows)
         text.append("]")
     content = "\n".join(text) + "\n"
-    if path.is_file() and path.read_text(ENCODING) == content:
+    if path.is_file() and stamped_text(path) == content:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     replace_text(path, content)
-    if tomllib.loads(path.read_text(ENCODING)).keys() != lines.keys():
+    if tomllib.loads(stamped_text(path)).keys() != lines.keys():
         message = f"{path} did not read back"
         raise ValueError(message)

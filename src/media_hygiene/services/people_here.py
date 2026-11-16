@@ -27,6 +27,7 @@ from media_hygiene.services.names_file import names_file
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.people import PeopleStep, PeopleWork
+from media_hygiene.services.people_actions import with_actions
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.people_files import require_people_index
 from media_hygiene.services.prefixed_page import KeptPage, PrefixedPage
@@ -110,7 +111,8 @@ def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
     app, aside = people_app(runtime, result, build)
     offer = ApplyOffer(server.apply, lambda: bool(aside.paths()), PageUndo(runtime))
     relay = home_relay(runtime.locations.reports_dir)
-    return ApplyingApp(app, ApplyDesk(offer, server.ending, relay))
+    acting = with_actions(app, runtime, (build.names, aside))
+    return ApplyingApp(acting, ApplyDesk(offer, server.ending, relay))
 
 
 @dataclass(frozen=True, slots=True)

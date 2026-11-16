@@ -28,6 +28,7 @@ PATH_TABLES: Final = (
     "descriptions",
     "tags",
     "face_scans",
+    "face_tops",
     "faces",
     "face_turns",
     "turn_refusals",

@@ -192,3 +192,23 @@ def test_show_set_aside_lists_them_and_put_back_is_read_from_disk(
     every = {"action": "remove", "all": True, "search": aside}
     rest, _console = _serve(cli, monkeypatch, [("POST /api/chosen", every)])
     assert json.loads(rest[0].body)["count"] == 0
+
+
+def test_show_more_sends_the_next_files_alone(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """*Show more* with `after`: the files after those the grid holds, no repeat."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    monkeypatch.setattr(search_views, "FIRST_HITS", 1)  # the page shows one file
+    answers, _console = _serve(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/search", {**_DURBUY, "more": 1}),
+            ("POST /api/search", {**_DURBUY, "more": 1, "after": 1}),
+        ],
+    )
+    every, rest = _hits(answers[0]), _hits(answers[1])
+    assert len(every) == 2
+    assert [hit["key"] for hit in rest] == [every[1]["key"]]
+    assert json.loads(answers[1].body)["total"] == json.loads(answers[0].body)["total"]

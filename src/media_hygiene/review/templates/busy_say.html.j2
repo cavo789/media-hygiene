@@ -2,6 +2,7 @@
    and the album page, like the ask dialog:
    - `window.mhSay(text, tone)`: a toast in the one stack (bottom centre, above the Undo toast);
      `ok` and `info` fade after SAY_FADE_MS, `error` stays until closed. Text only, never HTML.
+     `action` ({label, run}, 0837): one button before ✕ that runs it and closes the toast.
      Returns a function that takes the toast away. The bar's status line keeps the *saved, read
      back* sentence only.
    - `window.mhBusy(button, work, waiting)`: the button is disabled with a spinner until `work()`
@@ -40,7 +41,7 @@
     "waiting": _("Still working: the answer of mh is awaited (a slow disk can take a while)."),
   } | tojson }};
   const stack = document.getElementById("mhSay");
-  window.mhSay = (text, tone = "info") => {
+  window.mhSay = (text, tone = "info", action = null) => {
     const item = document.createElement("div");
     item.className = "mhSayItem " + (tone === "error" ? "error" : tone === "ok" ? "ok" : "info");
     if (tone === "error") item.setAttribute("role", "alert");
@@ -50,10 +51,18 @@
     close.type = "button";
     close.textContent = "✕";
     close.setAttribute("aria-label", SAY_TEXTS.close);
-    item.append(line, close);
-    stack.append(item);
+    item.append(line);
     let timer = 0;
     const remove = () => { window.clearTimeout(timer); item.remove(); };
+    if (action) {
+      const act = document.createElement("button");
+      act.type = "button";
+      act.textContent = String(action.label);
+      act.addEventListener("click", () => { remove(); action.run(); });
+      item.append(act);
+    }
+    item.append(close);
+    stack.append(item);
     close.addEventListener("click", remove);
     if (tone !== "error") {
       timer = window.setTimeout(() => { item.classList.add("fading"); timer = window.setTimeout(remove, 400); }, SAY_FADE_MS);

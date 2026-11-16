@@ -48,6 +48,27 @@ def apply_step(runtime: Runtime) -> ApplyStep | None:
     )
 
 
+def named_step(runtime: Runtime, name: str) -> ApplyStep | None:
+    """The numbered step of the menu with this name, read now (0810: `straighten`).
+
+    Args:
+        runtime: Settings, mount points and output.
+        name: The catalog's name of the step.
+
+    Returns:
+        Its number and full command; None when the menu has none to select.
+    """
+    menu = build_menu(read_status(runtime), runtime.settings.clean.purge_hint_days)
+    return next(
+        (
+            ApplyStep(line.number, f"{LAUNCHER_FUNCTION} {line.command}")
+            for line in menu.steps
+            if line.step.name == name and line.number
+        ),
+        None,
+    )
+
+
 def page_apply(runtime: Runtime) -> Callable[[], ApplyStep | None] | None:
     """The step a page's *Apply now* ends on, read when clicked.
 

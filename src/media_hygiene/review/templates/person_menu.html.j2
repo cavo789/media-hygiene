@@ -1,0 +1,198 @@
+{# The actions menu of a person (0836), one component for the people page's list and
+   `/person`'s naming line: a small panel (`.barPanel`, `pick_bar_panel.js.j2`) whose entries
+   open one dialog. ✎ Rename or merge (0827): the check says before it runs what happens (a
+   new name already someone's is a merge, counts stated); the faces confirmed by one and ruled
+   out by the other are shown, each with its photo when the page has it, ticked = kept as
+   confirmed: nothing is written until the user said. 🗑 Set aside this person: their photos,
+   seen first; those where they are the only face found ticked (untick to keep), those with
+   others listed and never touched; *Drop the name* checked; then the decisions file, *Apply
+   now* in the bar; the page's Undo toast takes it all back. 📚 Album in memory: every photo of
+   the person, the album shown before it is saved. Each answer is read back from the disk and
+   said. The page sets `person_menu` (the paths it answers; a missing one: no entry) and gets
+   `window.mhPersonMenu.menu(name)`; it hears `mh-person-changed` (detail: the line said). #}
+<dialog id="personAct" aria-labelledby="personActTitle">
+  <form method="dialog">
+    <h2 id="personActTitle"></h2>
+    <p id="personActSaid"></p>
+    <label id="personActNameRow" hidden>{{ _("New name") }} <input id="personActName" type="text" maxlength="100" autocomplete="off"></label>
+    <div id="personActPhotos"></div>
+    <label id="personActDropRow" hidden><input id="personActDrop" type="checkbox" checked> {{ _("Drop the name too (its file goes to .history; Undo puts it back)") }}</label>
+    <p class="mhAskButtons">
+      <button id="personActNo" type="submit" value="no" class="plain">{{ _("Cancel") }}</button>
+      <button id="personActYes" type="button"></button>
+    </p>
+  </form>
+</dialog>
+<style>
+  #personAct { max-width: min(46rem, calc(100vw - 32px)); padding: 18px 20px; border: 1px solid var(--line, #888);
+               border-radius: 12px; color: var(--ink, inherit); background: var(--card, Canvas); }
+  #personAct::backdrop { background: rgb(0 0 0 / 45%); }
+  #personAct h2 { margin: 0 0 8px; font-size: 1.1rem; }
+  #personActPhotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(96px * var(--tile-scale, 1))), 1fr)); gap: 6px; max-height: 50vh; overflow: auto; }
+  #personActPhotos label { display: grid; gap: 2px; font-size: .75rem; overflow-wrap: anywhere; }
+  #personActPhotos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
+  #personActPhotos h3 { grid-column: 1 / -1; margin: 6px 0 0; font-size: .9rem; }
+  #personAct .mhAskButtons { display: flex; gap: 8px; justify-content: flex-end; margin: 14px 0 0; }
+  #personAct button { min-height: 40px; padding: 6px 14px; border-radius: 8px; font: inherit; cursor: pointer; }
+  #personAct button.danger { color: #fff; background: var(--bad, #c62828); border: 0; }
+  .personMenu { display: inline-block; position: relative; }
+  .personMenu > summary { list-style: none; cursor: pointer; padding: 0 6px; }
+  .personMenu .panelBody { position: absolute; z-index: 5; display: grid; gap: 4px; padding: 6px;
+                           border: 1px solid var(--line, #888); border-radius: 8px; background: var(--card, Canvas); }
+</style>
+<script nonce="{{ page_nonce }}">
+(() => {
+  const PATHS = {{ person_menu | tojson }};
+  const T = {{ {
+    "menu": _("Actions on this person"),
+    "rename": _("✎ Rename or merge…"), "aside": _("🗑 Set aside this person…"), "album": _("📚 Album in memory…"),
+    "renameTitle": _("Rename {name}"), "check": _("Check"), "merge": _("Merge"), "renameYes": _("Rename"),
+    "conflicts": _("Confirmed for one, ruled out for the other: ticked = confirmed, unticked = not them."),
+    "asideTitle": _("Set aside the photos of {name}"),
+    "alone": _("Where they are alone: ticked are set aside, untick to keep"),
+    "others": _("With others: kept, not touched"),
+    "asideYes": _("Set aside these {n}"), "nothing": _("No photo of {name} to set aside."),
+    "albumTitle": _("Album in memory of {name}"), "albumYes": _("Create the album of these {n}"),
+    "albumSaid": _("Album '{album}': {n} photos of {name}."), "albumMax": _("Only the first {n} photos fit in one save."),
+    "undo": _("Undo"), "offline": _("The page cannot reach the tool."),
+  } | tojson }};
+  const MAX_ALBUM = 3000;
+  const $ = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, key) => (key in values ? String(values[key]) : all));
+  const dialog = $("personAct");
+  let act = null;
+  dialog.addEventListener("close", () => { act = null; });
+  $("personActYes").addEventListener("click", () => { if (act) act(); });
+
+  async function send(path, body) {
+    try {
+      const answer = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const result = await answer.json().catch(() => ({}));
+      return answer.ok ? result : { error: result.error || result.message || String(answer.status) };
+    } catch (error) {
+      return { error: T.offline };
+    }
+  }
+  function told(text) { window.dispatchEvent(new CustomEvent("mh-person-changed", { detail: text })); }
+  function open(title, said, yes, danger) {
+    $("personActTitle").textContent = title;
+    $("personActSaid").textContent = said;
+    $("personActYes").textContent = yes;
+    $("personActYes").className = danger ? "danger" : "";
+    $("personActNameRow").hidden = true;
+    $("personActDropRow").hidden = true;
+    $("personActPhotos").replaceChildren();
+    if (!dialog.open) dialog.showModal();
+  }
+  function tile(text, src, ticked) {
+    const label = document.createElement("label");
+    if (src) { const img = document.createElement("img"); img.src = src; img.alt = ""; img.loading = "lazy"; label.append(img); }
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = ticked;
+    label.append(box, text);
+    return { label, box };
+  }
+  const photoOf = (n) => (n === null || n === undefined || !PATHS.photo ? "" : PATHS.photo + n + ".jpg");
+  function heading(text) { const node = document.createElement("h3"); node.textContent = text; return node; }
+
+  async function rename(name, answers) {
+    const to = $("personActName").value.trim();
+    if (!to) return;
+    const body = { name, to, check: answers === undefined };
+    if (answers) body.named = answers();
+    const result = await send(PATHS.rename, body);
+    if (result.error) { $("personActSaid").textContent = result.error; return; }
+    if (!result.check) { dialog.close(); told(result.saved); return; }
+    $("personActSaid").textContent = result.check.sentence;
+    const boxes = (result.check.conflicts || []).map((item) => [item.key, tile(item.where + " — " + item.named_by, photoOf(item.photo), true)]);
+    $("personActPhotos").replaceChildren(...(boxes.length ? [heading(T.conflicts)] : []), ...boxes.map(([, one]) => one.label));
+    $("personActYes").textContent = result.check.into ? T.merge : T.renameYes;
+    act = () => rename(name, () => boxes.filter(([, one]) => one.box.checked).map(([key]) => key));
+  }
+  function startRename(name) {
+    open(fill(T.renameTitle, { name }), "", T.check, false);
+    $("personActNameRow").hidden = false;
+    $("personActName").value = name;
+    $("personActName").focus();
+    act = () => rename(name);
+  }
+
+  async function photosOf(name) {
+    const result = await send(PATHS.aside, { name, check: true });
+    if (result.error) { open(name, result.error, T.undo, false); return null; }
+    return result;
+  }
+  async function startAside(name) {
+    const found = await photosOf(name);
+    if (!found) return;
+    open(fill(T.asideTitle, { name }), found.alone.length ? "" : fill(T.nothing, { name }), "", true);
+    const alone = found.alone.map((item) => [item.face, tile(item.where, photoOf(item.face), true)]);
+    const others = found.others.map((item) => tile(item.where, photoOf(item.face), false));
+    for (const one of others) { one.box.disabled = true; }
+    $("personActPhotos").replaceChildren(heading(T.alone), ...alone.map(([, one]) => one.label), ...(others.length ? [heading(T.others), ...others.map((one) => one.label)] : []));
+    $("personActDropRow").hidden = false;
+    const ticked = () => alone.filter(([, one]) => one.box.checked).map(([key]) => key);
+    const label = () => { const n = ticked().length; $("personActYes").textContent = fill(T.asideYes, { n }); $("personActYes").disabled = !n; };
+    $("personActPhotos").addEventListener("change", label);
+    label();
+    act = async () => {
+      const keys = ticked();
+      const drop = $("personActDrop").checked;
+      const result = await send(PATHS.aside, { name, keys, drop });
+      if (result.error) { $("personActSaid").textContent = result.error; return; }
+      dialog.close();
+      const said = [result.aside.message, result.aside.saved].filter(Boolean).join(" ");
+      told(said);
+      if (window.mhUndoToast) window.mhUndoToast(said, async () => {
+        const back = await send(PATHS.groupAside, { action: "remove", faces: keys });
+        const nameBack = drop ? await send(PATHS.aside, { name, restore: true }) : {};
+        told([back.aside && back.aside.message, nameBack.aside && nameBack.aside.saved].filter(Boolean).join(" ") || back.error || nameBack.error || "");
+      });
+    };
+  }
+  async function startAlbum(name) {
+    const found = await photosOf(name);
+    if (!found) return;
+    const keys = [...found.alone, ...found.others].map((item) => item.face).slice(0, MAX_ALBUM);
+    const all = found.alone.length + found.others.length;
+    open(fill(T.albumTitle, { name }), all > MAX_ALBUM ? fill(T.albumMax, { n: MAX_ALBUM }) : "", fill(T.albumYes, { n: keys.length }), false);
+    $("personActNameRow").hidden = false;
+    $("personActName").value = name;
+    $("personActPhotos").replaceChildren(...keys.slice(0, 60).map((key) => tile("", photoOf(key), true)).map((one) => { one.box.hidden = true; return one.label; }));
+    act = async () => {
+      const album = $("personActName").value.trim() || name;
+      const result = await send(PATHS.albums, { action: "add", album, keys: keys.map(String) });
+      if (result.error) { $("personActSaid").textContent = result.error; return; }
+      dialog.close();
+      told(result.message || fill(T.albumSaid, { album, n: keys.length, name }));
+    };
+  }
+
+  function menu(name) {
+    const panel = document.createElement("details");
+    panel.className = "barPanel closesOnChoice personMenu";
+    const summary = document.createElement("summary");
+    summary.textContent = "⋯";
+    summary.title = T.menu;
+    summary.setAttribute("aria-label", T.menu);
+    const body = document.createElement("div");
+    body.className = "panelBody";
+    const entries = [["rename", T.rename, "R", startRename], ["aside", T.aside, "S", startAside], ["albums", T.album, "A", startAlbum]];
+    for (const [path, text, key, run] of entries) {
+      if (!PATHS[path]) continue;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "plain";
+      button.dataset.key = key;
+      button.dataset.action = path;
+      button.textContent = text;
+      button.addEventListener("click", (event) => { event.stopPropagation(); panel.open = false; run(name); });
+      body.append(button);
+    }
+    panel.append(summary, body);
+    return panel;
+  }
+  window.mhPersonMenu = { menu };
+})();
+</script>

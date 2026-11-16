@@ -19,6 +19,7 @@ let asked = {};        // the search shown
 let within = null;     // the folder of the tree the search is narrowed to (0348)
 const CHIPS_SHOWN = 6;  // the words on a card at sizes S and M; the rest behind +N
 let more = 0;          // the files asked past the first ones (*Show more*, 0408)
+let after = 0;         // *Show more*: the files the grid holds already, not sent again
 
 let trialAgain = null;  // (again): the grid shows the photos of a trial (0640)
 let trialShows = 0;     // how many times they were shown (0648)
@@ -103,6 +104,25 @@ function reopen(again) {
   return eventShown ? showEvent(eventShown, again) : search(null, again);  // an event (0437)
 }
 
+// Names given in the large view: those photos alone asked again (`near`), their tiles
+// replaced; 960 photos were listed again for one name (6 to 8 s, 2026-11-16).
+async function relabel(keys) {
+  if ((window.mhLate && window.mhLate.shown()) || trialAgain || eventShown) return reopen(true);
+  const body = { near: keys, order: "name", more: 0, after: 0, text: "", folder: "", sorting: "all", kind: "all", missing: "all", place: "", within: "", aside: false, album: null, day_from: null, day_to: null, source: null };
+  const answer = await ask(SEARCH_PATH, body);
+  if (!answer || !answer.ok) return reopen(true);
+  for (const hit of (await answer.json()).hits) {
+    const index = files.findIndex((file) => file.key === hit.key);
+    if (index < 0) continue;
+    files[index] = hit;
+    const fresh = card(hit, index);
+    if (index === current) fresh.classList.add("current");
+    cards[index].replaceWith(fresh);
+    cards[index] = fresh;
+  }
+  showPicked();
+}
+
 // What the index can be found by (0344, 0346): the line under the field when the photos are
 // hardly described, the tip about sentences, "none yet" on each source without words.
 const FEW = 10; // under one file in FEW described: the line shows
@@ -142,13 +162,15 @@ async function search(event, again) {
   if (!again) trialAgain = null;
   steppable();  // ◀ ▶ follow every way the dates change (cards, 📅, Back, a word)
   if (!again) more = 0;
+  const from = again ? after : 0;  // only *Show more* asks for the next files alone
+  after = 0;
   const near = window.mhNear;  // 0554: those photos alone, whatever the filters of the form
-  const body = near ? { near: near.keys, order: "name", more: more, text: "", folder: "", sorting: "all", kind: "all", missing: "all", place: "", within: "", aside: false, album: null, day_from: null, day_to: null, source: null } : {
+  const body = near ? { near: near.keys, order: "name", more: more, after: from, text: "", folder: "", sorting: "all", kind: "all", missing: "all", place: "", within: "", aside: false, album: null, day_from: null, day_to: null, source: null } : {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: null, sorting: $("sorting").value,
     order: $("missing").value !== "all" ? "name" : $("order").value, missing: $("missing").value, place: $("placeIn").value,
     kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
-    more: more, album: albumAimed(),
+    more: more, after: from, album: albumAimed(),
   };
   const lateBefore = window.mhLate ? window.mhLate.opened : 0;
   const trialBefore = trialShows;
@@ -170,14 +192,15 @@ async function search(event, again) {
   // The album filter and the place are sent with *Pick all N found* too (0602, 0642): the
   // server narrows its search the same way. The photos of `near` are not: not offered then.
   const narrowed = near;
-  total = narrowed ? found.hits.length : found.total;
-  showFiles(found.hits, again);
+  if (from && from === files.length) appendFiles(found.hits); else showFiles(found.hits, again);
+  const shownNow = files.length;
+  total = narrowed ? shownNow : found.total;
   $("grid").removeAttribute("aria-busy");
-  $("more").hidden = found.total <= found.hits.length;
+  $("more").hidden = found.total <= shownNow;
   covered(found.coverage);
   let text = counted(TEXTS.found, found.total);
   if (!found.total) text = TEXTS.none + (body.text.trim() && hardlyDescribed(found.coverage) ? " " + TEXTS.noneWhy : "");
-  else if (found.total > found.hits.length) text = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
+  else if (found.total > shownNow) text = fill(TEXTS.shown, { total: found.total, shown: shownNow });
   told(found.note ? found.note + " " + text : text, false);
   offerAlbum(body, narrowed ? 0 : found.total);  // 0523
   // Sent from the field: the keys go to the grid (Ctrl+A, the arrows); "/" comes back.

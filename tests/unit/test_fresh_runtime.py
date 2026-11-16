@@ -8,6 +8,7 @@ that no longer loads; a people file added, renamed, removed.
 from __future__ import annotations
 
 import os
+import pathlib
 import shutil
 from importlib.resources import files
 from typing import TYPE_CHECKING
@@ -21,6 +22,8 @@ from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    import pytest
 
     from media_hygiene.paths.locations import Locations
 
@@ -151,3 +154,31 @@ def test_the_home_page_carries_and_draws_the_error(tmp_path: Path) -> None:
 _EMPTY = HomeState(
     version="0", lines=(), spaces=(), actions=(), docs=HomeLink(url="/", url_en="/")
 )
+
+
+def test_no_file_is_read_while_the_stamps_stay(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Each check reads the stamps only: 1.2 MB of people's files stay unread."""
+    fresh, _locations = _fresh(tmp_path)
+    reads: list[str] = []
+    real = pathlib.Path.read_bytes
+
+    def counted(self: pathlib.Path) -> bytes:
+        reads.append(self.name)
+        return real(self)
+
+    monkeypatch.setattr(pathlib.Path, "read_bytes", counted)
+    for _ in range(3):
+        fresh.runtime()
+    assert not reads
+
+
+def test_a_file_saved_again_unchanged_reloads_nothing(tmp_path: Path) -> None:
+    """The same content, new stamps (an atomic save): the very same runtime."""
+    fresh, locations = _fresh(tmp_path)
+    first = fresh.runtime()
+    draft = locations.config_file.with_name("draft.toml")
+    draft.write_text(_port("8101"), "utf-8")
+    draft.replace(locations.config_file)
+    assert fresh.runtime() is first

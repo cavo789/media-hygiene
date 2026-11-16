@@ -12,6 +12,7 @@ import sqlite3
 from functools import cached_property
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.faces.detect import MIN_SCORE
 from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.index.face_rows import FaceStore
 from media_hygiene.index.read_only import connect_read_only
@@ -25,7 +26,12 @@ if TYPE_CHECKING:
 
     from media_hygiene.index.face_rows import StoredFace
 
-_SCANNED: Final = "SELECT 1 FROM face_scans WHERE path = ? AND model = ?"
+# Looked for down to the score the audit keeps faces from now (0841): an older scan
+# lacks the faces of people a few metres away.
+_SCANNED: Final = (
+    "SELECT 1 FROM face_scans JOIN face_tops USING (path, size, mtime_ns, model)"
+    " WHERE path = ? AND model = ? AND least <= ?"
+)
 
 
 class FaceIndex:
@@ -116,7 +122,7 @@ class FaceIndex:
         return {path: tuple(faces) for path, faces in grouped.items()}
 
     def scanned(self, path: Path) -> bool:
-        """Tell whether the faces of a photo were looked for.
+        """Tell whether the faces of a photo were looked for, down to `MIN_SCORE`.
 
         Args:
             path: The photo, in the container.
@@ -129,7 +135,8 @@ class FaceIndex:
         try:
             connection = connect_read_only(self._file)
             try:
-                found = connection.execute(_SCANNED, (str(path), self._model))
+                key = (str(path), self._model, MIN_SCORE)
+                found = connection.execute(_SCANNED, key)
                 return found.fetchone() is not None
             finally:
                 connection.close()

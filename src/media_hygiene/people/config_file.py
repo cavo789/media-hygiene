@@ -26,8 +26,10 @@ from media_hygiene.config.people_files import (
     linked_section,
 )
 from media_hygiene.config.people_settings import PeopleSettings, Person
+from media_hygiene.config.stamped_text import stamped_text
 from media_hygiene.file_history import replace_text
-from media_hygiene.people.person_files import Links, remove_unlinked, write_files
+from media_hygiene.people.person_files import Links, write_files
+from media_hygiene.people.unlinked_files import remove_unlinked
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -55,7 +57,7 @@ def read_people(config_file: Path) -> PeopleSettings:
     """
     if not config_file.is_file():
         return PeopleSettings()
-    loaded = tomllib.loads(config_file.read_text(_ENCODING))
+    loaded = tomllib.loads(stamped_text(config_file))
     section = linked_section(loaded.get(SECTION, {}), config_file.parent)
     return PeopleSettings.model_validate(section)
 
@@ -74,7 +76,7 @@ def save_people(
         ValueError: The file is not TOML, or the result would not load.
         OSError: A file cannot be written.
     """
-    text = config_file.read_text(_ENCODING) if config_file.is_file() else ""
+    text = stamped_text(config_file) if config_file.is_file() else ""
     document = tomlkit.parse(text)
     section = _section(document)
     before = _links(tomllib.loads(text).get(SECTION, {}))

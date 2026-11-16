@@ -56,7 +56,11 @@ def follow_ids(
         for person in settings.person
     )
     return settings.model_copy(
-        update={"person": people, "ignored": ids(settings.ignored)}
+        update={
+            "person": people,
+            "ignored": ids(settings.ignored),
+            "unguessed": ids(settings.unguessed),
+        }
     )
 
 

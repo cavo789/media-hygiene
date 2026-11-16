@@ -109,7 +109,7 @@ $("heaviest").addEventListener("click", () => {
   if (!["size", "rate"].includes($("order").value)) $("order").value = "size";
   search(null);
 });
-$("more").addEventListener("click", () => { more += FIRST_SHOWN; search(null, true); });
+$("more").addEventListener("click", () => { more += FIRST_SHOWN; after = files.length; search(null, true); });
 
 // `mh browse` and old links to `/browse` (0408): the search, its folders open.
 if (window.location.pathname === {{ browse_path | tojson }}) $("folders").open = true;

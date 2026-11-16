@@ -10,18 +10,18 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from dataclasses import dataclass, replace
-from enum import StrEnum
+from dataclasses import dataclass, field, replace
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import ValidationError
 
-from media_hygiene.config.slideshow_settings import LONGEST_INTERVAL, SHORTEST_INTERVAL
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
+from media_hygiene.slideshow.asked import Action, ShowAsked
 from media_hygiene.slideshow.chapters import TITLE_SECONDS, Telling
 from media_hygiene.slideshow.notes import event_start, story_view
+from media_hygiene.slideshow.why_out import WhyOut
 
 if TYPE_CHECKING:
     from media_hygiene.slideshow.screens import Screens
@@ -29,34 +29,6 @@ if TYPE_CHECKING:
 
 # Under the 30 s a browser or a proxy commonly waits for an answer.
 WAIT_SECONDS: Final = 25.0
-
-
-class Action(StrEnum):
-    """What the phone asks of the show."""
-
-    NEXT = "next"
-    PREVIOUS = "previous"
-    JUMP = "jump"  # show the photo `key`
-    OUT = "out"  # do not show the photo `key`
-    IN = "in"  # show the photo `key` again in its turn
-    PLAY = "play"
-    PAUSE = "pause"
-    PACE = "pace"  # each photo stays `seconds`
-    TELL = "tell"  # tell the events `where` (0448)
-    EVENT = "event"  # back to the start of this event (0449)
-    NEXT_EVENT = "next_event"  # the first photo of the next event (0449)
-    STOP = "stop"  # end the show: the TV says so, the remote offers another (0633)
-
-
-class ShowAsked(BaseModel):
-    """`POST /api/show`: an action, the photo it names, the interval it sets."""
-
-    model_config = ConfigDict(frozen=True, extra="forbid")
-
-    action: Action
-    key: int | None = None
-    seconds: int | None = Field(default=None, ge=SHORTEST_INTERVAL, le=LONGEST_INTERVAL)
-    where: Telling | None = None
 
 
 class Changes:
@@ -92,6 +64,7 @@ class Desk:
     screens: Screens
     changes: Changes
     replaced: tuple[int, int] = (0, 0)  # a selection's files (0: none), its show (0655)
+    why: WhyOut = field(default_factory=WhyOut)  # why each photo is out (0831)
 
     async def settle(self, since: int, limit: float = WAIT_SECONDS) -> None:
         """Wait until the show is no longer at a version, or a while passed.
@@ -131,6 +104,8 @@ class Desk:
             "playing": show.playing,
             "seconds": round(show.timing.interval),
             "out": sorted(show.skipped),
+            "why": self.why.view(show),  # its groups, or by hand (0831)
+            "unticked": sorted(self.why.unticked),  # the events set out (0832)
             "screens": self.screens.paired,
             "tvWaiting": self.screens.waiting,  # the code field on top (0456)
             "films": show.films,  # False: every TV shows photos only (0292)
@@ -194,6 +169,31 @@ class Desk:
             case Action.EVENT | Action.NEXT_EVENT:
                 start = event_start(show, int(asked.action is Action.NEXT_EVENT))
                 return start is None or show.jump(start)  # no next event: stays
-            case Action.OUT | Action.IN:
-                return show.set_out(key, out=asked.action is Action.OUT)
+            case Action.OUT | Action.IN | Action.UNTICK | Action.TICK:
+                return self._set_out(asked)
+        return True
+
+    def _set_out(self, asked: ShowAsked) -> bool:
+        """Set a photo out by hand or back in; an event's photos out, or back in.
+
+        Args:
+            asked: `out`/`in` and its key; `untick`/`tick` and the event's folder
+                (empty: the photos of no event).
+
+        Returns:
+            False for a key, or a folder, no photo of the show is in.
+        """
+        if asked.action in {Action.OUT, Action.IN}:
+            key, out = (
+                -1 if asked.key is None else asked.key,
+                asked.action is Action.OUT,
+            )
+            self.why.by_hand(key, out=out)
+            return self.show.set_out(key, out=out)
+        folder, ticked = asked.folder or "", asked.action is Action.TICK
+        keys = {s.key for s in self.show.slides if s.folder == folder}
+        if not keys:
+            return False
+        self.why.apply(self.show, f"event:{folder}", set() if ticked else keys)
+        (self.why.unticked.discard if ticked else self.why.unticked.add)(folder)
         return True

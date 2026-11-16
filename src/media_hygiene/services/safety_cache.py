@@ -11,12 +11,11 @@ and read again only when the key changes. The key lists what they depend on:
 - each run's journal: size, mtime and ctime, or missing (an `undo` appends to it; a
   journal put back by hand or restored from `mh backup` changes its ctime even when the
   copy keeps the mtime);
-- every folder below each run's quarantine folder, with its mtime and ctime (a file
-  removed or put back by hand, by `undo` or by `purge` changes its folder's);
+- without an index only (the count asks the disk then), each run's quarantine folders'
+  stamps (a file removed by hand); walking them took 10 s of 11 via Docker (0819);
 - the NAS listing the last proven push kept (`nas_cover`, 0781: a new push);
-- the index file (an audit after a kept twin was removed by hand: the only thing not
-  under the tool folders, seen at the next audit; until then the card may count it as
-  covered, but `purge` counts the only copies again, uncached, before it erases).
+- the index file (an audit: a kept twin or a file set aside removed by hand, seen then;
+  until then the card may miscount it, but `purge` counts again, uncached, first).
 
 A cache never written (no persistent `/cache`) or unreadable: read as before.
 """
@@ -121,10 +120,11 @@ def safety_key(ask: SlowAsk) -> str:
     """
     locations = ask.runtime.locations
     parts: list[object] = [[str(folder) for folder in ask.folders]]
+    walk = _index(ask.runtime) is None or not locations.index_file.is_file()
     for run in ask.runs:
-        folders = run_folders(ask.folders, run)
         parts.append([run, _stamp(journal_file(locations.journal_dir, run))])
-        parts.append([_tree(folder) for folder in folders])
+        if walk:  # the count asks the disk: its folders say what changed
+            parts.append([_tree(here) for here in run_folders(ask.folders, run)])
     parts.append(_stamp(locations.index_file))
     parts.append(_stamp(cover_file(locations.journal_dir)))
     return hashlib.sha256(json.dumps(parts).encode()).hexdigest()

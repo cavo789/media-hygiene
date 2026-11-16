@@ -53,6 +53,7 @@ class SearchAsked(BaseModel):
     order: Order = Order.BEST  # **Sort by** (0347)
     within: str = Field(default="", max_length=_MAX_TEXT)  # a folder of the tree (0348)
     more: int = Field(default=0, ge=0, le=_MOST)  # *Show more* (0408)
+    after: int = Field(default=0, ge=0, le=_MOST)  # the files the page holds already
     aside: bool = False  # **Show** 🗑: the files set aside only (0464)
     album: AlbumAimed | None = None  # the album in the field (0501)
     missing: Literal["all", "date", "place"] = "all"  # what they lack (0531)

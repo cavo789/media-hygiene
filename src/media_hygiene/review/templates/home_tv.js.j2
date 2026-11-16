@@ -1,0 +1,118 @@
+{# The TV choices of a paired phone (0444, 0455, 0508, 0825): albums, a folder, a month, at random; split from home_run.js.j2. #}
+// ---- A paired phone starts an album on the TV (0444) --------------------------------------
+// The albums saved on the PC, no free text. An mh that keeps the home server up starts the show
+// in it (0417): this phone opens its remote at once. An older one runs `slideshow --album … --lan`,
+// the home page ends, and this phone follows to the slideshow's remote once it answers.
+const TV_STEP = "slideshow-album";
+const TV_WAIT_MS = 120000;
+// Asked once per visit: each render of the home page asked it again (2026-11-02).
+// The home page stays short whatever the collection (0548): one "Albums (N)" entry, opening the
+// albums page where a tap shows an album on the TV, and the TV_RECENT albums shown last from any
+// phone (the PC writes `last_shown`, 0603); "Last sent" (each send replaces it) is never a shortcut.
+const TV_RECENT = 3;
+let tvList = null;
+let tvAsked = false;
+function tvAlbums() {
+  const box = $("#tvAlbums");
+  if (!box) return;
+  const asked = window.mhView.get({ tv: "text" }).tv; // the albums page's tap
+  if (asked && !tvAsked) {
+    tvAsked = true;
+    window.mhView.set({ tv: null }, { state: null });
+    tvStart(asked);
+  }
+  tvList = tvList || fetch(P.albumList, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)));
+  tvList
+    .then((list) => {
+      const names = (list.albums || []).map((album) => album.name);
+      const shortcuts = (list.albums || []).filter((album) => album.last_shown && album.name !== T.lastSent)
+        .sort((a, b) => (a.last_shown < b.last_shown ? 1 : -1)).slice(0, TV_RECENT).map((album) => album.name);
+      box.innerHTML = names.length
+        ? shortcuts.map((name) => `<button class="btn btn-primary" type="button" data-tv="${esc(name)}">${icon("play")} ${esc(name)}</button>`).join("")
+          + `<a class="btn btn-ghost" href="${esc(P.albums)}?tv=1">${icon("image")} ${esc(fill(T.tvAll, { n: count(names.length) }))}</a>`
+        : `<p class="muted">${esc(T.tvNone)}</p>`;
+      $$("[data-tv]", box).forEach((button) => button.addEventListener("click", () => tvStart(button.dataset.tv)));
+    })
+    .catch(() => { tvList = null; box.innerHTML = `<p class="muted">${esc(T.tvNone)}</p>`; })
+    .finally(tvChoices);
+}
+// ---- A folder or a month on the TV (0455): from the index, read-only; newest folders first (0507)
+function tvChoices() {
+  const box = $("#tvChoices");
+  if (!box || !P.tvChoices) return;
+  fetch(P.tvChoices, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+    .then((lists) => {
+      // A folder: its short label shown, its full name sent (0507); a month: as is.
+      const options = (values) => values.map((each) => (typeof each === "string" ? { value: each, label: each } : each))
+        .map((each) => `<option value="${esc(each.value)}" title="${esc(each.value)}">${esc(each.label)}</option>`).join("");
+      const pick = (id, label, values) => (values.length
+        ? `<div class="tv-choice"><label class="muted" for="${esc(id)}">${esc(label)}</label><select id="${esc(id)}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${esc(id)}">${icon("play")} ${esc(T.tvShow)}</button></div>`
+        : "");
+      box.innerHTML = tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
+      $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
+      $("#tvEra", box).addEventListener("change", () => { $("#tvPeriod", box).hidden = $("#tvEra", box).value !== "period"; });
+    })
+    .catch(() => { box.innerHTML = ""; });
+}
+// 🎲 At random (0508): a length and, optionally, the years; the PC chooses the photos.
+function tvRandomBox() {
+  const option = (value, label, chosen) => `<option value="${esc(value)}"${chosen ? " selected" : ""}>${esc(label)}</option>`;
+  const year = (id, label) => `<label class="muted" for="${esc(id)}">${esc(label)}</label><input id="${esc(id)}" type="number" inputmode="numeric" min="1800" max="2200" value="${esc(new Date().getFullYear())}">`;
+  return `<div class="tv-choice"><p class="muted">${esc(T.tvRandomNote)}</p>`
+    + `<label class="muted" for="tvLength">${esc(T.tvLength)}</label><select id="tvLength">${option(30, T.tvMinutes30)}${option(60, T.tvMinutes60, true)}${option(120, T.tvMinutes120)}</select>`
+    + `<label class="muted" for="tvEra">${esc(T.tvEra)}</label><select id="tvEra">${option("all", T.tvEraAll, true)}${option("five", T.tvEraFive)}${option("period", T.tvEraPeriod)}</select>`
+    + `<span id="tvPeriod" hidden>${year("tvFirst", T.tvEraFirst)}${year("tvLast", T.tvEraLast)}</span>`
+    + `<button class="btn btn-primary" type="button" data-choose="tvRandom">${esc(T.tvRandom)}</button></div>`;
+}
+function tvRandomBody() {
+  const asked = { minutes: Number($("#tvLength").value) };
+  const era = $("#tvEra").value;
+  const now = new Date().getFullYear();
+  if (era === "five") { asked.first_year = now - 4; asked.last_year = now; }
+  if (era === "period") { asked.first_year = Number($("#tvFirst").value); asked.last_year = Number($("#tvLast").value); }
+  return { random: asked };
+}
+function tvChoose(id) {
+  if (id === "tvRandom") { tvSend(tvRandomBody()); return; }
+  const value = $(`#${id}`).value;
+  let body = { folder: value };
+  if (id === "tvMonth") {
+    const [year, month] = value.split("-").map(Number);
+    const last = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    body = { first: `${value}-01`, last: `${value}-${String(last).padStart(2, "0")}` };
+  }
+  tvSend(body);
+}
+function tvSend(asked) {
+  const body = asked;  // people to avoid: ticked on the remote it opens (0825, 0834)
+  $$("[data-choose]").forEach((button) => { button.disabled = true; });
+  toast(T.tvStarting);
+  post(P.tvChoose, body)
+    .then((reply) => {
+      if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }
+      $$("[data-choose]").forEach((button) => { button.disabled = false; });
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+    })
+    .catch(() => { $$("[data-choose]").forEach((button) => { button.disabled = false; }); toast(T.tvLate); });
+}
+function tvStart(album) {
+  $$("[data-tv]").forEach((button) => { button.disabled = true; });
+  toast(T.tvStarting);
+  post(P.step, { name: TV_STEP, fields: { album: album } })
+    .then((reply) => {
+      if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }  // in this server (0417)
+      if (reply.ok) { tvFollow(Date.now()); return; }
+      $$("[data-tv]").forEach((button) => { button.disabled = false; });
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+    })
+    .catch(() => tvFollow(Date.now()));
+}
+// The slideshow's own address answers once it serves: then the remote, never the offline page.
+function tvFollow(since) {
+  if (Date.now() - since > TV_WAIT_MS) { toast(T.tvLate); return; }
+  fetch(P.slides, { cache: "no-store" })
+    .then((response) => { if (response.ok) window.location.replace("/"); else window.setTimeout(() => tvFollow(since), POLL_MS); })
+    .catch(() => window.setTimeout(() => tvFollow(since), POLL_MS));
+}

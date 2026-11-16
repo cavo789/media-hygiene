@@ -14,9 +14,12 @@ import pytest
 
 from media_hygiene.index.drawn_faces import add_drawn
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.people.config_file import read_people
+from media_hygiene.people.config_file import read_people, save_people
+from media_hygiene.people.person_actions import RenameDoor
+from media_hygiene.person import name_save
 from media_hygiene.person.app import PersonApp
 from media_hygiene.person.door import with_person
+from media_hygiene.person.shelf import ShelfFace
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.apply_api import ApplyOffer, ApplyStep, applying_door
 from media_hygiene.review.http import Request, Response
@@ -31,10 +34,12 @@ from tests.support.runtime import make_runtime, thread_pool
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from pathlib import Path
 
     from PIL import Image
     from typer.testing import CliRunner
 
+    from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.faces.models import Face
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.ending import EndingDoor
@@ -42,6 +47,8 @@ if TYPE_CHECKING:
 
 NAMES = "POST /person/api/names"
 FORGET = "POST /person/api/forget"
+GONE = "%IMG_2.png"  # a photo whose faces the audit never looked for
+CLIP = "C:\\Holidays\\DSC_0008.AVI"
 
 
 @dataclass(frozen=True, slots=True)
@@ -101,8 +108,10 @@ def person(
 
 
 def _unwrapped(person: object) -> object:
-    """The person page inside its albums route (0657)."""
-    return person.app if isinstance(person, WithAlbums) else person
+    """The person page inside its rename (0827) and albums (0657) routes."""
+    while isinstance(person, WithAlbums | RenameDoor):
+        person = person.app
+    return person
 
 
 def photo(app: PersonApp, typed: str) -> dict[str, object]:
@@ -126,6 +135,9 @@ def test_a_typed_path_finds_the_photo_its_face_and_that_persons_photos(
     assert isinstance(faces, list)
     assert len(faces) == 1
     key = faces[0]["key"]
+    box = faces[0]["box"]  # where it is on the photo, for the large view (0838)
+    assert set(box) == {"x", "y", "w", "h"}
+    assert all(0 <= value <= 1 for value in box.values())
     assert call(person, f"GET {faces[0]['face']}").status is HTTPStatus.OK
     liked = answer(person, "POST /person/api/like", {"key": key})
     files = liked["files"]
@@ -150,7 +162,7 @@ def test_a_path_that_is_not_a_photo_here_is_said_in_one_sentence(
 def test_a_second_look_finds_a_face_on_a_photo_lying_on_its_side(
     person: PersonApp, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """No face upright; turned by 90°, one: shown with its picture, never stored."""
+    """No face upright; turned by 90°, one: kept in the index, then named like any."""
     lying = locations.data_dir / "c" / "Holidays" / "IMG_0.png"
     found = photo(person, "C:\\Family\\IMG_9.png")  # nobody on it, upright
     assert (found["faces"], found["scanned"]) == ([], True)
@@ -169,6 +181,11 @@ def test_a_second_look_finds_a_face_on_a_photo_lying_on_its_side(
     liked = answer(person, "POST /person/api/like", {"key": faces[0]["key"]})
     assert names(liked["files"])[0] == "IMG_9.png"
     assert len(names(liked["files"])) == 5  # its photo, then person 0's four
+    again = photo(person, "C:\\Family\\IMG_9.png")  # read back from the index
+    assert len(again["faces"]) == 1  # type: ignore[arg-type]
+    twice = answer(person, "POST /person/api/look", {"path": "C:\\Family\\IMG_9.png"})
+    assert len(twice["faces"]) == 1  # type: ignore[arg-type]  # nothing new: not doubled
+    assert "No new face" in str(twice["said"])
 
 
 def test_the_photos_set_aside_are_saved_read_back_and_the_person_remembered(
@@ -451,3 +468,158 @@ def test_a_face_drawn_by_mistake_is_forgotten_with_its_name_read_back(
     assert "Only a face drawn by hand" in str(refused["error"])
     assert len(photo(person, "C:\\Holidays\\IMG_2.png")["faces"]) == 1  # type: ignore[arg-type]
     assert call(person, FORGET, {"key": -1}).status is HTTPStatus.BAD_REQUEST
+
+
+def test_two_faces_drawn_too_blurred_are_named_and_forgotten_apart(
+    person: PersonApp,
+) -> None:
+    """Two blurred faces drawn share an empty vector: each keeps its own key."""
+    path = person.finder.place.resolve("C:\\Holidays\\IMG_2.png")
+    index = person.finder.faces
+    assert path is not None
+    assert index.file is not None
+    person.finder.shelf.add(ShelfFace(path, b""))  # the photo shown to draw on
+    for one in (1, 2):
+        blurred = dataclasses.replace(face_of(one, (40, 40)), sharpness=1.0)
+        with FactsRepository.open(index.file) as repository:
+            assert add_drawn(repository.connection, index.model, (path, blurred))
+    index.refresh()
+    faces = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(faces, list)
+    keys = [face["key"] for face in faces if face["drawn"]]
+    assert len(set(keys)) == 2, faces
+    for key, name in zip(keys, ("Steph", "Paula"), strict=True):
+        body = {"action": "name", "name": name, "faces": [key]}
+        assert "1 confirmed face" in str(answer(person, NAMES, body)["saved"])
+    said = answer(person, FORGET, {"key": keys[1]})
+    assert "this photo has 2 faces now" in str(said["saved"]), said
+    left = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(left, list)
+    assert [face["named"]["name"] for face in left if face["drawn"]] == ["Steph"]
+
+
+def test_a_name_is_on_a_photo_once_and_its_cross_takes_a_confirmed_name_off(
+    person: PersonApp,
+) -> None:
+    """Naming a face Ann takes Ann off its photo's other face; the cross clears it."""
+    path = person.finder.place.resolve("C:\\Holidays\\IMG_2.png")
+    index = person.finder.faces
+    assert path is not None
+    assert index.file is not None
+    with FactsRepository.open(index.file) as repository:
+        assert add_drawn(
+            repository.connection, index.model, (path, face_of(1, (40, 40)))
+        )
+    index.refresh()
+    faces = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(faces, list)
+    first, second = faces[0]["key"], faces[1]["key"]
+    for key in (first, second):
+        answer(person, NAMES, {"action": "name", "name": "Ann", "faces": [key]})
+    named = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(named, list)
+    assert [(face["named"] or {}).get("name") or None for face in named] == [
+        None,
+        "Ann",
+    ]
+    body = {"action": "unname", "name": "Ann", "faces": [second]}
+    assert "is not Ann" in str(answer(person, NAMES, body)["saved"])
+    left = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(left, list)
+    assert [(face["named"] or {}).get("name") or None for face in left] == [None, None]
+
+
+def test_a_photo_never_analysed_gets_its_faces_now_kept_in_the_index(
+    person: PersonApp, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Not scanned → `/api/scan` finds its face, keeps it: the photo is scanned now."""
+    typed = "C:\\Holidays\\IMG_2.png"
+    index = person.finder.faces.file
+    assert index is not None
+    with FactsRepository.open(index) as repository:  # as if the audit never saw it
+        repository.connection.execute("DELETE FROM faces WHERE path LIKE ?", (GONE,))
+        repository.connection.execute(
+            "DELETE FROM face_scans WHERE path LIKE ?", (GONE,)
+        )
+        repository.connection.commit()
+    person.finder.faces.refresh()
+    before = photo(person, typed)
+    assert (before["faces"], before["scanned"]) == ([], False)
+    monkeypatch.setattr(people_models, "models_present", lambda _runtime: True)
+    monkeypatch.setattr(people_models, "face_recipe", lambda _runtime: FakeRecipe())
+    scanned = answer(person, "POST /person/api/scan", {"path": typed})
+    assert scanned["scanned"] is True
+    assert isinstance(scanned["faces"], list)
+    assert len(scanned["faces"]) == 1
+    again = photo(person, typed)  # read back from the index
+    assert (len(again["faces"]), again["scanned"]) == (1, True)  # type: ignore[arg-type]
+
+
+def test_a_video_is_said_to_be_one_never_analysed(
+    person: PersonApp, locations: Locations
+) -> None:
+    """A video's path: one sentence (faces in photos only), for every route."""
+    clip = locations.data_dir / "c" / "Holidays" / "DSC_0008.AVI"
+    clip.write_bytes(b"RIFF0000AVI ")
+    for route in ("photo", "scan", "look"):
+        said = answer(person, f"POST /person/api/{route}", {"path": CLIP})
+        assert said["faces"] == []
+        assert "This is a video" in str(said["said"])
+
+
+def test_a_photo_scanned_before_0841_is_topped_up_its_face_not_doubled(
+    person: PersonApp, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Scanned, not topped: offered again; the scan adds nothing it has already."""
+    typed = "C:\\Holidays\\IMG_2.png"
+    index = person.finder.faces.file
+    assert index is not None
+    with FactsRepository.open(index) as repository:
+        repository.connection.execute("DELETE FROM face_tops")
+        repository.connection.commit()
+    before = photo(person, typed)
+    assert (len(before["faces"]), before["scanned"]) == (1, False)  # type: ignore[arg-type]
+    monkeypatch.setattr(people_models, "models_present", lambda _runtime: True)
+    monkeypatch.setattr(people_models, "face_recipe", lambda _runtime: FakeRecipe())
+    scanned = answer(person, "POST /person/api/scan", {"path": typed})
+    assert scanned["scanned"] is True
+    faces = scanned["faces"]
+    assert isinstance(faces, list)
+    assert [face["box"] for face in faces] == [  # the same face, not doubled
+        face["box"]
+        for face in before["faces"]  # type: ignore[attr-defined]
+    ]
+
+
+def test_names_confirmed_together_are_saved_in_one_write(
+    person: PersonApp, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """*Confirm the names guessed: N*: one request, `[people]` written once."""
+    key = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]["key"]  # type: ignore[index]
+    files = answer(person, "POST /person/api/like", {"key": key})["files"]
+    assert isinstance(files, list)
+    keys = [file["key"] for file in files[:3]]
+    writes: list[object] = []
+
+    def counted(config_file: Path, wanted: PeopleSettings) -> None:
+        writes.append(wanted)
+        save_people(config_file, wanted)
+
+    monkeypatch.setattr(name_save, "save_people", counted)
+    body = {
+        "action": "move",
+        "name": "Ann",
+        "faces": [keys[0]],
+        "source": "",
+        "also": [
+            {"name": "Bob", "faces": [keys[1]]},
+            {"name": "Cy", "faces": [keys[2]]},
+        ],
+    }
+    saved = answer(person, "POST /person/api/names", body)
+    assert len(writes) == 1
+    people = saved["people"]
+    assert isinstance(people, list)
+    assert sorted(people) == ["Ann", "Bob", "Cy"]
+    for name in ("Ann", "Bob", "Cy"):
+        assert f"{name}, 1 confirmed face" in str(saved["saved"])

@@ -17,7 +17,7 @@ from media_hygiene.index.face_coverage import face_coverage
 from media_hygiene.index.tag_rows import tag_coverage
 from media_hygiene.index.walks import last_walk
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.report.index_page import load_summaries
+from media_hygiene.report.index_page import report_folders
 from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.run_book import Runs, book_of, read_runs
 from media_hygiene.services.run_facts import acted_on
@@ -32,6 +32,8 @@ from media_hygiene.services.status_parts import (
 )
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.actions.runs import RunSummary
     from media_hygiene.report.summary import ReportSummary
     from media_hygiene.services.runtime import Runtime
@@ -82,6 +84,8 @@ class Status:  # pylint: disable=too-many-instance-attributes
     imported: str | None = None  # the newest `import` run (0265)
     backed_up: datetime | None = None  # when the newest `mh push` ran (0264)
     disk: DiskProgress | None = None  # what the tree says of the sorting (0405)
+    # Every report read, newest first, with its folder (0821: read once per state).
+    reports: tuple[tuple[ReportSummary, Path], ...] = ()
 
     @property
     def blank(self) -> bool:
@@ -110,10 +114,11 @@ def read_status(runtime: Runtime) -> Status:
     """
     locations = runtime.locations
     mounted = {kind for kind in LOOKED_AT if runtime.persistent(kind)}
-    summaries = (
-        load_summaries(locations.reports_dir)
+    # Read once: the home page links its reports from these too (616 folders, 0821).
+    found = (
+        tuple(report_folders(locations.reports_dir))
         if MountKind.REPORTS in mounted and locations.reports_dir.is_dir()
-        else []
+        else ()
     )
     book = (
         read_runs(book_of(runtime), datetime.now().astimezone())
@@ -124,7 +129,7 @@ def read_status(runtime: Runtime) -> Status:
     reports = MountKind.REPORTS in mounted
     return Status(
         analysis=LastAnalysis(
-            summaries[0] if summaries else None,
+            found[0][0] if found else None,
             last_walk(runtime.index_file),
         ),
         undoable=book.undoable,
@@ -148,6 +153,7 @@ def read_status(runtime: Runtime) -> Status:
         imported=next((r.run_id for r in runs if r.kind is Phase.IMPORT), None),
         backed_up=_started(next((r.run_id for r in runs if r.kind is Phase.PUSH), "")),
         disk=disk_progress(runtime),
+        reports=found,
     )
 
 

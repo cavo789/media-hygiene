@@ -250,3 +250,22 @@ def test_the_route_answers_the_card(tmp_path: Path) -> None:
     assert asyncio.run(more_response(HomeMore(), get)) is None
     assert SAFETY_PATH in READ_PATHS
     assert SAFETY_PATH in HOME_PATHS
+
+
+def test_indexed_key_does_not_walk_the_quarantine(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """With an index, the key never walks the quarantine (10 s via Docker, 0819)."""
+    runtime = _runtime(tmp_path)
+    _clean(runtime, _RUN, 3)
+    runtime.locations.index_file.write_bytes(b"audited")
+
+    def walked(folder: Path) -> list[list[object]]:
+        raise AssertionError(folder)
+
+    monkeypatch.setattr(f"{safety_cache.__name__}._tree", walked)
+    before = safety_cache.safety_key(_ask(runtime, _RUN))
+    (runtime.locations.quarantine_dir / _RUN / "c" / "d" / "0.jpg").unlink()
+    assert safety_cache.safety_key(_ask(runtime, _RUN)) == before
+    runtime.locations.index_file.write_bytes(b"audited again")
+    assert safety_cache.safety_key(_ask(runtime, _RUN)) != before

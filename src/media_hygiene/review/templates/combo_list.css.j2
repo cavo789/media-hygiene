@@ -9,6 +9,8 @@
   .comboList { position: absolute; z-index: 4; top: 100%; left: 0; right: 0; max-height: 50vh; overflow-y: auto;
                margin: 2px 0 0; padding: 4px 0; list-style: none; background: var(--card); color: var(--text);
                border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
+  /* Opened above the field when the room below is short (0838): `combo_list.js.j2` sets it. */
+  .comboList.above { top: auto; bottom: 100%; margin: 0 0 2px; }
   .comboList[hidden] { display: none; }
   .comboList li { padding: 2px 8px; cursor: pointer; overflow-wrap: anywhere; }
   .comboList li small { margin-left: 6px; color: var(--muted); }

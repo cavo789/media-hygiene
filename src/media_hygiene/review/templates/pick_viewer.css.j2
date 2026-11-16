@@ -21,6 +21,19 @@
                         border-radius: 6px; }
   #viewerWho button.whoFace { cursor: pointer; } #viewerWho button.whoFace:hover { border-color: #ffd479; }
   #viewerWho .whoFace img { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; }
+  /* Each face outlined on the photo, its name under it (0838, `pick_who_boxes.js.j2`): every
+     box while the names are shown, else only the one hovered or being named. */
+  #whoLayer { position: absolute; pointer-events: none; } #whoLayer[hidden] { display: none; }
+  #whoLayer .whoBox { position: absolute; padding: 0; background: transparent; border: 2px solid #ffd479;
+                      border-radius: 4px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .6); pointer-events: auto;
+                      opacity: 0; }
+  #whoLayer.named .whoBox, #whoLayer .whoBox.lit { opacity: 1; }
+  #whoLayer button.whoBox { cursor: pointer; } #whoLayer .whoBox.lit { border-color: #9cd0ff; border-width: 3px; }
+  #whoLayer .whoLabel { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 2px;
+                        padding: 0 5px; white-space: nowrap; font-size: .8rem; color: #fff;
+                        background: rgba(0, 0, 0, .7); border-radius: 4px; }
+  #viewerWho .whoSwitch { font: inherit; font-size: .85rem; color: #ffd479; background: transparent;
+                          border: 1px solid #666; border-radius: 6px; cursor: pointer; }
   #viewerWhoName { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; }
   #viewerWhoName:empty { display: none; }
   #viewerWhoName input { min-width: 16em; }

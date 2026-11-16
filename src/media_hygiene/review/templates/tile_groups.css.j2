@@ -1,0 +1,10 @@
+  /* Tiles in groups (0312, 0832): one section per group, its line (a box, its name, its
+     count), then its own grid of tiles. The phone page's folders, the slideshow's events. */
+  main#grid { display: block; }
+  .folder { margin-bottom: 18px; scroll-margin-top: 110px; }
+  .folderBar { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin-bottom: 8px; }
+  .folderBar h2 { margin: 0; font-size: 1rem; }
+  .folderBar input { width: 20px; height: 20px; min-height: 0; margin: 0; padding: 0; cursor: pointer; }
+  .fold { padding: 0 6px; }
+  .folder.folded .tiles { display: none; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(170px * var(--tile-scale))), 1fr)); gap: 10px; }

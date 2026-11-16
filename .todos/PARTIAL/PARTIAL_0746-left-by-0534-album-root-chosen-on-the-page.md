@@ -10,7 +10,7 @@ Split from section 0534 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 ## Left (as listed in 0718; the source TODO has the full wording)
 
 - The decided move: album link folders recreated in the new folder, the old one emptied of its
-- A tree folder chooser (the field is a typed path). **Reason:** the search tree lists the
+- A tree folder chooser (the field is a typed path). → wanted, reusing the library's folders tree (maintainer, inbox 2026-11-14): filed as 0824. **Reason:** the search tree lists the
 
 ## How to proceed
 

@@ -106,10 +106,37 @@ def slides_view(desk: Desk) -> dict[str, object]:
             "day": slide.day,
             "film": relative(film_path(slide)),
             "format": "" if slide.film is None else slide.film.label,
+            "folder": slide.folder,  # its group on the remote (0832)
+            "photo": "" if slide.film else relative(tv_path(slide.key, slide.tag)),
+            "path": slide.path,  # who is on it, in the large view (0830)
         }
         for slide in desk.show.slides
     ]
-    return {"slides": slides}
+    return {"slides": slides, "events": events_view(desk.show.slides)}
+
+
+def events_view(slides: tuple[Slide, ...]) -> list[dict[str, str]]:
+    """The events of the show, one per folder, in the order of their first photo.
+
+    Args:
+        slides: The show's slides.
+
+    Returns:
+        Each one's folder (its key), name and period: two runs of one folder are one.
+    """
+    events: dict[str, dict[str, str]] = {}
+    for slide in slides:
+        chapter = slide.chapter
+        if slide.folder not in events:
+            name, period = (
+                ("", "") if chapter is None else (chapter.name, chapter.period)
+            )
+            events[slide.folder] = {
+                "folder": slide.folder,
+                "name": name,
+                "period": period,
+            }
+    return list(events.values())
 
 
 @dataclass(frozen=True, slots=True)

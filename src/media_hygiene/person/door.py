@@ -15,6 +15,7 @@ from media_hygiene.faces.worker import OnnxRecipe
 from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.people.aside import AsideDesk
+from media_hygiene.people.person_actions import RenameDoor
 from media_hygiene.people.remembered import AsideMemory
 from media_hygiene.person import routes
 from media_hygiene.person.albums import with_albums
@@ -22,6 +23,7 @@ from media_hygiene.person.app import PersonApp
 from media_hygiene.person.finding import PersonFinder, PhotoPlace
 from media_hygiene.person.lookup import FaceIndex
 from media_hygiene.person.names import FaceNames
+from media_hygiene.person.renaming import RENAME_PATH, person_rename
 from media_hygiene.person.second_look import LOOSE_SCORE
 from media_hygiene.person.shelf import FaceShelf
 from media_hygiene.review.apply_api import ApplyDesk, ApplyingApp
@@ -39,7 +41,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.faces.worker import FinderRecipe
-    from media_hygiene.review.ending import EndingDoor
+    from media_hygiene.review.ending import EndingDoor, Handling
     from media_hygiene.review.http import Response
     from media_hygiene.services.runtime import Runtime
 
@@ -48,11 +50,13 @@ _PAGE_TEMPLATE: Final = "person.html.j2"
 _PATHS: Final = {
     "photo": routes.PHOTO_PATH,
     "look": routes.LOOK_PATH,
+    "scan": routes.SCAN_PATH,
     "draw": routes.DRAW_PATH,
     "forget": routes.FORGET_PATH,
     "like": routes.LIKE_PATH,
     "aside": routes.ASIDE_PATH,
     "names": routes.NAMES_PATH,
+    "rename": RENAME_PATH,
 }
 
 
@@ -92,7 +96,10 @@ def with_person(door: EndingDoor, runtime: Runtime, executor: Executor) -> Endin
         The door with its person page.
     """
     person = person_app(runtime, executor, host_apply(door))
-    return dataclasses.replace(door, person=with_albums(person, runtime))
+    renaming = person_rename(runtime)
+    return dataclasses.replace(
+        door, person=RenameDoor(with_albums(person, runtime), renaming, RENAME_PATH)
+    )
 
 
 def person_on_tv(
@@ -107,13 +114,17 @@ def person_on_tv(
     Returns:
         The same door, its person page offering ▶ *Slideshow* ▾; unchanged without one.
     """
-    person = door.person
+    outer = door.person
+    person = outer.app if isinstance(outer, RenameDoor) else outer
     if not isinstance(person, WithAlbums) or not isinstance(person.app, PersonApp):
         return door
     page = PerLocale(partial(person_page, person.app.apply, tv=True))
     app = dataclasses.replace(person.app, page=page)
     desk = dataclasses.replace(person.desk, tv=tv)
-    return dataclasses.replace(door, person=WithAlbums(app, desk, person.path))
+    shown: Handling = WithAlbums(app, desk, person.path)
+    if isinstance(outer, RenameDoor):
+        shown = dataclasses.replace(outer, app=shown)
+    return dataclasses.replace(door, person=shown)
 
 
 def host_apply(door: EndingDoor) -> ApplyDesk | None:

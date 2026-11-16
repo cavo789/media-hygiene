@@ -18,9 +18,9 @@ nouveau après de nouvelles photos : seules celles-là sont analysées. Depuis l
 analyse, la page s'ouvre aussitôt sur les groupes déjà connus et analyse elle-même jusqu'à
 1 000 nouvelles photos, avec leur progression et un bouton Arrêter ; les groupes sont gardés
 dans le cache, sans être recalculés.
-Les photos analysées par une version plus ancienne, dont seule la rotation reste à deviner,
-sont comptées à part (*N photos dont la rotation reste à deviner*), dans la console et sur la
-page : ce ne sont pas des nouvelles photos.
+Les photos analysées par une version plus ancienne, dont la rotation reste à deviner ou dont
+les visages plus lointains restent à ajouter, sont comptées à part (*N photos à regarder à
+nouveau*), dans la console et sur la page : ce ne sont pas des nouvelles photos.
 
 **Essayer** :
 
@@ -199,6 +199,34 @@ Le même `decisions.json` garde ce que [`library`](library.md#mettre-des-photos-
 [`review`](review.md) ont mis de côté : un seul `clean --decisions` applique tout. Une photo
 modifiée depuis votre choix reste en place.
 
+## Les actions d'une personne : renommer, fusionner, mettre de côté, album
+
+Chaque nom de la liste des personnes a un petit menu **⋯** (↓ l'ouvre, puis la lettre) :
+
+- **✎ Renommer ou fusionner… (R)** : tapez le nouveau nom, puis *Vérifier* : la page dit
+  ce qui va se passer avant de le faire. Un nom qui est déjà celui de quelqu'un (quelle
+  que soit la casse) est une **fusion** : « Maria-Angelaela (12 visages) rejoint
+  Maria-Angela (340 visages). 3 visages communs aux deux sont gardés une fois. » Un visage
+  confirmé pour l'un et écarté pour l'autre est montré avec sa photo : coché, il reste
+  confirmé ; décoché, ce n'est pas cette personne. Rien n'est écrit avant votre choix. Le
+  nom suit dans `[slideshow] avoid`, dans `[[classify.rules]]` et dans les événements
+  retenus (`/config/events/`) ; les albums gardent leur propre nom, et les fichiers XMP
+  les noms qu'ils contiennent jusqu'au prochain `xmp`. Les fichiers précédents restent
+  dans `/config/.history/`. Le même menu se trouve sur la ligne de nommage de `/person`
+  (pour y renommer).
+- **🗑 Mettre cette personne de côté… (S)** : ses photos sont d'abord montrées. Celles où
+  elle est le seul visage trouvé sont cochées : décochez celles à garder. Celles où
+  d'autres apparaissent sont listées et jamais touchées. *Retirer aussi le nom* est coché
+  par défaut. *Mettre de côté ces N* écrit le fichier de décisions : *Appliquer
+  maintenant* (ou `clean --decisions`) déplace les photos vers la quarantaine, `undo` les
+  ramène ; *Annuler* dans le message reprend les photos et remet le nom, son fichier et
+  son lien dans `config.toml`.
+- **📚 Album en souvenir… (A)** : toutes les photos de la personne dans un album, à son
+  nom (modifiable) ; les photos sont montrées avant l'enregistrement, et ce que contient
+  `albums.json` est relu.
+
+Sur le téléphone et la télévision, rien de tout cela n'est proposé : ils ne font que lire.
+
 ## Depuis n'importe quelle photo : nommer ou mettre de côté quelqu'un
 
 Une photo montre quelqu'un que la page people ne vous a jamais demandé (« c'est tante
@@ -228,7 +256,9 @@ sans `config.toml` à vous, les noms seulement.
    comme visage confirmé, relu et affiché (*Enregistré dans config.toml, relu : Juliette, 1
    visage confirmé*) ; un nouveau nom crée la personne, un nom existant s'y ajoute. Quand l'outil a
    deviné des noms (≈), **✓ Confirmer les noms devinés : N** les confirme tous en un clic, tels
-   qu'affichés.
+   qu'affichés. Un nom faux que vous ne voulez pas remplacer : sa **×** (ou **✗ Ce n'est pas …**
+   dans la grande vue) laisse le visage **? sans nom**, et plus aucun nom ne lui est deviné,
+   jusqu'à ce que vous le nommiez vous-même.
 2. À droite, les photos de cette personne, les plus ressemblantes d'abord, en grille à choisir
    comme dans [les dossiers de `library`](library.md#parcourir-vos-dossiers) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
    et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la
@@ -273,9 +303,12 @@ sans `config.toml` à vous, les noms seulement.
 
 **Pas de visage sur la photo ?** Un visage penché, couché ou flou échappe souvent à l'audit, qui
 regarde chaque photo droite. **Regarder encore, plus lentement** regarde cette seule photo
-tournée (jusqu'à 90° de chaque côté) et moins exigeante ; ce qu'elle trouve est montré pour
-choisir, jamais enregistré. Mesuré sur 9 vraies photos d'une même personne manquées par
-l'audit : 6 retrouvées, 1 tout juste à la limite, 2 non (très floues). Toujours rien, alors que
+tournée (jusqu'à 90° de chaque côté) et moins exigeante (jusqu'à une certitude de 0,4, contre
+0,6 pour l'audit) : les visages trouvés que la photo n'avait pas sont gardés dans l'index, une
+fois chacun, et nommés d'après les personnes que vous connaissez, comme les autres : confirmez
+ou corrigez. Sur une fête de famille (215 vraies photos), 3 à 5 visages sur 6 trouvés sous la
+certitude de l'audit sont bien des personnes : les autres, un motif ou un reflet, restent
+simplement sans nom. Toujours rien, alors que
 vous voyez le visage ? **✏ Tracer un visage manqué par l'outil** montre la photo : tracez un
 cadre autour du visage. L'outil le cherche dans ce cadre, agrandi, ou prend le cadre lui-même ;
 le visage est alors gardé dans l'index comme un visage trouvé (marqué *tracé*, un nouvel audit
@@ -293,6 +326,32 @@ partir de lui. Sous 20 pixels, la page dit que le cadre est trop petit et n'écr
 sur une zone vide n'écrit rien non plus. Quand rien n'est trouvé, mettez la photo de côté toute seule (Suppr dans sa grande
 vue).
 
+Une personne figure une seule fois sur une photo : nommer un visage *Stéphanie* retire ce nom
+de tout autre visage de la même photo (deux personnes du même prénom : distinguez-les,
+*Stéphanie 1*, *Stéphanie 2*). Le **×** d'un visage nommé, nom confirmé (✓) ou deviné (≈),
+retire le nom : le visage reste, à nommer.
+
+## Photos à redresser
+
+En cherchant les visages, `people` remarque aussi une photo couchée sur le côté : ses visages ne
+sont droits qu'une fois la photo tournée (🤖 le modèle de visages local, YuNet : une supposition).
+La page **Photos à redresser** de la page d'accueil (*Trier*, *Aller plus loin*) montre chacune
+**tournée comme elle le serait**, une vignette par photo, choisie comme dans [`library`](library.md) :
+clic, Ctrl+clic, Maj+clic, un rectangle, Ctrl+A, I pour inverser, Entrée ou un double clic pour la
+grande vue.
+
+- **↻ Tourner ces photos** tourne maintenant les photos choisies : seule leur balise d'orientation
+  (deux octets) est écrite, journalisée, chacune relue ; le **↶ Annuler** du message (ou
+  `mh undo <run>`) rend chaque fichier octet pour octet.
+- **✋ Ne jamais tourner celles-ci** garde un refus : la photo n'est plus jamais proposée, même
+  renommée ou déplacée par `sort`.
+- **✅ Appliquer** (ouverte depuis la page d'accueil) tourne toutes les photos que la page montre,
+  dans la fenêtre de `mh`, après sa question.
+
+Les photos d'un dossier protégé ou d'une sauvegarde, et tout fichier qui n'est pas un JPEG, ne sont
+jamais tournés ni montrés. Voie rapide pour une grande collection, toutes les photos d'un coup sans
+les montrer : `mh people --straighten` (une question, le même journal).
+
 ## Options
 
 | Option | Rôle |
@@ -302,6 +361,7 @@ vue).
 | `--forget` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun ; demande avant de supprimer aussi les noms de `config.toml`. |
 | `--names` | Avec `--forget` : supprimer aussi les noms de `config.toml` et les visages ignorés, sans demander ; le fichier précédent est conservé dans `/config/.history/`. |
 | `--expect N/M` | Avec `--names` : les noms et visages ignorés que la confirmation a listés (la page d'accueil l'ajoute) ; refuse, sans rien supprimer, si `config.toml` a changé depuis. |
+| `--straighten` | Tourner toutes les photos trouvées couchées sur le côté, après une question, journalisé (la page *Photos à redresser* les montre d'abord). |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 
 ## Votre vie privée
@@ -319,6 +379,13 @@ SHA-256 : il n'envoie rien sur vos photos.
   `classify`, XMP), sauf si vous les avez confirmés : rien n'est analysé à nouveau.
 - `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
   temps que ça prend ; `with_audit = true` dans `[people]` le fait à chaque audit.
+- Les visages pris à quelques mètres, sur les photos de groupe, sont gardés depuis novembre
+  2026 : deux fois plus de visages sur une fête de famille, presque tous nommés d'emblée
+  d'après les personnes que vous avez déjà nommées. Les photos analysées avant sont regardées
+  une fois de plus par le prochain `people` (ou `audit --people`) : seuls les visages qui leur
+  manquent sont ajoutés, après les leurs, et chaque nom donné reste sur son visage
+  (*N photos déjà analysées, regardées à nouveau : M visages ajoutés*). Pour une seule photo,
+  *Chercher les visages maintenant* sur la page *Identifier quelqu'un* fait de même.
 - Les vidéos ne sont pas encore analysées.
 - Sans réseau, l'erreur nomme les deux fichiers de modèle à enregistrer à la main dans le dossier
   `models` du cache.

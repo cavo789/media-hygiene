@@ -163,3 +163,28 @@ def test_orientation_write_refuses_what_it_cannot_patch(tmp_path: Path) -> None:
     Image.new("RGB", (4, 4)).save(big_endian)
     with pytest.raises(NoOrientationError):
         with_orientation(big_endian.read_bytes(), 6)
+
+
+class _SizesSeen:
+    """Records the size of every picture it is asked about; finds nothing."""
+
+    def __init__(self) -> None:
+        self.sizes: list[tuple[int, int]] = []
+
+    def find(self, picture: Image.Image) -> tuple[Face, ...]:
+        """Record the size."""
+        self.sizes.append(picture.size)
+        return ()
+
+
+def test_turns_are_guessed_on_a_reduced_copy(tmp_path: Path) -> None:
+    """The three turns look at a copy at most GUESS_EDGE wide (0808: 65 ms of 165)."""
+    path = tmp_path / "big.jpg"
+    exif = Image.Exif()
+    exif[0x010F] = "Apple"
+    exif[0x0112] = 1
+    Image.new("RGB", (4032, 3024)).save(path, "JPEG", exif=exif)
+    finder = _SizesSeen()
+    with Image.open(path) as picture:
+        turn_of(Seen(path, picture.convert("RGB"), 0), finder)
+    assert finder.sizes == [(960, 1280), (1280, 960), (960, 1280)]

@@ -124,14 +124,30 @@ def likeness(seed: bytes, rows: FaceRows, people: Sequence[AsideFaces]) -> Liken
     every, vectors = rows.faces, rows.vectors
     if not every:
         return Likeness((), known)
-    mean = unit(np.stack(starting))
+    close, likeness_of = close_rows(np.stack(starting), vectors)
+    return Likeness(_one_per_photo(every, close, likeness_of), known)
+
+
+def close_rows(
+    starting: NDArray[np.float32], vectors: NDArray[np.float32]
+) -> tuple[NDArray[np.int64], NDArray[np.float32]]:
+    """The rows close to the mean of some faces, that mean refined by what it finds.
+
+    Args:
+        starting: The faces known to be the person, one vector per row.
+        vectors: The faces to look in, one per row.
+
+    Returns:
+        The rows within `LOOK_ALIKE` of the mean, and the likeness of every row.
+    """
+    mean = unit(starting)
     close = np.empty(0, dtype=np.int64)
-    likeness_of = np.zeros(len(every), dtype=np.float32)
+    likeness_of = np.zeros(len(vectors), dtype=np.float32)
     for _ in range(_ROUNDS):
         likeness_of = vectors @ mean
         close = np.flatnonzero(likeness_of >= LOOK_ALIKE)
-        mean = unit(np.concatenate((np.stack(starting), vectors[close])))
-    return Likeness(_one_per_photo(every, close, likeness_of), known)
+        mean = unit(np.concatenate((starting, vectors[close])))
+    return close, likeness_of
 
 
 def _one_per_photo(

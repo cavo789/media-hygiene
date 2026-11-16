@@ -12,6 +12,7 @@ from typing import Final
 from media_hygiene.index.aside_faces import CREATE_ASIDE_FACES
 from media_hygiene.index.aside_not import CREATE_ASIDE_NOT
 from media_hygiene.index.face_groups import CREATE_FACE_GROUPS
+from media_hygiene.index.face_tops import CREATE_FACE_TOPS
 from media_hygiene.index.turn_rows import CREATE_FACE_TURNS
 
 CREATE_FACE_SCANS: Final = """
@@ -46,6 +47,7 @@ CREATE TABLE IF NOT EXISTS faces (
 )
 """
 FACE_TABLES: Final = (
+    CREATE_FACE_TOPS,
     CREATE_FACE_SCANS,
     CREATE_FACES,
     CREATE_ASIDE_FACES,

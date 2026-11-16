@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, cast
 from media_hygiene.errors import MountError
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request
-from media_hygiene.services import home_pages
+from media_hygiene.services import home_pages, library_people
 from media_hygiene.services.console_here import ReadOnlyHere
 from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
@@ -56,7 +56,7 @@ def _here(
 
     monkeypatch.setattr(home_pages, "FreshRuntime", partial(FreshRuntime, every=0))
     monkeypatch.setattr(home_pages, "open_search", opened)
-    monkeypatch.setattr(home_pages, "search_app", built)
+    monkeypatch.setattr(library_people, "search_app", built)
     locations = make_locations(tmp_path)
     locations.config_dir.mkdir(parents=True, exist_ok=True)
     locations.config_file.write_text("[review]\nport = 8111\n", "utf-8")

@@ -72,6 +72,16 @@ def show_found(output: Output, outcome: FindOutcome) -> None:
                 seconds=human_number(outcome.seconds / outcome.analysed, _DECIMALS),
             )
         )
+    if outcome.topped:  # 0841: the faces kept from a lower score
+        output.success(
+            ngettext(
+                "{count} photo analysed before, looked at again: {faces} faces added.",
+                "{count} photos analysed before, looked at again: {faces} faces added.",
+                outcome.topped,
+            ).format(
+                count=human_number(outcome.topped), faces=human_number(outcome.added)
+            )
+        )
     if outcome.unreadable:
         output.warning(
             ngettext(

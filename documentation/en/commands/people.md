@@ -16,8 +16,9 @@ them. The faces stay in the [cache](../reference-glossary.md#cache), never sent 
 after new photos: only those are analysed. From the home page, past the first run, the page
 opens at once on the groups already known and analyses up to 1 000 new photos itself, with
 their progress and a Stop button; the groups are kept in the cache and not recomputed.
-Photos analysed by an older version, whose turn only is still to guess, are counted apart
-(*N photos whose turn is still to guess*), in the console and on the page: they are not new.
+Photos analysed by an older version, whose turn is still to guess or whose faces further away
+are still to add, are counted apart (*N photos to look at again*), in the console and on the
+page: they are not new.
 
 **Try it**:
 
@@ -183,6 +184,31 @@ The same `decisions.json` keeps what [`library`](library.md#set-photos-aside) an
 [`review`](review.md) set aside: one `clean --decisions` applies everything. A photo changed
 since you chose it is left in place.
 
+## A person's actions: rename, merge, set aside, album
+
+Each name of the people list has a small **⋯** menu (↓ opens it, then the letter):
+
+- **✎ Rename or merge… (R)**: type the new name, then *Check*: the page says what will
+  happen before it runs. A name that is already someone's (whatever its case) is a
+  **merge**: "Maria-Angelaela (12 faces) joins Maria-Angela (340 faces): 3 faces in both
+  are kept once." A face confirmed for one and ruled out for the other is shown with its
+  photo: ticked, it stays confirmed; unticked, it is not them. Nothing is written until
+  you chose. The name follows in `[slideshow] avoid`, in `[[classify.rules]]` and in the
+  events remembered (`/config/events/`); albums keep their own names, and XMP sidecars
+  keep the names they hold until `xmp` runs again. The previous files stay in
+  `/config/.history/`. The same menu sits on `/person`'s naming line (rename there).
+- **🗑 Set aside this person… (S)**: their photos are shown first. Those where they are
+  the only face found are ticked: untick the ones to keep. Those where others are too
+  are listed and never touched. *Drop the name too* is checked by default. *Set aside
+  these N* writes the decisions file: *Apply now* (or `clean --decisions`) moves the
+  photos to the quarantine, `undo` brings them back; the toast's *Undo* takes back the
+  photos and puts the name, its file and its link in `config.toml` back.
+- **📚 Album in memory… (A)**: every photo of the person in one album, named after them
+  (you may change the name); the photos are shown before it is saved, and what
+  `albums.json` holds is read back.
+
+On the phone and the TV, none of this is offered: they only read.
+
 ## From any photo: name or set aside someone
 
 A photo shows someone the people page never asked you about ("this is Aunt Juliette"), or
@@ -209,7 +235,9 @@ without a `config.toml` of yours, the names only.
    pick one in the list, Enter. It is saved in `config.toml` as a confirmed face, read back and
    shown (*Saved in config.toml, read back: Juliette, 1 confirmed face*); a new name creates the
    person, an existing one adds to them. When the tool guessed names (≈), **✓ Confirm the names
-   guessed: N** confirms them all in one click, as they are shown.
+   guessed: N** confirms them all in one click, as they are shown. A wrong name you do not want
+   to replace: its **×** (or **✗ It is not …** in the large view) leaves the face **? not named**
+   and no name is guessed for it any more, until you name it yourself.
 2. On the right, the photos of that person, the closest first, as a grid to pick like in
    [the folders of `library`](library.md#walk-through-your-folders): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
    its keys. If they look like someone you set aside before, the bar says so (*the person set
@@ -250,9 +278,11 @@ without a `config.toml` of yours, the names only.
 
 **No face on the photo?** A face tilted, lying on its side or blurred is often missed by the
 audit, which looks at each photo upright. **Look again, slower** looks at that one photo turned
-(up to 90° each way) and less strictly; what it finds is shown to choose from, never stored.
-Measured on 9 real photos of one person missed by the audit: 6 found, 1 just at the limit, 2
-not (very blurred). Still nothing, though you see the face? **✏ Draw a face the tool missed**
+(up to 90° each way) and less strictly (down to a detector score of 0.4, the audit's being
+0.6): the faces it finds that the photo did not have are kept in the index, each once, and
+named after the people you know like the others: confirm or correct them. On a family event
+(215 real photos), 3 to 5 faces in 6 found below the audit's score are still people: the
+others, a pattern or a reflection, you simply leave without a name. Still nothing, though you see the face? **✏ Draw a face the tool missed**
 shows the photo: drag a box around the face. The tool looks for it in that box, enlarged, or
 takes the box itself; the face is then kept in the index like a face found (flagged *drawn*, so
 a new audit keeps it), named and searched like the others. A box drawn on a face the photo
@@ -268,6 +298,31 @@ this photo only*; no other photo is searched from it. Under 20 pixels, the page 
 too small and writes nothing; a box on an empty area writes nothing either. When nothing is
 found, set the photo aside on its own (Delete in its large view).
 
+A person is on a photo once: naming a face *Stéphanie* takes that name off any other face of
+the same photo (two people of the same name: tell them apart, *Stéphanie 1*, *Stéphanie 2*). The
+**×** of a named face, the name confirmed (✓) or guessed (≈), takes the name off: the face stays,
+to name.
+
+## Photos to straighten
+
+While it looks for faces, `people` also notices a photo lying on its side: its faces stand
+upright only once the photo is turned (🤖 the local face model, YuNet: a guess). The page
+**Photos to straighten** of the home page (*Sort out*, *Go further*) shows each of them
+**turned as it would be**, a tile per photo, picked as in [`library`](library.md): click, Ctrl+click,
+Shift+click, a rectangle, Ctrl+A, I to invert, Enter or a double click for the large view.
+
+- **↻ Turn these photos** turns the photos picked now: only their orientation tag (two bytes) is
+  written, journaled, each read back; the message's **↶ Undo** (or `mh undo <run>`) gives each
+  file back byte for byte.
+- **✋ Never turn these** keeps a refusal: the photo is never proposed again, even renamed or
+  moved by `sort`.
+- **✅ Apply** (opened from the home page) turns every photo the page shows, in the window of
+  `mh`, after its question.
+
+Photos of a protected folder or of a backup, and any file that is not a JPEG, are never turned
+nor shown. Fast path for a large collection, every photo at once without showing them:
+`mh people --straighten` (one question, the same journal).
+
 ## Options
 
 | Option | What it does |
@@ -277,6 +332,7 @@ found, set the photo aside on its own (Delete in its large view).
 | `--forget` | Delete every face from the cache, then show that none is left; asks before deleting the names of `config.toml` too. |
 | `--names` | With `--forget`: delete the names of `config.toml` and the faces ignored too, without asking; the previous file is kept in `/config/.history/`. |
 | `--expect N/M` | With `--names`: the names and faces ignored the confirmation listed (the home page adds it); refuses, deleting nothing, when `config.toml` changed since. |
+| `--straighten` | Turn every photo found lying on its side, after one question, journaled (the page *Photos to straighten* shows them first). |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 
 ## Your privacy
@@ -293,6 +349,12 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
   `classify`, XMP), unless you confirmed them: nothing is analysed again.
 - `audit --people` looks for the faces right after an audit, once you agreed to the time it
   takes; `with_audit = true` in `[people]` does it at every audit.
+- Faces a few metres away, in group photos, are kept since November 2026: twice as many faces
+  on a family event, almost all named at once after the people you named already. Photos
+  analysed before are looked at once more by the next `people` (or `audit --people`): it only
+  adds the faces they lack, after their own, so every name you gave stays on its face
+  (*N photos analysed before, looked at again: M faces added*). On a single photo, *Find its
+  faces now* on the page *Identify someone* does the same.
 - Videos are not analysed yet.
 - Without network, the error names the two model files to save by hand into the `models` folder
   of the cache.

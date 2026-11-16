@@ -160,3 +160,51 @@ def test_any_name_or_path_is_written_as_valid_toml(tmp_path: Path) -> None:
     odd = ('C:\\Mes "photos"\\été\t1.jpg#0', "/del\x7f.jpg#1", "/ü/日本.jpg#2")
     saved(config, Person(name='Jo "le"\nPapy', faces=odd))
     assert read_people(config).person[0].faces == odd
+
+
+def test_a_file_edited_by_hand_is_written_again_by_the_next_save(
+    tmp_path: Path,
+) -> None:
+    """Manon's faces taken out by hand: a save of Chloé puts them back (its stamp)."""
+    config = tmp_path / "config.toml"
+    saved(config, CHLOE, MANON)
+    back = read_people(config)
+    manon = tmp_path / "people" / "Manon.toml"
+    manon.write_text(
+        manon.read_text(encoding="utf-8").split("faces")[0] + "faces = []\n"
+    )
+    more = back.person[0].model_copy(update={"faces": (*CHLOE.faces, "/e.jpg#0")})
+    save_people(config, back.model_copy(update={"person": (more, back.person[1])}))
+    assert read_people(config).person[1].faces == MANON.faces
+
+
+def test_a_person_renamed_keeps_the_file_its_header_follows(tmp_path: Path) -> None:
+    """Same faces, new name: the file's first line names them again."""
+    config = tmp_path / "config.toml"
+    saved(config, CHLOE)
+    back = read_people(config)
+    renamed = back.person[0].model_copy(update={"name": "Chloé B."})
+    save_people(config, back.model_copy(update={"person": (renamed,)}))
+    first = (tmp_path / renamed.file).read_text(encoding="utf-8").split("\n")[0]
+    assert "Chloé B." in first
+
+
+def test_the_faces_left_unguessed_have_their_own_file(tmp_path: Path) -> None:
+    """people/unguessed.toml: written, read back, gone once empty (a version kept)."""
+    config = tmp_path / "config.toml"
+    save_people(config, PeopleSettings(person=(CHLOE,), unguessed=("/z.jpg#2",)))
+    unguessed = tmp_path / "people" / "unguessed.toml"
+    assert unguessed.is_file()
+    assert "unguessed" not in config.read_text(encoding="utf-8")  # never linked
+    back = read_people(config)
+    assert back.unguessed == ("/z.jpg#2",)
+    save_people(config, back.model_copy(update={"unguessed": ()}))
+    assert not unguessed.exists()
+    assert read_people(config).unguessed == ()
+    assert list((tmp_path / ".history" / "people").glob("unguessed.toml.*"))
+
+
+def test_a_person_named_unguessed_never_takes_that_file() -> None:
+    """The name is free; its file is not the tool's own."""
+    name = file_names((Person(name="Unguessed", faces=("/a.jpg#0",)),))[0]
+    assert name.casefold() != "people/unguessed.toml"

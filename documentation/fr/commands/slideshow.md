@@ -113,6 +113,28 @@ rien de mis de côté. Ses
 deux choix : la **durée** (30 min, 1 h, 2 h : 1 h à 8 s par photo fait environ 450 photos) et les
 **années** (tout, les 5 dernières années ou une période). Chaque appui est un nouveau diaporama.
 
+**Éviter certaines personnes** se trouve sur la télécommande (`/slideshow`, sur le PC et le
+téléphone) : il marche quelle que soit l'entrée du diaporama, le ▶ *Sur ce PC* ou *Sur la télé* de la
+bibliothèque, un album, un choix télé de la page d'accueil (le téléphone ouvre la télécommande juste
+après). Il ne liste que les personnes vues sur les photos du diaporama, par ordre alphabétique, chacune
+avec son compte : ✓ un visage nommé comme le sien, ≈ un visage seulement proche de sa moyenne (la
+ressemblance de `/person` ; large exprès, pour qu'une photo oubliée soit rare — un nom vu seulement
+par ≈ peut être quelqu'un qui lui ressemble). Cocher un nom retire ses photos du diaporama, comme
+*Ne pas montrer* : elles passent dans le groupe *Ne seront pas montrées* en fin de grille, chacune
+avec le nom, vous voyez ce qui est écarté ; décochez et elles reviennent à leur place (une photo
+retirée à la main reste retirée, une remontrée à la main reste montrée). La télé n'en montre rien,
+et le téléphone ne nomme jamais personne. Sur l'onglet d'écran du PC lui-même, le même bloc s'ouvre
+devant la première photo, le diaporama en pause, dès que quelqu'un y est vu : cochez, puis
+**Démarrer** (Entrée) ; **P** le rouvre pendant le diaporama.
+
+**Retenus pour tous les diaporamas** : un nom coché sur le PC (la télécommande ou l'onglet d'écran du
+PC) est écrit dans `config.toml` (`[slideshow] avoid = ["Antoine"]`), relu et annoncé dans le bloc
+(« Retenus pour tous les diaporamas : Antoine ») ; chaque diaporama suivant démarre avec ses photos
+dans *Ne seront pas montrées* et le nom coché, affiché même s'il n'est sur aucune de ses photos
+(« retenu, sur aucune de ces photos »), jusqu'à ce que vous le décochiez. Sur le téléphone, les cases
+ne valent que pour ce diaporama, et il le dit. Un nom qui n'est plus parmi les personnes nommées
+(renommé, supprimé) est ignoré.
+
 **Depuis toute page de vignettes, sans album** : dans [`library`](library.md) et la revue des rafales ouverts depuis la page d'accueil, (et `/person`, les vignettes des albums), **▶ Diaporama ▾** dans la barre montre
 les photos et vidéos choisies ou, rien de choisi, tous les fichiers que montre la page (le
 résultat de la recherche, les fichiers du dossier), 3000 au plus (au-delà : affinez la
@@ -170,9 +192,28 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
   **Garder comme valeur par défaut** (PC seulement) écrit ce rythme dans `[slideshow]
   interval_seconds`, montre ce que `config.toml` contient une fois relu, et vaut pour les prochains
   diaporamas.
+- Les vignettes sont groupées par **événement** (les photos d'un même dossier, nommées comme sur
+  le carton titre de la télé : *Pâques · avril 2026*, avec leur nombre ; les photos sans événement
+  sous *Autres photos*). La ligne d'état nomme l'événement de la photo sur la télé (*Photo 17 sur
+  344 · Pâques · avril 2026 · …*), et le nom de son groupe est coloré. Chaque événement a une case,
+  cochée : décochez-la pour retirer toutes ses photos du diaporama, recochez-la pour remettre
+  celles qu'elle avait retirées (une photo retirée à la main reste retirée). Choisissez une année
+  entière, puis retirez les événements dont vous ne voulez pas. Un événement sans plus aucune photo
+  à montrer est caché (jamais « 0 photo »), mais celui que vous avez décoché garde son nom et sa
+  case, pour être recoché.
+- En dernier, **Ne seront pas montrées** réunit toutes les photos retirées, chacune disant
+  pourquoi : la personne évitée, l'événement décoché, ou *à la main*.
 - Une vignette touchée montre cette photo sur la télé.
+- Un double clic sur une vignette (ou Entrée) l'ouvre **en grand**, comme dans
+  [`library`](library.md) : ← → pour les autres, F plein écran, Échap ferme ; dessous, **qui y
+  est**, ✓ nommé, ≈ seulement deviné, ? personne. Sur le PC, un clic sur un visage le nomme ou retire
+  un mauvais nom (*Pas Paul, ce visage est…*), relu sur le disque, et **👤 Ses autres photos** ouvre
+  `/person` dans un nouvel onglet, le diaporama continue ; les nombres de **Éviter certaines
+  personnes** suivent aussitôt. Sur le téléphone, les noms seulement. Les vignettes prennent
+  **S/M/L/XL** et **◀ Masquer le panneau**, comme toute page de vignettes.
 - **Ne pas montrer** retire du diaporama la photo sur la télé (la télé passe à la suivante) ; le
-  bouton d'une vignette fait de même pour n'importe quelle photo, et **Remontrer** la remet.
+  bouton d'une vignette fait de même pour n'importe quelle photo, et **La montrer à nouveau** la
+  remet, même si son événement est décoché ou sa personne évitée (le choix à la main l'emporte).
 - La vignette d'une vidéo est l'une de ses images (décodée une fois, gardée dans le cache), marquée **▶**. Sur la télé, elle passe jusqu'au bout, puis le
   diaporama continue ; **❚❚ Pause** la met en pause aussi. Une vidéo que la télé ne sait pas lire
   est signalée sous sa vignette (*Pas sur la télé : son format (hevc) n'y est pas lu.*) et passée.
@@ -238,6 +279,7 @@ puis le clavier sert de télécommande :
 | Espace | Pause / lecture |
 | Échap | Quitte le plein écran |
 | S | Arrête le diaporama et revient à la page d'accueil (ouvert à la main : ferme l'onglet) |
+| P | Éviter certaines personnes : le bloc de la télécommande, le diaporama en pause ; Entrée repart |
 
 Bougez la souris : une petite barre montre les mêmes boutons (◀ ⏯ ▶ ⛶ ✕), et se cache après
 3 secondes sans mouvement. Même diaporama, mêmes cartons de titre et vidéos que sur une télé ; un

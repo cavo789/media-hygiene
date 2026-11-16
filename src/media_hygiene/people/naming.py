@@ -5,8 +5,11 @@ new grouping keeps every name. A face confirmed on the page keeps its name; any 
 takes the name of the nearest confirmed face when they are similar enough
 (`[people] similarity`), never one the user removed it from, and only when it is
 large and sharp enough to be shown on the people page (`min_face`, `min_sharpness`,
-TODO 0316). Faces near those the user ignored are ignored too: the same stranger is
-not shown again. The references are gathered by `known.Known`.
+TODO 0316). A person is on a photo once: a name confirmed there, or guessed for a
+closer face of it, is not guessed again; the face takes its next closest name
+(`one_per_photo`). Faces near those the user ignored are ignored too: the same
+stranger is not shown
+again. The references are gathered by `known.Known`.
 """
 
 from __future__ import annotations
@@ -18,6 +21,7 @@ from typing import TYPE_CHECKING, Final
 import numpy as np
 
 from media_hygiene.faces.models import vector_of
+from media_hygiene.people.one_per_photo import Guess, once_per_photo, taken_names
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -113,21 +117,24 @@ def _block(faces: Sequence[StoredFace], known: Known) -> list[FaceName]:
         return [known.confirmed.get(id_of(face), NOBODY) for face in faces]
     vectors = np.stack([vector_of(face.embedding) for face in faces])
     similar = vectors @ known.vectors.T
-    names: list[FaceName] = []
+    names: list[FaceName | None] = []
+    guesses: list[Guess] = []
     for row, face in enumerate(faces):
         key = id_of(face)
         if key in known.confirmed:
             names.append(known.confirmed[key])
             continue
-        if not known.rule.thresholds.recognisable(face):  # never shown: never named
+        # A cross said "no name" (`unguessed`), or never shown: never named.
+        if key in known.unguessed or not known.rule.thresholds.recognisable(face):
             names.append(NOBODY)
             continue
-        scores = known.scores(key, similar[row])
-        best = int(np.argmax(scores))
-        if scores[best] < known.rule.similarity:
-            names.append(NOBODY)
+        names.append(None)
+        guesses.append(Guess(row, face.path, known.scores(key, similar[row])))
+    taken = taken_names(faces, names)
+    for row, column in once_per_photo(guesses, known, taken):
+        if column is None:
+            names[row] = NOBODY
             continue
-        name = known.names[best]
-        how = How.ASSIGNED if name else How.IGNORED
-        names.append(FaceName(name, how))
-    return names
+        name = known.names[column]
+        names[row] = FaceName(name, How.ASSIGNED if name else How.IGNORED)
+    return [name or NOBODY for name in names]

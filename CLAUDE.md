@@ -35,7 +35,7 @@ Data flows `scan` → `plan` → `actions` → `report`, orchestrated by `servic
 
 | Package | Role |
 |---|---|
-| `cli/` | Typer commands (`audit`, `crosscheck`, `review`, `clean`, `undo`, `history`, `reports`, `purge`, `inventory`, `config`, `classify`, `review-sort`, `sort`, `places`, `spots`); thin: build a settings layer, call a service, display. `cli/app.py` builds the app **after** the locale is installed (`__main__.py`). |
+| `cli/` | Typer commands, one `cmd_<verb>.py` each (`audit`, `clean`, `undo`, `purge`, `history`, `reports`, `inventory`, `config`, `status`, `crosscheck`, `review`, `classify`, `sort`, `places`, `spots`, `library`, `tags`, `xmp`, `people`, `person`, `album`, `share`, `slideshow`, `shrink`, `import` + hidden `phone-*` steps, `push`, `backup`/`restore`, `upkeep`, `home`, `menu`, `launcher`); thin: build a settings layer, call a service, display. `cli/app.py` builds the app **after** the locale is installed (`__main__.py`). `menu_catalog_*.py`: the one catalog of actions (menu, home page, Ctrl+K). `templates/mh*.ps1.j2`: the `mh` PowerShell launcher `launcher` renders (rule `.claude/rules/powershell.md`). |
 | `services/` | Use cases: `AuditService`, `CleanService`, `cross_check`, `serve_review`, `undo_run`, `write_report`; `Runtime` bundles settings, locations, mount table, output. |
 | `scan/` | `walker` (os.scandir; lists what it could not read), `exact` (size → partial SHA-256 → full SHA-256), `broken` + `file_check` (Pillow decode in a process pool, `ffprobe` for videos); the same decode yields `VisualFacts` (`visual`: dHash, pHash, Laplacian sharpness with numpy, EXIF date and camera) and a versioned `MediaMetadata` (`exif`, `gps`, `jpeg_quality`, `exposure`; `video_meta` from the same probe): facts only, never judgments; `inventory` counts them. `video_prints` fingerprints each readable video once (`keyframes`: `ffmpeg` decodes frames at 10–90 % of its length, hashed as images; `tool_run` runs `ffprobe`/`ffmpeg` with a time limit). Pure asyncio (`TaskGroup`, semaphore). |
 | `index/` | SQLite cache of digests/integrity/visual facts/metadata/video fingerprints (`video_rows`, schema 5) keyed by (path, size, mtime) → incremental audits; `schema` upgrades older index files in place (metadata then read once, from image headers); `pruning`: the audit forgets the files a walk proves gone, `clean` those it removed. |
@@ -51,11 +51,24 @@ Data flows `scan` → `plan` → `actions` → `report`, orchestrated by `servic
 | `paths/` | Mount points (`Locations`, each overridable by `MEDIA_HYGIENE_<NAME>_DIR`), mount table, `/data/c/x` ↔ `C:\x` mapping. |
 | `i18n/` | gettext: `_()`/`ngettext()`, `.po` catalogs loaded at runtime with polib (no `.mo` in the repo). |
 | `console/` | Rich output facade (tips 💡), progress bars, tables, logging. |
+| `faces/` | Faces: find them (two model files downloaded once, `faces.weights`), one vector per face, grouping of the close ones. Biometric data: the vectors stay in the index under `/cache`, nothing leaves the machine. |
+| `people/`, `person/` | `/people`: the groups of faces alike, largest first, named by the user → `/config/people/<name>.toml` (format in `config/face_refs.py`, `photo_ref.py`: host path + content id `sha256[:16]:size` + face number); `/person`: someone's photos from one of theirs, to name or set aside. |
+| `search/` | `library` (`/library`, once `browse`/`search`): find photos by words (full text over the tags), the tile grid, the folders tree, the 🗂 Events tab, the landmarks desk; the largest package. |
+| `tags/`, `meaning/` | `tags`: one searchable layer of words from folders, names, dates, places, a local model (🤖 Ollama); `meaning`: CLIP image/text vectors on the CPU (search by meaning, 0263). |
+| `share/` | Albums (`albums.json`, hard-link folders by `album`), `share` (a folder + zip ready to send), guests and LAN pairing of the album links; what is set aside is kept apart. |
+| `slideshow/` | Photos on the TV (`/screen`: ES5 only, a 2012 TV's browser, `tests/support/es5.py` checks it) with the phone as remote (`/`, paired by `mh --lan`'s code). |
+| `shrink/` | Heavy videos worth lightening, their encoding (`ffmpeg`) and its proof; originals to the quarantine (0303). |
+| `assets/`, `theme.py` | The look every page shares: `assets/theme/tokens.css` (avonture.be design system, `--mk-*`), fonts, the meerkat images (`MEERKAT.txt`: all rights reserved, not MIT). |
+| top-level | `file_history.py` (previous versions of the user's files at each save, `/config/.history/`), `text_files.py` (BOM-tolerant reads of files edited on Windows), `name_patterns.py` / `date_names.py` (names cameras, apps and dates give: never someone's choice), `teardown.py` (Ctrl+C ends at once), `constants.py`. |
+
+Every served page follows one contract, enforced by tests (rule `.claude/rules/pages.md`:
+frame, shared parts, CSP nonce, script names, 400-line template cap, parity between pages of a
+kind, speed budget) — read it before adding or changing a page or a template.
 
 Mount points: `/data/<drive>/<path>` (folders to scan), `/config` (config.toml **only**),
 `/journal`, `/quarantine`, `/reports`, `/cache`. Never store other data under `/config`, but
 `/config/people/<name>.toml`: the face lists of each person named, linked from `config.toml`
-(0300), and `/config/events/`: the events remembered, `<year>.toml` (`[[rules]]`, merged into
+(0300), with `ignored.toml` and `unguessed.toml` (faces a cross left unnamed, never linked), and `/config/events/`: the events remembered, `<year>.toml` (`[[rules]]`, merged into
 `[[classify.rules]]` above *Existing folders*, 0576), plus their refusals and `not-events.toml`, and `/config/.history/`: the previous versions of
 these files, kept at each save by `file_history.replace_text` (0691; `albums.json`'s beside it). Only
 the quarantine goes per drive: `/quarantine/<x>` (`X:\media-hygiene\quarantine`, mounted by

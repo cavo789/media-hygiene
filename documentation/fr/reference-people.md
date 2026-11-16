@@ -88,7 +88,9 @@ depuis est une autre photo : ses visages perdent leur nom. Les visages encore é
 suivant ; au-delà de 50 photos que le cache n'a pas lues, cet audit le dit d'abord
 (*N photos nommées lues une fois…*).
 
-Les visages des inconnus vont dans `people/ignored.toml`. Gardez le dossier `people` avec
+Les visages des inconnus vont dans `people/ignored.toml` ; ceux laissés sans nom par une **×**
+sur un nom deviné à tort, dans `people/unguessed.toml` (aucun nom ne leur est deviné ; en
+nommer un l'en retire). Gardez le dossier `people` avec
 `config.toml` quand vous le copiez ou le sauvegardez : un fichier manquant arrête l'exécution
 suivante, avec la ligne à corriger. Un `config.toml` écrit avant cette version, les visages en
 ligne, se charge toujours ; la page les déplace dans les fichiers au premier enregistrement.

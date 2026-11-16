@@ -46,7 +46,9 @@ async function post(path, body) {
 }
 
 // The faces of the photo, each with its name (or ?), to choose one: one alone is chosen at once.
+let shownFaces = []; // the photo's faces, also outlined in the ✏ dialog (person_draw.js.j2)
 function showFaces(faces, again) {
+  shownFaces = faces;
   showGuesses(faces); // person_names.js.j2
   $("faces").replaceChildren(...faces.map((face) => {
     const box = element("figure", "face");
@@ -56,6 +58,7 @@ function showFaces(faces, again) {
     box.dataset.key = face.key;
     box.append(picture, faceTag(face.named)); // person_names.js.j2
     if (face.drawn) box.append(forgetButton(face.key)); // person_draw.js.j2
+    else if (face.named && face.named.name && state.writable) box.append(notNameButton(face)); // person_names.js.j2
     box.addEventListener("click", () => chooseFace(face.key, face.named));
     return box;
   }));
@@ -70,17 +73,30 @@ async function find(typed) {
   seed = null;
   showFiles([]);
   $("status").textContent = TEXTS.start;
-  if (result.said) { sideSay(result.said); $("faces").replaceChildren(); $("lookAgain").hidden = true; $("drawOpen").hidden = true; return; }
+  if (result.said) { sideSay(result.said); $("faces").replaceChildren(); $("lookAgain").hidden = true; $("drawOpen").hidden = true; $("scanNow").hidden = true; return; }
   photo = result.photo;
   learn(result);
   $("namer").replaceChildren();
   if (window.mhApplyNow) window.mhApplyNow(result.chosen > 0); // apply_now.html.j2, opened from home
   $("lookAgain").hidden = false;
   $("drawOpen").hidden = false;
+  $("scanNow").hidden = result.scanned;
   sideSay(result.faces.length ? "" : (result.scanned ? TEXTS.noFace : TEXTS.notScanned));
   showFaces(result.faces);
+  if (seed === null && result.card) { showFiles([result.card]); $("status").textContent = TEXTS.chooseFace; }
   const face = $("faces").children[wanted.face]; // a "?" of the large view (0714)
   if (wanted.face !== undefined && face) { delete wanted.face; face.click(); }
+}
+
+// Its faces found now and kept in the index, as the audit does (`scan_route.py`).
+async function scanNow() {
+  sideSay(TEXTS.scanning);
+  $("scanNow").disabled = true;
+  const result = await post(ROUTES.scan, { path: photo });
+  $("scanNow").disabled = false;
+  if (!result) return;
+  if (result.said) { sideSay(result.said); return; }
+  await find(photo);
 }
 
 async function lookAgain() {
@@ -89,8 +105,8 @@ async function lookAgain() {
   const result = await post(ROUTES.look, { path: photo });
   $("lookAgain").disabled = false;
   if (!result) return;
+  if (result.photo) await find(photo); // the new faces are kept: shown, named (0841)
   sideSay(result.said || "");
-  showFaces(result.faces);
 }
 
 // The faces again, their names as the file says now (after a save).
@@ -149,7 +165,8 @@ $("find").addEventListener("submit", (event) => {
   if ($("path").value.trim()) find($("path").value.trim());
 });
 $("lookAgain").addEventListener("click", lookAgain);
+$("scanNow").addEventListener("click", scanNow);
 const wanted = window.mhView.get({ path: "path", face: "int" }); // `path`, and `face` once
 const asked = wanted.path;
 $("status").textContent = TEXTS.start;
-if (asked) { $("path").value = asked; find(asked); }
+if (asked) { $("path").value = asked; $("findBox").open = false; find(asked); }

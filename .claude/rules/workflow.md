@@ -12,7 +12,8 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   runs it on the changed files at the end of each turn and sends a failure back.
 - ✅ DO: between two edits, run only the tests of what changed:
   `pytest $(python3 .claude/scripts/tests_for.py)` (the tests importing a changed module, in
-  seconds); before declaring done, `--depth 1` (the tests of its importers too), then the
+  seconds; it prints "no test found" and returns nothing for a new module: an empty
+  `pytest $(…)` then runs the whole suite, so name the tests by hand); before declaring done, `--depth 1` (the tests of its importers too), then the
   commit gate. The whole suite is CI's job, or `check` when a change is cross-cutting (a
   `conftest.py`, a template, a constant every module reads). ❌ DON'T: run the whole suite after
   each edit (minutes of load on the maintainer's PC).
@@ -24,6 +25,15 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - ✅ DO: a TODO that touches a template listed in `OVERSIZED_TEMPLATES` (`tests/unit/test_page_frame.py`:
   over 400 lines) splits it first, in its own step (rendered output identical, as 0668 proved for
   the places page), then removes its entry from that list. ❌ DON'T: file one TODO per template.
+- ✅ DO: answer a question about a stored format, a file's meaning or a behaviour from the
+  module docstring (`config/*.py`, `index/schema.py`, the package `__init__`), one grep away.
+  ❌ DON'T: "it looks like a hash" from recollection: the maintainer knows the code was designed
+  here and reads a guess as lost knowledge (2026-11-14, the `id` of `people/*.toml`).
+- ✅ DO: when a lesson is learnt (a rerun, a fix-up, a correction by the user), write it where it
+  will be read next time, in the same turn: a way of working → this file; a kind of file → the
+  path-scoped rule (`pages.md`, `powershell.md`, `documentation.md`, `python.md`, `bash.md`); a
+  page contract → the `photo-picking-pages` skill; the maintainer's preferences → memory.
+  ❌ DON'T: leave it in a feedback file only: 45 of them hold lessons no session reads again.
 - ✅ DO: when a cache or index starts trusting more (reusing a listing, a stat, a digest), list
   every event that used to invalidate it — rename, move, atomic save (new inode), in-place
   write, copy keeping the mtime, `touch` — and keep one test per event.
@@ -32,6 +42,10 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   and the user's (a folder renamed in Explorer). Test it.
 - ✅ DO: when pairing files by content, break ties between identical copies (by name) and
   test with the demo tree's copies.
+- ✅ DO: before estimating the gain of removing a part, split that part's own time too (what
+  the change removes vs what stays). ❌ DON'T: estimate from the part's total (2026-11-14: the
+  turn guess's 65 ms were estimated to fall to 15; its three detections were 51 ms of it, the
+  change saved 9).
 - ✅ DO: every figure in a TODO, commit message or summary says *measured* (how, where) or
   *estimated* (from what). ❌ DON'T: state a fact about a third-party product unchecked.
 - ✅ DO: end a work session with **where the user gains**: before → after, in % when possible,
@@ -47,6 +61,13 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   adds it **to the shared part**, so every page of the same kind gets it in the same change.
   ❌ DON'T: a page-local copy or a second version "for this page only": two versions drift apart
   (2026-11-12: S/M/L/XL on /person, S/M/L on /library; 👤 in one large view, not in another).
+- ✅ DO: a feature belongs to a kind of page or action, not to the page where it was asked:
+  before designing it, list every page and entry point of that kind (grep the routes, menus,
+  templates that lead there: tiles → size switch; a large view → name people; anything that
+  starts a slideshow → avoid people) and put it on all of them, best in the one page they all
+  reach or the shared part; name each one checked in the report. ❌ DON'T: build it where the
+  request names it only (2026-11-15, 0825: on the home's TV choices, not the library's ▶ nor
+  the /slideshow remote).
 - ✅ DO: before changing a design the user chose (mounts, data layout, a dependency), list
   what the change loses, and ask.
 

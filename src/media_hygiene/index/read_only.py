@@ -24,4 +24,6 @@ def connect_read_only(index_file: Path) -> sqlite3.Connection:
         sqlite3.Error: The file cannot be opened.
     """
     uri = f"{index_file.resolve().as_uri()}{_READ_ONLY}"
-    return sqlite3.connect(uri, uri=True)
+    # A page answers in a thread beside its event loop (2026-11-15); SQLite is built
+    # serialized (`sqlite3.threadsafety == 3`): one connection may serve any thread.
+    return sqlite3.connect(uri, uri=True, check_same_thread=False)
