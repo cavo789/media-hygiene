@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
-    from collections.abc import Awaitable
+    from collections.abc import Awaitable, Callable
 
 SLOW_SECONDS: Final = 1.0
 _LOGGER: Final = logging.getLogger(__name__)
@@ -37,6 +37,14 @@ class Laps:
         now = time.perf_counter()
         self.steps.append((step, now - (self.last or self.started)))
         self.last = now
+
+    def since(self) -> float:
+        """Seconds since the answer started.
+
+        Returns:
+            Them.
+        """
+        return time.perf_counter() - self.started
 
     def said(self) -> None:
         """Log the laps when the whole answer was slow."""
@@ -62,3 +70,20 @@ async def timed[T](what: str, answer: Awaitable[T]) -> T:
         return await answer
     finally:
         laps.said()
+
+
+def timed_call[**P, R](
+    work: Callable[P, R], *args: P.args, **kwargs: P.kwargs
+) -> tuple[R, float]:
+    """Run work and say how long it took itself, in a worker too (picklable).
+
+    Args:
+        work: The work.
+        *args: Its arguments.
+        **kwargs: Its keyword arguments.
+
+    Returns:
+        Its result, and its own seconds: the rest of a wait was the queue.
+    """
+    started = time.perf_counter()
+    return work(*args, **kwargs), time.perf_counter() - started

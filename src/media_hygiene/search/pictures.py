@@ -12,6 +12,7 @@ from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.originals import original_response
 from media_hygiene.review.respond import IMMUTABLE_S
+from media_hygiene.review.slow_log import Laps, timed_call
 from media_hygiene.review.versioned import kept_for_good
 from media_hygiene.search.stable_pictures import (
     parsed_name,
@@ -82,8 +83,12 @@ class Pictures:
                 HTTPStatus.NOT_FOUND
             )  # another version: the page lists again
         render = PreviewPool(self.executor, self.previews).renderer(edge)
-        loop = asyncio.get_running_loop()
-        image = await loop.run_in_executor(self.executor, render, photo.path)
+        loop, laps = asyncio.get_running_loop(), Laps(f"{prefix}{named[0]}")
+        image, worked = await loop.run_in_executor(
+            self.executor, timed_call, render, photo.path
+        )
+        laps.steps += [("queue", laps.since() - worked), ("render", worked)]
+        laps.said()
         if image is None:
             return Response(HTTPStatus.NOT_FOUND)
         if tag and (await asyncio.to_thread(still_this_version, photo)) is True:

@@ -6,32 +6,29 @@ version, `config.toml`, the `places/` folder (a save replaces a file in it).
 
 from __future__ import annotations
 
-import math
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
-
-import numpy as np
 
 from media_hygiene.classify.hand_placed import Candidate, hand_placed
 from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.config.place_files import FOLDER
 from media_hygiene.places.config_file import read_places
 from media_hygiene.places.config_photos import read_place_photos
+from media_hygiene.review.slow_log import Laps
+from media_hygiene.search.place_boxes import near_a_zone
 
 if TYPE_CHECKING:
     import sqlite3
     from collections.abc import Callable, Mapping
 
-    from media_hygiene.classify.place_match import Zone
     from media_hygiene.geo.distance import Point
+
+type Stamp = tuple[int, int, int]  # index data version, two times
 
 _FILES: Final = "SELECT path, size, full_digest FROM files"
 _VERSION: Final = "PRAGMA data_version"
-_METRES_PER_DEGREE: Final = 111_000.0
-_MARGIN: Final = 1.1
-_LEAST_COSINE: Final = 0.01  # near a pole, the box is every longitude
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,7 +69,7 @@ class PlaceBook:
     connection: sqlite3.Connection
     config_file: Path
     points: Callable[[], Mapping[Path, Point]]
-    _kept: tuple[object, PlaceMembers] | None = field(default=None)
+    _kept: tuple[Stamp, PlaceMembers] | None = field(default=None)
 
     def members(self) -> PlaceMembers:
         """The members now.
@@ -85,10 +82,11 @@ class PlaceBook:
         """
         stamp = self._stamp()
         if self._kept is None or self._kept[0] != stamp:
-            self._kept = (stamp, self._read())
+            why = "first" if self._kept is None else _changed(self._kept[0], stamp)
+            self._kept = (stamp, self._read(Laps(f"places, read again ({why})")))
         return self._kept[1]
 
-    def _stamp(self) -> object:
+    def _stamp(self) -> Stamp:
         """What changes when a member may.
 
         Returns:
@@ -101,8 +99,11 @@ class PlaceBook:
             _mtime(self.config_file.parent / FOLDER),
         )
 
-    def _read(self) -> PlaceMembers:
+    def _read(self, laps: Laps) -> PlaceMembers:
         """Read the places, the photos given, the positions.
+
+        Args:
+            laps: Where the time goes, said when slow.
 
         Returns:
             The members.
@@ -110,79 +111,29 @@ class PlaceBook:
         places = read_places(self.config_file)
         by_hand: defaultdict[str, set[Path]] = defaultdict(set)
         given = read_place_photos(self.config_file)
+        laps.lap("settings")
         if given:
             rows = self.connection.execute(_FILES)
             candidates = (Candidate(Path(p), size, sha) for p, size, sha in rows)
             for path, name in hand_placed(candidates, given).items():
                 by_hand[name.casefold()].add(path)
+        laps.lap(f"{len(given)} given by hand")
         hand = {path for paths in by_hand.values() for path in paths}
         zones = zones_of(places)
         by_gps: defaultdict[str, set[Path]] = defaultdict(set)
         points = self.points()
+        laps.lap(f"{len(points)} positions")
         for path, point in near_a_zone(points, zones):
             if path not in hand and (found := place_at(point, zones)) is not None:
                 by_gps[found.name.casefold()].add(path)
+        laps.lap(f"{len(places)} places")
+        laps.said()
         return PlaceMembers(
             tuple(place.name for place in places),
             {name: frozenset(paths) for name, paths in by_gps.items()},
             {name: frozenset(paths) for name, paths in by_hand.items()},
             frozenset(points),
         )
-
-
-def near_a_zone(
-    points: Mapping[Path, Point], zones: tuple[Zone, ...]
-) -> list[tuple[Path, Point]]:
-    """The positions inside the box of some place: most of the others never test.
-
-    Measured (50,000 positions, 20 places): 6.9 s testing each one, 0.01 s so.
-
-    Args:
-        points: The positions.
-        zones: My places, prepared.
-
-    Returns:
-        Those worth the exact test.
-    """
-    if not points or not zones:
-        return []
-    items = list(points.items())
-    latitudes = np.fromiter((p.latitude for _, p in items), float, len(items))
-    longitudes = np.fromiter((p.longitude for _, p in items), float, len(items))
-    near = np.zeros(len(items), dtype=bool)
-    for zone in zones:
-        south, west, north, east = _box(zone)
-        near |= (
-            (latitudes >= south)
-            & (latitudes <= north)
-            & (longitudes >= west)
-            & (longitudes <= east)
-        )
-    return [items[int(rank)] for rank in np.flatnonzero(near)]
-
-
-def _box(zone: Zone) -> tuple[float, float, float, float]:
-    """A box holding a place, a little too wide.
-
-    Args:
-        zone: The place.
-
-    Returns:
-        South, west, north, east, in degrees.
-    """
-    if zone.area is not None:
-        bounds = zone.area.bounds
-        return bounds.south, bounds.west, bounds.north, bounds.east
-    place = zone.place
-    lat_span = place.radius_m / _METRES_PER_DEGREE * _MARGIN
-    near_pole = max(math.cos(math.radians(place.latitude)), _LEAST_COSINE)
-    lon_span = lat_span / near_pole
-    return (
-        place.latitude - lat_span,
-        place.longitude - lon_span,
-        place.latitude + lat_span,
-        place.longitude + lon_span,
-    )
 
 
 def _mtime(path: Path) -> int:
@@ -198,3 +149,18 @@ def _mtime(path: Path) -> int:
         return path.stat().st_mtime_ns
     except OSError:
         return 0
+
+
+def _changed(before: Stamp, now: Stamp) -> str:
+    """Which part of the stamp changed.
+
+    Args:
+        before: The stamp kept.
+        now: The stamp now.
+
+    Returns:
+        `index`, `config.toml`, `places/`: those that changed.
+    """
+    parts = ("index", "config.toml", "places/")
+    changed = zip(parts, before, now, strict=True)
+    return ", ".join(part for part, old, new in changed if old != new)
