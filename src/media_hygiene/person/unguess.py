@@ -9,6 +9,7 @@ of that person's `rejected`, as always (`give_name`).
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
@@ -17,6 +18,7 @@ from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.known import Known
 from media_hygiene.people.naming import How, id_of, name_all
+from media_hygiene.review.slow_log import Laps
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -43,12 +45,19 @@ def without_guesses(
         The section to write, and the names ruled out, in the order they were guessed.
     """
     ruled: list[str] = []
+    key = id_of(face)
+    known = Known.of(every, section)  # once: 40 000 faces' vectors (2026-11-16)
     for _person in range(len(section.person)):  # each person is ruled out once at most
-        named = name_all((face,), Known.of(every, section))[0]
+        named = name_all((face,), known)[0]
         if named.how not in _TAKEN_OFF or not named.name:
             break
         ruled.append(named.name)
-        section = reject_faces(section, Naming(named.name, (id_of(face),)))
+        section = reject_faces(section, Naming(named.name, (key,)))
+        if key in known.confirmed:  # a reference itself: the references change
+            known = Known.of(every, section)
+        else:  # only who it is not changes
+            not_them = known.rejected.get(key, frozenset()) | {named.name}
+            known = replace(known, rejected={**known.rejected, key: not_them})
     return section, tuple(ruled)
 
 
@@ -92,17 +101,22 @@ def unname(names: FaceNames, key: int) -> dict[str, object]:
     face = names.stored(key)
     if face is None or names.config_file is None:
         return {"error": _("This face was found by a second look: it cannot be named.")}
-    every = names.faces.every
+    every, laps = names.faces.every, Laps("no name")
     try:
         written = follow_ids(
             read_people(names.config_file), {}, {str(one.path) for one in every}
         )
         merged = names.settings().model_copy(update={"person": written.person})
+        laps.lap("read")
         result, ruled = without_guesses(face, every, merged)
+        laps.lap(f"{len(ruled)} ruled out")
         save_people(
             names.config_file, written.model_copy(update={"person": result.person})
         )
+        laps.lap("write")
         back = read_people(names.config_file)
+        laps.lap("read back")
+        laps.said()
     except (ValueError, OSError) as error:
         return {"error": str(error)}
     return {
