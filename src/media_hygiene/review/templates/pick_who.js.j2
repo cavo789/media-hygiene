@@ -136,7 +136,7 @@ async function whoSave(file, changes) {
   line.className = saved && !saved.error ? "" : "error";
   line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
   if (!saved || saved.error) return;
-  document.dispatchEvent(new CustomEvent("mh-named"));
+  document.dispatchEvent(new CustomEvent("mh-named", { detail: { key: file.key } }));
   if (whoFile === file) showWho(file);
 }
 

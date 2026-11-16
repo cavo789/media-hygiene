@@ -135,13 +135,19 @@ function close() {
 }
 
 // A face named in the who line (`pick_who.js.j2`): the files are listed again on closing,
-// their names as the file says now.
+// their names as the file says now; the photos named alone where the page can (`relabel`).
 let namedInView = false;
-document.addEventListener("mh-named", () => { namedInView = true; });
+const namedKeys = new Set();
+document.addEventListener("mh-named", (event) => {
+  namedInView = true;
+  if (event.detail && event.detail.key !== undefined) namedKeys.add(event.detail.key);
+});
 
 function closeShown() {
-  if (namedInView && typeof reopen === "function") reopen(true);
+  if (namedInView && typeof relabel === "function" && namedKeys.size) relabel([...namedKeys]);
+  else if (namedInView && typeof reopen === "function") reopen(true);
   namedInView = false;
+  namedKeys.clear();
   preloadStop();
   sharpWanted = null;
   preload.seen = -1;
