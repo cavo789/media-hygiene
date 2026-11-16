@@ -5,6 +5,7 @@ Moved out of `search.app` when the album a search is aimed at came in.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any
 
@@ -67,7 +68,8 @@ def found_answer(place: SearchPlace, coverage: CoverageKept, body: bytes) -> Res
         )
     laps.lap("filters")
     hits = place.index.find(query, asked.shown)
-    laps.lap(f"find {asked.shown}")
+    hits = replace(hits, hits=hits.hits[asked.after :])  # *Show more*: the next ones
+    laps.lap(f"find {asked.shown} from {asked.after}")
     found = found_view(
         with_facts(place.index, hits), place.mapper, place.chosen.paths()
     )

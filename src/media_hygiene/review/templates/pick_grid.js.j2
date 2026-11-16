@@ -152,6 +152,16 @@ function showFiles(listed, again) {
   showPicked();
 }
 
+// *Show more* (0408): the next files after those shown, added; the picks stay.
+function appendFiles(listed) {
+  const start = files.length;
+  files = files.concat(listed);
+  const added = listed.map((file, rank) => card(file, start + rank));
+  cards = cards.concat(added);
+  if (typeof placeCards === "function") placeCards(cards); else $("grid").append(...added);
+  showPicked();
+}
+
 function focusOn(index) {
   if (index < 0 || index >= cards.length) return;
   if (current >= 0 && cards[current]) cards[current].classList.remove("current");

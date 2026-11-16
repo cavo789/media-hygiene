@@ -1,24 +1,33 @@
 """Where each located file of the index was taken, without building its inputs.
 
 The library's places asked `indexed_inputs` for its positions: every file's
-classify input, and one Takeout query per file. 4.5 s for 281 positions on the
-maintainer's PC (measured, slow log, 2026-11-16). The positions alone need one
-pass over the index and one query for every Takeout `.json`; the rule is
-`with_takeout`'s: the file's own position, else its `.json`'s, never 0, 0.
+classify input, and one Takeout query per file (4.5 s for 281 positions on the
+maintainer's PC), then every file's facts decoded (3.2 s; measured, slow log,
+2026-11-16). The index keeps the position in typed columns: two queries, nothing
+decoded. The rule is `with_takeout`'s: the file's own position, else its `.json`'s
+when the file holds none, never 0, 0.
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.geo.distance import Point
-from media_hygiene.index.listing import indexed_files
-from media_hygiene.index.takeout_rows import takeout_facts
 
 if TYPE_CHECKING:
     import sqlite3
-    from pathlib import Path
+
+_OWN: Final = (
+    "SELECT path, latitude, longitude FROM files"
+    " WHERE latitude IS NOT NULL AND longitude IS NOT NULL"
+)
+_TAKEOUT: Final = (
+    "SELECT takeout.path, takeout.latitude, takeout.longitude"
+    " FROM takeout JOIN files ON files.path = takeout.path"
+    " WHERE (files.latitude IS NULL OR files.longitude IS NULL)"
+    " AND takeout.latitude IS NOT NULL AND takeout.longitude IS NOT NULL"
+)
 
 
 def indexed_points(connection: sqlite3.Connection) -> dict[Path, Point]:
@@ -30,30 +39,9 @@ def indexed_points(connection: sqlite3.Connection) -> dict[Path, Point]:
     Returns:
         The positions, by container path.
     """
-    takeouts = takeout_facts(connection)
     points: dict[Path, Point] = {}
-    for file in indexed_files(connection):
-        metadata = file.facts.metadata
-        point = located_point(metadata)
-        takeout = takeouts.get(file.path)
-        own = metadata is not None and metadata.located
-        if not own and takeout is not None and takeout.located:
-            point = _takeout_point(takeout.latitude, takeout.longitude)
-        if point is not None:
-            points[file.path] = point
+    for query in (_OWN, _TAKEOUT):
+        for path, latitude, longitude in connection.execute(query):
+            if not latitude == longitude == 0:  # a receiver without a fix
+                points[Path(path)] = Point(float(latitude), float(longitude))
     return points
-
-
-def _takeout_point(latitude: float | None, longitude: float | None) -> Point | None:
-    """A Takeout position, as `located_point` reads one.
-
-    Args:
-        latitude: Its latitude.
-        longitude: Its longitude.
-
-    Returns:
-        The point; None at 0, 0 (no fix) or when one is missing.
-    """
-    if latitude is None or longitude is None or latitude == longitude == 0:
-        return None
-    return Point(latitude, longitude)

@@ -2,58 +2,45 @@
 
 from __future__ import annotations
 
+import sqlite3
+from contextlib import closing
 from pathlib import Path
-from types import SimpleNamespace
-from typing import TYPE_CHECKING, cast
 
 from media_hygiene.geo.distance import Point
-from media_hygiene.scan.metadata import MediaMetadata
-from media_hygiene.scan.takeout_facts import TakeoutFacts
-from media_hygiene.services import indexed_points as module
-
-if TYPE_CHECKING:
-    import sqlite3
-
-    import pytest
+from media_hygiene.services.indexed_points import indexed_points
 
 _PARIS = (48.85, 2.35)
 _LYON = (45.76, 4.84)
+_FILES = (
+    ("own.jpg", *_PARIS),  # its GPS, though a .json says Lyon
+    ("zero.jpg", 0.0, 0.0),  # a receiver without a fix: the .json is not read
+    ("takeout.jpg", None, None),  # no GPS: the .json's position
+    ("takeout_zero.jpg", None, None),  # the .json at 0, 0: nowhere
+    ("takeout_none.jpg", None, None),  # the .json without a position
+    ("nothing.jpg", None, None),  # no GPS, no .json
+)
+_TAKEOUTS = (
+    ("own.jpg", *_LYON),
+    ("zero.jpg", *_LYON),
+    ("takeout.jpg", *_LYON),
+    ("takeout_zero.jpg", 0.0, 0.0),
+    ("takeout_none.jpg", None, None),
+    ("gone.jpg", *_LYON),  # a .json whose file left the index
+)
 
 
-def _gps(latitude: float, longitude: float) -> MediaMetadata:
-    return MediaMetadata(latitude=latitude, longitude=longitude)
-
-
-def _takeout(latitude: float | None, longitude: float | None) -> TakeoutFacts:
-    return TakeoutFacts(None, latitude, longitude, "")
-
-
-def test_own_position_first_then_the_takeout_one(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Each case of `with_takeout` then `located_point`, in one pass."""
-    files = {
-        "own.jpg": _gps(*_PARIS),  # its GPS, though a .json says Lyon
-        "zero.jpg": _gps(0, 0),  # a receiver without a fix: the .json is not read
-        "takeout.jpg": None,  # no GPS: the .json's position
-        "takeout_zero.jpg": None,  # the .json at 0, 0: nowhere
-        "takeout_none.jpg": MediaMetadata(),  # the .json without a position
-        "nothing.jpg": None,  # no GPS, no .json
-    }
-    takeouts = {
-        Path("own.jpg"): _takeout(*_LYON),
-        Path("zero.jpg"): _takeout(*_LYON),
-        Path("takeout.jpg"): _takeout(*_LYON),
-        Path("takeout_zero.jpg"): _takeout(0, 0),
-        Path("takeout_none.jpg"): _takeout(None, None),
-    }
-    rows = [
-        SimpleNamespace(path=Path(name), facts=SimpleNamespace(metadata=metadata))
-        for name, metadata in files.items()
-    ]
-    monkeypatch.setattr(module, "indexed_files", lambda _connection: iter(rows))
-    monkeypatch.setattr(module, "takeout_facts", lambda _connection: takeouts)
-    points = module.indexed_points(cast("sqlite3.Connection", None))
+def test_own_position_first_then_the_takeout_one() -> None:
+    """Each case of `with_takeout` then `located_point`, in two queries."""
+    with closing(sqlite3.connect(":memory:")) as connection:
+        connection.execute(
+            "CREATE TABLE files (path TEXT, latitude REAL, longitude REAL)"
+        )
+        connection.execute(
+            "CREATE TABLE takeout (path TEXT, latitude REAL, longitude REAL)"
+        )
+        connection.executemany("INSERT INTO files VALUES (?, ?, ?)", _FILES)
+        connection.executemany("INSERT INTO takeout VALUES (?, ?, ?)", _TAKEOUTS)
+        points = indexed_points(connection)
     assert points == {
         Path("own.jpg"): Point(*_PARIS),
         Path("takeout.jpg"): Point(*_LYON),
