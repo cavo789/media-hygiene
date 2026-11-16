@@ -18,6 +18,7 @@ from contextlib import closing
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.read_only import connect_read_only
+from media_hygiene.review.slow_log import Laps
 from media_hygiene.search.people_words import people_words
 
 if TYPE_CHECKING:
@@ -61,8 +62,12 @@ def _read(index_file: Path, settings: PeopleSettings) -> Names:
     Returns:
         Each photo with someone named on it, and their names.
     """
+    laps = Laps("names of the photos")
     with closing(connect_read_only(index_file)) as connection:
-        return people_words(connection, settings)
+        names = people_words(connection, settings)
+    laps.lap(f"{len(names)} photos named")
+    laps.said()
+    return names
 
 
 def faces_mark(connection: sqlite3.Connection) -> bytes:
@@ -118,7 +123,9 @@ class NamesKept:
             The names read; None when they are the ones given already, or are
             still being read again.
         """
+        laps = Laps("faces' mark")
         mark = faces_mark(connection)
+        laps.said()
         if self._mark is not None and mark != self._mark:
             self._later = names_soon(*self._source)
         self._mark = mark

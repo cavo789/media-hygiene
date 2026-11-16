@@ -37,13 +37,15 @@ def placed_where(
     Returns:
         The place of each file found.
     """
-    mapper = face_mapper()
+    laps, mapper = Laps("places given by hand"), face_mapper()
     listed = {
         container_of(photo.path, mapper): (size_of(photo.id), entry.place)
         for entry in given
         for photo in entry.photos
         if photo.path
     }
+    laps.lap(f"{len(listed)} listed")
+    laps.lap(f"{len(listed)} listed")
     found: dict[Path, str] = {}
     others: list[Candidate] = []
     for text, size, digest in rows:
@@ -53,6 +55,8 @@ def placed_where(
             found[path] = here[1]
         else:
             others.append(Candidate(path, size, digest))
+    laps.lap(f"{len(found) + len(others)} rows, {len(found)} at their path")
+    laps.lap(f"{len(found) + len(others)} rows, {len(found)} at their path")
     read: list[Path] = []
 
     def counted(candidate: Candidate) -> str | None:
@@ -67,7 +71,6 @@ def placed_where(
         read.append(candidate.path)
         return digest_of(candidate)
 
-    laps = Laps(f"{len(listed)} listed by hand, {len(found)} at their path")
     placed = hand_placed(others, given, counted)
     laps.lap(f"{len(read)} digests, {sum(1 for c in others if c.digest)} kept")
     laps.said()
