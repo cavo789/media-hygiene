@@ -25,7 +25,6 @@ from media_hygiene.classify.own_events import folder_rules
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.rules_file import read_rules
 from media_hygiene.config.classify_settings import ClassifySettings
-from media_hygiene.errors import MediaHygieneError
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.search.events_choose import events_get, sort_post
 from media_hygiene.search.events_desk import EventsDesk
@@ -34,7 +33,6 @@ from media_hygiene.search.found_desk import FOUND_PATH, FoundDesk
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.http import Request
     from media_hygiene.search.fts import SearchIndex
 
@@ -201,24 +199,16 @@ def test_the_routes_answer_without_a_plan(
 ) -> None:
     """GET and POST /api/found-events need no classify plan; none without a desk."""
     found = _desk(tmp_path, _index(opened))
-    desk = EventsDesk(
-        cast("SearchIndex", None), found.mapper, _no_plan, frozenset, found=found
-    )
+    desk = EventsDesk(cast("SearchIndex", None), found.mapper, frozenset, found=found)
     assert events_get(desk, FOUND_PATH) is not None
     request = cast("Request", SimpleNamespace(path=FOUND_PATH, body=b"{}"))
     answer = asyncio.run(sort_post(desk, request))
     assert answer.status is HTTPStatus.OK
-    bare = EventsDesk(cast("SearchIndex", None), found.mapper, _no_plan, frozenset)
+    bare = EventsDesk(cast("SearchIndex", None), found.mapper, frozenset)
     missing = events_get(bare, FOUND_PATH)
     assert missing is not None
     assert missing.status is HTTPStatus.NOT_FOUND
     assert asyncio.run(sort_post(bare, request)).status is HTTPStatus.NOT_FOUND
-
-
-def _no_plan() -> SortBatchSession:
-    """No classify plan to read."""
-    said = "no plan"
-    raise MediaHygieneError(said)
 
 
 def test_a_filtered_confirm_leaves_the_hidden_rows_to_decide(

@@ -75,13 +75,13 @@ back.
  up the current one.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   archive      <str>  The backup to restore, by its name; the most recent by │
-│                       default.                                               │
+│   archive      FILE  The backup to restore, by its name; the most recent by  │
+│                      default.                                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --config          <bool>  Restore the settings (config.toml, people) too;    │
-│                           the index alone by default.                        │
-│ --help    -h      <bool>  Show this message and exit.                        │
+│ --config            Restore the settings (config.toml, people) too; the      │
+│                     index alone by default.                                  │
+│ --help    -h        Show this message and exit.                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

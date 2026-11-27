@@ -1,16 +1,9 @@
 {# The events made from the index (0572, `span_events.py`): the files not sorted yet of
    the period shown (the search's *From*/*To*), cut at each long gap; one clicked shows its
-   files in the grid. The plan's choices (folder, name, sure, rules, sort now) do not apply:
-   the user picks photos and moves them with *Move to an event…*. On any failure the grid
+   files in the grid: the user picks photos and moves them with *Move to an event…*. On any failure the grid
    is emptied and the reason said: never another tab's files under an event. #}
-  const PLAN_ONLY = ["eventsProgress", "runs", "eventsTotals", "eventFacts", "eventConflict", "eventChoice", "destination", "eventSuggest"];
   const spanTitle = (card) => card.first.slice(0, 10) + (card.last.slice(0, 10) !== card.first.slice(0, 10) ? " → " + card.last.slice(0, 10) : "");
-  const hideOutsideSpan = () => {
-    for (const id of PLAN_ONLY) byId(id).hidden = true;
-    for (const node of document.querySelectorAll("#events .filter, #events .eventButtons")) node.hidden = true;
-  };
   const loadSpans = async () => {
-    hideOutsideSpan();
     byId("eventCard").hidden = true;
     byId("spanChoice").hidden = true;
     byId("eventsSaid").textContent = TEXTS.spanLoading;
@@ -27,11 +20,10 @@
   const loadSpan = async (index) => {
     current = index;
     trialAgain = null;
-    $("albumResults").hidden = true;  // the grid is the event's now, not the search's
+    $("albumResults").hidden = true;  // the grid shows the event now, not the search
     const card = events[index];
     eventShown = card.id;
     remember(card);
-    hideOutsideSpan();
     byId("eventCard").hidden = false;
     byId("position").textContent = fill(T.position, { number: index + 1, total: events.length });
     byId("eventTitle").textContent = card.title;
@@ -45,7 +37,6 @@
     if (index !== current) return;  // another event was asked for meanwhile
     if (!answer || !answer.ok) { setStatus(answer ? fill(TEXTS.spanFailed, { status: answer.status }) : T.offline, "error"); return; }
     const view = await answer.json();
-    photoOf = {};
     spanName = view.suggested || card.title;  // its album's name (0523)
     total = view.total;
     showFiles(view.hits, false);

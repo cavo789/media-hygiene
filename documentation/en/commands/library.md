@@ -650,25 +650,22 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
  gave them.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   words...      <list[str]>  Words to find, printed as a table instead of    │
-│                              opening the page: "bord de mer" a phrase,       │
-│                              anniv* a start of word, place:durbuy among the  │
-│                              places only (also vision, caption, folder,      │
-│                              name, date, person).                            │
+│   words...      WORDS  Words to find, printed as a table instead of opening  │
+│                        the page: "bord de mer" a phrase, anniv* a start of   │
+│                        word, place:durbuy among the places only (also        │
+│                        vision, caption, folder, name, date, person).         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --limit           <int range> [x>=1]  How many files the table lists at      │
-│                                       most. Default: 20.                     │
-│ --folder          <str>               Open the page on this folder (a part   │
-│                                       of its path, as 'Path contains' takes  │
-│                                       it), e.g. a folder 'status' lists as   │
-│                                       left to sort.                          │
-│ --port            <int range> [x>=1]  Port of the page. docker run publishes │
-│                                       it under the same number on your       │
-│                                       computer: -p 127.0.0.1:9000:9000 for   │
-│                                       --port 9000. Default:  port in         │
-│                                       config.toml, 8088.                     │
-│ --help    -h      <bool>              Show this message and exit.            │
+│ --limit           COUNT [x>=1]  How many files the table lists at most.      │
+│                                 Default: 20.                                 │
+│ --folder          FOLDER        Open the page on this folder (a part of its  │
+│                                 path, as 'Path contains' takes it), e.g. a   │
+│                                 folder 'status' lists as left to sort.       │
+│ --port            PORT [x>=1]   Port of the page. docker run publishes it    │
+│                                 under the same number on your computer: -p   │
+│                                 127.0.0.1:9000:9000 for --port 9000.         │
+│                                 Default:  port in config.toml, 8088.         │
+│ --help    -h                    Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

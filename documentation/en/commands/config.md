@@ -162,26 +162,26 @@ the option of the command line.
  from, and the mount points.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   action      <tidy>  tidy: list the entries of config.toml that point at    │
-│                       nothing any more (folders gone, rules matching no      │
-│                       photo).                                                │
+│   action      tidy  tidy: list the entries of config.toml that point at      │
+│                     nothing any more (folders gone, rules matching no        │
+│                     photo).                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --apply               <bool>  With tidy: remove the ticked entries, after a  │
-│                               copy of config.toml.                           │
-│ --dates               <bool>  With tidy: tick the date_range rules with no   │
-│                               photo too.                                     │
-│ --superseded          <bool>  With tidy: tick the path rules whose files     │
-│                               already sit in folders you named too.          │
-│ --upgrade             <bool>  Add the settings of this version to your       │
-│                               config.toml, with their explanation; your      │
-│                               values and comments are kept.                  │
-│ --convention          <bool>  Move the  layouts of your config.toml to the   │
-│                               sort convention year/year-month/event: shows   │
-│                               each change, asks, writes.                     │
-│ --dry-run             <bool>  With --upgrade or --convention: list what      │
-│                               would change, write nothing.                   │
-│ --help        -h      <bool>  Show this message and exit.                    │
+│ --apply                 With tidy: remove the ticked entries, after a copy   │
+│                         of config.toml.                                      │
+│ --dates                 With tidy: tick the date_range rules with no photo   │
+│                         too.                                                 │
+│ --superseded            With tidy: tick the path rules whose files already   │
+│                         sit in folders you named too.                        │
+│ --upgrade               Add the settings of this version to your             │
+│                         config.toml, with their explanation; your values and │
+│                         comments are kept.                                   │
+│ --convention            Move the  layouts of your config.toml to the sort    │
+│                         convention year/year-month/event: shows each change, │
+│                         asks, writes.                                        │
+│ --dry-run               With --upgrade or --convention: list what would      │
+│                         change, write nothing.                               │
+│ --help        -h        Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

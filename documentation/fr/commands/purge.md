@@ -112,16 +112,16 @@ docker run --rm -it `
  seule façon dont l'outil supprime du contenu.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Exécution dont la quarantaine est effacée ; toutes par  │
-│                      défaut.                                                 │
+│   run_id      RUN  Exécution dont la quarantaine est effacée ; toutes par    │
+│                    défaut.                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y      <bool>  Ne pas demander de confirmation (remplace            │
-│                         clean.confirm).                                      │
-│ --to            <path>  Copier d'abord la quarantaine dans ce dossier,       │
-│                         vérifier chaque octet de la copie, et seulement      │
-│                         ensuite l'effacer.                                   │
-│ --help  -h      <bool>  Affiche ce message et quitte.                        │
+│ --yes   -y               Ne pas demander de confirmation (remplace           │
+│                          clean.confirm).                                     │
+│ --to            DOSSIER  Copier d'abord la quarantaine dans ce dossier,      │
+│                          vérifier chaque octet de la copie, et seulement     │
+│                          ensuite l'effacer.                                  │
+│ --help  -h               Affiche ce message et quitte.                       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

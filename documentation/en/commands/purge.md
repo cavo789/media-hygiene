@@ -105,14 +105,14 @@ docker run --rm -it `
  the tool removes content.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Run whose quarantine is erased; every run by default.   │
+│   run_id      RUN  Run whose quarantine is erased; every run by default.     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y      <bool>  Do not ask for confirmation (overrides               │
+│ --yes   -y              Do not ask for confirmation (overrides               │
 │                         clean.confirm).                                      │
-│ --to            <path>  Copy the quarantine to this folder first, check      │
+│ --to            FOLDER  Copy the quarantine to this folder first, check      │
 │                         every byte of the copy, and only then erase it.      │
-│ --help  -h      <bool>  Show this message and exit.                          │
+│ --help  -h              Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

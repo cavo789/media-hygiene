@@ -68,7 +68,7 @@ named, and the address of the page: a click on a face opens its photo. Ctrl+C, o
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysed: 12 faces, 0.08 s per photo.
+✅ 37 photos analysed: 13 faces, 0.08 s per photo.
 ✅ 17 faces in 47 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
 once.
 ✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
@@ -396,22 +396,34 @@ No Ollama, no graphics card: the face models are built in ([Local AI](../referen
  anywhere.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path            <list[str]>         Only the photos below this folder      │
-│                                       (host path, as you mounted it); repeat │
-│                                       it for several. Default: every photo   │
-│                                       of the index.                          │
-│ --sample          <int range> [x>=0]  Analyse this many random photos, print │
-│                                       the time per photo and the estimate of │
-│                                       a full run, and stop.                  │
-│ --forget          <bool>              Delete every face from the cache, then │
-│                                       show that none is left; asks before    │
-│                                       deleting the names of config.toml too. │
-│ --port            <int range> [x>=1]  Port of the page. docker run publishes │
-│                                       it under the same number on your       │
-│                                       computer: -p 127.0.0.1:9000:9000 for   │
-│                                       --port 9000. Default:  port in         │
-│                                       config.toml, 8088.                     │
-│ --help    -h      <bool>              Show this message and exit.            │
+│ --path                FOLDER         Only the photos below this folder (host │
+│                                      path, as you mounted it); repeat it for │
+│                                      several. Default: every photo of the    │
+│                                      index.                                  │
+│ --sample              COUNT [x>=0]   Analyse this many random photos, print  │
+│                                      the time per photo and the estimate of  │
+│                                      a full run, and stop.                   │
+│ --forget                             Delete every face from the cache, then  │
+│                                      show that none is left; asks before     │
+│                                      deleting the names of config.toml too.  │
+│ --names                              With --forget: delete the names of      │
+│                                      config.toml and the faces ignored too,  │
+│                                      without asking (the previous file is    │
+│                                      kept).                                  │
+│ --expect              NAMES/IGNORED  With --names: what the confirmation     │
+│                                      listed (names/ignored, e.g. 3/12);      │
+│                                      refuses, deleting nothing, when         │
+│                                      config.toml changed since.              │
+│ --straighten                         Turn every photo found lying on its     │
+│                                      side (the page Photos to straighten     │
+│                                      shows them first), after one question,  │
+│                                      journaled: mh undo gives them back.     │
+│ --port                PORT [x>=1]    Port of the page. docker run publishes  │
+│                                      it under the same number on your        │
+│                                      computer: -p 127.0.0.1:9000:9000 for    │
+│                                      --port 9000. Default:  port in          │
+│                                      config.toml, 8088.                      │
+│ --help        -h                     Show this message and exit.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

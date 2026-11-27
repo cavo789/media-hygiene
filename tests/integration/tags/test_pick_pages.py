@@ -107,12 +107,12 @@ def test_the_events_view_is_part_of_the_search_page(
     for part in PICK_PARTS:
         assert search.count(part) == 1, part
     side = search.split('<aside id="side">')[1].split("</aside>")[0]
-    for wanted in ('id="eventChoice"', 'id="eventFolderIn"', 'id="sortNow"'):
+    for wanted in ('id="spanChoice"', 'id="spanSort"', 'id="spanOther"'):
         assert wanted in side
+    assert 'id="eventChoice"' not in search  # the plan-based form left (0822)
     keys = search.split('id="keys"')[1].split("</section>")[0]
     assert "set the picked files aside" in keys  # Delete sets aside here too
     assert "next event to decide" in keys  # U (0574 dropped T)
-    assert "/api/sort/forget" in search
     for wanted in ('id="trialTry"', 'id="trialUndo"', 'id="trialRest"'):  # 0640
         assert wanted in side
     # Declared before the page's first search reads it.

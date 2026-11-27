@@ -21,8 +21,6 @@ _NATIVE: Final = re.compile(r"\b(?:window\.)?(?:confirm|alert|prompt)\(")
 _ASKED: Final = {
     "places/templates/places_edit.js.j2": 1,  # a place with hand-placed photos deleted
     "review/templates/phone_review.js.j2": 2,  # phone files deleted; one not kept
-    "search/templates/events_rule.js.j2": 1,  # rules removed from config.toml
-    "search/templates/events_choice.js.j2": 1,  # leaving with an unsaved folder: save?
     "review/templates/quarantine_purge.js.j2": 1,  # a purge: nothing brings it back
     "review/templates/shrink.js.j2": 1,  # hours of encoding start (0586's one question)
     "share/templates/album_edit.js.j2": 1,  # all taken out: the album removed

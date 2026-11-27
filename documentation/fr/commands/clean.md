@@ -151,77 +151,74 @@ cavo789/media-hygiene --locale fr clean --yes
  supprime pour de bon.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --tier               <exact|near|near-all>  Jusqu'où nettoyer. exact (par    │
-│                                             défaut) : seulement les copies   │
-│                                             identiques octet par octet. near │
-│                                             : aussi les copies réduites      │
-│                                             (envoyées par WhatsApp ou par    │
-│                                             e-mail, redimensionnées,         │
-│                                             recompressées) et les vidéos     │
-│                                             réencodées qui sont sûres ; les  │
-│                                             groupes à vérifier restent en    │
-│                                             place. near-all : tous les       │
-│                                             quasi-doublons ; vérifiez-les    │
-│                                             d'abord dans le rapport. Les     │
-│                                             quasi-doublons partent en        │
-│                                             quarantaine, jamais supprimés.   │
-│ --decisions          <path>                 Appliquer les choix faits dans   │
-│                                             le navigateur : decisions.json   │
-│                                             téléchargé depuis un rapport     │
-│                                             d'audit (paires de dossiers      │
-│                                             inversées ou laissées telles     │
-│                                             quelles), écrit par 'review'     │
-│                                             (photos de rafale écartées,      │
-│                                             quasi-doublons décidés) ou par   │
-│                                             'library' (photos mises de       │
-│                                             côté). Un chemin relatif est lu  │
-│                                             dans le dossier monté sur        │
-│                                             /reports. Le fichier est refusé  │
-│                                             si les dossiers, les paires ou   │
-│                                             les séries ont changé. Seul,     │
-│                                             --decisions lit decisions.json.  │
-│ --yes        -y      <bool>                 Ne pas demander de confirmation  │
-│                                             (remplace clean.confirm).        │
-│ --help       -h      <bool>                 Affiche ce message et quitte.    │
+│ --tier               exact|near|near-all  Jusqu'où nettoyer. exact (par      │
+│                                           défaut) : seulement les copies     │
+│                                           identiques octet par octet. near : │
+│                                           aussi les copies réduites          │
+│                                           (envoyées par WhatsApp ou par      │
+│                                           e-mail, redimensionnées,           │
+│                                           recompressées) et les vidéos       │
+│                                           réencodées qui sont sûres ; les    │
+│                                           groupes à vérifier restent en      │
+│                                           place. near-all : tous les         │
+│                                           quasi-doublons ; vérifiez-les      │
+│                                           d'abord dans le rapport. Les       │
+│                                           quasi-doublons partent en          │
+│                                           quarantaine, jamais supprimés.     │
+│ --decisions          FICHIER              Appliquer les choix faits dans le  │
+│                                           navigateur : decisions.json        │
+│                                           téléchargé depuis un rapport       │
+│                                           d'audit (paires de dossiers        │
+│                                           inversées ou laissées telles       │
+│                                           quelles), écrit par 'review'       │
+│                                           (photos de rafale écartées,        │
+│                                           quasi-doublons décidés) ou par     │
+│                                           'library' (photos mises de côté).  │
+│                                           Un chemin relatif est lu dans le   │
+│                                           dossier monté sur /reports. Le     │
+│                                           fichier est refusé si les          │
+│                                           dossiers, les paires ou les séries │
+│                                           ont changé. Seul, --decisions lit  │
+│                                           decisions.json.                    │
+│ --yes        -y                           Ne pas demander de confirmation    │
+│                                           (remplace clean.confirm).          │
+│ --help       -h                           Affiche ce message et quitte.      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --delete        <bool>  Libérer l'espace tout de suite : supprimer pour de   │
-│                         bon les copies exactes, après une comparaison octet  │
-│                         par octet avec la copie gardée, au lieu de les       │
-│                         déplacer en quarantaine ; 'undo' les reconstruit à   │
-│                         partir de la copie gardée.                           │
-│ --repair        <bool>  Restaurer les fichiers que 'audit --reread' a        │
-│                         trouvés abîmés depuis leur bonne copie (un doublon,  │
-│                         une sauvegarde, la quarantaine) : listés d'abord,    │
-│                         puis demandé ; le fichier abîmé va en quarantaine,   │
-│                         'undo' le remet.                                     │
+│ --delete          Libérer l'espace tout de suite : supprimer pour de bon les │
+│                   copies exactes, après une comparaison octet par octet avec │
+│                   la copie gardée, au lieu de les déplacer en quarantaine ;  │
+│                   'undo' les reconstruit à partir de la copie gardée.        │
+│ --repair          Restaurer les fichiers que 'audit --reread' a trouvés      │
+│                   abîmés depuis leur bonne copie (un doublon, une            │
+│                   sauvegarde, la quarantaine) : listés d'abord, puis demandé │
+│                   ; le fichier abîmé va en quarantaine, 'undo' le remet.     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <list[str]>  Dossier dont les copies sont conservées en     │
-│                               priorité. Répétable ; l'ordre compte.          │
-│ --protect        <list[str]>  Dossier jamais modifié ; ses fichiers sont les │
-│                               copies conservées. Répétable.                  │
-│ --exclude        <list[str]>  Dossier jamais analysé, même pas lu.           │
-│                               Répétable.                                     │
-│ --backup         <list[str]>  Une sauvegarde ou un ancien disque : comparé,  │
-│                               jamais modifié. Dit ce qui lui manque et ce    │
-│                               que lui seul contient. Répétable.              │
+│ --prefer         DOSSIER  Dossier dont les copies sont conservées en         │
+│                           priorité. Répétable ; l'ordre compte.              │
+│ --protect        DOSSIER  Dossier jamais modifié ; ses fichiers sont les     │
+│                           copies conservées. Répétable.                      │
+│ --exclude        DOSSIER  Dossier jamais analysé, même pas lu. Répétable.    │
+│ --backup         DOSSIER  Une sauvegarde ou un ancien disque : comparé,      │
+│                           jamais modifié. Dit ce qui lui manque et ce que    │
+│                           lui seul contient. Répétable.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <list[str]>  N'analyser que ces catégories ou          │
-│                                    extensions, par exemple --ext photo,video │
-│                                    ou --ext png,webp (répétable). Catégories │
-│                                    : photo, raw, video, media et celles de   │
-│                                    scan.categories dans config.toml.         │
-│                                    Extensions de photos, RAW et vidéos       │
-│                                    seulement. Par défaut : media (toutes les │
-│                                    photos, RAW et vidéos).                   │
-│ --exclude-name        <list[str]>  Nom de dossier jamais analysé, où qu'il   │
-│                                    soit, sans tenir compte de la casse ; *   │
-│                                    et ? permis, p. ex. --exclude-name        │
-│                                    Thumbnails,.Trash-* (répétable). S'ajoute │
-│                                    aux dossiers système déjà ignorés. Pour   │
-│                                    un dossier précis, utilisez --exclude.    │
+│ --ext                 EXTENSIONS  N'analyser que ces catégories ou           │
+│                                   extensions, par exemple --ext photo,video  │
+│                                   ou --ext png,webp (répétable). Catégories  │
+│                                   : photo, raw, video, media et celles de    │
+│                                   scan.categories dans config.toml.          │
+│                                   Extensions de photos, RAW et vidéos        │
+│                                   seulement. Par défaut : media (toutes les  │
+│                                   photos, RAW et vidéos).                    │
+│ --exclude-name        MOTIF       Nom de dossier jamais analysé, où qu'il    │
+│                                   soit, sans tenir compte de la casse ; * et │
+│                                   ? permis, p. ex. --exclude-name            │
+│                                   Thumbnails,.Trash-* (répétable). S'ajoute  │
+│                                   aux dossiers système déjà ignorés. Pour un │
+│                                   dossier précis, utilisez --exclude.        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -131,44 +131,42 @@ cavo789/media-hygiene --locale fr classify --sample 20
  isolées avec une IA locale facultative 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year            <str>        Seulement les fichiers de cette année, ou de  │
-│                                ces années : 2016 ou 2015-2017.               │
-│ --path            <list[str]>  Seulement les fichiers sous ce dossier        │
-│                                (chemin de l'hôte, tel que vous l'avez monté) │
-│                                ; répétez-la pour plusieurs. Les événements   │
-│                                restent entiers : ils sont formés à partir de │
-│                                tous les fichiers, et seuls les fichiers sous │
-│                                ces dossiers reçoivent une proposition. Avec  │
-│                                --year : les fichiers des deux.               │
-│ --layout          <str>        Où vont les fichiers sûrs, par exemple        │
-│                                '{year}/{year_month}/{category}'.             │
-│ --target          <str>        Dossier de l'hôte qui reçoit l'arborescence ; │
-│                                sur place par défaut.                         │
-│ --help    -h      <bool>       Affiche ce message et quitte.                 │
+│ --year            ANNÉE    Seulement les fichiers de cette année, ou de ces  │
+│                            années : 2016 ou 2015-2017.                       │
+│ --path            DOSSIER  Seulement les fichiers sous ce dossier (chemin de │
+│                            l'hôte, tel que vous l'avez monté) ; répétez-la   │
+│                            pour plusieurs. Les événements restent entiers :  │
+│                            ils sont formés à partir de tous les fichiers, et │
+│                            seuls les fichiers sous ces dossiers reçoivent    │
+│                            une proposition. Avec --year : les fichiers des   │
+│                            deux.                                             │
+│ --layout          MOTIF    Où vont les fichiers sûrs, par exemple            │
+│                            '{year}/{year_month}/{category}'.                 │
+│ --target          DOSSIER  Dossier de l'hôte qui reçoit l'arborescence ; sur │
+│                            place par défaut.                                 │
+│ --help    -h               Affiche ce message et quitte.                     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --leave                <list[str]>  Dossier de l'hôte jamais trié (analysé   │
-│                                     et nettoyé comme d'habitude).            │
-│ --carry-over           <str>        Classeur dont les modifications sont     │
-│                                     reprises ; celui du dernier classify par │
-│                                     défaut.                                  │
-│ --no-carry-over        <bool>       Repartir de zéro : ne reprendre aucune   │
-│                                     modification d'un classeur précédent.    │
+│ --leave                DOSSIER  Dossier de l'hôte jamais trié (analysé et    │
+│                                 nettoyé comme d'habitude).                   │
+│ --carry-over           FICHIER  Classeur dont les modifications sont         │
+│                                 reprises ; celui du dernier classify par     │
+│                                 défaut.                                      │
+│ --no-carry-over                 Repartir de zéro : ne reprendre aucune       │
+│                                 modification d'un classeur précédent.        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml ────╮
-│ --sample               <int range> [x>=0]  Estimer d'abord une exécution     │
-│                                            complète : décrire ce nombre de   │
-│                                            photos prises au hasard avec le   │
-│                                            modèle local, afficher le temps   │
-│                                            par photo et l'estimation d'une   │
-│                                            exécution complète, puis          │
-│                                            s'arrêter.                        │
-│ --no-describe          <bool>              Ne rien demander de nouveau au    │
-│                                            modèle local : les règles subject │
-│                                            lisent les descriptions déjà dans │
-│                                            le cache.                         │
-│ --yes          -y      <bool>              Décrire les photos sans demander, │
-│                                            quel que soit leur nombre.        │
+│ --sample               NOMBRE [x>=0]  Estimer d'abord une exécution complète │
+│                                       : décrire ce nombre de photos prises   │
+│                                       au hasard avec le modèle local,        │
+│                                       afficher le temps par photo et         │
+│                                       l'estimation d'une exécution complète, │
+│                                       puis s'arrêter.                        │
+│ --no-describe                         Ne rien demander de nouveau au modèle  │
+│                                       local : les règles subject lisent les  │
+│                                       descriptions déjà dans le cache.       │
+│ --yes          -y                     Décrire les photos sans demander, quel │
+│                                       que soit leur nombre.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

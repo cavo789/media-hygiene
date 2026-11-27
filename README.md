@@ -213,7 +213,7 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 ## Update
 
 `docker pull cavo789/media-hygiene` fetches the latest version; a tag such as
-`cavo789/media-hygiene:0.4.0` pins one.
+`cavo789/media-hygiene:0.5.0` pins one.
 
 ### Coming from media-dedup
 

@@ -363,14 +363,17 @@ Effective settings
 │ people.min_face               │ 40                            │ default      │
 │ people.min_sharpness          │ 30.0                          │ default      │
 │ people.with_audit             │ False                         │ default      │
+│ people.videos                 │ False                         │ default      │
 │ people.ignored                │ 0 faces                       │ default      │
 │ people.ignored_file           │                               │ default      │
 │ people.person                 │                               │ default      │
+│ people.unguessed              │                               │ default      │
 │ push.keep_removed_days        │ 90                            │ default      │
 │ push.stop_above_percent       │ 20                            │ default      │
 │ push.threads                  │ 8                             │ default      │
 │ slideshow.screen_px           │ 1920                          │ default      │
 │ slideshow.interval_seconds    │ 8                             │ default      │
+│ slideshow.avoid               │ []                            │ default      │
 │ share.long_side_px            │ 2048                          │ default      │
 │ share.quality                 │ 85                            │ default      │
 │ share.keep_gps                │ False                         │ default      │
@@ -918,14 +921,17 @@ Effective settings
 │ people.min_face               │ 40                            │ config.toml  │
 │ people.min_sharpness          │ 30.0                          │ config.toml  │
 │ people.with_audit             │ False                         │ config.toml  │
+│ people.videos                 │ False                         │ config.toml  │
 │ people.ignored                │ 0 faces                       │ default      │
 │ people.ignored_file           │                               │ default      │
 │ people.person                 │                               │ default      │
+│ people.unguessed              │                               │ default      │
 │ push.keep_removed_days        │ 90                            │ config.toml  │
 │ push.stop_above_percent       │ 20                            │ config.toml  │
 │ push.threads                  │ 8                             │ config.toml  │
 │ slideshow.screen_px           │ 1920                          │ config.toml  │
 │ slideshow.interval_seconds    │ 8                             │ config.toml  │
+│ slideshow.avoid               │ []                            │ default      │
 │ share.long_side_px            │ 2048                          │ config.toml  │
 │ share.quality                 │ 85                            │ config.toml  │
 │ share.keep_gps                │ False                         │ config.toml  │

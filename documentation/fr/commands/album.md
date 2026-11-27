@@ -150,34 +150,32 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
  copié ni déplacé (journalisé, annulable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  Le nom de l'album, tel que search l'a enregistré : le  │
-│                       dossier qui contient ses liens.                        │
-│                       [required]                                             │
+│ *    name      NOM  Le nom de l'album, tel que search l'a enregistré : le    │
+│                     dossier qui contient ses liens.                          │
+│                     [required]                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>   Au lieu d'un album enregistré : les fichiers de  │
-│                             cette catégorie, d'après le classeur de classify │
-│                             modifié.                                         │
-│ --event             <str>   Les fichiers de cet événement : son identifiant  │
-│                             ou son nom.                                      │
-│ --apply             <bool>  Crée les liens ; sans cette option, montre       │
-│                             seulement ce que l'album rassemble.              │
-│ --help      -h      <bool>  Affiche ce message et quitte.                    │
+│ --category          NOM  Au lieu d'un album enregistré : les fichiers de     │
+│                          cette catégorie, d'après le classeur de classify    │
+│                          modifié.                                            │
+│ --event             NOM  Les fichiers de cet événement : son identifiant ou  │
+│                          son nom.                                            │
+│ --apply                  Crée les liens ; sans cette option, montre          │
+│                          seulement ce que l'album rassemble.                 │
+│ --help      -h           Affiche ce message et quitte.                       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --rule            <str>                  Les fichiers que la règle de        │
-│                                          classify de ce nom a décidés.       │
-│ --rating          <int range> [1<=x<=5]  Les fichiers qui ont au moins ces   │
-│                                          étoiles dans Windows (1 à 5).       │
-│ --workbook        <str>                  Le classeur de classify à lire ;    │
-│                                          celui du dernier classify par       │
-│                                          défaut.                             │
+│ --rule            NOM                Les fichiers que la règle de classify   │
+│                                      de ce nom a décidés.                    │
+│ --rating          ÉTOILES [1<=x<=5]  Les fichiers qui ont au moins ces       │
+│                                      étoiles dans Windows (1 à 5).           │
+│ --workbook        FICHIER            Le classeur de classify à lire ; celui  │
+│                                      du dernier classify par défaut.         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <list[str]>  Une sauvegarde ou un ancien disque, monté en    │
-│                              lecture seule : jamais modifié, et jamais       │
-│                              refusé pour cela (mh passe vos sauvegardes).    │
-│                              Répétable.                                      │
+│ --backup        DOSSIER  Une sauvegarde ou un ancien disque, monté en        │
+│                          lecture seule : jamais modifié, et jamais refusé    │
+│                          pour cela (mh passe vos sauvegardes). Répétable.    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

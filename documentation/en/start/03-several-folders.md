@@ -38,7 +38,7 @@ Audit summary
 │ Near duplicates (moved only with --tier near)        │       3 │
 │ Re-encoded videos (moved only with --tier near)      │       1 │
 │ Burst series (moved only if set aside with 'review') │       3 │
-│ Duration                                             │     2 s │
+│ Duration                                             │     3 s │
 └──────────────────────────────────────────────────────┴─────────┘
 ```
 

@@ -1,8 +1,8 @@
 """The sort choices without a browser: a classified library, its session, raw calls.
 
-Review-sort's page is gone (0439): its choices answer on the search's *🗂 Events* view
-(`search/events_choose`, `/api/sort/…`). `EventsPage` takes review-sort's routes as the
-tests send them (`POST /api/event`) and answers through those of the search page.
+Review-sort's page is gone (0439), and its choices left the search's *🗂 Events* view
+(0822): `EventsPage` answers review-sort's routes as the tests send them
+(`POST /api/event`) straight from its session (`events_choices.CHOICES`).
 """
 
 from __future__ import annotations
@@ -10,21 +10,20 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final, cast
+from typing import TYPE_CHECKING, Final
+
+from pydantic import ValidationError
 
 from media_hygiene.classify.page_decisions import PageDecisions, read_page_decisions
 from media_hygiene.classify.plan_file import ClassifyPlan
 from media_hygiene.errors import MediaHygieneError
+from media_hygiene.review.events_choices import CHOICES
+from media_hygiene.review.events_now import SORT_NOW_PATH, sort_now
+from media_hygiene.review.events_rule_choices import PROGRESS_PATH, RULES_PATH
 from media_hygiene.review.http import ContentType, Request, Response
+from media_hygiene.review.local_app import choice_failed
+from media_hygiene.review.serving import json_response
 from media_hygiene.scan.progress import NullProgress
-from media_hygiene.search.events_choose import (
-    SORT_GETS,
-    SORT_POSTS,
-    events_get,
-    sort_path,
-    sort_post,
-)
-from media_hygiene.search.events_desk import EventsDesk
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.sort_reviewing import open_sort_review
 from tests.support.runtime import make_runtime
@@ -34,11 +33,9 @@ if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
     from pathlib import Path
 
-    from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.events_now import Sorter
-    from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
 PORT: Final = 4244
@@ -54,36 +51,53 @@ class EventsPage:
     sorter: Sorter | None = None
 
     async def handle(self, request: Request) -> Response:
-        """Answer one of review-sort's routes through the search's.
+        """Answer one of review-sort's routes from its session.
 
         Args:
             request: `GET /api/state`, `POST /api/event`…
 
         Returns:
-            The search's answer; 404 for a route it does not have.
+            The answer; 404 for a route it does not have.
         """
-        desk = EventsDesk(
-            cast("SearchIndex", None),
-            cast("HostPathMapper", None),
-            lambda: self.session,
-            frozenset,
-            lambda _session: self.sorter,
+        if request.method == "POST" and request.path == SORT_NOW_PATH:
+            return await sort_now(self.sorter, request)
+        if request.method == "POST" and request.path in CHOICES:
+            return _choice(self.session, request.path, request.body)
+        views = {
+            RULES_PATH: self.session.rules_view,
+            PROGRESS_PATH: self.session.progress_view,
+            "/api/state": self.session.state,
+        }
+        if request.path in views:
+            return _json(views[request.path]().model_dump_json())
+        if not request.path.startswith(_EVENT):
+            return Response(HTTPStatus.NOT_FOUND)
+        try:
+            view = self.session.event(request.path.removeprefix(_EVENT))
+        except MediaHygieneError:
+            return Response(HTTPStatus.NOT_FOUND)
+        return _json(view.model_dump_json())
+
+
+def _choice(session: SortBatchSession, path: str, body: bytes) -> Response:
+    """One choice of review-sort, saved: as the Events view answered it until 0822.
+
+    Returns:
+        The view as the disk holds it; 422 with the reason.
+    """
+    try:
+        view = CHOICES[path](session, body)
+    except ValidationError as exc:
+        reasons = "; ".join(
+            str(error["msg"]).removeprefix("Value error, ").rstrip(".")
+            for error in exc.errors()
         )
-        path = sort_path(request.path)
-        if request.method == "POST" and path in SORT_POSTS:
-            moved = Request(request.method, path, request.headers, request.body)
-            return await sort_post(desk, moved)
-        if path in SORT_GETS:
-            return cast("Response", events_get(desk, path))
-        if request.path == "/api/state":
-            return _json(self.session.state().model_dump_json())
-        if request.path.startswith(_EVENT):
-            try:
-                view = self.session.event(request.path.removeprefix(_EVENT))
-            except MediaHygieneError:
-                return Response(HTTPStatus.NOT_FOUND)
-            return _json(view.model_dump_json())
-        return Response(HTTPStatus.NOT_FOUND)
+        return json_response(
+            HTTPStatus.UNPROCESSABLE_ENTITY, {"error": f"Not saved: {reasons}."}
+        )
+    except (MediaHygieneError, OSError) as exc:
+        return choice_failed(exc)
+    return _json(view.model_dump_json())
 
 
 def _json(text: str) -> Response:

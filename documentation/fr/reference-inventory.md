@@ -27,13 +27,13 @@ quand chaque dossier a été audité en entier pour la dernière fois :
 <!-- capture: inventory.txt -->
 ```text
 ✅ Inventaire de 88 fichiers écrit :
-C:\Users\you\media-hygiene\reports\20261113-174356-inventory\inventory.xlsx
+C:\Users\you\media-hygiene\reports\20261127-222103-inventory\inventory.xlsx
 Dernier audit complet (UTC)
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
 ┃ Dossier          ┃ Date             ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━┩
-│ C:\Photos        │ 2026-11-13 17:43 │
-│ D:\Ancien disque │ 2026-11-13 17:43 │
+│ C:\Photos        │ 2026-11-27 22:21 │
+│ D:\Ancien disque │ 2026-11-27 22:21 │
 └──────────────────┴──────────────────┘
 ```
 

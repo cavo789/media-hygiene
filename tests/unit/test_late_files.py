@@ -27,14 +27,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from media_hygiene.classify.models import MediaInput
-    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.http import Request
     from media_hygiene.search.fts import SearchIndex
-
-
-def _no_plan() -> SortBatchSession:
-    """The Events view's opener with no classify plan (the late list needs none)."""
-    raise FileNotFoundError
 
 
 _CONFIG = """# mine
@@ -162,7 +156,7 @@ def test_routes_of_the_events_view(
         connection: The index.
     """
     late = _desk(tmp_path, connection)
-    desk = EventsDesk(late.index, late.mapper, _no_plan, frozenset, late=late)
+    desk = EventsDesk(late.index, late.mapper, frozenset, late=late)
     listed = events_get(desk, LATE_PATH)
     assert listed is not None
     assert len(json.loads(listed.body)["events"]) == 2
@@ -174,7 +168,7 @@ def test_routes_of_the_events_view(
     )
     answer = asyncio.run(sort_post(desk, request))
     assert "1 photo refused" in json.loads(answer.body)["said"]
-    bare = EventsDesk(late.index, late.mapper, _no_plan, frozenset)
+    bare = EventsDesk(late.index, late.mapper, frozenset)
     missing = events_get(bare, f"{LATE_PATH}/Easter")
     assert missing is not None
     assert missing.status is HTTPStatus.NOT_FOUND

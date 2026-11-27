@@ -169,14 +169,14 @@ command shows its own `--help`; here is the list of the commands:
  Start with 'audit' (read-only), then 'clean'.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --version          <bool>  Show the version and exit.                        │
-│ --help     -h      <bool>  Show this message and exit.                       │
+│ --version            Show the version and exit.                              │
+│ --help     -h        Show this message and exit.                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Output (override general.* of config.toml) ─────────────────────────────────╮
-│ --locale           <en|fr>                      Interface language.          │
-│ --verbosity        <error|warning|info|verbose  How much to log.             │
-│                    |debug>                                                   │
-│ --color            <auto|always|never>          When to use colours          │
+│ --locale           en|fr                        Interface language.          │
+│ --verbosity        error|warning|info|verbose|  How much to log.             │
+│                    debug                                                     │
+│ --color            auto|always|never            When to use colours          │
 │                                                 (NO_COLOR is honoured too).  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🔒 Analyse: read-only, never changes your photos ───────────────────────────╮

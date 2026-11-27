@@ -303,28 +303,28 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
  courte qui retient vos dossiers : mh audit, mh clean.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --shell               <powershell|bash>  Le shell du script : 'powershell'   │
-│                                          (Windows) ou 'bash' (WSL, Linux,    │
-│                                          macOS). Par défaut : deviné d'après │
-│                                          les dossiers montés.                │
-│ --photos              <list[str]>        Un dossier de photos et vidéos, tel │
-│                                          que l'Explorateur le montre :       │
-│                                          "C:\Photos" (ou /mnt/c/Photos sous  │
-│                                          WSL). Répétez-la pour plusieurs     │
-│                                          dossiers. Pas besoin de -v.         │
-│ --quarantine          <str>              Où vont les copies mises de côté,   │
-│                                          une seule fois : de préférence sur  │
-│                                          le disque des photos (un            │
-│                                          déplacement, pas une copie). Par    │
-│                                          défaut : le dossier quarantine de   │
-│                                          votre dossier personnel.            │
-│ --backup              <list[str]>        Une sauvegarde ou un ancien disque, │
-│                                          tel que l'Explorateur le montre :   │
-│                                          "E:\Sauvegarde". Monté en lecture   │
-│                                          seule pour chaque commande, clean   │
-│                                          compris, et donné en --backup :     │
-│                                          comparé, jamais modifié. Répétable. │
-│ --help        -h      <bool>             Affiche ce message et quitte.       │
+│ --shell               powershell|bash  Le shell du script : 'powershell'     │
+│                                        (Windows) ou 'bash' (WSL, Linux,      │
+│                                        macOS). Par défaut : deviné d'après   │
+│                                        les dossiers montés.                  │
+│ --photos              DOSSIER          Un dossier de photos et vidéos, tel   │
+│                                        que l'Explorateur le montre :         │
+│                                        "C:\Photos" (ou /mnt/c/Photos sous    │
+│                                        WSL). Répétez-la pour plusieurs       │
+│                                        dossiers. Pas besoin de -v.           │
+│ --quarantine          DOSSIER          Où vont les copies mises de côté, une │
+│                                        seule fois : de préférence sur le     │
+│                                        disque des photos (un déplacement,    │
+│                                        pas une copie). Par défaut : le       │
+│                                        dossier quarantine de votre dossier   │
+│                                        personnel.                            │
+│ --backup              DOSSIER          Une sauvegarde ou un ancien disque,   │
+│                                        tel que l'Explorateur le montre :     │
+│                                        "E:\Sauvegarde". Monté en lecture     │
+│                                        seule pour chaque commande, clean     │
+│                                        compris, et donné en --backup :       │
+│                                        comparé, jamais modifié. Répétable.   │
+│ --help        -h                       Affiche ce message et quitte.         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

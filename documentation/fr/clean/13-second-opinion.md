@@ -67,7 +67,7 @@ groupe :
 
 <!-- capture: crosscheck.txt|re:^Résultats de Czkawka|d'accord -->
 ```text
-Résultats de Czkawka du 2026-11-13 17:44 UTC.
+Résultats de Czkawka du 2026-11-27 22:21 UTC.
 ✅ Czkawka est d'accord : les mêmes 32 copies en trop dans 20 groupes.
 ```
 

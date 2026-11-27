@@ -16,7 +16,7 @@ $("lead").append(chipsLine, chipsMore);
 $("bar").append(chipsFolded);
 
 // The words typed, one chip each ("quoted words" stay one, `person:"Anne Marie"` too).
-const chipWords = (text) => text.match(/(?:\w+:)?"[^"]*"|\S+/g) || [];
+const chipWords = (text) => text.match(/(?:\w+:)?\x22[^\x22]*\x22|\S+/g) || [];
 // A name searched among the people (a card's 👤 chip clicked): 👤 and the name, as there.
 const chipLabel = (word) => {
   const name = word.match(/^person:\x22?([^\x22]*)\x22?$/i); // \x22: a quote the page checks cannot mistake for a string

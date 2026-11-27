@@ -216,13 +216,11 @@ nommer en ligne les lieux des nouvelles photos*, dans la colonne de gauche, dit 
  pour les règles 'place' et 'trip'.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --port          <int range> [x>=1]  Port de la page. docker run le publie    │
-│                                     sous le même numéro sur votre            │
-│                                     ordinateur, par exemple -p               │
-│                                     127.0.0.1:9000:9000 pour --port 9000.    │
-│                                     Par défaut :  port dans config.toml,     │
-│                                     8088.                                    │
-│ --help  -h      <bool>              Affiche ce message et quitte.            │
+│ --port          PORT [x>=1]  Port de la page. docker run le publie sous le   │
+│                              même numéro sur votre ordinateur, par exemple   │
+│                              -p 127.0.0.1:9000:9000 pour --port 9000. Par    │
+│                              défaut :  port dans config.toml, 8088.          │
+│ --help  -h                   Affiche ce message et quitte.                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

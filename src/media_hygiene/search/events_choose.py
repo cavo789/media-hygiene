@@ -1,12 +1,9 @@
-"""The choices of the *🗂 Events* view (0438): review-sort's routes, under `/api/sort/`.
+"""The routes of the *🗂 Events* view: the events made from the index, no classify plan.
 
-Each choice of review-sort (`events_choices.CHOICES`: an event's folder, photos sent
-elsewhere or left, a choice taken back, the sure proposals, the live destination, a
-rule) answers here at `/api/sort/<its path>`, on the plan's session the Events view
-holds: saved at once in `sort-decisions.json`, read back from the disk, the workbook
-value each one saw recorded (`base`). `POST /api/sort/sort-now` moves one event's
-files (`events_now`); `GET /api/sort/rules` and `/api/sort/progress` are *Your rules*
-and the progress with the runs. The page then asks the event again for its tiles.
+`POST` a late photo refused (0558), an event left (0574), an event found in the folders
+confirmed (0557), another grouping tried (0643), *Try on one month* (0640); `GET` the
+events found, the late photos, the events made from the index (0572) and the trial's
+offer. The plan-based choices of review-sort answered here until 0822.
 """
 
 from __future__ import annotations
@@ -14,18 +11,7 @@ from __future__ import annotations
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from pydantic import ValidationError
-
-from media_hygiene.errors import MediaHygieneError
-from media_hygiene.i18n import _
-from media_hygiene.review.events_choices import CHOICES, FILES_PATH
-from media_hygiene.review.events_now import SORT_NOW_PATH, sort_now
-from media_hygiene.review.events_rule_choices import PROGRESS_PATH, RULES_PATH
-from media_hygiene.review.http import ContentType, Response
-from media_hygiene.review.local_app import choice_failed
-from media_hygiene.review.serving import json_response
-from media_hygiene.search.events_aside import rows_kept
-from media_hygiene.search.events_desk import EVENTS_PATH
+from media_hygiene.review.http import Response
 from media_hygiene.search.events_no_plan import no_plan_post
 from media_hygiene.search.found_desk import FOUND_PATH
 from media_hygiene.search.grouping_desk import GROUPING_PATH
@@ -41,160 +27,70 @@ from media_hygiene.search.trial_api import (
 )
 
 if TYPE_CHECKING:
-    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.http import Request
     from media_hygiene.search.events_desk import EventsDesk
 
-SORT_PREFIX: Final = "/api/sort"
-_API: Final = "/api"
-_VALUE_ERROR: Final = "Value error, "
-_NO_PLAN: Final = (LATE_PATH, SPAN_PATH, SPAN_FILES_PATH)
-
-
-def sort_path(path: str) -> str:
-    """Where a route of review-sort answers on the search page.
-
-    Args:
-        path: Its path on review-sort: `/api/event`.
-
-    Returns:
-        `/api/sort/event`.
-    """
-    return SORT_PREFIX + path.removeprefix(_API)
-
 
 SORT_POSTS: Final = frozenset(
-    {
-        *(sort_path(path) for path in (*CHOICES, SORT_NOW_PATH)),
-        FOUND_PATH,
-        LATE_REFUSE_PATH,
-        LEFT_PATH,
-        GROUPING_PATH,
-        *TRIAL_POSTS,
-    }
+    {FOUND_PATH, LATE_REFUSE_PATH, LEFT_PATH, GROUPING_PATH, *TRIAL_POSTS}
 )
-SORT_GETS: Final = frozenset(sort_path(path) for path in (RULES_PATH, PROGRESS_PATH))
-SORT_PATHS: Final = {  # what the page's script calls them
-    "event": sort_path("/api/event"),
-    "files": sort_path("/api/files"),
-    "forget": sort_path("/api/forget"),
-    "sure": sort_path("/api/sure"),
-    "destination": sort_path("/api/destination"),
-    "sortNow": sort_path(SORT_NOW_PATH),
-    "progress": sort_path(PROGRESS_PATH),
-    "rulePreview": sort_path("/api/rule/preview"),
-    "rule": sort_path("/api/rule"),
-    "rules": sort_path(RULES_PATH),
-    "rulesRemove": sort_path("/api/rules/remove"),
-    **TRIAL_SCRIPT_PATHS,
-}
-
-
-def choice_answer(session: SortBatchSession, path: str, body: bytes) -> Response:
-    """Apply one choice of review-sort and save the decisions file.
-
-    Args:
-        session: The plan's session.
-        path: The route on review-sort: `/api/event`.
-        body: The JSON body.
-
-    Returns:
-        What the route answers, as the disk holds it; 422 with a translated reason.
-    """
-    try:
-        view = CHOICES[path](session, body)
-    except ValidationError as exc:
-        reasons = "; ".join(
-            str(error["msg"]).removeprefix(_VALUE_ERROR).rstrip(".")
-            for error in exc.errors()
-        )
-        message = _("Not saved: {reason}.").format(reason=reasons)
-        return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": message})
-    except (MediaHygieneError, OSError) as exc:
-        return choice_failed(exc)
-    return Response(HTTPStatus.OK, view.model_dump_json().encode(), ContentType.JSON)
+SORT_PATHS: Final = dict(TRIAL_SCRIPT_PATHS)  # what the page's script calls them
 
 
 async def sort_post(desk: EventsDesk | None, request: Request) -> Response:
-    """Answer a choice, or *Sort this event now*, of the Events view.
+    """Answer a choice of the Events view.
 
     Args:
         desk: The Events view; None: the page has none.
-        request: `POST /api/sort/…`, checked.
+        request: `POST` of one of `SORT_POSTS`, checked.
 
     Returns:
-        The answer; 404 without a plan.
+        The answer; 404 when the page has no such part.
     """
     if request.path in TRIAL_POSTS:  # 0640
         return await trial_post(desk, request)
-    if (answer := no_plan_post(desk, request)) is not None:
-        return answer
-    try:
-        session = desk.session() if desk is not None else None
-    except MediaHygieneError:
-        session = None
-    if desk is None or session is None:
-        return Response(HTTPStatus.NOT_FOUND)
-    path = _API + request.path.removeprefix(SORT_PREFIX)
-    if path == SORT_NOW_PATH:
-        return await sort_now(desk.sorter(session), request)
-    body = (
-        rows_kept(desk, session, request.body) if path == FILES_PATH else request.body
-    )
-    return choice_answer(session, path, body)
+    answer = no_plan_post(desk, request)
+    return Response(HTTPStatus.NOT_FOUND) if answer is None else answer
 
 
 def events_get(desk: EventsDesk | None, path: str) -> Response | None:
-    """The events, one event, *Your rules*, or the progress and the runs of the plan.
+    """The events found, the late photos, the events made from the index, the trial.
 
     Args:
         desk: The Events view; None: the page has none.
-        path: `/api/events[/<id>]`, `/api/sort/rules` or `/api/sort/progress`.
+        path: `FOUND_PATH`, `TRIAL_PATH`, `LATE_PATH[/<event>]`, `SPAN_PATH…`…
 
     Returns:
-        The view; 404 without a plan; None for a path of no Events view.
+        The view; 404 when the page has no such part; None for another path.
     """
     if desk is None:
         return None
-    if path in {FOUND_PATH, TRIAL_PATH} or path.startswith(
-        _NO_PLAN
-    ):  # 0557, 0572, 0640
-        return _without_plan(desk, path)
-    if path.startswith(EVENTS_PATH):  # 0437
-        return desk.state() if path == EVENTS_PATH else desk.event(path)
-    if path not in SORT_GETS:
+    if path in {TRIAL_PATH, FOUND_PATH} or path.startswith(
+        (SPAN_PATH, SPAN_FILES_PATH)
+    ):
+        return _part(desk, path)
+    if not path.startswith(LATE_PATH):
         return None
-    try:
-        session = desk.session()
-    except MediaHygieneError:
+    late = desk.late
+    if late is None:
         return Response(HTTPStatus.NOT_FOUND)
-    if path == sort_path(RULES_PATH):
-        body = session.rules_view().model_dump_json()
-    else:
-        body = session.progress_view().model_dump_json()
-    return Response(HTTPStatus.OK, body.encode(), ContentType.JSON)
+    return late.state() if path == LATE_PATH else late.event(path)
 
 
-def _without_plan(desk: EventsDesk, path: str) -> Response:
-    """The events found in the folders (0557), or the late photos (0558): no plan read.
+def _part(desk: EventsDesk, path: str) -> Response:
+    """The trial's offer, the events found, or the events made from the index.
 
     Args:
         desk: The Events view.
-        path: `FOUND_PATH`, `LATE_PATH[/<event>]`, or the events made from the
-            index (`SPAN_PATH…`, `SPAN_FILES_PATH…`).
+        path: `TRIAL_PATH`, `FOUND_PATH`, `SPAN_PATH…` or `SPAN_FILES_PATH…`.
 
     Returns:
         The view; 404 when the page has none.
     """
     if path == TRIAL_PATH:
         return trial_offer(desk)
-    if path.startswith((SPAN_PATH, SPAN_FILES_PATH)):
-        span = desk.span
-        return Response(HTTPStatus.NOT_FOUND) if span is None else span.answer(path)
     if path == FOUND_PATH:
         found = desk.found
         return Response(HTTPStatus.NOT_FOUND) if found is None else found.state()
-    late = desk.late
-    if late is None:
-        return Response(HTTPStatus.NOT_FOUND)
-    return late.state() if path == LATE_PATH else late.event(path)
+    span = desk.span
+    return Response(HTTPStatus.NOT_FOUND) if span is None else span.answer(path)

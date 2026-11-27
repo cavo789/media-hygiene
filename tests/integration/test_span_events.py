@@ -7,7 +7,6 @@ import sqlite3
 from contextlib import closing
 from http import HTTPStatus
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from media_hygiene.classify.event_left import read_left
 from media_hygiene.index.schema import prepare
@@ -17,9 +16,6 @@ from media_hygiene.search.events_desk import EventsDesk
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH, SpanEvents
 from media_hygiene.search.span_left import left_answer
-
-if TYPE_CHECKING:
-    from media_hygiene.review.events_batch import SortBatchSession
 
 _GAP_HOURS = 18.0
 _ROWS = (
@@ -39,15 +35,6 @@ def _nothing_chosen() -> frozenset[str]:
         None.
     """
     return frozenset()
-
-
-def _no_plan() -> SortBatchSession:
-    """No classify plan: the tab needs none.
-
-    Raises:
-        FileNotFoundError: Always.
-    """
-    raise FileNotFoundError
 
 
 def _index(index_file: Path) -> None:
@@ -86,7 +73,6 @@ def test_events_of_the_files_not_sorted_yet(tmp_path: Path) -> None:
         desk = EventsDesk(
             search,
             HostPathMapper(Path("/data")),
-            _no_plan,
             _nothing_chosen,
             span=_span(search),
         )
@@ -130,9 +116,7 @@ def test_a_bad_period_is_a_404(tmp_path: Path) -> None:
         span = _span(search)
         assert span.answer(f"{SPAN_PATH}nope").status == HTTPStatus.NOT_FOUND
         assert span.answer(f"{SPAN_FILES_PATH}x..y").status == HTTPStatus.NOT_FOUND
-        bare = EventsDesk(
-            search, HostPathMapper(Path("/data")), _no_plan, _nothing_chosen
-        )
+        bare = EventsDesk(search, HostPathMapper(Path("/data")), _nothing_chosen)
         missing = events_get(bare, f"{SPAN_PATH}..")
         assert missing is not None
         assert missing.status == HTTPStatus.NOT_FOUND
