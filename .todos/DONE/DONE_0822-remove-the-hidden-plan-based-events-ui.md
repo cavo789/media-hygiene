@@ -51,3 +51,10 @@ Rewrite what `sort/11` (EN + FR) still says of the old way.
   checked. One stale `byId(...)` left in the IIFE breaks the whole Events tab, and the TODO
   asks for each step to be checked by CI's headless walk. Do it in a session that can run
   the e2e browser walks (`e2e`, or push one step at a time and `ci_watch`), not unattended.
+
+## Status — DONE (2026-11-27)
+
+Remainder completed in three commits (201676ba page, 08bfe65a docs, a132001a routes): see
+the feedback of 2026-11-27-2. CI does not run on a branch push without a PR, so each step
+was checked by the Chromium walks run locally (`MEDIA_HYGIENE_E2E_BROWSER=1`: trial, pages,
+ask dialog: 17 passed) and a jsdom walk of the Events tab (list, card, keys, ← →).
