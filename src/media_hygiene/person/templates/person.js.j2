@@ -136,8 +136,10 @@ async function reopen(again) {
   learn(result);
   const first = result.files[0];
   seedName = (first && first.key === seed && first.named && first.named.name) || guessedName(result.files);
+  const typing = $("namer").contains(document.activeElement) ? document.activeElement : null;
   showFiles(toConfirm(result.files), again); // person_names.js.j2
   showConfirm();
+  if (typing && typing.isConnected) typing.focus(); // the grid never takes the name being typed
   const shown = counted(TEXTS.photos, files.length);
   const line = hiddenShown ? shown + " — " + counted(TEXTS.hiddenShown, hiddenShown) : shown;
   $("status").textContent = known ? line + " — " + fill(TEXTS.known, { date: known.date }) : line;
