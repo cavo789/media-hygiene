@@ -13,6 +13,8 @@ from media_hygiene.services import first_warm
 from media_hygiene.services.first_warm import WARM_PEOPLE, WARM_REQUESTS, warmed
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     import pytest
 
 
@@ -59,10 +61,10 @@ def _idle(monkeypatch: pytest.MonkeyPatch, busy: bool = False) -> None:  # noqa:
 
     Args:
         monkeypatch: The fixture.
-        busy: An audit or `people` writes the index.
+        busy: An audit or `people` writes the index, or nobody is named.
     """
     monkeypatch.setattr(first_warm, "WARM_DELAY", 0.0)
-    monkeypatch.setattr(first_warm, "_index_busy", lambda: busy)
+    monkeypatch.setattr(first_warm, "people_worth_warming", lambda: not busy)
 
 
 def test_ready_first_then_the_library_requests(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -102,3 +104,42 @@ def test_stopped_before_it_starts() -> None:
     handled: list[Request] = []
     asyncio.run(_serve(handled))
     assert not handled
+
+
+def _config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, text: str) -> None:
+    """A config.toml and a writable index under `tmp_path`.
+
+    Args:
+        tmp_path: The test's folder.
+        monkeypatch: The fixture.
+        text: The configuration file's content.
+    """
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "config.toml").write_text(text, encoding="utf-8")
+    monkeypatch.setenv("MEDIA_HYGIENE_CONFIG_DIR", str(tmp_path / "config"))
+    monkeypatch.setenv("MEDIA_HYGIENE_CACHE_DIR", str(tmp_path))
+    monkeypatch.setattr(first_warm, "index_busy", lambda _index: False)
+
+
+def test_nobody_named_no_people_page(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Faces found but nobody named: the page waits for a visit (review 2026-11-13)."""
+    _config(tmp_path, monkeypatch, "")
+    assert not first_warm.people_worth_warming()
+
+
+def test_someone_named_the_people_page_is_built(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A name given and the index free: the page is built ahead."""
+    _config(tmp_path, monkeypatch, '[[people.person]]\nname = "Ann"\n')
+    assert first_warm.people_worth_warming()
+
+
+def test_unreadable_settings_no_people_page(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A broken config.toml: nothing built, the visit says what is wrong."""
+    _config(tmp_path, monkeypatch, "[[people.person]\n")
+    assert not first_warm.people_worth_warming()

@@ -353,7 +353,7 @@ def test_a_failed_warm_up_leaves_the_visit_working(
             return Response(HTTPStatus.OK)
 
     monkeypatch.setattr(first_warm, "WARM_DELAY", 0.0)
-    monkeypatch.setattr(first_warm, "_index_busy", lambda: False)
+    monkeypatch.setattr(first_warm, "people_worth_warming", lambda: True)
     with ThreadPoolExecutor(1) as pool:
         asyncio.run(first_warm.warm_first_clicks(Router(), pool))
     assert len(built) == 1

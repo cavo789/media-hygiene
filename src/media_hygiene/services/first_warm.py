@@ -7,8 +7,9 @@ through the server's own router, on its own thread (the index stays read-only); 
 request the user already sent made them cheap. The folder tree, *Events found* and
 the map are built too, and kept by their pages until something changes (0804). The
 people page comes last (0817): its build writes its face groups, as a visit would, so
-it is skipped while another connection writes the index (an audit, `people`): the
-visit builds it then. The task is cancelled with the server's loop, and any failure
+it is skipped while another connection writes the index (an audit, `people`), and
+while nobody is named yet (its 95 MB and 2.5 s spent for a page maybe never opened):
+the visit builds it then. The task is cancelled with the server's loop, and any failure
 is left for the real request.
 """
 
@@ -18,6 +19,8 @@ import asyncio
 import contextlib
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.config.loader import load_settings
+from media_hygiene.errors import ConfigError
 from media_hygiene.index.write_probe import index_busy
 from media_hygiene.paths.locations import Locations
 from media_hygiene.review.http import ContentType, Request
@@ -56,13 +59,19 @@ def _nothing() -> None:
     """Run in a worker of the pool: starting it is the point."""
 
 
-def _index_busy() -> bool:
-    """Tell whether another connection writes the index now.
+def people_worth_warming() -> bool:
+    """Tell whether the people page should be built ahead now.
 
     Returns:
-        True while an audit or `people` writes it, or when it cannot be written.
+        True when someone is named and no other connection writes the index (an
+        audit, `people`); False too when the settings or the index cannot be read.
     """
-    return index_busy(Locations().index_file)
+    locations = Locations()
+    try:
+        named = bool(load_settings(locations).settings.people.person)
+    except ConfigError, OSError:  # the visit says what is wrong
+        return False
+    return named and not index_busy(locations.index_file)
 
 
 async def warm_first_clicks(router: Handling, pool: Executor) -> None:
@@ -78,7 +87,7 @@ async def warm_first_clicks(router: Handling, pool: Executor) -> None:
         for request in WARM_REQUESTS:
             await router.handle(request)
             await asyncio.sleep(0)  # a real request waiting goes first
-        if not await asyncio.to_thread(_index_busy):
+        if await asyncio.to_thread(people_worth_warming):
             await router.handle(WARM_PEOPLE)
         await started
 
