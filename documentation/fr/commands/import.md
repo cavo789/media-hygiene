@@ -170,8 +170,8 @@ page des rafales : elle reste au premier plan, et la suite continue à sa fermet
 d'abord. Avec `tags` activé, quand la page des rafales était ouverte : *Fini
 sur la page des rafales ? Appuyez sur Entrée*, puis les prises écartées vont en quarantaine
 (`clean --decisions import-bursts.json`, avec sa propre question). Enfin, *✨ Tout est fait : 42
-nouvelles photos et vidéos dans votre photothèque, 2 séries de rafales revues (3 prises mises
-de côté)* (les séries que la page des rafales a vues), le nom proposé pour les nouvelles photos et
+nouvelles photos et vidéos dans votre photothèque, 4 copies mises de côté, 2 séries de rafales revues (3 prises mises
+de côté)* (les copies mises de côté par l'étape `copies`, gardées dans un petit fichier de `/reports` pour cette ligne ; les séries que la page des rafales a vues), le nom proposé pour les nouvelles photos et
 le diaporama de **cet import seulement** : *📺 Votre diaporama « Promenade à Liège » est prêt : mh slideshow --folder "…" --since today*, puis *Le montrer sur la télé
 maintenant ? (o/N)*. Retirez une étape de `then` pour la couper (`then = []` : rien ne tourne). 🔒 Sans `--free`, le téléphone est seulement lu :
 rien n'y est supprimé, déplacé ni renommé.

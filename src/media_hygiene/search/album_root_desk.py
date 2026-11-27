@@ -37,6 +37,7 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 ALBUM_ROOT_PATH: Final = "/api/album-root"
+ALBUM_ROOT_FOLDERS: Final = f"{ALBUM_ROOT_PATH}/folders"  # its folders tree (0824)
 _TABLE: Final = "album"
 _MAX_PATH: Final = 4096
 

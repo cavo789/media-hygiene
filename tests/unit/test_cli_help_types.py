@@ -39,10 +39,10 @@ def test_help_shows_no_python_type(path: tuple[str, ...]) -> None:
 
 
 def test_audit_help_names_values_and_hides_flag_types() -> None:
-    """A repeatable folder option reads TEXT; a flag shows nothing before its help."""
+    """A repeatable folder option reads FOLDER; a flag shows nothing before its help."""
     result = CliRunner().invoke(build_app(), ["audit", "--help"], env={"COLUMNS": "80"})
     lines = result.output.splitlines()
-    assert any("--prefer" in line and "TEXT" in line for line in lines)
+    assert any("--prefer" in line and "FOLDER" in line for line in lines)
     help_line = next(line for line in lines if "--help" in line)
     assert help_line.split(" -h ")[1].split()[0] == "Show"
 
@@ -56,3 +56,48 @@ def test_a_metavar_set_by_hand_is_kept() -> None:
     )
     assert option in name_values([option])
     assert option.metavar == "FOLDER"
+
+
+def _options(command: Command) -> list[tuple[str, typer.core.TyperOption]]:
+    """Every option of every command below `command`, with its command path."""
+    found: list[tuple[str, typer.core.TyperOption]] = []
+    for path in _paths(command):
+        node = command
+        for name in path:
+            node = node.commands[name]  # type: ignore[attr-defined]
+        found.extend(
+            (" ".join(path), param)
+            for param in name_values(list(node.params))
+            if isinstance(param, typer.core.TyperOption)
+        )
+    return found
+
+
+def test_every_option_taking_a_value_names_it_with_its_own_word() -> None:
+    """`--prefer FOLDER`, `--port PORT`: none falls back to the generic word (0818)."""
+    generic = {"TEXT", "NUMBER", "PATH"}
+    options = _options(typer.main.get_command(build_app()))
+    taking = [(c, o) for c, o in options if not o.is_flag and o.name != "help"]
+    assert taking
+    bare = [
+        f"{command} {option.opts[0]}"
+        for command, option in taking
+        if option.metavar in generic
+    ]
+    assert not bare, f"options with no word of their own (cli/metavars.py): {bare}"
+
+
+def test_audit_help_names_a_folder_a_folder() -> None:
+    """The folders of `audit` read FOLDER; the port of a page reads PORT."""
+    result = CliRunner().invoke(
+        build_app(), ["audit", "--help"], env={"COLUMNS": "100"}
+    )
+    lines = result.output.splitlines()
+    for option in ("--prefer", "--protect", "--exclude "):
+        assert any(option in line and "FOLDER" in line for line in lines)
+    people = CliRunner().invoke(
+        build_app(), ["people", "--help"], env={"COLUMNS": "100"}
+    )
+    assert any(
+        "--port" in line and "PORT" in line for line in people.output.splitlines()
+    )

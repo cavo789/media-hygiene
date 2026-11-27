@@ -1680,6 +1680,9 @@ msgstr ""
 msgid "COMMAND [ARGS]..."
 msgstr ""
 
+msgid "COUNT"
+msgstr ""
+
 msgid "Camera"
 msgstr ""
 
@@ -2829,6 +2832,9 @@ msgstr ""
 msgid "EXIF"
 msgstr ""
 
+msgid "EXTENSIONS"
+msgstr ""
+
 msgid "Each copy in the second folder has an identical file in the first one."
 msgstr ""
 
@@ -3404,6 +3410,12 @@ msgid "Extra copies that can be set aside"
 msgstr ""
 
 msgid "F-number"
+msgstr ""
+
+msgid "FILE"
+msgstr ""
+
+msgid "FOLDER"
 msgstr ""
 
 msgid "Face drawn and kept: name it, then check its photos."
@@ -5447,6 +5459,12 @@ msgid ""
 "nor in place"
 msgstr ""
 
+msgid "NAME"
+msgstr ""
+
+msgid "NAMES/IGNORED"
+msgstr ""
+
 msgid "NUMBER"
 msgstr ""
 
@@ -5969,6 +5987,11 @@ msgid "No folder to analyse under {path}."
 msgstr ""
 
 msgid "No folder to import from."
+msgstr ""
+
+msgid ""
+"No folder to show yet: the tree comes from the audit. Type the path "
+"instead."
 msgstr ""
 
 msgid "No good copy here: look on your backup (NAS, disk)."
@@ -7410,6 +7433,15 @@ msgstr ""
 msgid "PATH"
 msgstr ""
 
+msgid "PATTERN"
+msgstr ""
+
+msgid "PERIOD"
+msgstr ""
+
+msgid "PORT"
+msgstr ""
+
 msgid "Page not found"
 msgstr ""
 
@@ -7640,10 +7672,16 @@ msgstr ""
 msgid "Pick all {total} files found"
 msgstr ""
 
+msgid "Pick in my folders…"
+msgstr ""
+
 msgid "Pick none"
 msgstr ""
 
 msgid "Pick one photo, not a video, to make it the cover."
+msgstr ""
+
+msgid "Pick the folder in the tree of your folders, as the library shows it."
 msgstr ""
 
 msgid ""
@@ -7997,6 +8035,9 @@ msgid "RAW file cannot be decoded"
 msgstr ""
 
 msgid "READ-ME - managed by Media Hygiene.txt"
+msgstr ""
+
+msgid "RUN"
 msgstr ""
 
 msgid "Radius, in metres"
@@ -8712,7 +8753,13 @@ msgstr ""
 msgid "Runs you can still undo: {runs}."
 msgstr ""
 
+msgid "SECONDS"
+msgstr ""
+
 msgid "SHA-256"
+msgstr ""
+
+msgid "STARS"
 msgstr ""
 
 msgid "Same Wi-Fi, open:"
@@ -12516,6 +12563,9 @@ msgstr ""
 msgid "Videos with a date in their tags"
 msgstr ""
 
+msgid "WORDS"
+msgstr ""
+
 msgid "Waiting in the quarantine"
 msgstr ""
 
@@ -12986,6 +13036,9 @@ msgid ""
 msgstr ""
 
 msgid "Wrong name"
+msgstr ""
+
+msgid "YEAR"
 msgstr ""
 
 msgid "Year"
@@ -14212,6 +14265,9 @@ msgid "landscapes, plants and sky, no one as the main subject"
 msgstr ""
 
 msgid "largest sharpness gap first"
+msgstr ""
+
+msgid "latest|MONTH|FOLDER"
 msgstr ""
 
 msgid "launcher script mh ps1 write again"
@@ -16010,6 +16066,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} copies to set aside"
 msgstr ""
+
+#, python-brace-format
+msgid "{count} copy set aside"
+msgid_plural "{count} copies set aside"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} damaged files"

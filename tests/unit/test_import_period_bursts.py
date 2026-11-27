@@ -10,6 +10,7 @@ from media_hygiene.cli.menu_steps import full_catalog
 from media_hygiene.report.burst_decisions import BurstDecision, BurstStatus
 from media_hygiene.report.decisions import DecisionsFile
 from media_hygiene.review.home_fields import FieldError, checked_words
+from media_hygiene.services.import_aside_count import remember_aside, take_aside
 from media_hygiene.services.import_bursts import IMPORT_DECISIONS
 from media_hygiene.services.import_copies import reviewed_bursts, tell_done
 from tests.support.runtime import make_locations, make_runtime, output_of
@@ -78,3 +79,20 @@ def test_the_end_line_counts_the_bursts(tmp_path: Path) -> None:
     assert "2 new photos and videos in your library." in text
     assert "1 new photo or video in your library, 2 burst series reviewed" in text
     assert "(3 shots set aside)." in text
+
+
+def test_the_end_line_counts_the_copies_set_aside(tmp_path: Path) -> None:
+    """The copies step leaves its count in /reports; the end line says it once."""
+    locations = make_locations(tmp_path)
+    runtime = make_runtime(locations)
+    remember_aside(locations.reports_dir, 3)
+    tell_done(runtime, (Path("/data/c/x.jpg"),))
+    tell_done(runtime, (Path("/data/c/x.jpg"),))  # the count was taken: not said again
+    first, second = output_of(runtime).split("✨")[1:]
+    assert "1 new photo or video in your library, 3 copies set aside." in " ".join(
+        first.split()
+    )
+    assert "set aside" not in second
+    remember_aside(locations.reports_dir, 1)
+    assert take_aside(locations.reports_dir) == 1
+    assert take_aside(locations.reports_dir) == 0

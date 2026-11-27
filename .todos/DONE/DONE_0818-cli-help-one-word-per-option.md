@@ -23,3 +23,7 @@ word per option, so the help says what to type.
 - [ ] `mh audit --help` shows `--prefer FOLDER`, `--protect FOLDER`; French help shows `DOSSIER`
 - [ ] The test above over every command
 - [ ] Say that `docs_screenshots` should run
+
+## Status — DONE (2026-11-27)
+
+One word per kind of value, by option name, in `cli/metavars.py` (`FOLDER`, `FILE`, `NAME`, `COUNT`, `PORT`, `PERIOD`, `PATTERN`...; French through `_()`); `help_types.name_values` applies it (choices keep their list; an own `metavar` is kept; `TEXT`/`NUMBER`/`PATH` stay the fallback). Test: `test_cli_help_types.py` (no value option falls back to the generic word). `docs_screenshots` should run: the `--help` captures of `documentation/*/commands/` show the new words.

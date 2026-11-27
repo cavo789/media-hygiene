@@ -154,7 +154,7 @@ describes the new photos; when it is not running, `tags` says so and the chain g
 when it closes, with no question to answer first. With `tags` on, when the burst page was
 open: *Done on the burst page? Press Enter*, then the shots you set aside go to the quarantine
 (`clean --decisions import-bursts.json`, its own question). Last, *✨ All done: 42 new photos and
-videos in your library, 2 burst series reviewed (3 shots set aside)* (the series once the burst page
+videos in your library, 4 copies set aside, 2 burst series reviewed (3 shots set aside)* (the copies the `copies` step set aside, kept in a small file of `/reports` for this line; the series once the burst page
 saw them), the name proposed for the new photos and the slideshow of **this import
 only**: *📺 Your slideshow "Walk in Liège" is ready: mh slideshow --folder "…" --since today*, then *Show it on the TV now? (y/N)*.
 Remove a step from `then` to switch it off (`then = []`: nothing runs). 🔒 Without `--free`, the phone is only read: nothing on

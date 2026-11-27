@@ -2079,6 +2079,9 @@ msgstr ""
 msgid "COMMAND [ARGS]..."
 msgstr "COMMANDE [ARGS]..."
 
+msgid "COUNT"
+msgstr "NOMBRE"
+
 msgid "Camera"
 msgstr "Appareil"
 
@@ -3432,6 +3435,9 @@ msgstr "Pendant l'événement, mais un autre appareil : ailleurs ?"
 msgid "EXIF"
 msgstr "EXIF"
 
+msgid "EXTENSIONS"
+msgstr "EXTENSIONS"
+
 msgid "Each copy in the second folder has an identical file in the first one."
 msgstr "Chaque copie du second dossier a un fichier identique dans le premier."
 
@@ -4161,6 +4167,12 @@ msgstr "Copies en trop, à mettre de côté"
 
 msgid "F-number"
 msgstr "Ouverture (f/)"
+
+msgid "FILE"
+msgstr "FICHIER"
+
+msgid "FOLDER"
+msgstr "DOSSIER"
 
 msgid "Face drawn and kept: name it, then check its photos."
 msgstr "Visage tracé et gardé : nommez-le, puis vérifiez ses photos."
@@ -6551,6 +6563,12 @@ msgstr ""
 "N, P et U ne parcourent que les événements qui ont encore des fichiers à "
 "déplacer : ni triés ni en place"
 
+msgid "NAME"
+msgstr "NOM"
+
+msgid "NAMES/IGNORED"
+msgstr "NOMS/IGNORÉS"
+
 msgid "NUMBER"
 msgstr "NOMBRE"
 
@@ -7180,6 +7198,13 @@ msgstr "Aucun dossier à analyser sous {path}."
 
 msgid "No folder to import from."
 msgstr "Aucun dossier d'où importer."
+
+msgid ""
+"No folder to show yet: the tree comes from the audit. Type the path "
+"instead."
+msgstr ""
+"Aucun dossier à montrer pour l'instant : l'arbre vient de l'audit. Tapez "
+"plutôt le chemin."
 
 msgid "No good copy here: look on your backup (NAS, disk)."
 msgstr "Pas de bonne copie ici : regardez sur votre sauvegarde (NAS, disque)."
@@ -8906,6 +8931,15 @@ msgstr "Affichage (remplace general.* de config.toml)"
 msgid "PATH"
 msgstr "CHEMIN"
 
+msgid "PATTERN"
+msgstr "MOTIF"
+
+msgid "PERIOD"
+msgstr "PÉRIODE"
+
+msgid "PORT"
+msgstr "PORT"
+
 msgid "Page not found"
 msgstr "Page introuvable"
 
@@ -9182,11 +9216,17 @@ msgstr "Choisir un disque ou un dossier…"
 msgid "Pick all {total} files found"
 msgstr "Choisir les {total} fichiers trouvés"
 
+msgid "Pick in my folders…"
+msgstr "Choisir dans mes dossiers…"
+
 msgid "Pick none"
 msgstr "Ne rien choisir"
 
 msgid "Pick one photo, not a video, to make it the cover."
 msgstr "Choisissez une seule photo, pas une vidéo, pour en faire la couverture."
+
+msgid "Pick the folder in the tree of your folders, as the library shows it."
+msgstr "Choisissez le dossier dans l'arbre de vos dossiers, comme la photothèque le montre."
 
 msgid ""
 "Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
@@ -9589,6 +9629,9 @@ msgstr "Fichier RAW impossible à décoder"
 
 msgid "READ-ME - managed by Media Hygiene.txt"
 msgstr "LISEZ-MOI - géré par Media Hygiene.txt"
+
+msgid "RUN"
+msgstr "RUN"
 
 msgid "Radius, in metres"
 msgstr "Rayon, en mètres"
@@ -10444,8 +10487,14 @@ msgstr "Passages à annuler (les plus récents d'abord)"
 msgid "Runs you can still undo: {runs}."
 msgstr "Exécutions encore annulables : {runs}."
 
+msgid "SECONDS"
+msgstr "SECONDES"
+
 msgid "SHA-256"
 msgstr "SHA-256"
+
+msgid "STARS"
+msgstr "ÉTOILES"
 
 msgid "Same Wi-Fi, open:"
 msgstr "Même Wi-Fi, ouvrez :"
@@ -15019,6 +15068,9 @@ msgstr "Vidéos"
 msgid "Videos with a date in their tags"
 msgstr "Vidéos datées par leurs balises"
 
+msgid "WORDS"
+msgstr "MOTS"
+
 msgid "Waiting in the quarantine"
 msgstr "En attente dans la quarantaine"
 
@@ -15606,6 +15658,9 @@ msgstr ""
 
 msgid "Wrong name"
 msgstr "Mauvais nom"
+
+msgid "YEAR"
+msgstr "ANNÉE"
 
 msgid "Year"
 msgstr "Année"
@@ -16973,6 +17028,9 @@ msgstr "paysages, plantes et ciel, sans personne au premier plan"
 
 msgid "largest sharpness gap first"
 msgstr "plus grand écart de netteté d'abord"
+
+msgid "latest|MONTH|FOLDER"
+msgstr "latest|MOIS|DOSSIER"
 
 msgid "launcher script mh ps1 write again"
 msgstr "launcher script mh ps1 réécrire"
@@ -18984,6 +19042,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} copies to set aside"
 msgstr "{count} copies à mettre de côté"
+
+#, python-brace-format
+msgid "{count} copy set aside"
+msgid_plural "{count} copies set aside"
+msgstr[0] "{count} copie mise de côté"
+msgstr[1] "{count} copies mises de côté"
 
 #, python-brace-format
 msgid "{count} damaged files"
