@@ -393,6 +393,8 @@ Ni Ollama, ni carte graphique : les modèles de visages sont intégrés ([IA loc
   `classify`, XMP), sauf si vous les avez confirmés : rien n'est analysé à nouveau.
 - `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
   temps que ça prend ; `with_audit = true` dans `[people]` le fait à chaque audit.
+- Vidéos : `videos = true` dans `[people]` y cherche aussi les visages, sur cinq images de
+  chacune (environ une seconde par vidéo) ; une personne vue sur plusieurs images compte une fois.
 - Les visages pris à quelques mètres, sur les photos de groupe, sont gardés depuis novembre
   2026 : deux fois plus de visages sur une fête de famille, presque tous nommés d'emblée
   d'après les personnes que vous avez déjà nommées. Les photos analysées avant sont regardées

@@ -9,8 +9,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import MediaKind
 from media_hygiene.faces.detect import MIN_SCORE
 from media_hygiene.index.face_tops import topped_versions
+from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
     import sqlite3
@@ -93,7 +95,8 @@ def unread(
     Returns:
         The paths whose current version was scanned for faces; the photos not
         scanned, or whose turn is not guessed, or whose faces were looked for
-        above `MIN_SCORE` only (a top-up, 0841), in their order.
+        above `MIN_SCORE` only (a top-up, 0841), in their order. A video scanned
+        is done: it has no turn and no top-up (0839).
     """
     found = scanned_versions(connection, model)
     done = guessed_versions(connection, model) & topped_versions(
@@ -103,6 +106,10 @@ def unread(
     missing = tuple(
         photo
         for photo in photos
-        if photo.path not in scanned or version_of(photo) not in done
+        if photo.path not in scanned
+        or (
+            version_of(photo) not in done
+            and media_kind(photo.path) is not MediaKind.VIDEO
+        )
     )
     return scanned, missing

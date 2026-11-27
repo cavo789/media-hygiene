@@ -299,6 +299,8 @@ min_face = 40
 min_sharpness = 30.0
 {{ comment(_("true: every 'audit' then looks for faces in the photos not looked at yet, after saying how long it takes and asking, as 'audit --people' does."), "--people") }}
 with_audit = false
+{{ comment(_("true: faces are looked for in videos too, on five frames of each (about one second per video, a few times a photo's). The page 'Identify someone' then shows a video's faces like a photo's.")) }}
+videos = false
 {{ comment(_("The names you give on the 'people' page are saved here as [[people.person]] tables: a name, and the file of its faces in the folder 'people' next to this file (the faces confirmed as theirs, the faces taken out of them); the faces of strangers go to 'people/ignored.toml'. 'search person:name' finds their photos.")) }}
 
 [classify]

@@ -1,13 +1,15 @@
 """The photos `people` looks at: the pictures of the index, below the folders asked for.
 
-No folder is walked: the photos are those the audits listed. Videos are left out (their
-keyframes may come later), and so are the pictures an audit found broken.
+No folder is walked: the photos are those the audits listed. Videos come too when asked
+(`[people] videos`: a few frames of each, TODO 0839); the files an audit found broken
+never do.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.constants import MediaKind
 from media_hygiene.i18n import _
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.listing import indexed_files
@@ -43,13 +45,16 @@ def require_people_index(runtime: Runtime) -> None:
 
 
 def people_photos(
-    connection: sqlite3.Connection, within: Sequence[Path]
+    connection: sqlite3.Connection,
+    within: Sequence[Path],
+    videos: bool = False,  # noqa: FBT001, FBT002
 ) -> tuple[PhotoVersion, ...]:
-    """The healthy pictures of the index, in path order.
+    """The healthy pictures of the index, and its videos when asked, in path order.
 
     Args:
         connection: The open index.
         within: Container folders (`--path`); empty: every picture of the index.
+        videos: The videos too (`[people] videos`).
 
     Returns:
         Their versions (path, size, mtime).
@@ -57,7 +62,10 @@ def people_photos(
     return tuple(
         PhotoVersion(file.path, file.size, file.mtime_ns)
         for file in indexed_files(connection)
-        if media_kind(file.path) in PREVIEWABLE
+        if (
+            media_kind(file.path) in PREVIEWABLE
+            or (videos and media_kind(file.path) is MediaKind.VIDEO)
+        )
         and file.facts.broken_reason is None
         and (not within or any(is_within(file.path, folder) for folder in within))
     )

@@ -97,7 +97,7 @@ async def crop_answer(desk: PeopleDesk, path: str, executor: Executor) -> Respon
     if face is None:
         return Response(HTTPStatus.NOT_FOUND)
     image = await asyncio.get_running_loop().run_in_executor(
-        executor, face_crop, CropJob(face.path, face.box)
+        executor, face_crop, CropJob(face.path, face.box, face.moment)
     )
     if image is None:
         return Response(HTTPStatus.NOT_FOUND)

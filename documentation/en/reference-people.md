@@ -214,6 +214,7 @@ you mounted it); repeat it for several folders.
 | `min_face` | `40` | Faces smaller than this many pixels (shorter side of their box) are left out: too small to recognise. |
 | `min_sharpness` | `30` | Faces blurrier than this are left out: a blurred face drifts away from the same face seen sharp. |
 | `with_audit` | `false` | `true`: every `audit` looks for faces too, after asking, as `audit --people` does. |
+| `videos` | `false` | `true`: faces are looked for in videos too, on five frames of each (10 % to 90 % of its length); one person seen on several frames counts once. About one second per video, a few times a photo's. *Identify someone* then shows a video's faces like a photo's. |
 | `ignored`, `[[people.person]]` | none | Written by the page: the faces ignored, and each person's name, confirmed faces (`faces`) and faces taken out (`rejected`). |
 
 They choose which faces are grouped, and how: changing them analyses nothing again. `min_face`

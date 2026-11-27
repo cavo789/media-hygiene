@@ -15662,6 +15662,12 @@ msgid ""
 " after saying how long it takes and asking, as 'audit --people' does."
 msgstr ""
 
+msgid ""
+"true: faces are looked for in videos too, on five frames of each (about "
+"one second per video, a few times a photo's). The page 'Identify someone'"
+" then shows a video's faces like a photo's."
+msgstr ""
+
 msgid "turn rotate straighten orientation sideways upright"
 msgstr ""
 

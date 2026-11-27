@@ -18,6 +18,7 @@ from media_hygiene.i18n import ngettext
 from media_hygiene.index.face_tops import add_found, boxes_of, is_topped, mark_topped
 from media_hygiene.index.read_versions import version_of
 from media_hygiene.index.turn_rows import TurnGuess
+from media_hygiene.services.people_videos import is_video, video_faces
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -122,6 +123,11 @@ class _Run:
                 self.outcome.stopped = True
                 return
             known = self.deps.store.scanned(photo)  # faces kept: the turn only
+            if is_video(photo):  # a few frames of it, no turn, no top-up (0839)
+                if not known:
+                    self._count(await video_faces(photo, self.deps))
+                self.deps.progress.advance()
+                return
             turns = self.deps.turns
             if not known or turns is None or not turns.guessed(photo):
                 await self._first(photo, known)

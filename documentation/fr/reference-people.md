@@ -227,6 +227,7 @@ l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs dossiers.
 | `min_face` | `40` | Les visages plus petits que ce nombre de pixels (petit côté de leur cadre) sont laissés de côté : trop petits pour être reconnus. |
 | `min_sharpness` | `30` | Les visages plus flous sont laissés de côté : un visage flou s'éloigne du même visage vu net. |
 | `with_audit` | `false` | `true` : chaque `audit` cherche aussi les visages, après avoir demandé, comme `audit --people`. |
+| `videos` | `false` | `true` : les visages sont aussi cherchés dans les vidéos, sur cinq images de chacune (de 10 % à 90 % de sa durée) ; une personne vue sur plusieurs images compte une fois. Environ une seconde par vidéo, quelques fois le temps d'une photo. *Identifier quelqu'un* montre alors les visages d'une vidéo comme ceux d'une photo. |
 | `ignored`, `[[people.person]]` | aucun | Écrits par la page : les visages ignorés, et pour chaque personne son nom, ses visages confirmés (`faces`) et ceux qui lui ont été retirés (`rejected`). |
 
 Ils choisissent quels visages sont regroupés, et comment : les changer ne fait rien analyser à

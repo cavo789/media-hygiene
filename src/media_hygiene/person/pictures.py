@@ -71,5 +71,5 @@ class PersonPictures:
             return face.crop
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(
-            self.executor, face_crop, CropJob(face.path, face.box)
+            self.executor, face_crop, CropJob(face.path, face.box, face.moment)
         )

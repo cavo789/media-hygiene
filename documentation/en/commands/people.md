@@ -363,6 +363,8 @@ No Ollama, no graphics card: the face models are built in ([Local AI](../referen
   `classify`, XMP), unless you confirmed them: nothing is analysed again.
 - `audit --people` looks for the faces right after an audit, once you agreed to the time it
   takes; `with_audit = true` in `[people]` does it at every audit.
+- Videos: `videos = true` in `[people]` looks for faces in them too, on five frames of each
+  (about one second per video); one person seen on several frames counts once.
 - Faces a few metres away, in group photos, are kept since November 2026: twice as many faces
   on a family event, almost all named at once after the people you named already. Photos
   analysed before are looked at once more by the next `people` (or `audit --people`): it only

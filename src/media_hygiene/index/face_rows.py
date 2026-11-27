@@ -12,10 +12,17 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.faces.models import FaceBox
-from media_hygiene.index.aside_not import FORGET_ASIDE
 from media_hygiene.index.drawn_faces import DRAWN_FROM
-from media_hygiene.index.face_groups import FORGET_GROUPS
-from media_hygiene.index.face_tops import FORGET_TOPS
+from media_hygiene.index.face_sql import (
+    COUNT_FACES,
+    CURRENT,
+    DROP_FACES,
+    FORGET,
+    PUT_FACE,
+    PUT_SCAN,
+    SCANNED,
+    SUMMARY,
+)
 
 if TYPE_CHECKING:
     import sqlite3
@@ -23,45 +30,6 @@ if TYPE_CHECKING:
     from media_hygiene.faces.models import PhotoFaces
     from media_hygiene.index.descriptions import PhotoVersion
 
-_SCANNED: Final = (
-    "SELECT 1 FROM face_scans"
-    " WHERE path = ? AND size = ? AND mtime_ns = ? AND model = ?"
-)
-_PUT_SCAN: Final = (
-    "INSERT OR REPLACE INTO face_scans (path, size, mtime_ns, model, faces, seconds)"
-    " VALUES (?, ?, ?, ?, ?, ?)"
-)
-# The faces drawn by hand on this version of the photo stay (0715, `drawn_faces`).
-_DROP_FACES: Final = (
-    "DELETE FROM faces WHERE path = ? AND model = ?"
-    " AND NOT (number >= ? AND size = ? AND mtime_ns = ?)"
-)
-_PUT_FACE: Final = (
-    "INSERT INTO faces (path, size, mtime_ns, model, number, x, y, width, height,"
-    " landmarks, score, sharpness, embedding)"
-    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-)
-_CURRENT: Final = (
-    "SELECT faces.path, faces.number, faces.x, faces.y, faces.width, faces.height,"
-    " faces.score, faces.sharpness, faces.embedding FROM faces"
-    " JOIN files ON files.path = faces.path AND files.size = faces.size"
-    " AND files.mtime_ns = faces.mtime_ns"
-    " WHERE faces.model = ? ORDER BY faces.path, faces.number"
-)
-_SUMMARY: Final = (
-    "SELECT COUNT(*), COALESCE(SUM(faces), 0), COALESCE(AVG(seconds), 0)"
-    " FROM face_scans WHERE model = ?"
-)
-# Deleted pages are overwritten with zeros: forgotten faces leave no trace in the file.
-_FORGET: Final = (
-    "PRAGMA secure_delete = ON",
-    "DELETE FROM faces",
-    "DELETE FROM face_scans",
-    FORGET_TOPS,  # how far down each was looked for (0841)
-    *FORGET_ASIDE,  # the faces of the people set aside (0328), and not them (0713)
-    FORGET_GROUPS,  # which group each face fell in (0588)
-)
-_COUNT_FACES: Final = "SELECT COUNT(*) FROM faces"
 _SEPARATOR: Final = ","
 
 
@@ -75,6 +43,7 @@ class StoredFace:
     score: float
     sharpness: float
     embedding: bytes
+    moment: float | None = None  # a video's: the frame it was found on (0839)
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,7 +87,7 @@ class FaceStore:
             True when its faces (maybe none) are in the index.
         """
         key = (str(photo.path), photo.size, photo.mtime_ns, self._model)
-        return self._connection.execute(_SCANNED, key).fetchone() is not None
+        return self._connection.execute(SCANNED, key).fetchone() is not None
 
     def put(self, found: PhotoFaces) -> None:
         """Replace the faces of a photo, and commit at once (Ctrl+C keeps them).
@@ -128,10 +97,10 @@ class FaceStore:
         """
         path = str(found.path)
         self._connection.execute(
-            _DROP_FACES, (path, self._model, DRAWN_FROM, found.size, found.mtime_ns)
+            DROP_FACES, (path, self._model, DRAWN_FROM, found.size, found.mtime_ns)
         )
         self._connection.executemany(
-            _PUT_FACE,
+            PUT_FACE,
             [
                 (
                     path,
@@ -152,7 +121,7 @@ class FaceStore:
             ],
         )
         scan = (path, found.size, found.mtime_ns, self._model)
-        self._connection.execute(_PUT_SCAN, (*scan, len(found.faces), found.seconds))
+        self._connection.execute(PUT_SCAN, (*scan, len(found.faces), found.seconds))
         self._connection.commit()
 
     def faces(self) -> tuple[StoredFace, ...]:
@@ -163,16 +132,15 @@ class FaceStore:
         """
         return tuple(
             StoredFace(
-                Path(path),
-                int(number),
-                FaceBox(float(x), float(y), float(width), float(height)),
-                float(score),
-                float(sharpness),
-                bytes(embedding),
+                Path(row[0]),
+                int(row[1]),
+                FaceBox(float(row[2]), float(row[3]), float(row[4]), float(row[5])),
+                float(row[6]),
+                float(row[7]),
+                bytes(row[8]),
+                None if row[9] is None else float(row[9]),
             )
-            for path, number, x, y, width, height, score, sharpness, embedding in (
-                self._connection.execute(_CURRENT, (self._model,))
-            )
+            for row in self._connection.execute(CURRENT, (self._model,))
         )
 
     def tally(self) -> FaceTally:
@@ -182,7 +150,7 @@ class FaceStore:
             Photos analysed, faces found, mean time per photo.
         """
         photos, faces, seconds = self._connection.execute(
-            _SUMMARY, (self._model,)
+            SUMMARY, (self._model,)
         ).fetchone()
         return FaceTally(int(photos), int(faces), float(seconds))
 
@@ -192,9 +160,9 @@ class FaceStore:
         Returns:
             How many faces were deleted, and how many remain once committed.
         """
-        before = self._connection.execute(_COUNT_FACES).fetchone()
-        for statement in _FORGET:
+        before = self._connection.execute(COUNT_FACES).fetchone()
+        for statement in FORGET:
             self._connection.execute(statement)
         self._connection.commit()
-        after = self._connection.execute(_COUNT_FACES).fetchone()
+        after = self._connection.execute(COUNT_FACES).fetchone()
         return int(before[0]), int(after[0])
