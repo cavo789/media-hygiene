@@ -38,7 +38,9 @@ def test_french_help_has_no_english_left() -> None:
     group = get_command(app)
     assert isinstance(group, LocalizedGroup)
     for args in (["--help"], *([name, "--help"] for name in sorted(group.commands))):
-        output = CliRunner().invoke(app, args).output
+        raw = CliRunner().invoke(app, args).output
+        # Rich wraps the help to the terminal width: compare words, not lines.
+        output = " ".join(re.sub(r"[│╭╮╰╯─]", " ", raw).split())
         assert "Utilisation : media-hygiene" in output, args
         assert "Affiche ce message et quitte." in output, args
         for english in ("Usage:", "Show this message", "[default:", "COMMAND "):
