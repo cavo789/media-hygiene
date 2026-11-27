@@ -243,7 +243,8 @@ nothing).
 decide nothing, turn a folder-name rule into dates.
 
 **📐 Where and how to sort** chooses, on your photos, what the next `classify` proposes: the folder
-receiving the tree (`[classify] target`; empty: each folder is sorted in place) and its shape,
+receiving the tree (`[classify] target`; empty: each folder is sorted in place; **📂 Pick in my
+folders…** picks it in the library's tree, typing stays for a folder not audited yet) and its shape,
 *Year / Year-month / Event* or *Year / Month only*, each with the tree it gives (from your latest
 `classify`, else from the dates of your photos, without the names of the events). The files the sort
 is less sure of stay where they are unless you choose a shape for them too. Saved in `config.toml`

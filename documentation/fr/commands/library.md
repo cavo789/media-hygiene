@@ -261,7 +261,9 @@ jours de l'événement (il ne déplace rien).
 retirez celles qui ne décident rien, changez une règle de nom de dossier en dates.
 
 **📐 Où et comment trier** choisit, sur vos photos, ce que propose le prochain `classify` : le dossier
-qui reçoit l'arborescence (`[classify] target` ; vide : chaque dossier est trié sur place) et sa forme,
+qui reçoit l'arborescence (`[classify] target` ; vide : chaque dossier est trié sur place ; **📂 Choisir
+dans mes dossiers…** le choisit dans l'arbre de la photothèque, le taper reste possible pour un dossier
+pas encore audité) et sa forme,
 *Année / Année-mois / Événement* ou *Année / Mois seulement*, chacune avec l'arborescence qu'elle donne
 (d'après votre dernier `classify`, sinon d'après les dates de vos photos, sans le nom des événements).
 Les fichiers dont le tri est moins sûr restent où ils sont, sauf si vous choisissez aussi une forme pour
