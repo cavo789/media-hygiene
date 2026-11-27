@@ -1,0 +1,132 @@
+{# The example [[classify.rules]] of config.toml.j2, included by it (its 400-line cap). -#}
+[[classify.rules]]
+name = "{{ _("Films and series") }}"
+match = "kind"
+kind = "download"
+{{ comment(_("No category: downloaded films and series are not memories, they stay where they are.")) }}
+
+{{ comment(_("Your own rules go here, above the folders, for instance:")) }}
+# [[classify.rules]]
+# name = "{{ _("My places") }}"
+# match = "place"
+#
+# [[classify.rules]]
+# name = "{{ _("Trips") }}"
+# match = "trip"
+#
+# [[classify.rules]]
+# name = "{{ _("Towns of the folders") }}"
+# match = "folder_town"
+#
+{{ comment(_('Your events (match = "date_range": a name, its days, its cameras) are written by the search page, never by hand: Move to an event…, or the events found in your folders on the Events tab.')) }}
+#
+# [[classify.rules]]
+# name = "{{ _("Grandma's birthday") }}"
+# match = "calendar"
+# dates = "03-12"
+# category = "{{ _("Grandma's birthday") }}"
+#
+# [[classify.rules]]
+# name = "{{ _("School fair") }}"
+# match = "path"
+# pattern = '(?i)kermesse'
+# category = "{{ _("School fair") }}"
+#
+# [[classify.rules]]
+# name = "{{ _("Drone") }}"
+# match = "camera"
+# pattern = '(?i)dji|fc\d{4}'
+# category = "{{ _("Drone") }}"
+
+{{ comment(_("person: the events where someone named on the 'people' page shows on at least min_share percent of the photos (10 by default), and the lone photos showing them. names = [...] matches any of them; all = true needs every one. A name nobody has in [[people.person]] stops classify.")) }}
+# [[classify.rules]]
+# name = "{{ _("With Léa") }}"
+# match = "person"
+# names = ["Léa"]
+# category = "Léa"
+
+[[classify.rules]]
+name = "{{ _("Existing folders") }}"
+match = "existing_folder"
+
+[[classify.rules]]
+name = "{{ _("Screenshots and documents") }}"
+match = "kind"
+kind = "screenshot"
+{{ comment(_("No category: screenshots, tickets and receipts stay where they are, out of the years. To gather them in a folder of yours, give a category and a layout of their own, e.g.:")) }}
+# category = "{{ _("Documents and screenshots") }}"
+# layout = "{category}/{year}"
+
+[[classify.rules]]
+name = "{{ _("Event neighbours") }}"
+match = "event_neighbour"
+
+[[classify.rules]]
+name = "{{ _("Same moment") }}"
+match = "same_moment"
+
+[[classify.rules]]
+name = "{{ _("Christmas") }}"
+match = "calendar"
+dates = "12-24..12-26"
+category = "{{ _("Christmas") }}"
+
+[[classify.rules]]
+name = "{{ _("New Year") }}"
+match = "calendar"
+dates = "12-31..01-01"
+category = "{{ _("New Year") }}"
+{% if locale == "fr" %}
+
+[[classify.rules]]
+name = "Saint-Nicolas"
+match = "calendar"
+dates = "12-05..12-06"
+category = "Saint-Nicolas"
+{% endif %}
+
+{{ comment(_("Pictures received through a messaging app, if you want them apart:")) }}
+# [[classify.rules]]
+# name = "{{ _("Received") }}"
+# match = "kind"
+# kind = "received"
+# category = "{{ _("Received") }}"
+
+{{ comment(_("The subject a local vision model sees, for the photos no rule above decided ([classify.ai] model must be set). It picks one of these categories, or none; it is sure only when the photos of an event agree. per_photo = true describes every photo instead of a few per event: much longer.")) }}
+{{ comment(_('Write each category as "Name = definition": the name is the folder, the definition tells the model what you mean by it. A name alone is judged by its words: "Home and works" drew every indoor scene.')) }}
+# [[classify.rules]]
+# name = "{{ _("Subject") }}"
+# match = "subject"
+# categories = [
+#     "{{ _("Holidays and outings") }} = {{ _("away from home: trips, visits, restaurants, playgrounds") }}",
+#     "{{ _("Parties") }} = {{ _("birthdays, Christmas, communions, weddings; not a costume alone") }}",
+#     "{{ _("School") }} = {{ _("classrooms, school trips, school shows and parties") }}",
+#     "{{ _("Sport and leisure") }} = {{ _("sports and hobbies, played or watched: matches, swimming") }}",
+#     "{{ _("At home") }} = {{ _("in your own home only: meals, games, children, sofa, garden") }}",
+#     "{{ _("Animals") }} = {{ _("a pet or an animal as the main subject") }}",
+#     "{{ _("Nature and landscapes") }} = {{ _("landscapes, plants and sky, no one as the main subject") }}",
+# ]
+
+{{ comment(_('"Other" means: sure that nothing above matches. Without it, such files stay where they are until you decide: we do not know.')) }}
+# [[classify.rules]]
+# name = "{{ _("Other") }}"
+# match = "other_category"
+# category = "{{ _("Other") }}"
+
+{{ comment(_("Your own places: a photo whose GPS position lies within radius_m metres of one goes to its name, with a 'place' rule above; a photo without GPS follows the other photos of its event. One place can be home = true: trips are measured from it. Name them on a map with 'media-hygiene places', or copy the latitude and longitude from a map. Nothing leaves your computer: towns and countries are named from GeoNames data shipped with the image. A place found on OpenStreetMap from that map keeps its outline instead of a radius (area, a list of [latitude, longitude] rings, and osm, its id): 'classify' never goes online.")) }}
+# [[classify.places]]
+# name = "{{ _("Home") }}"
+# latitude = 50.0
+# longitude = 5.0
+# radius_m = 200
+# home = true
+
+{{ comment(_("Photos given one of your places by hand, written by the map of 'places' (Give these photos to…) when their GPS position is wrong, as a phone indoors often records: they go to that place whatever their position says, and their trips are measured from it. Their list is in the file linked (one line per photo: path, and id = the start of its SHA-256 and its size); the id is what counts, the path is kept current by sort, undo and each audit. A photo edited since falls back to its GPS. Deleting a place on the map deletes its entry.")) }}
+# [[classify.place_photos]]
+# place = "{{ _("Home") }}"
+# file = "places/{{ _("Home") }}.toml"
+
+{{ comment(_("Your names for the towns: the towns are named after GeoNames, in English or in their own language (Brussels, Brugge, Gent). Write the exact GeoNames name, then yours: trips, {city}, the places page and the folder_town rule use yours; a folder named either way matches.")) }}
+# [classify.town_names]
+# "Brugge" = "Bruges"
+# "Gent" = "{{ _("Ghent") }}"
