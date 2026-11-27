@@ -15,8 +15,14 @@
     }
     const hidden = Boolean(kept.sideHidden);
     document.querySelector(".layout").classList.toggle("sideHidden", hidden);
-    toggle.textContent = hidden ? view.dataset.show : view.dataset.hide;
-    toggle.setAttribute("aria-pressed", String(hidden));
+    const label = hidden ? view.dataset.show : view.dataset.hide;
+    toggle.textContent = hidden ? "▶" : "◀";
+    toggle.title = label;
+    toggle.setAttribute("aria-label", label);
+    toggle.setAttribute("aria-expanded", String(!hidden));
+    // The handle sits on the left panel's edge: in the panel (its right edge) while shown, on
+    // the layout's left edge once hidden.
+    (hidden ? document.querySelector(".layout") : document.getElementById("side")).appendChild(toggle);
   };
   const change = (part) => {
     const kept = { ...read(), ...part };

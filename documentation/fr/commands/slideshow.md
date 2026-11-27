@@ -210,7 +210,7 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
   un mauvais nom (*Pas Paul, ce visage est…*), relu sur le disque, et **👤 Ses autres photos** ouvre
   `/person` dans un nouvel onglet, le diaporama continue ; les nombres de **Éviter certaines
   personnes** suivent aussitôt. Sur le téléphone, les noms seulement. Les vignettes prennent
-  **S/M/L/XL** et **◀ Masquer le panneau**, comme toute page de vignettes.
+  **S/M/L/XL** et **◀** (la poignée au bord du panneau de gauche), comme toute page de vignettes.
 - **Ne pas montrer** retire du diaporama la photo sur la télé (la télé passe à la suivante) ; le
   bouton d'une vignette fait de même pour n'importe quelle photo, et **La montrer à nouveau** la
   remet, même si son événement est décoché ou sa personne évitée (le choix à la main l'emporte).

@@ -253,7 +253,7 @@ without a `config.toml` of yours, the names only.
    named*, *Someone else* (a face that looks like them but is named another person). The
    status line counts the photos hidden; Ctrl+A and the buttons act on the photos shown only.
    **S M L XL** in the bar sets the size of the photos (XL to tell small children apart: the
-   face that matched grows too), and **◀ Hide the panel** gives the whole width to the grid;
+   face that matched grows too), and **◀** (the handle on the left panel's edge) gives the whole width to the grid;
    both are kept in this browser. When a photo's folder or file name holds the name of a
    person you named (*Avril 2004 - Manon 5 mois*, *Petite Manon.png*; whole words, without case
    or accents), its tile says **📁 Manon**, in red when it names someone else than the face's

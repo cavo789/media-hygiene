@@ -190,7 +190,7 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
   ? nobody. On the PC, a click on a face names it or takes a wrong name off (*Not Paul, this face
   is…*), read back from the disk, and **👤 Its other photos** opens `/person` in a new tab, the show
   going on; the counts of **Avoid some people** follow at once. On the phone, the names only. The
-  thumbnails take **S/M/L/XL** and **◀ Hide the panel**, as every page of thumbnails.
+  thumbnails take **S/M/L/XL** and **◀** (the handle on the left panel's edge), as every page of thumbnails.
 - **Do not show** sets the photo on the TV out of the show (the TV moves on); a thumbnail's own
   button does the same for any photo, and **Show it again** sets it back, even while its event is
   unticked or its person avoided (a choice by hand wins).

@@ -5,7 +5,7 @@
    photos only, L and XL: the whole caption). Included by `pick_acting.html.j2` (every page of
    tiles to pick) and by the pages of tiles without picking (people, group reviews). #}
 <span id="view" data-key="{{ tile_view_key | default('') }}" data-hide="{{ _('◀ Hide the panel') }}" data-show="{{ _('▶ Show the panel') }}">
-  <button id="sideToggle" class="plain" type="button"></button>
+  <button id="sideToggle" class="plain" type="button" aria-controls="side" aria-expanded="true"></button>
   <span id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
     <button class="plain" type="button" data-size="s" title="{{ _('Small: the photos only') }}">S</button>
     <button class="plain" type="button" data-size="m" title="{{ _('Medium') }}">M</button>
