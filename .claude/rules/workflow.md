@@ -101,6 +101,11 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   (the container itself is capped by `runArgs --cpus`, `MH_DEV_CPUS` on the host). Measuring:
   `/usr/bin/time -f '%e s %M KB'` (peak memory), `hyperfine` (repeated runs, spread),
   `py-spy record -o /tmp/x.svg -- <command>` (where the time goes); `jq`, `bc`, `file`, `unzip`.
+- CI (`ci.yml`) runs on `pull_request` and `main` only: a branch push without a PR starts no
+  run. Checking a page's JS without it: render the page (`tests/support/page_render`), parse it
+  with `docker run -i node:22-alpine` (stdin, the scratchpad is invisible to the daemon), walk
+  it with jsdom in a named volume; the real Chromium walks run here too with
+  `MEDIA_HYGIENE_E2E_BROWSER=1 pytest -m e2e tests/e2e/<walk>` (about 1 min, 0822).
 - A git worktree (a subagent with `isolation: worktree`) gets its own venv:
   `UV_PROJECT_ENVIRONMENT=/tmp/<name>/.venv` before any `uv`/`pytest`/`pre-commit`. A `uv run`
   in a worktree re-points the shared `/home/vscode/.venv` editable install to that tree, and
