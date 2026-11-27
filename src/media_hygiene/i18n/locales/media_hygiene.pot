@@ -2506,16 +2506,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid ""
-"Delete {n} album? Your photos stay where they are: only the albums file "
-"changes."
-msgid_plural ""
-"Delete {n} albums? Your photos stay where they are: only the albums file "
-"changes."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "Delete {ticked} files ({size}) from the phone"
 msgstr ""
 
@@ -4018,9 +4008,6 @@ msgstr ""
 msgid "Give the album a plain name, e.g. \"Christmas\" or \"Best of 2016\"."
 msgstr ""
 
-msgid "Give the photos"
-msgstr ""
-
 msgid "Give the photos picked a day"
 msgstr ""
 
@@ -4050,12 +4037,6 @@ msgstr ""
 msgid ""
 "Give your photos words, then find them again by a word, a place, a year "
 "or a person."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Give {files} to {place}? Their GPS is then ignored for this place; the "
-"photos stay where they are."
 msgstr ""
 
 msgid "Given by the tool, close to a confirmed face: not confirmed yet"

@@ -39,7 +39,7 @@ opens any other space.
 
 From the page, on the PC (a phone only looks: albums change on the PC), you can:
 
-- **🗑 Delete** the albums ticked in the list: the page asks once, then only `albums.json`
+- **🗑 Delete** the albums ticked in the list: no question, only `albums.json`
   changes, your photos stay where they are; **↩ Undo** in the message puts them back (the last
   delete is kept next to the albums file, in `albums-deleted.json`, for 30 days);
 - **✏️ Rename** an album: a name another album has (whatever its case) is refused; `slideshow`,

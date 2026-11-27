@@ -125,7 +125,8 @@ async function edit(body) {
 }
 async function deleteTicked() {
   const names = ticked();
-  if (names.length && await window.mhAsk({ lines: [plural(T.deleteAsk, names.length)], yes: T.deleteYes, danger: true })) edit({ action: "delete", names });
+  // Reversible: no question, the toast's Undo restores the albums file kept (0499, 0811).
+  if (names.length) edit({ action: "delete", names });
 }
 function rename(button) { // the name becomes a field in its card, never a browser prompt
   const name = button.dataset.rename;

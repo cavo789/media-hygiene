@@ -135,3 +135,15 @@ def test_a_place_renamed_or_deleted_takes_its_photos_along(tmp_path: Path) -> No
     assert not read_place_photos(config)
     assert [place.name for place in _settings(config).places] == ["Home"]
     assert "# my own classify comment" in config.read_text("utf-8")
+
+
+def test_the_undo_of_a_give_takes_back_only_those_given(tmp_path: Path) -> None:
+    """The map's Undo (0811): what it gave taken back, the rest kept."""
+    config = _file(tmp_path)
+    give_photos(config, PlacePhotos(place="Geer", photos=(_photo("a"),)))
+    give_photos(config, PlacePhotos(place="Geer", photos=(_photo("b"), _photo("c"))))
+    for letter in "bc":
+        take_back(config, letter * 16 + ":10")
+    assert read_place_photos(config) == (
+        PlacePhotos(place="Geer", photos=(_photo("a"),), file="places/Geer.toml"),
+    )

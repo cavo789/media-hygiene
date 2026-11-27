@@ -3043,20 +3043,6 @@ msgstr[1] ""
 "leur GPS. Les photos restent où elles sont."
 
 #, python-brace-format
-msgid ""
-"Delete {n} album? Your photos stay where they are: only the albums file "
-"changes."
-msgid_plural ""
-"Delete {n} albums? Your photos stay where they are: only the albums file "
-"changes."
-msgstr[0] ""
-"Supprimer {n} album ? Vos photos restent où elles sont : seul le fichier "
-"des albums change."
-msgstr[1] ""
-"Supprimer {n} albums ? Vos photos restent où elles sont : seul le fichier"
-" des albums change."
-
-#, python-brace-format
 msgid "Delete {ticked} files ({size}) from the phone"
 msgstr "Supprimer {ticked} fichiers ({size}) du téléphone"
 
@@ -4904,9 +4890,6 @@ msgstr ""
 "Donnez à l'album un nom simple, par exemple « Noël » ou « Le meilleur de "
 "2016 »."
 
-msgid "Give the photos"
-msgstr "Donner les photos"
-
 msgid "Give the photos picked a day"
 msgstr "Donner un jour aux photos choisies"
 
@@ -4941,14 +4924,6 @@ msgid ""
 msgstr ""
 "Donnez des mots à vos photos, puis retrouvez-les par un mot, un lieu, une"
 " année ou une personne."
-
-#, python-brace-format
-msgid ""
-"Give {files} to {place}? Their GPS is then ignored for this place; the "
-"photos stay where they are."
-msgstr ""
-"Donner {files} à {place} ? Leur GPS est alors ignoré pour ce lieu ; les "
-"photos restent où elles sont."
 
 msgid "Given by the tool, close to a confirmed face: not confirmed yet"
 msgstr "Donné par l'outil, proche d'un visage confirmé : pas encore confirmé"
@@ -9226,7 +9201,9 @@ msgid "Pick one photo, not a video, to make it the cover."
 msgstr "Choisissez une seule photo, pas une vidéo, pour en faire la couverture."
 
 msgid "Pick the folder in the tree of your folders, as the library shows it."
-msgstr "Choisissez le dossier dans l'arbre de vos dossiers, comme la photothèque le montre."
+msgstr ""
+"Choisissez le dossier dans l'arbre de vos dossiers, comme la photothèque "
+"le montre."
 
 msgid ""
 "Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
