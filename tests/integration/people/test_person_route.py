@@ -623,3 +623,21 @@ def test_names_confirmed_together_are_saved_in_one_write(
     assert sorted(people) == ["Ann", "Bob", "Cy"]
     for name in ("Ann", "Bob", "Cy"):
         assert f"{name}, 1 confirmed face" in str(saved["saved"])
+
+
+def test_a_face_nobody_named_is_ignored_for_good_then_taken_back(
+    person: PersonApp, locations: Locations
+) -> None:
+    """0843: the cross of "? nobody" → ignored, read back; ↩ → to name again."""
+    face = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]  # type: ignore[index]
+    body = {"action": "ignore", "faces": [face["key"]]}
+    saved = answer(person, NAMES, body)
+    assert "never offered again" in str(saved["saved"])
+    files = (locations.config_file.parent / "people").glob("*.toml")
+    assert any("IMG_0" in one.read_text(encoding="utf-8") for one in files)
+    again = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]  # type: ignore[index]
+    assert _named(again) == {"name": "", "how": "ignored", "not": [], "own": True}
+    body = {"action": "unignore", "faces": [face["key"]]}
+    assert "no longer ignored" in str(answer(person, NAMES, body)["saved"])
+    back = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]  # type: ignore[index]
+    assert _named(back) is None

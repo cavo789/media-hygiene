@@ -316,8 +316,8 @@ le garde), nommé et cherché comme les autres. Un cadre tracé sur un visage qu
 n'ajoute rien : la page choisit ce visage (*Ce visage est déjà sur la photo*). Seul un cadre qui
 partage l'essentiel du cadre d'un visage compte comme ce visage : deux personnes joue contre joue
 restent deux visages. Tracé par erreur, ou deux fois ? Le **×** d'un visage tracé l'oublie : il
-quitte l'index, et son nom quitte `config.toml`, relu ; un visage trouvé par l'audit n'a pas de
-×, le prochain audit le retrouverait. Un visage plus petit ou plus flou que ce que la
+quitte l'index, et son nom quitte `config.toml`, relu ; un visage trouvé par l'audit n'est pas
+oublié (le prochain audit le retrouverait) : il est ignoré, voir plus bas. Un visage plus petit ou plus flou que ce que la
 page des personnes montre peut être tracé : il sert à la recherche, sans apparaître sur la page
 des personnes. Trop flou pour retrouver qui que ce soit (le visage lisse d'un bébé a peu de
 détails), il est gardé quand même pour être nommé sur cette photo : la page ouvre *Ce visage
@@ -330,6 +330,14 @@ Une personne figure une seule fois sur une photo : nommer un visage *Stéphanie*
 de tout autre visage de la même photo (deux personnes du même prénom : distinguez-les,
 *Stéphanie 1*, *Stéphanie 2*). Le **×** d'un visage nommé, nom confirmé (✓) ou deviné (≈),
 retire le nom : le visage reste, à nommer.
+
+Un visage que personne n'a nommé (**? sans nom**), sur `/person` ou dans toute grande vue, a
+lui aussi son **×** : *Personne à nommer — ignorer ce visage* (un reflet dans une vitre, une
+affiche, un inconnu). Il rejoint les visages ignorés (`/config/people/ignored.toml`, relu et
+affiché) : il quitte la photo, les groupes de la page des personnes et les noms devinés, et le
+même visage retrouvé par un nouvel audit, ou sur la photo déplacée ou renommée, reste ignoré
+(il est reconnu à sa ressemblance). Rien n'est silencieux : la photo dit *N visages ignorés :
+les montrer*, qui les affiche marqués ⊘, et **↩** sur l'un d'eux le reprend, à nommer.
 
 ## Photos à redresser
 

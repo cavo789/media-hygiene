@@ -34,3 +34,16 @@ and wants it gone, and not offered again by the next audit or face scan.
 - Same photo moved / renamed: still ignored.
 - Undo: the face is back.
 - Both languages of the docs, captures stale → `docs_screenshots` to run.
+
+## Done (2026-11-27)
+
+- × on every unnamed detected face, on /person's strip (`faceCross`, `person_names.js.j2`) and
+  in the shared large view (`pick_who.js.j2`: library, browse, people). ↩ takes back a face its
+  × ignored; the faces ignored are hidden, "N faces ignored: show them" draws them marked ⊘.
+- Stored in the existing `[people] ignored` (`/config/people/ignored.toml`, the people page's
+  *Ignore this group*), not a new index table: same list, same proximity rule (`Known`: a face
+  near an ignored one is ignored), so a re-detection (new number, moved box) and a moved or
+  renamed photo stay ignored. `POST /person/api/names` `ignore` / `unignore`, read back
+  (`person/ignore_face.py`).
+- Tests: `tests/unit/test_person_ignore_face.py`, `test_person_route.py::test_a_face_nobody_named_is_ignored_for_good_then_taken_back`.
+- Captures stale: `docs_screenshots` to run.

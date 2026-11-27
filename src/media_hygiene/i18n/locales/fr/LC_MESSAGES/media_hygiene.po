@@ -5285,6 +5285,11 @@ msgstr ""
 msgid "Ignore this group"
 msgstr "Ignorer ce groupe"
 
+msgid "Ignored: like a face you ignored. Name it to take it back."
+msgstr ""
+"Ignoré : ressemble à un visage que vous avez ignoré. Nommez-le pour le "
+"reprendre."
+
 msgid "Image cannot be decoded"
 msgstr "Image impossible à décoder"
 
@@ -7752,8 +7757,14 @@ msgstr "Pas remis : {reasons}"
 msgid "Not saved (error {status})."
 msgstr "Non enregistré (erreur {status})."
 
+msgid "Not saved: config.toml does not ignore this face."
+msgstr "Non enregistré : config.toml n’ignore pas ce visage."
+
 msgid "Not saved: config.toml rules out no name for this face."
 msgstr "Non enregistré : config.toml n’écarte aucun nom pour ce visage."
+
+msgid "Not saved: config.toml still ignores this face."
+msgstr "Non enregistré : config.toml ignore toujours ce visage."
 
 #, python-brace-format
 msgid "Not saved: config.toml still says this is not {name}."
@@ -7773,6 +7784,9 @@ msgstr "Pas enregistré : {reason}."
 #, python-brace-format
 msgid "Not sent (error {status})."
 msgstr "Non envoyé (erreur {status})."
+
+msgid "Not someone to name — ignore this face"
+msgstr "Personne à nommer — ignorer ce visage"
 
 msgid "Not the folder you want to keep?"
 msgstr "Ce n'est pas le dossier que vous voulez garder ?"
@@ -10543,6 +10557,23 @@ msgstr ""
 #, python-brace-format
 msgid "Saved in config.toml, read back: nobody is named {name}."
 msgstr "Enregistré dans config.toml, relu : personne ne s'appelle {name}."
+
+#, python-brace-format
+msgid ""
+"Saved in config.toml, read back: this face is ignored, never offered "
+"again ({count} face ignored)."
+msgid_plural ""
+"Saved in config.toml, read back: this face is ignored, never offered "
+"again ({count} faces ignored)."
+msgstr[0] ""
+"Enregistré dans config.toml, relu : ce visage est ignoré, plus jamais "
+"proposé ({count} visage ignoré)."
+msgstr[1] ""
+"Enregistré dans config.toml, relu : ce visage est ignoré, plus jamais "
+"proposé ({count} visages ignorés)."
+
+msgid "Saved in config.toml, read back: this face is no longer ignored."
+msgstr "Enregistré dans config.toml, relu : ce visage n’est plus ignoré."
 
 #, python-brace-format
 msgid ""
@@ -21055,6 +21086,12 @@ msgstr[0] "{n} visage ignoré pour la personne mise de côté le {date}"
 msgstr[1] "{n} visages ignorés pour la personne mise de côté le {date}"
 
 #, python-brace-format
+msgid "{n} face ignored: show it"
+msgid_plural "{n} faces ignored: show them"
+msgstr[0] "{n} visage ignoré : le montrer"
+msgstr[1] "{n} visages ignorés : les montrer"
+
+#, python-brace-format
 msgid "{n} face in both is kept once."
 msgid_plural "{n} faces in both are kept once."
 msgstr[0] "{n} visage commun aux deux est gardé une fois."
@@ -22276,6 +22313,9 @@ msgstr ""
 #, python-brace-format
 msgid "→ {folder}"
 msgstr "→ {folder}"
+
+msgid "↩ Not ignored any more"
+msgstr "↩ Ne plus l’ignorer"
 
 msgid "↩️ Put them back: mh undo"
 msgstr "↩️ Pour les remettre : mh undo"

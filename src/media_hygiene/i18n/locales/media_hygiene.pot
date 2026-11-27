@@ -4349,6 +4349,9 @@ msgstr ""
 msgid "Ignore this group"
 msgstr ""
 
+msgid "Ignored: like a face you ignored. Name it to take it back."
+msgstr ""
+
 msgid "Image cannot be decoded"
 msgstr ""
 
@@ -6465,7 +6468,13 @@ msgstr ""
 msgid "Not saved (error {status})."
 msgstr ""
 
+msgid "Not saved: config.toml does not ignore this face."
+msgstr ""
+
 msgid "Not saved: config.toml rules out no name for this face."
+msgstr ""
+
+msgid "Not saved: config.toml still ignores this face."
 msgstr ""
 
 #, python-brace-format
@@ -6485,6 +6494,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Not sent (error {status})."
+msgstr ""
+
+msgid "Not someone to name — ignore this face"
 msgstr ""
 
 msgid "Not the folder you want to keep?"
@@ -8794,6 +8806,19 @@ msgstr ""
 
 #, python-brace-format
 msgid "Saved in config.toml, read back: nobody is named {name}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Saved in config.toml, read back: this face is ignored, never offered "
+"again ({count} face ignored)."
+msgid_plural ""
+"Saved in config.toml, read back: this face is ignored, never offered "
+"again ({count} faces ignored)."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Saved in config.toml, read back: this face is no longer ignored."
 msgstr ""
 
 #, python-brace-format
@@ -17678,6 +17703,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} face ignored: show it"
+msgid_plural "{n} faces ignored: show them"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} face in both is kept once."
 msgid_plural "{n} faces in both are kept once."
 msgstr[0] ""
@@ -18765,6 +18796,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "→ {folder}"
+msgstr ""
+
+msgid "↩ Not ignored any more"
 msgstr ""
 
 msgid "↩️ Put them back: mh undo"
