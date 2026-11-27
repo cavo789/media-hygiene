@@ -360,6 +360,9 @@ Les photos d'un dossier protégé ou d'une sauvegarde, et tout fichier qui n'est
 jamais tournés ni montrés. Voie rapide pour une grande collection, toutes les photos d'un coup sans
 les montrer : `mh people --straighten` (une question, le même journal).
 
+Quand il a trouvé des photos à redresser, `people` finit sur elles : sa ligne 👉 *Et maintenant* les
+compte et mène à cette page.
+
 ## Options
 
 | Option | Rôle |

@@ -52,3 +52,7 @@ the guesses are in the index (`TurnStore.proposed()`), the two-byte write is rea
   **Reason:** one session's scope (0803 in the same lot); the page is a full tile page
   (skill `photo-picking-pages`, its headless-browser check) and its server route; the
   write stays unreachable until it exists (Seeing first).
+
+## Status — DONE (2026-11-27)
+
+Remainder completed by 0810.

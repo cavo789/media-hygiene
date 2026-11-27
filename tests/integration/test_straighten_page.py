@@ -9,8 +9,10 @@ from typing import TYPE_CHECKING
 
 from PIL import Image
 
+from media_hygiene.cli.people_straighten import suggest_straighten
 from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.turn_refusals import TurnRefusals
 from media_hygiene.index.turn_rows import TurnGuess, TurnStore
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.review.ending import Ending
@@ -20,7 +22,7 @@ from media_hygiene.services.straighten_serving import straighten_app
 from media_hygiene.services.turn_pick import turn_jobs_now
 from tests.support.damage import audit
 from tests.support.json_calls import answer, call
-from tests.support.runtime import make_runtime
+from tests.support.runtime import make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -95,3 +97,14 @@ def test_no_apply_without_the_home_page_and_the_step_is_served_here(
     with ThreadPoolExecutor(1) as executor:
         app = straighten_app(runtime, HomeServer(None, Ending(), executor))
         assert b'id="applyNow"' not in call(app, "GET /").body
+
+
+def test_people_ends_on_the_photos_to_straighten(locations: Locations) -> None:
+    """`people` ends on the page with the turns' count; all refused: no line."""
+    runtime, paths = _proposed(locations)
+    assert suggest_straighten(runtime)
+    runtime.output.finish()
+    assert "2 photos lying on their side" in output_of(runtime)
+    with FactsRepository.open(runtime.locations.index_file) as repository:
+        TurnRefusals(repository.connection).refuse(paths)
+    assert not suggest_straighten(runtime)

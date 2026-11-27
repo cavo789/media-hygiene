@@ -331,6 +331,9 @@ Photos of a protected folder or of a backup, and any file that is not a JPEG, ar
 nor shown. Fast path for a large collection, every photo at once without showing them:
 `mh people --straighten` (one question, the same journal).
 
+When it found photos to straighten, `people` ends on them: its 👉 *What next* line counts them
+and leads to this page.
+
 ## Options
 
 | Option | What it does |

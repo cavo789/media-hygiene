@@ -141,3 +141,7 @@ def people_command(  # pylint: disable=too-many-arguments
         end_on_applied(runtime, served.code)
         if served.chosen:
             suggest_clean(runtime, served.chosen)
+        else:
+            from media_hygiene.cli.people_straighten import suggest_straighten
+
+            suggest_straighten(runtime)
