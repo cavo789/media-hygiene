@@ -19,6 +19,7 @@ from media_hygiene.people.board import PeopleBoard
 from media_hygiene.people.crops import CropJob, face_crop
 from media_hygiene.people.roster import NamesFile, Roster
 from media_hygiene.review.http import Request
+from media_hygiene.review.versioned import disk_tag
 from media_hygiene.services.people_groups import PeopleGroups
 from tests.support.faces import coloured
 from tests.support.page_render import render_page
@@ -122,3 +123,17 @@ def test_invert_picks_the_other_faces_of_the_section_only() -> None:
     assert "pickableFaces(current)" in page
     assert 'event.key === "i" && state.writable) ignoreGroup(current)' in page
     assert "<kbd>Ctrl</kbd>+<kbd>I</kbd>" in page
+
+
+def test_the_large_view_asks_the_photo_tag_when_it_opens(tmp_path: Path) -> None:
+    """`/api/photo-tag/<n>` answers the photo's version; unknown face: 404 (0799)."""
+    board = board_of(tmp_path)
+    mapper = HostPathMapper(tmp_path / "data")
+    with thread_pool() as executor:
+        app = PeopleApp(board, mapper, b"<html>", executor)
+        answer = ask(app, "GET /api/photo-tag/0")
+        face = board.board.face("0")
+        assert face is not None
+        assert json.loads(answer.body) == {"tag": disk_tag(face.path)}
+        assert json.loads(answer.body)["tag"]
+        assert ask(app, "GET /api/photo-tag/9").status is HTTPStatus.NOT_FOUND

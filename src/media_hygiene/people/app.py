@@ -19,7 +19,7 @@ from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.people.aside import ASIDE_PATH
 from media_hygiene.people.changes import NamesAsked, Naming
 from media_hygiene.people.hidden import not_aside
-from media_hygiene.people.pictures import JPEG, FacePictures
+from media_hygiene.people.pictures import JPEG, TAG_PREFIX, FacePictures, photo_tag
 from media_hygiene.people.roster import Change
 from media_hygiene.people.views import PageView, faces_view, sample_view
 from media_hygiene.review.config_saving import save_refused
@@ -105,6 +105,8 @@ class PeopleApp:
         for prefix, key in ((SECTION_PREFIX, "faces"), (SAMPLE_PREFIX, "shown")):
             if path.startswith(prefix):
                 return json_response(HTTPStatus.OK, {key: self._faces(path, prefix)})
+        if path.startswith(TAG_PREFIX):
+            return photo_tag(self.roster.board, path)
         if path.endswith(JPEG):
             board = self.roster.board
             return await FacePictures(board, self.executor, self.previews).answer(path)
