@@ -19,12 +19,8 @@ if TYPE_CHECKING:
 
 CREATE_FACE_FRAMES: Final = """
 CREATE TABLE IF NOT EXISTS face_frames (
-    path TEXT NOT NULL,
-    size INTEGER NOT NULL,
-    mtime_ns INTEGER NOT NULL,
-    model TEXT NOT NULL,
-    number INTEGER NOT NULL,
-    moment REAL NOT NULL,
+    path TEXT NOT NULL, size INTEGER NOT NULL, mtime_ns INTEGER NOT NULL,
+    model TEXT NOT NULL, number INTEGER NOT NULL, moment REAL NOT NULL,
     PRIMARY KEY (path, model, number)
 )
 """
