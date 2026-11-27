@@ -110,7 +110,9 @@ def _who(page: Page, server: _Server) -> list[str]:
         f"document.getElementById('viewerSaid').textContent === {json.dumps(SAVED)}"
     )
     named = [body for path, body in server.asked if path == "/person/api/names"]
-    if named != [{"action": "move", "name": "Chloé", "faces": [8], "source": ""}]:
+    if named != [
+        {"action": "move", "name": "Chloé", "faces": [8], "source": "", "also": []}
+    ]:
         errors.append(f"the naming sent: {named}")
     page.wait_for_timeout(300)
     if sum(path == "/person/api/photo" for path, _ in server.asked) < 2:
