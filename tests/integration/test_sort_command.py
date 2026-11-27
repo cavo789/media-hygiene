@@ -77,7 +77,10 @@ def test_a_foreign_plan_is_refused(cli: CliRunner, locations: Locations) -> None
     workbook = classified(cli, locations)
     plan = workbook.parent / "plan.json"
     assert run(cli, "classify").exit_code == 0
-    other = max(locations.reports_dir.glob("*-classify*/plan.json"))
+    other = max(
+        locations.reports_dir.glob("*-classify*/plan.json"),
+        key=lambda path: path.stat().st_mtime_ns,
+    )
     shutil.copy2(other, plan)
     other.unlink()
     result = run(cli, "sort", "--yes", str(workbook))

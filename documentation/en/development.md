@@ -154,4 +154,4 @@ likewise: set `CZKAWKA_SHA256_AMD64` and `CZKAWKA_SHA256_ARM64` to the checksums
 release binaries (`gh release download <version> --repo qarmin/czkawka`, then `sha256sum`). The
 `deps` helper still answers the same question locally, for the Python dependencies.
 
-The roadmap is in [.todos/plan.md](../../.todos/plan.md).
+The backlog is in [.todos/](../../.todos/) (one file per task; `/todo:plan` writes `plan.md` there, not kept in git).

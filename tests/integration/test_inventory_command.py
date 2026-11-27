@@ -93,6 +93,10 @@ def test_the_people_column(
 
 def _people(locations: Locations) -> set[str]:
     """The values of the People column of the latest CSV inventory."""
-    latest = max(locations.reports_dir.glob("*-inventory*/inventory.csv"))
+    # By time: a run in the same second writes `<stamp>-inventory-2`, first by name.
+    latest = max(
+        locations.reports_dir.glob("*-inventory*/inventory.csv"),
+        key=lambda path: path.stat().st_mtime_ns,
+    )
     with latest.open(encoding="utf-8-sig", newline="") as stream:
         return {row["People"] for row in csv.DictReader(stream)}

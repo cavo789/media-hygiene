@@ -36,7 +36,10 @@ def test_the_console_and_the_report_list_the_edits(
     assert "1 edit carried over from the workbook saved on" in result.output
     assert "1 edit found no place in the new proposal" in result.output
     assert "M1.jpg: '2018/Gone' (the file is gone)" in result.output
-    report = max(locations.reports_dir.glob("*-classify*/report.html"))
+    report = max(
+        locations.reports_dir.glob("*-classify*/report.html"),
+        key=lambda path: path.stat().st_mtime_ns,
+    )
     page = report.read_text(encoding="utf-8")
     assert "Edits carried over" in page
     assert "2018/Gone" in page
@@ -86,5 +89,8 @@ def test_a_year_run_says_what_it_keeps_for_later(
         "1 edit of files this run left out (--year, --path) kept for a later" in output
     )
     assert "found no place" not in output
-    report = max(locations.reports_dir.glob("*-classify*/report.html"))
+    report = max(
+        locations.reports_dir.glob("*-classify*/report.html"),
+        key=lambda path: path.stat().st_mtime_ns,
+    )
     assert "kept for a later run" in report.read_text(encoding="utf-8")

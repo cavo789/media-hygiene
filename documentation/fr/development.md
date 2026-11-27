@@ -163,4 +163,4 @@ de l'archive, puis mettez sa nouvelle empreinte dans `FFMPEG_SHA256` (la constru
 (`gh release download <version> --repo qarmin/czkawka`, puis `sha256sum`). Le helper `deps`
 répond toujours à la même question en local, pour les dépendances Python.
 
-La feuille de route se trouve dans [.todos/plan.md](../../.todos/plan.md).
+Le backlog se trouve dans [.todos/](../../.todos/) (un fichier par tâche ; `/todo:plan` y écrit `plan.md`, non suivi par git).
