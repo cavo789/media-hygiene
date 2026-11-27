@@ -10664,6 +10664,9 @@ msgstr ""
 msgid "The journal is not mounted."
 msgstr ""
 
+msgid "The journals or the quarantine could not be read."
+msgstr ""
+
 msgid ""
 "The kept version lies in a protected folder: it is never moved, W is not "
 "possible."
@@ -15025,6 +15028,16 @@ msgstr ""
 
 msgid "see the slideshow chapter."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"see the {count} photo lying on its side shown turned: Photos to "
+"straighten, on the home page."
+msgid_plural ""
+"see the {count} photos lying on their side shown turned: Photos to "
+"straighten, on the home page."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "seen by the model"
 msgstr ""

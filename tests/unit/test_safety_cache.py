@@ -33,6 +33,7 @@ from tests.support.runtime import make_locations, make_runtime
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.review.home_parts import HomeFindings
     from media_hygiene.services.runtime import Runtime
 
 _RUN = "20261101-120000"
@@ -250,6 +251,19 @@ def test_the_route_answers_the_card(tmp_path: Path) -> None:
     assert asyncio.run(more_response(HomeMore(), get)) is None
     assert SAFETY_PATH in READ_PATHS
     assert SAFETY_PATH in HOME_PATHS
+
+
+def test_the_route_says_when_the_card_fails() -> None:
+    """An unreadable journal: a 503 with its message, never a traceback (0779)."""
+
+    def _broken() -> HomeFindings:
+        raise PermissionError
+
+    get = Request("GET", SAFETY_PATH, {"host": "127.0.0.1"}, b"")
+    answer = asyncio.run(more_response(HomeMore(safety=_broken), get))
+    assert answer is not None
+    assert answer.status == HTTPStatus.SERVICE_UNAVAILABLE
+    assert "could not be read" in json.loads(answer.body)["error"]
 
 
 def test_indexed_key_does_not_walk_the_quarantine(

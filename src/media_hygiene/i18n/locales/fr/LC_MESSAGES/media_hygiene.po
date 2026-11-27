@@ -12764,6 +12764,9 @@ msgstr "L'inventaire n'a pas pu être écrit dans {folder} : {reason}."
 msgid "The journal is not mounted."
 msgstr "Le journal n'est pas monté."
 
+msgid "The journals or the quarantine could not be read."
+msgstr "Les journaux ou la quarantaine n'ont pas pu être lus."
+
 msgid ""
 "The kept version lies in a protected folder: it is never moved, W is not "
 "possible."
@@ -17867,6 +17870,20 @@ msgstr "capture d'écran ou document"
 
 msgid "see the slideshow chapter."
 msgstr "voir le chapitre du diaporama."
+
+#, python-brace-format
+msgid ""
+"see the {count} photo lying on its side shown turned: Photos to "
+"straighten, on the home page."
+msgid_plural ""
+"see the {count} photos lying on their side shown turned: Photos to "
+"straighten, on the home page."
+msgstr[0] ""
+"voir la photo couchée sur le côté ({count}) montrée redressée : Photos à "
+"redresser, sur la page d'accueil."
+msgstr[1] ""
+"voir les {count} photos couchées sur le côté montrées redressées : Photos à "
+"redresser, sur la page d'accueil."
 
 msgid "seen by the model"
 msgstr "vu par le modèle"

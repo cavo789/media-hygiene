@@ -27,6 +27,7 @@ from media_hygiene.review.import_chain_api import (
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH, import_steps_route
 from media_hygiene.review.lan_switch_api import LAN_SWITCH_PATH, lan_switch_route
 from media_hygiene.review.scan_scope_api import SCOPE_PATH, scope_route
+from media_hygiene.review.serving import json_response
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -73,7 +74,11 @@ async def more_response(more: HomeMore, request: Request) -> Response | None:
         if saved is not None:
             return saved
     if request.path == SAFETY_PATH and more.safety is not None:
-        card = await asyncio.to_thread(more.safety)
+        try:
+            card = await asyncio.to_thread(more.safety)
+        except OSError:  # a journal or quarantine unreadable: said in the card (0779)
+            message = _("The journals or the quarantine could not be read.")
+            return json_response(HTTPStatus.SERVICE_UNAVAILABLE, {"error": message})
         return Response(
             HTTPStatus.OK, card.model_dump_json().encode(), ContentType.JSON
         )
