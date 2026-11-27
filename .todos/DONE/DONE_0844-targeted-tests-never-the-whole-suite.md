@@ -42,3 +42,7 @@ The maintainer wants the loop to run only what the change needs; CI runs the res
   empty line; a test proves it.
 - No e2e test is listed by default.
 - The two cases above take under a minute here (measured).
+
+## Status — DONE (2026-11-27)
+
+Package/template fallbacks, harmless target, e2e out unless --e2e, cap 40 (exit 3); tests in tests/unit/test_tests_for.py. Measured here: new module in person/ 10 files, 74 tests in 30 s (before: empty line = whole suite); 225 changed files at depth 1: 326 files listed before, now refused in 1 s.

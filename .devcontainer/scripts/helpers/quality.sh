@@ -57,16 +57,17 @@ function tests() {
 
 # @cat Quality
 # @cmd tests_quick
-# @desc Only the tests importing the files changed — TESTS_DEPTH=1 widens, 'tests' runs all
+# @desc Only the tests of the files changed (never the whole suite) — TESTS_DEPTH=1 widens
 function tests_quick() {
     (
         cd "$(_repo_root)" || return 1
         local -a selected
-        mapfile -t selected < <(python3 .claude/scripts/tests_for.py --depth "${TESTS_DEPTH:-0}")
-        if ((${#selected[@]} == 0)); then
-            printf "🤷 No test imports the files changed: 'tests' runs the whole suite.\n"
-            return 0
+        local listing
+        if ! listing="$(python3 .claude/scripts/tests_for.py --depth "${TESTS_DEPTH:-0}")"; then
+            printf "✋ Too many tests for a quick run: name them ('tests <files>'), CI runs the rest.\n"
+            return 1
         fi
+        mapfile -t selected <<<"${listing}"
         printf "🧪 %d test file(s) for the files changed (the gate stays 'check')...\n" "${#selected[@]}"
         _gentle pytest "${selected[@]}" "$@"
     )

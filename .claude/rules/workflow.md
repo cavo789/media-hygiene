@@ -12,8 +12,9 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   runs it on the changed files at the end of each turn and sends a failure back.
 - ✅ DO: between two edits, run only the tests of what changed:
   `pytest $(python3 .claude/scripts/tests_for.py)` (the tests importing a changed module, in
-  seconds; it prints "no test found" and returns nothing for a new module: an empty
-  `pytest $(…)` then runs the whole suite, so name the tests by hand); before declaring done, `--depth 1` (the tests of its importers too), then the
+  seconds; a new module gets its package's tests, a template the page contract tests, never
+  an empty line; no e2e unless `--e2e`; over 40 test files it prints nothing and exits 3:
+  narrow it, name the tests by hand); before declaring done, `--depth 1` (the tests of its importers too), then the
   commit gate. The whole suite is CI's job, or `check` when a change is cross-cutting (a
   `conftest.py`, a template, a constant every module reads). ❌ DON'T: run the whole suite after
   each edit (minutes of load on the maintainer's PC).
