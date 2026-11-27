@@ -116,3 +116,15 @@ def test_a_place_deleted_without_hand_photos_offers_undo() -> None:
     assert page.count('id="mhUndoToast"') == 1
     assert "if (hand && !await window.mhAsk(" in page
     assert "() => send([...state.places, gone]), { keys: true }" in page
+
+
+def test_the_albums_page_uses_the_shared_toast() -> None:
+    """0851: one toast for the albums page too; the local one is gone."""
+    page = render_page("album.html.j2")
+    assert page.count('id="mhUndoToast"') == 1
+    assert 'id="toast"' not in page
+    assert (
+        "const toast = (text, undo) => window.mhUndoToast(text, undo || null);" in page
+    )
+    assert 'edit({ action: "restore" })' in page  # a delete: the copy kept, read back
+    assert "button.hidden = !undo;" in page  # a line alone shows no Undo

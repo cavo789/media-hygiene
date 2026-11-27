@@ -2,7 +2,7 @@
    `window.confirm`: a choice taken back in one click asks nothing first. The page saves, reads its
    file back, then calls `window.mhUndoToast(text, undo)`: "12 photos set aside — Undo" stays
    UNDO_TOAST_MS, its Undo (or Z, when `keys` is set: a page whose own Z does not already undo it)
-   runs `undo`, which writes the file again and reads it back as any choice does. A confirmation
+   runs `undo` (null: the line alone, no button), which writes the file again and reads it back as any choice does. A confirmation
    stays only where nothing takes the action back (test_undo_toast lists them). #}
 <div id="mhUndoToast" role="status" aria-live="polite" hidden>
   <span id="mhUndoText"></span>
@@ -30,6 +30,7 @@
   window.mhUndoToast = (text, undo, options = {}) => {
     document.getElementById("mhUndoText").textContent = text;
     pending = undo;
+    button.hidden = !undo;  // a line alone, nothing to take back (the albums page, 0851)
     keys = Boolean(options.keys);
     toast.hidden = false;
     window.clearTimeout(timer);
