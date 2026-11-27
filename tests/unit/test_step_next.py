@@ -10,7 +10,9 @@ from media_hygiene.services.step_next import (
     NEXT_FILE,
     forget_next,
     note_next,
+    note_summary,
     read_next,
+    read_summary,
 )
 from media_hygiene.services.step_progress import RUNNING_FILE
 
@@ -52,3 +54,28 @@ def test_a_damaged_file_says_nothing(tmp_path: Path) -> None:
     assert read_next(tmp_path) is None
     (tmp_path / NEXT_FILE).write_text("{", "utf-8")
     assert read_next(tmp_path) is None
+
+
+def test_the_last_summary_line_is_kept_with_the_next_line(tmp_path: Path) -> None:
+    """0798: each ✅ line replaces the one before; the 👉 line stays beside it."""
+    (tmp_path / RUNNING_FILE).write_text('{"id": "a"}', "utf-8")
+    note_summary("[green]1 234 files read[/]", tmp_path)
+    note_summary("[green]12 duplicates found[/]", tmp_path)
+    note_next("mh history", tmp_path)
+    assert read_summary(tmp_path) == "12 duplicates found"
+    assert read_next(tmp_path) == "mh history"
+
+
+def test_the_state_carries_the_summary_of_a_step_that_ended_well(
+    tmp_path: Path,
+) -> None:
+    """Done with code 0: `summary`; stopped (code 1): none, a ✅ would mislead."""
+    (tmp_path / RUNNING_FILE).write_text('{"id": "a"}', "utf-8")
+    note_summary("12 duplicates found", tmp_path)
+    (tmp_path / RUNNING_FILE).unlink()
+    (tmp_path / WATCH.done).write_text(json.dumps({"id": "a", "code": 0}), "utf-8")
+    assert read_state(tmp_path)["summary"] == "12 duplicates found"
+    (tmp_path / WATCH.done).write_text(json.dumps({"id": "a", "code": 1}), "utf-8")
+    assert "summary" not in read_state(tmp_path)
+    forget_next(tmp_path)
+    assert read_summary(tmp_path) is None

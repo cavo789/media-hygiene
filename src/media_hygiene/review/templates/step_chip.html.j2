@@ -53,7 +53,11 @@
   } | tojson }};
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   // The step's 👉 line once done (`next`, 0762), after its end: text only.
-  const nextOf = (step) => (step && typeof step.next === "string" && step.next ? " 👉 " + step.next : "");
+  // The end of a step: its last ✅ line (0798), then its 👉 line (0762), each only when it printed one.
+  const nextOf = (step) => {
+    const said = (value) => (step && typeof value === "string" ? value : "");
+    return (said(step && step.summary) ? " " + step.summary : "") + (said(step && step.next) ? " 👉 " + step.next : "");
+  };
   window.mhStepNext = nextOf;
   const chip = document.getElementById("mhStepChip");
   const dialog = document.getElementById("mhStepDlg");

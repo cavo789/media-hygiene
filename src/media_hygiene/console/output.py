@@ -16,6 +16,7 @@ from media_hygiene.console.advice_view import print_advice
 from media_hygiene.console.one_line import say, width_without_terminal
 from media_hygiene.constants import ColorMode
 from media_hygiene.i18n import _
+from media_hygiene.services.step_next import note_summary
 
 if TYPE_CHECKING:
     from rich.console import RenderableType
@@ -91,6 +92,7 @@ class Output:
             text: Translated message.
         """
         say(self.console, f"✅ [green]{text}[/]")
+        note_summary(text)  # the end toast of the home pages (0798)
 
     def warning(self, text: str) -> None:
         """Print a warning line.
