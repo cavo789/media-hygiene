@@ -681,6 +681,12 @@ msgid ""
 " then share again."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"A linked people file is missing, its faces are not loaded: {files}. "
+"Restore it, or run config tidy --apply to unlink it."
+msgstr ""
+
 msgid ""
 "A local model looks at each photo on this computer's processor, so that "
 "search finds photos by what they show. Nothing is sent; only the cache is"

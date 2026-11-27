@@ -13,6 +13,7 @@ from media_hygiene.cli.error_view import follow_up
 from media_hygiene.cli.home_folders import home_folders
 from media_hygiene.cli.safety import announce_read_only
 from media_hygiene.config.loader import load_settings, write_default_config
+from media_hygiene.config.people_missing import settings_warning
 from media_hygiene.config.zone import apply_timezone
 from media_hygiene.console.logs import configure_logging
 from media_hygiene.console.output import Output, make_console
@@ -88,6 +89,8 @@ def build_runtime(cli_layer: Layer, *, stderr: bool = False) -> Runtime:
         verbose=general.verbosity in {Verbosity.VERBOSE, Verbosity.DEBUG},
     )
     configure_logging(general.verbosity, output.console)
+    if missing := settings_warning(loaded, locations.config_dir):
+        output.warning(escape(missing))
     runtime = Runtime(loaded, locations, MountTable.current(), output, cli_layer)
     if runtime.persistent(MountKind.CONFIG):
         _create_default_config(runtime)

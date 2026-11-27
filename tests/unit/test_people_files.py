@@ -8,7 +8,6 @@ import pytest
 
 from media_hygiene.config.loader import load_settings
 from media_hygiene.config.people_settings import PeopleSettings, Person
-from media_hygiene.errors import ConfigError
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.person_files import file_names, safe_name
@@ -118,14 +117,12 @@ def test_file_names_are_safe_for_windows_and_never_shared() -> None:
 def test_a_missing_or_foreign_file_is_said_in_one_line(
     tmp_path: Path, locations: Locations
 ) -> None:
-    """Never a traceback, never a person silently emptied."""
+    """Never a traceback; a missing file loads empty (warned: test_people_missing)."""
     config = locations.config_file
     saved(config, CHLOE)
     (locations.config_dir / "people" / "Chloé.toml").unlink()
-    with pytest.raises(ValueError, match=r"people/Chloé\.toml is missing"):
-        read_people(config)
-    with pytest.raises(ConfigError, match="cannot be read"):
-        load_settings(locations)
+    assert read_people(config).person[0].faces == ()  # warned, tidy unlinks (0849)
+    assert load_settings(locations).settings.people.person[0].faces == ()  # 0849
     outside = tmp_path / "outside.toml"
     outside.write_text("faces = []\n")
     config.write_text(f'[[people.person]]\nname = "X"\nfile = "{outside}"\n')

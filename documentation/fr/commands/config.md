@@ -115,6 +115,7 @@ mh config tidy --apply   # retirer les entrées cochées
 | `[[classify.rules]]` `match = "path"` (dépassée) | tous les fichiers qu'elle trouve sont déjà dans un dossier que vous avez nommé (`2017\2017-04\Bruges`) : `sort` les en sortirait. Montrée **non cochée** (une règle peut renommer un dossier exprès) ; `--superseded` la coche aussi |
 | `[[classify.clocks]]` | aucune photo de cet appareil à ces dates |
 | `[classify.town_names]` | le nom de ville de gauche est inconnu des villes hors ligne (une faute de frappe : `Bruge = "Bruges"`), le renommage ne s'applique donc jamais |
+| `[[people.person]]` `file` | le fichier lié `people/<nom>.toml` a disparu (supprimé, ou renommé dans l'Explorateur) : la personne se charge sans ces visages et chaque commande le signale une fois ; `--apply` retire seulement la ligne `file`, le nom reste |
 
 Un dossier sur un lecteur non monté (une clé USB) n'est **pas jugé**, et c'est dit. Un index
 vide ne juge aucune règle : lancez d'abord `audit` sur tous vos dossiers. Une règle `path` dont

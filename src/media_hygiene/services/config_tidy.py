@@ -17,6 +17,7 @@ from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.own_events import folder_rules
+from media_hygiene.config.people_missing import missing_links, stale_links
 from media_hygiene.config.tidy_find import TidyFindings, find_stale
 from media_hygiene.config.tidy_rules import LibraryFacts
 from media_hygiene.config.tidy_write import check_removed, without_entries
@@ -68,7 +69,9 @@ def stale_entries(runtime: Runtime) -> TidyFindings:
     if runtime.settings.classify.town_names:
         known = frozenset(Gazetteer.load().geonames)
         facts = dataclasses.replace(facts, towns=known)
-    return find_stale(document, facts, lambda p: _exists(runtime, p))
+    found = find_stale(document, facts, lambda p: _exists(runtime, p))
+    links = stale_links(missing_links(document, runtime.locations.config_dir))
+    return dataclasses.replace(found, stale=(*found.stale, *links))
 
 
 def library_facts(runtime: Runtime) -> LibraryFacts:
