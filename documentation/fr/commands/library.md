@@ -193,6 +193,7 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   ou en colonne *Prise de vue* (clic droit sur les en-têtes de colonnes). Un fichier qui ne la
   dit pas (un scan, une capture d'écran) affiche *pas de date de prise* : une recherche par date
   ne le trouve pas.
+- **Une vidéo que votre navigateur ne sait pas lire** (un `.MOV` HEVC d'iPhone sans l'extension HEVC d'Edge) : la grande vue montre une image de la vidéo et dit son format, au lieu d'un cadre noir ; **Ouvrir l'original** reste possible.
 - **L'EXIF de la photo** : dans la grande vue, **I** liste ce que la photo dit d'elle-même :
   quand elle a été prise, l'appareil, l'objectif, l'exposition, sa taille en pixels et sa
   position GPS, avec la ville la plus proche et son pays (*Bruxelles, Belgique*, trouvés hors ligne :

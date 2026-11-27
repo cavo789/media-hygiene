@@ -11656,6 +11656,10 @@ msgstr ""
 msgid "They stay where they are"
 msgstr ""
 
+#, python-brace-format
+msgid "This browser cannot play this video ({format}): here is its frame."
+msgstr ""
+
 msgid "This browser cannot play this video: open the original."
 msgstr ""
 

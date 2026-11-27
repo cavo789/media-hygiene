@@ -14005,6 +14005,10 @@ msgstr ""
 msgid "They stay where they are"
 msgstr "Ils restent où ils sont"
 
+#, python-brace-format
+msgid "This browser cannot play this video ({format}): here is its frame."
+msgstr "Ce navigateur ne sait pas lire cette vidéo ({format}) : en voici une image."
+
 msgid "This browser cannot play this video: open the original."
 msgstr "Ce navigateur ne sait pas lire cette vidéo : ouvrez l'original."
 

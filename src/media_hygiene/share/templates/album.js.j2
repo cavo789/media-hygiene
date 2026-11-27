@@ -187,7 +187,13 @@ function draw() {
   const item = items[at];
   if (!item) { closeViewer(false); return; }
   if (item.photo) $("stage").innerHTML = `<img src="${esc(item.photo)}" alt="">`;
-  else if (item.film) $("stage").innerHTML = `<video src="${esc(item.film)}" controls playsinline autoplay preload="metadata"></video>`;
+  else if (item.film) {
+    $("stage").innerHTML = `<video src="${esc(item.film)}" controls playsinline autoplay preload="metadata"></video>`;
+    // A format this browser cannot decode (HEVC without its extension): the video's frame, the format said (0786).
+    $("stage").querySelector("video").addEventListener("error", () => {
+      $("stage").innerHTML = `<img src="${esc(item.thumb)}" alt=""><p>${esc(fill(T.playFailed, { format: item.format || "?" }))}</p>`;
+    });
+  }
   else $("stage").innerHTML = `<p>${esc(fill(T.unplayable, { format: item.format || "?" }))}</p>`;
   $("cover").hidden = !item.photo;
   $("where").textContent = fill(T.of, { at: at + 1, total: items.length });
