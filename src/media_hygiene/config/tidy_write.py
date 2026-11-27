@@ -11,7 +11,7 @@ import tomllib
 from typing import TYPE_CHECKING, Any
 
 import tomlkit
-from tomlkit.items import AoT, Array, Table
+from tomlkit.items import AoT, Array, InlineTable, Table
 
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
@@ -63,6 +63,13 @@ def check_removed(before: str, after: str, entries: Sequence[StaleEntry]) -> Non
         ranks = {entry.rank for entry in entries if entry.section == section}
         top, key = section.split(".")
         rows = expected[top][key]
+        if isinstance(rows, dict):  # `town_names`: a table, its keys in file order
+            expected[top][key] = {
+                name: value
+                for rank, (name, value) in enumerate(rows.items())
+                if rank not in ranks
+            }
+            continue
         expected[top][key] = [row for rank, row in enumerate(rows) if rank not in ranks]
     if _pruned(expected) != _pruned(tomllib.loads(after)):
         raise ConfigError(
@@ -82,7 +89,7 @@ def _pruned(document: Mapping[str, Any]) -> dict[str, Any]:
     return {
         key: _pruned(value) if isinstance(value, dict) else value
         for key, value in document.items()
-        if value != []
+        if value not in ([], {})
     }
 
 
@@ -100,6 +107,11 @@ def _remove(document: tomlkit.TOMLDocument, section: str, ranks: Sequence[int]) 
     top, key = section.split(".")
     holder = document.get(top)
     rows = holder.get(key) if isinstance(holder, Table) else None
+    if isinstance(rows, Table | InlineTable):  # `town_names`, keys by rank
+        names = list(rows.keys())
+        for rank in ranks:
+            del rows[names[rank]]
+        return
     if not isinstance(rows, AoT | Array):
         raise ConfigError(_("{section} is not a list.").format(section=section))
     for rank in ranks:

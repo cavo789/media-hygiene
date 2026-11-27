@@ -41,12 +41,15 @@ class LibraryFacts:
     """What the index knows: host paths, each shot's camera and day, named folders.
 
     `named`: the host paths whose folder carries a name the user gave (not a date, not
-    a device or generic folder), as `existing_folder` reads it.
+    a device or generic folder), as `existing_folder` reads it. `towns` is not the
+    index's: the offline gazetteer's names, read only when `town_names` has entries.
     """
 
     paths: tuple[str, ...] = ()
     shots: tuple[tuple[str, date | None], ...] = ()
     named: frozenset[str] = frozenset()
+    # The GeoNames name of every town (0812); None: `town_names` is not judged.
+    towns: frozenset[str] | None = None
 
 
 @dataclass(frozen=True, slots=True)

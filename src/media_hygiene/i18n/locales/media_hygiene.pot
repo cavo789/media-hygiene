@@ -14622,6 +14622,9 @@ msgstr ""
 msgid "no shot kept from its series is left"
 msgstr ""
 
+msgid "no town of this name is known: a typo?"
+msgstr ""
+
 #, python-brace-format
 msgid "nobody is named {name}"
 msgstr ""

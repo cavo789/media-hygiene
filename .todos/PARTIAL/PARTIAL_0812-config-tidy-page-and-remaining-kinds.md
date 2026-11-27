@@ -25,3 +25,25 @@ left alone (0751).
 
 - [ ] One test per kind; the page applies only the visible ticked rows; save read back.
 - [ ] Docs EN + FR, French strings, menu catalog; `docs_screenshots` flagged stale.
+
+## Status — PARTIAL (2026-11-27)
+
+### Done
+- Town renames: a `[classify.town_names]` key the offline gazetteer does not know is listed
+  by `config tidy` (ticked) and removed by `--apply` (`tidy_find._town_names`, table keys in
+  `tidy_write`; `LibraryFacts.towns`, the gazetteer read only when renames exist). Tests in
+  `tests/unit/test_config_tidy.py`; docs EN + FR (`commands/config.md` table); French string.
+- `place_photos` relocation checked: 0570's `photo_refs_audit` already rewrites the `path`
+  of a moved photo found by content after each audit; only the removal of lines found
+  nowhere is left.
+
+### Not done
+- The web page with ticks (visible rows only, Apply now, way back home, read back).
+  **Reason:** out of this lot's size; needs a new served page under the pages contract.
+- `place_photos` lines whose content is found nowhere: removal from `places/<name>.toml`
+  (not `config.toml`: `tidy_write` edits config.toml only). **Reason:** a second writer.
+- `people`: a linked file that is missing makes the settings fail to load
+  (`people_files.linked_section` raises), so `tidy` can never run to list it; a file linked
+  by nobody needs a file move, not a config edit. **Reason:** question for the maintainer:
+  should a missing person file load as an empty list (then tidy offers to unlink it)?
+- `docs_screenshots`: the `config` page's console blocks are unchanged (no new output line).

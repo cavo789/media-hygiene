@@ -109,6 +109,7 @@ mh config tidy --apply   # remove the ticked entries
 | `[[classify.rules]]` `match = "date_range"` | no indexed photo was taken on its dates: shown **unticked** (a rule written before an import); `--dates` ticks it too |
 | `[[classify.rules]]` `match = "path"` (superseded) | every file it matches already sits in a folder you named (`2017\2017-04\Bruges`): `sort` would move them out of it. Shown **unticked** (a rule may rename a folder on purpose); `--superseded` ticks it too |
 | `[[classify.clocks]]` | no photo of that camera on its dates |
+| `[classify.town_names]` | the town name on the left is unknown to the offline towns (a typo: `Bruge = "Bruges"`), so the rename never applies |
 
 A folder on a drive that is not mounted (a USB stick) is **not judged**, and said so. An
 empty index judges no rule: run `audit` on all your folders first. A `path` rule whose pattern

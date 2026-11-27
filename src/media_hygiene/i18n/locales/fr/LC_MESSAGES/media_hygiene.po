@@ -17434,6 +17434,9 @@ msgstr "pas d'aperçu gardé"
 msgid "no shot kept from its series is left"
 msgstr "il ne reste aucune photo gardée de sa série"
 
+msgid "no town of this name is known: a typo?"
+msgstr "aucune ville de ce nom n'est connue : une faute de frappe ?"
+
 #, python-brace-format
 msgid "nobody is named {name}"
 msgstr "personne ne s'appelle {name}"
@@ -17882,8 +17885,8 @@ msgstr[0] ""
 "voir la photo couchée sur le côté ({count}) montrée redressée : Photos à "
 "redresser, sur la page d'accueil."
 msgstr[1] ""
-"voir les {count} photos couchées sur le côté montrées redressées : Photos à "
-"redresser, sur la page d'accueil."
+"voir les {count} photos couchées sur le côté montrées redressées : Photos"
+" à redresser, sur la page d'accueil."
 
 msgid "seen by the model"
 msgstr "vu par le modèle"
