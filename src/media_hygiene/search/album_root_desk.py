@@ -77,11 +77,20 @@ class AlbumRootDesk:
             The folder of the albums, read from the disk.
         """
         now = self.shown()
-        shown: dict[str, object] = {**now}
+        shown: dict[str, object] = {**now, "mounts": self._mounts()}
         former = self._former()
         if former and former != now["used"] and self.move is not None:
             shown |= {"movable": self.move.movable(former), "old": former}
         return json_response(HTTPStatus.OK, shown)
+
+    def _mounts(self) -> list[str]:
+        """The mounted folders an album folder may go in, as the host names them.
+
+        Returns:
+            Their host paths (the drives of the page's chooser, 0797), sorted.
+        """
+        mapper = self.roles.mapper
+        return sorted(mapper.to_host(root) for root in self.roles.roots)
 
     def _former(self) -> str:
         """The folder the albums went to by default before 0626.

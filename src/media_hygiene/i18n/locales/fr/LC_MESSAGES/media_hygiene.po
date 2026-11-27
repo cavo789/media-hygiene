@@ -3392,6 +3392,9 @@ msgstr "Glisser pour déplacer"
 msgid "Drawn at each visit; a click opens the Library on its folder."
 msgstr "Tirées à chaque visite ; un clic ouvre la bibliothèque sur leur dossier."
 
+msgid "Drive or mounted folder"
+msgstr "Disque ou dossier monté"
+
 msgid "Drone"
 msgstr "Drone"
 
@@ -9172,6 +9175,9 @@ msgstr "Photos intactes"
 msgid "Photos with a shooting date"
 msgstr "Photos avec une date de prise de vue"
 
+msgid "Pick a drive or folder…"
+msgstr "Choisir un disque ou un dossier…"
+
 #, python-brace-format
 msgid "Pick all {total} files found"
 msgstr "Choisir les {total} fichiers trouvés"
@@ -12921,6 +12927,13 @@ msgstr ""
 msgid "The most recent backup, the index in place backed up first."
 msgstr "La sauvegarde la plus récente, l'index en place sauvegardé d'abord."
 
+msgid ""
+"The mounted folders of your photos: pick one, then name the new folder "
+"after it."
+msgstr ""
+"Les dossiers montés de vos photos : choisissez-en un, puis nommez le "
+"nouveau dossier à la suite."
+
 #, python-brace-format
 msgid ""
 "The name of this folder does not hold '{name}': the sort would not see it"
@@ -14007,7 +14020,9 @@ msgstr "Ils restent où ils sont"
 
 #, python-brace-format
 msgid "This browser cannot play this video ({format}): here is its frame."
-msgstr "Ce navigateur ne sait pas lire cette vidéo ({format}) : en voici une image."
+msgstr ""
+"Ce navigateur ne sait pas lire cette vidéo ({format}) : en voici une "
+"image."
 
 msgid "This browser cannot play this video: open the original."
 msgstr "Ce navigateur ne sait pas lire cette vidéo : ouvrez l'original."

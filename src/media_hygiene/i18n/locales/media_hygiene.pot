@@ -2789,6 +2789,9 @@ msgstr ""
 msgid "Drawn at each visit; a click opens the Library on its folder."
 msgstr ""
 
+msgid "Drive or mounted folder"
+msgstr ""
+
 msgid "Drone"
 msgstr ""
 
@@ -7630,6 +7633,9 @@ msgstr ""
 msgid "Photos with a shooting date"
 msgstr ""
 
+msgid "Pick a drive or folder…"
+msgstr ""
+
 #, python-brace-format
 msgid "Pick all {total} files found"
 msgstr ""
@@ -10799,6 +10805,11 @@ msgid ""
 msgstr ""
 
 msgid "The most recent backup, the index in place backed up first."
+msgstr ""
+
+msgid ""
+"The mounted folders of your photos: pick one, then name the new folder "
+"after it."
 msgstr ""
 
 #, python-brace-format

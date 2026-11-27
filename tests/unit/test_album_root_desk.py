@@ -69,3 +69,10 @@ def test_a_control_character_is_a_bad_request(tmp_path: Path) -> None:
     """A control character is a bad request."""
     status, _body = _post(_desk(tmp_path), "C:\\Photos\x08")
     assert status == HTTPStatus.BAD_REQUEST
+
+
+def test_the_state_lists_the_mounted_drives_to_pick_from(tmp_path: Path) -> None:
+    """0797: the page's chooser lists the mounted folders, as the host names them."""
+    state = json.loads(_desk(tmp_path).state().body)
+    assert state["mounts"] == ["C:\\"]
+    assert state["used"] == "C:\\Photos\\Sorted\\_Albums"
