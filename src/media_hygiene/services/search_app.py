@@ -23,7 +23,7 @@ from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_PATHS
-from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
+from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folder_role_desk import ROLE_PATH, RoleDesk
 from media_hygiene.search.folders import (
     BROWSE_PATH,
@@ -138,7 +138,6 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "place_path": PLACE_PATH,
         "landmark_path": LANDMARK_PATH,
         "folder_query": FOLDER_QUERY,
-        "events_path": EVENTS_PATH,
         "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH, "left": LEFT_PATH},
         "found_path": FOUND_PATH,
         "grouping_path": GROUPING_PATH,  # the events before saving (0643)

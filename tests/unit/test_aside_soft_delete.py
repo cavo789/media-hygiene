@@ -7,7 +7,6 @@ choice of the Events view; *Take out* of an album still reaches it.
 
 from __future__ import annotations
 
-import json
 from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -20,7 +19,6 @@ from media_hygiene.report.chosen_decisions import ChosenFile
 from media_hygiene.report.decisions import DecisionsFile
 from media_hygiene.review.place import DEFAULT_DECISIONS
 from media_hygiene.search.aside_filter import AsideFilter, Kept
-from media_hygiene.search.events_aside import rows_kept
 from media_hygiene.services import album_pages
 from media_hygiene.services.aside_paths import review_picker, set_aside
 from media_hygiene.services.sort_event import not_aside
@@ -31,9 +29,7 @@ from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
     from media_hygiene.classify.page_overlay import Overlaid
-    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.session import ReviewSession
-    from media_hygiene.search.events_desk import EventsDesk
     from media_hygiene.services.album_reader import AlbumReader
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.share.album_shelf import Shown
@@ -102,18 +98,6 @@ def test_the_albums_page_cannot_bring_back_a_file_set_aside_since() -> None:
     assert album_pages._picked(sources, tv) == Kept((PATHS["a"],), 1)  # noqa: SLF001  # pylint: disable=protected-access
     remove = tv.model_copy(update={"action": "remove"})
     assert len(album_pages._picked(sources, remove).files) == 2  # noqa: SLF001  # pylint: disable=protected-access
-
-
-def test_an_events_choice_of_photos_leaves_the_file_set_aside_out() -> None:
-    """`POST /api/sort/files`: the row of the file set aside is dropped server-side."""
-    desk = SimpleNamespace(chosen=lambda: ASIDE, mapper=MAPPER)
-    session = SimpleNamespace(preview_source=PATHS.get)
-    body = json.dumps({"event": "e1", "rows": ["a", "b", "z"], "category": "Pets"})
-    kept = rows_kept(
-        cast("EventsDesk", desk), cast("SortBatchSession", session), body.encode()
-    )
-    assert json.loads(kept) == {"event": "e1", "rows": ["a", "z"], "category": "Pets"}
-    assert rows_kept(cast("EventsDesk", desk), cast("SortBatchSession", session), b"x")
 
 
 def test_sort_this_event_now_leaves_the_files_set_aside_in_place() -> None:

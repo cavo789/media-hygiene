@@ -21,8 +21,6 @@ from media_hygiene.services.grouping_look import GroupingLook
 from media_hygiene.services.names_file import names_file
 from media_hygiene.services.rule_trial import event_gap_hours, try_rule, written_rules
 from media_hygiene.services.selection_move import SelectionMover
-from media_hygiene.services.sort_event import sorter_of
-from media_hygiene.services.sort_reviewing import open_sort_review
 from media_hygiene.services.sort_trial_page import SortTrial
 from media_hygiene.services.tag_drop import drop_words, merge_word
 
@@ -73,7 +71,7 @@ def names_place(runtime: Runtime) -> NamesPlace:
 def events_desk(
     runtime: Runtime, search: SearchIndex, chosen: ChosenDesk
 ) -> EventsDesk:
-    """The *🗂 Events* view (0437): the latest classify plan, read on the first ask.
+    """The *🗂 Events* view (0437): the events made from the index and their parts.
 
     Args:
         runtime: Settings, mount points and output.
@@ -83,7 +81,6 @@ def events_desk(
     Returns:
         The desk.
     """
-    opener = partial(open_sort_review, runtime, None)
     settings = runtime.settings
     names = [person.name for person in settings.people.person]
     found = FoundDesk(
@@ -95,9 +92,7 @@ def events_desk(
     return EventsDesk(
         search,
         runtime.mapper,
-        opener,
         chosen.paths,
-        partial(sorter_of, runtime),
         found,
         LateDesk(search, runtime.mapper, runtime.locations.config_file, chosen.paths),
         SpanEvents(

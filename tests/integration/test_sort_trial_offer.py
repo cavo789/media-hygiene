@@ -22,7 +22,6 @@ from media_hygiene.search.trial_api import (
 )
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
-from media_hygiene.services.sort_reviewing import open_sort_review
 from media_hygiene.services.sort_trial import LATEST, first_sample, only_trial
 from media_hygiene.services.sort_trial_page import SortTrial
 from tests.integration.test_sort_event import SPRING, SPRING_SHOTS, two_events
@@ -52,7 +51,6 @@ def _desk(runtime: Runtime, search: SearchIndex) -> EventsDesk:
     return EventsDesk(
         search,
         runtime.mapper,
-        lambda: open_sort_review(runtime, None),
         frozenset,
         trial=SortTrial(runtime),
     )
@@ -199,9 +197,7 @@ def test_a_page_without_a_trial_says_so(locations: Locations) -> None:
     """No desk trial: no offer, 404; a trial with nothing to try: a sentence."""
     runtime, _workbook, _sizes = two_events(locations)
     with SearchIndex.open(locations.index_file) as search:
-        bare = EventsDesk(
-            search, runtime.mapper, lambda: open_sort_review(runtime, None), frozenset
-        )
+        bare = EventsDesk(search, runtime.mapper, frozenset)
         assert _offered(bare) is None
         request = Request("POST", TRIAL_RUN_PATH, _JSON, b"{}")
         assert asyncio.run(sort_post(bare, request)).status == HTTPStatus.NOT_FOUND

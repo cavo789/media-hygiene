@@ -17,7 +17,6 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request
-from media_hygiene.search.events_desk import EVENTS_PATH
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.trial_api import TRIAL_PATH, TRIAL_RUN_PATH
 from media_hygiene.services.search_app import SearchBuild, search_app
@@ -53,7 +52,6 @@ _OPENING: Final = (
     ("POST", "/api/alive", {"leaving": False}),
     ("POST", "/api/place", {"action": "list"}),
     ("POST", "/api/search", _SEARCH),
-    ("GET", EVENTS_PATH, None),
     ("GET", TRIAL_PATH, None),
 )
 
