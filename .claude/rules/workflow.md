@@ -10,6 +10,10 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   ❌ DON'T: trust a single-file `mypy`/`ruff` run: the gate's config differs (strict typing of
   tests, pylint's docstring and boolean checks). The `Stop` hook (`.claude/scripts/stop_gate.sh`)
   runs it on the changed files at the end of each turn and sends a failure back.
+- ✅ DO: stage by folder (`git add -A -- src tests documentation .todos`) or by file, then
+  `git diff --cached --stat` before committing. ❌ DON'T: name a git-ignored path
+  (`.todos/plan.md`) in `git add`: the whole add fails, nothing is staged, and the commit
+  holds only what was staged before (2026-11-27: three lots split wrong that way).
 - ✅ DO: between two edits, run only the tests of what changed:
   `pytest $(python3 .claude/scripts/tests_for.py)` (the tests importing a changed module, in
   seconds; a new module gets its package's tests, a template the page contract tests, never
