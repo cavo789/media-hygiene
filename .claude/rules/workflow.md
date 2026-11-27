@@ -10,13 +10,22 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   ❌ DON'T: trust a single-file `mypy`/`ruff` run: the gate's config differs (strict typing of
   tests, pylint's docstring and boolean checks). The `Stop` hook (`.claude/scripts/stop_gate.sh`)
   runs it on the changed files at the end of each turn and sends a failure back.
+- ✅ DO: stage by folder (`git add -A -- src tests documentation .todos`) or by file, then
+  `git diff --cached --stat` before committing. ❌ DON'T: name a git-ignored path
+  (`.todos/plan.md`) in `git add`: the whole add fails, nothing is staged, and the commit
+  holds only what was staged before (2026-11-27: three lots split wrong that way).
 - ✅ DO: between two edits, run only the tests of what changed:
   `pytest $(python3 .claude/scripts/tests_for.py)` (the tests importing a changed module, in
-  seconds; it prints "no test found" and returns nothing for a new module: an empty
-  `pytest $(…)` then runs the whole suite, so name the tests by hand); before declaring done, `--depth 1` (the tests of its importers too), then the
+  seconds; a new module gets its package's tests, a template the page contract tests, never
+  an empty line; no e2e unless `--e2e`; over 80 test files it prints nothing and exits 3:
+  narrow it, name the tests by hand); before declaring done, `--depth 1` (the tests of its importers too), then the
   commit gate. The whole suite is CI's job, or `check` when a change is cross-cutting (a
   `conftest.py`, a template, a constant every module reads). ❌ DON'T: run the whole suite after
   each edit (minutes of load on the maintainer's PC).
+- ✅ DO: a change to a CLI option, its help or a `_()` string of `cli/`: run
+  `tests/integration/test_cli.py` too (it walks every verb's `--help` through `build_app`,
+  which `tests_for.py` does not trace back to `cmd_*.py`). ❌ DON'T: assert on Rich's wrapped
+  lines: normalise to words (PR 89/90 failed on CI that way, 2026-11-27).
 - ✅ DO: keep what passes to one line and what fails in full: `pytest -q --tb=short … | tail
   -25`, `pre-commit … | grep -v -e Passed -e Skipped`, `git push -q`. ❌ DON'T: cut a failure's
   trace to save room (guessing its cause costs more rounds than reading it).

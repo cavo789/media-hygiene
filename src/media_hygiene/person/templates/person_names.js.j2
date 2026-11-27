@@ -40,13 +40,15 @@ function learn(result) {
 }
 
 function tagText(named) {
+  if (named && named.how === "ignored") return "⊘";
   if (!named || !named.name) return TEXTS.nobody;
   return named.how === "confirmed" ? "✓ " + named.name : "≈ " + named.name;
 }
 
 function faceTag(named) {
   const tag = element("span", "who" + (named && named.name ? "" : " nobody"), tagText(named));
-  tag.title = named && named.name ? (named.how === "confirmed" ? TEXTS.confirmed : TEXTS.guessed) : TEXTS.nobodyHint;
+  if (named && named.how === "ignored") tag.title = named.own ? TEXTS.ignoreFace : TEXTS.nearIgnored;
+  else tag.title = named && named.name ? (named.how === "confirmed" ? TEXTS.confirmed : TEXTS.guessed) : TEXTS.nobodyHint;
   return tag;
 }
 
@@ -61,6 +63,38 @@ function notNameButton(face) {
     if (await send({ action: "unname", name: face.named.name, faces: [Number(face.key)] })) await render();
   });
   return out;
+}
+
+function isIgnored(face) {
+  return Boolean(face.named) && face.named.how === "ignored";
+}
+
+// The cross of a face the tool found (0843): "not <name>" on a named one, "ignore this face"
+// on one nobody is named for, ↩ on one its cross ignored; none on one ignored as near another.
+function faceCross(face) {
+  if (isIgnored(face)) return face.named.own ? [ignoreSwitch(face, "unignore", "↩", TEXTS.unignore)] : [];
+  if (face.named && face.named.name) return [notNameButton(face)];
+  return [ignoreSwitch(face, "ignore", "×", TEXTS.ignoreFace)];
+}
+
+function ignoreSwitch(face, action, mark, title) {
+  const out = element("button", "plain forget writes", mark);
+  out.type = "button";
+  out.title = title;
+  out.addEventListener("click", async (event) => {
+    event.stopPropagation(); // never chooses the face
+    if (await send({ action: action, faces: [Number(face.key)] })) await render();
+  });
+  return out;
+}
+
+// "2 faces ignored: show them" under the strip, once; they are drawn again with their ↩.
+function ignoredFold(hidden) {
+  if (!hidden.length || showIgnored) return [];
+  const fold = element("button", "plain", counted(TEXTS.ignoredFaces, hidden.length));
+  fold.type = "button";
+  fold.addEventListener("click", () => { showIgnored = true; showFaces(shownFaces, true); });
+  return [fold];
 }
 
 // The name line under the faces: "This face is… [combo] [Name]".

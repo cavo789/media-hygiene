@@ -226,8 +226,9 @@
     const pictures = source.pictures - unticked.filter((file) => !file.video).length;
     const filmed = source.videos - unticked.filter((file) => file.video).length;
     if (pictures + filmed <= 0) { status(T.noneTicked, "error"); return; }
-    if (!await window.mhAsk({ lines: [fill(T.giveConfirm, { files: holds(pictures, filmed), place })], yes: T.giveYes })) return;
-    const before = (state.places.find((known) => known.name === place) || { hand: [] }).hand.length;
+    // Reversible: no question, the toast's Undo takes back exactly the photos just given (0811).
+    const held = new Set((state.places.find((known) => known.name === place) || { hand: [] }).hand.map((photo) => photo.id));
+    const before = held.size;
     const answer = await post(paths.photos, { action: "give", cluster: source.rank, place,
                                               left_out: unticked.map((file) => [file.folder, file.name]) });
     if (!answer) return;
@@ -235,6 +236,20 @@
     state = answer; flashName = place; closeDrawer(); draw();
     if (!after || after.hand.length <= before) { status(T.notSaved, "error"); return; }
     status(fill(T.given, { place }), "saved");
+    const added = after.hand.map((photo) => photo.id).filter((id) => !held.has(id));
+    window.mhUndoToast(fill(T.given, { place }), () => takeBackGiven(added), { keys: true });
+  }
+  // Undo of a give: each photo taken back, then config.toml read back (the state the server sent).
+  async function takeBackGiven(ids) {
+    let answer = null;
+    for (const id of ids) {
+      answer = await post(paths.photos, { action: "remove", id });
+      if (!answer) return;
+    }
+    if (!answer) return;
+    state = answer; draw();
+    const still = state.places.some((known) => (known.hand || []).some((photo) => ids.includes(photo.id)));
+    status(still ? T.notSaved : T.takenBack, still ? "error" : "saved");
   }
   byId("giveTo").addEventListener("change", (event) => {
     const place = event.target.value; event.target.value = "";

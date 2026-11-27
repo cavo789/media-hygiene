@@ -9,11 +9,14 @@
    names only. Included by `pick_viewer.js.j2` and `people_viewer.js.j2` (needs `$`, `element`,
    `fill`); `#viewerWho` (`pick_viewer.html.j2`) holds the words; a page that shows names
    listens to the `mh-named` event of `document`. Each face is outlined on the photo, its name
-   under it (`pick_who_boxes.js.j2`, 0838). Back on the tab, the faces are asked again. #}
+   under it (`pick_who_boxes.js.j2`, 0838). Back on the tab, the faces are asked again. A face
+   nobody is named for has its ×: "not someone to name", ignored for good (0843, `ignore`); the
+   faces ignored are hidden, "2 faces ignored: show them" draws them with their ↩. #}
 {% include "combo_list.js.j2" %}
 {% include "pick_who_boxes.js.j2" %}
 let whoAsked = 0;   // the latest photo asked: an answer for an earlier one is dropped
 let whoFile = null; // the file whose faces are shown
+let whoIgnoredShown = false; // the faces ignored (0843), shown when asked, until the next photo
 
 // Back on this tab (a face named in the /person tab "Identify someone" opened): the names as
 // they are now, asked again for the photo still open.
@@ -31,6 +34,7 @@ async function whoAsk(url, body) {
 async function showWho(file) {
   const who = $("viewerWho");
   const asked = ++whoAsked;
+  if (whoFile !== file) whoIgnoredShown = false;
   whoFile = file;
   who.hidden = true;
   who.replaceChildren();
@@ -38,8 +42,10 @@ async function showWho(file) {
   whoClear();
   if (!file.path || file.video) return;
   const result = await whoAsk("/person/api/photo", { path: file.path });
-  const faces = result && asked === whoAsked ? result.faces || [] : [];
-  if (!faces.length) return;
+  const every = result && asked === whoAsked ? result.faces || [] : [];
+  const ignored = every.filter((face) => face.named && face.named.how === "ignored");
+  const faces = whoIgnoredShown ? every : every.filter((face) => !ignored.includes(face));
+  if (!every.length) return;
   const writable = Boolean(result.writable) && !document.documentElement.hasAttribute("data-phone");
   const name = writable ? (face, at) => whoNamer(face, at, result.people || []) : null;
   who.append("👤 ");
@@ -48,12 +54,35 @@ async function showWho(file) {
     const chip = who.appendChild(whoFace(face, name ? () => name(face, at) : null));
     chip.addEventListener("mouseenter", () => whoLight(at, true));
     chip.addEventListener("mouseleave", () => whoLight(at, false));
+    if (writable) who.append(...whoCross(file, face));
   });
+  if (ignored.length && !whoIgnoredShown) who.append(" ", whoIgnoredFold(file, ignored.length));
   const guessed = name ? faces.filter((face) => face.named && face.named.name && face.named.how !== "confirmed") : [];
   if (guessed.length) who.append(" ", whoConfirm(guessed));
   if (faces.some((face) => face.box)) who.append(" ", whoSwitch());
   whoDraw(faces, name);
   who.hidden = false;
+}
+
+// × on a face nobody is named for: ignored for good; ↩ on one its × ignored (0843).
+function whoCross(file, face) {
+  const who = $("viewerWho");
+  const ignored = face.named && face.named.how === "ignored";
+  if (ignored && !face.named.own) return [];
+  if (!ignored && face.named && face.named.name) return [];
+  const button = element("button", "plain", ignored ? "↩" : "×");
+  button.type = "button";
+  button.title = ignored ? who.dataset.unignore : who.dataset.ignore;
+  button.addEventListener("click", () => whoPost(file, { action: ignored ? "unignore" : "ignore", faces: [Number(face.key)] }));
+  return [button];
+}
+
+function whoIgnoredFold(file, count) {
+  const who = $("viewerWho");
+  const button = element("button", "plain", fill(count === 1 ? who.dataset.ignoredOne : who.dataset.ignoredMany, { n: count }));
+  button.type = "button";
+  button.addEventListener("click", () => { whoIgnoredShown = true; showWho(file); });
+  return button;
 }
 
 // One face: its picture and its name (✓ confirmed, ≈ guessed, ? nobody); a button to name it.
@@ -68,8 +97,9 @@ function whoFace(face, name) {
     crop.alt = "";
     tag.append(crop);
   }
-  tag.append(named ? (sure ? "✓ " : "≈ ") + named.name : who.dataset.nobody);
-  tag.title = named ? (sure ? who.dataset.confirmed : who.dataset.guessed) : who.dataset.hint;
+  const ignored = face.named && face.named.how === "ignored";
+  tag.append(named ? (sure ? "✓ " : "≈ ") + named.name : ignored ? "⊘" : who.dataset.nobody);
+  tag.title = named ? (sure ? who.dataset.confirmed : who.dataset.guessed) : ignored ? who.dataset.near : who.dataset.hint;
   if (name) {
     tag.type = "button";
     tag.title += " " + who.dataset.click;

@@ -27,10 +27,28 @@ function shownFace() {
   return viewing ? viewing.list[viewing.at] : null;
 }
 
+// The photo's version is asked when the large view shows it, not for every tile (0799): the
+// address with `?v=<tag>` lets the browser keep the picture for good. Asked once per photo;
+// no answer, the plain address (the rule of the run).
+const photoTags = new Map();
+function showPhoto(key) {
+  const plain = PHOTO + key + ".jpg";
+  const put = (tag) => {
+    const face = shownFace();
+    if (face && face.item.key === key) $("large").src = tag ? plain + "?v=" + tag : plain;
+  };
+  if (photoTags.has(key)) { put(photoTags.get(key)); return; }
+  fetch("/api/photo-tag/" + key).then((r) => (r.ok ? r.json() : { tag: "" }))
+    .catch(() => ({ tag: "" })).then((data) => {
+      photoTags.set(key, data.tag);
+      put(data.tag);
+    });
+}
+
 function drawViewer() {
   const face = shownFace();
   if (!face) return;
-  $("large").src = PHOTO + face.item.key + ".jpg";
+  showPhoto(face.item.key);
   $("large").alt = face.item.photo;
   $("viewerName").textContent = face.item.photo;
   $("originalLink").href = PHOTO + face.item.key + ".jpg";

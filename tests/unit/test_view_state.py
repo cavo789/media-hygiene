@@ -103,3 +103,14 @@ def test_each_review_keeps_its_group(template: str) -> None:
     text = (_TEMPLATES / template).read_text("utf-8")
     assert 'window.mhView.get({ g: "int" }).g' in text
     assert "window.mhView.set({ g: " in text
+
+
+def test_the_intruders_ticks_and_the_places_filters_are_kept_in_the_url() -> None:
+    """0796: ticks (`x`, `f`, `m`) and typed filters (`q`, `t`), read back on load."""
+    intruders = (_TEMPLATES / "intruders_review.js.j2").read_text("utf-8")
+    assert 'window.mhView.get({ x: "text", f: "path", m: ["but"] })' in intruders
+    assert "window.mhView.set({ x: " in intruders
+    assert intruders.index("restore();") < intruders.index("      refresh();")
+    places = (_SRC / "places" / "templates" / "places_list.js.j2").read_text("utf-8")
+    assert 'window.mhView.get({ q: "text", t: "text" })' in places
+    assert "window.mhView.set({ q: " in places

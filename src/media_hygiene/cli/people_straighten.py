@@ -10,10 +10,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.context import user_errors
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.console.formatting import human_number
 from media_hygiene.console.progress import RichProgress
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.turn_apply import TurnService
 
 if TYPE_CHECKING:
@@ -66,3 +68,35 @@ def straighten_flow(runtime: Runtime) -> int:
             )
         )
         return result.outcome.done
+
+
+def suggest_straighten(runtime: Runtime) -> bool:
+    """End `people` on the photos to straighten when turns are proposed (0810).
+
+    The page first (Seeing first): the home page leads to it.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        Whether the line was given.
+    """
+    try:
+        count = len(TurnService(runtime, NullProgress()).prepare())
+    except OSError:  # no index yet, or unreadable: nothing to propose
+        return False
+    if not count:
+        return False
+    said = ngettext(
+        "see the {count} photo lying on its side shown turned: Photos to "
+        "straighten, on the home page.",
+        "see the {count} photos lying on their side shown turned: Photos to "
+        "straighten, on the home page.",
+        count,
+    )
+    suggest(
+        runtime,
+        said.format(count=human_number(count)),
+        NextVerb(carried(runtime, "home")),
+    )
+    return True

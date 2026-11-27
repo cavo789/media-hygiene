@@ -913,6 +913,9 @@ msgstr ""
 msgid "A word, a place, a year, a person: with previews, in the browser."
 msgstr ""
 
+msgid "ACTION"
+msgstr ""
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr ""
 
@@ -1678,6 +1681,9 @@ msgid "By year, event, place or person, in a workbook you correct."
 msgstr ""
 
 msgid "COMMAND [ARGS]..."
+msgstr ""
+
+msgid "COUNT"
 msgstr ""
 
 msgid "Camera"
@@ -2503,16 +2509,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid ""
-"Delete {n} album? Your photos stay where they are: only the albums file "
-"changes."
-msgid_plural ""
-"Delete {n} albums? Your photos stay where they are: only the albums file "
-"changes."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "Delete {ticked} files ({size}) from the phone"
 msgstr ""
 
@@ -2789,6 +2785,9 @@ msgstr ""
 msgid "Drawn at each visit; a click opens the Library on its folder."
 msgstr ""
 
+msgid "Drive or mounted folder"
+msgstr ""
+
 msgid "Drone"
 msgstr ""
 
@@ -2824,6 +2823,9 @@ msgid "During the event, but another camera: elsewhere?"
 msgstr ""
 
 msgid "EXIF"
+msgstr ""
+
+msgid "EXTENSIONS"
 msgstr ""
 
 msgid "Each copy in the second folder has an identical file in the first one."
@@ -3401,6 +3403,12 @@ msgid "Extra copies that can be set aside"
 msgstr ""
 
 msgid "F-number"
+msgstr ""
+
+msgid "FILE"
+msgstr ""
+
+msgid "FOLDER"
 msgstr ""
 
 msgid "Face drawn and kept: name it, then check its photos."
@@ -4003,9 +4011,6 @@ msgstr ""
 msgid "Give the album a plain name, e.g. \"Christmas\" or \"Best of 2016\"."
 msgstr ""
 
-msgid "Give the photos"
-msgstr ""
-
 msgid "Give the photos picked a day"
 msgstr ""
 
@@ -4035,12 +4040,6 @@ msgstr ""
 msgid ""
 "Give your photos words, then find them again by a word, a place, a year "
 "or a person."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Give {files} to {place}? Their GPS is then ignored for this place; the "
-"photos stay where they are."
 msgstr ""
 
 msgid "Given by the tool, close to a confirmed face: not confirmed yet"
@@ -4347,6 +4346,9 @@ msgid "If Windows asks about Docker Desktop: tick Private networks, then Allow."
 msgstr ""
 
 msgid "Ignore this group"
+msgstr ""
+
+msgid "Ignored: like a face you ignored. Name it to take it back."
 msgstr ""
 
 msgid "Image cannot be decoded"
@@ -5441,6 +5443,12 @@ msgid ""
 "nor in place"
 msgstr ""
 
+msgid "NAME"
+msgstr ""
+
+msgid "NAMES/IGNORED"
+msgstr ""
+
 msgid "NUMBER"
 msgstr ""
 
@@ -5965,6 +5973,11 @@ msgstr ""
 msgid "No folder to import from."
 msgstr ""
 
+msgid ""
+"No folder to show yet: the tree comes from the audit. Type the path "
+"instead."
+msgstr ""
+
 msgid "No good copy here: look on your backup (NAS, disk)."
 msgstr ""
 
@@ -6465,7 +6478,13 @@ msgstr ""
 msgid "Not saved (error {status})."
 msgstr ""
 
+msgid "Not saved: config.toml does not ignore this face."
+msgstr ""
+
 msgid "Not saved: config.toml rules out no name for this face."
+msgstr ""
+
+msgid "Not saved: config.toml still ignores this face."
 msgstr ""
 
 #, python-brace-format
@@ -6485,6 +6504,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Not sent (error {status})."
+msgstr ""
+
+msgid "Not someone to name — ignore this face"
 msgstr ""
 
 msgid "Not the folder you want to keep?"
@@ -7395,6 +7417,15 @@ msgstr ""
 msgid "PATH"
 msgstr ""
 
+msgid "PATTERN"
+msgstr ""
+
+msgid "PERIOD"
+msgstr ""
+
+msgid "PORT"
+msgstr ""
+
 msgid "Page not found"
 msgstr ""
 
@@ -7618,14 +7649,23 @@ msgstr ""
 msgid "Photos with a shooting date"
 msgstr ""
 
+msgid "Pick a drive or folder…"
+msgstr ""
+
 #, python-brace-format
 msgid "Pick all {total} files found"
+msgstr ""
+
+msgid "Pick in my folders…"
 msgstr ""
 
 msgid "Pick none"
 msgstr ""
 
 msgid "Pick one photo, not a video, to make it the cover."
+msgstr ""
+
+msgid "Pick the folder in the tree of your folders, as the library shows it."
 msgstr ""
 
 msgid ""
@@ -7979,6 +8019,9 @@ msgid "RAW file cannot be decoded"
 msgstr ""
 
 msgid "READ-ME - managed by Media Hygiene.txt"
+msgstr ""
+
+msgid "RUN"
 msgstr ""
 
 msgid "Radius, in metres"
@@ -8694,7 +8737,16 @@ msgstr ""
 msgid "Runs you can still undo: {runs}."
 msgstr ""
 
+msgid "SECONDS"
+msgstr ""
+
 msgid "SHA-256"
+msgstr ""
+
+msgid "STARS"
+msgstr ""
+
+msgid "STEP"
 msgstr ""
 
 msgid "Same Wi-Fi, open:"
@@ -8794,6 +8846,19 @@ msgstr ""
 
 #, python-brace-format
 msgid "Saved in config.toml, read back: nobody is named {name}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Saved in config.toml, read back: this face is ignored, never offered "
+"again ({count} face ignored)."
+msgid_plural ""
+"Saved in config.toml, read back: this face is ignored, never offered "
+"again ({count} faces ignored)."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Saved in config.toml, read back: this face is no longer ignored."
 msgstr ""
 
 #, python-brace-format
@@ -10639,6 +10704,9 @@ msgstr ""
 msgid "The journal is not mounted."
 msgstr ""
 
+msgid "The journals or the quarantine could not be read."
+msgstr ""
+
 msgid ""
 "The kept version lies in a protected folder: it is never moved, W is not "
 "possible."
@@ -10771,6 +10839,11 @@ msgid ""
 msgstr ""
 
 msgid "The most recent backup, the index in place backed up first."
+msgstr ""
+
+msgid ""
+"The mounted folders of your photos: pick one, then name the new folder "
+"after it."
 msgstr ""
 
 #, python-brace-format
@@ -11628,6 +11701,10 @@ msgstr ""
 msgid "They stay where they are"
 msgstr ""
 
+#, python-brace-format
+msgid "This browser cannot play this video ({format}): here is its frame."
+msgstr ""
+
 msgid "This browser cannot play this video: open the original."
 msgstr ""
 
@@ -12473,6 +12550,9 @@ msgstr ""
 msgid "Videos with a date in their tags"
 msgstr ""
 
+msgid "WORDS"
+msgstr ""
+
 msgid "Waiting in the quarantine"
 msgstr ""
 
@@ -12943,6 +13023,9 @@ msgid ""
 msgstr ""
 
 msgid "Wrong name"
+msgstr ""
+
+msgid "YEAR"
 msgstr ""
 
 msgid "Year"
@@ -14171,6 +14254,9 @@ msgstr ""
 msgid "largest sharpness gap first"
 msgstr ""
 
+msgid "latest|MONTH|FOLDER"
+msgstr ""
+
 msgid "launcher script mh ps1 write again"
 msgstr ""
 
@@ -14594,6 +14680,9 @@ msgstr ""
 msgid "no shot kept from its series is left"
 msgstr ""
 
+msgid "no town of this name is known: a typo?"
+msgstr ""
+
 #, python-brace-format
 msgid "nobody is named {name}"
 msgstr ""
@@ -15000,6 +15089,16 @@ msgstr ""
 
 msgid "see the slideshow chapter."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"see the {count} photo lying on its side shown turned: Photos to "
+"straighten, on the home page."
+msgid_plural ""
+"see the {count} photos lying on their side shown turned: Photos to "
+"straighten, on the home page."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "seen by the model"
 msgstr ""
@@ -15954,6 +16053,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} copies to set aside"
 msgstr ""
+
+#, python-brace-format
+msgid "{count} copy set aside"
+msgid_plural "{count} copies set aside"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} damaged files"
@@ -17678,6 +17783,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} face ignored: show it"
+msgid_plural "{n} faces ignored: show them"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} face in both is kept once."
 msgid_plural "{n} faces in both are kept once."
 msgstr[0] ""
@@ -18765,6 +18876,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "→ {folder}"
+msgstr ""
+
+msgid "↩ Not ignored any more"
 msgstr ""
 
 msgid "↩️ Put them back: mh undo"

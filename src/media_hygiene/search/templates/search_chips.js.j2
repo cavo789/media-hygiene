@@ -68,13 +68,17 @@ function chipOf(filter) {
   return chip;
 }
 
+// A new set replaces the old one on the line AND in `+N` (0820): the folded chips of the
+// last search would otherwise come back on the line at the next fold, and pile up.
 function showChips(body) {
+  chipsFolded.replaceChildren();
   chipsLine.replaceChildren(...activeFilters(body).map(chipOf));
   chipsFolded.hidden = true;
   foldChips();
 }
 
-// Measured again each time the line changes width (the count, the set aside line, the window).
+// Measured again each time the line changes width (the count, the set aside line, the window):
+// the chips folded are those of the set drawn, put back on the line to be measured again.
 function foldChips() {
   chipsLine.append(...chipsFolded.children);
   chipsMore.hidden = true;

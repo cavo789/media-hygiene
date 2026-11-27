@@ -19,14 +19,12 @@ _SOURCES: Final = Path(__file__).parents[2] / "src" / "media_hygiene"
 _NATIVE: Final = re.compile(r"\b(?:window\.)?(?:confirm|alert|prompt)\(")
 # Every former native box (0663): the shared ask dialog, and why nothing takes it back.
 _ASKED: Final = {
-    "places/templates/places_map.js.j2": 1,  # photos given to a place
     "places/templates/places_edit.js.j2": 1,  # a place with hand-placed photos deleted
     "review/templates/phone_review.js.j2": 2,  # phone files deleted; one not kept
     "search/templates/events_rule.js.j2": 1,  # rules removed from config.toml
     "search/templates/events_choice.js.j2": 1,  # leaving with an unsaved folder: save?
     "review/templates/quarantine_purge.js.j2": 1,  # a purge: nothing brings it back
     "review/templates/shrink.js.j2": 1,  # hours of encoding start (0586's one question)
-    "share/templates/album.js.j2": 1,  # albums deleted (a photo out: Undo toast, 0696)
     "share/templates/album_edit.js.j2": 1,  # all taken out: the album removed
     "review/templates/home.js.j2": 1,  # every paired device forgotten (0683)
 }
@@ -57,7 +55,7 @@ def test_every_question_is_the_shared_dialog() -> None:
 
 @pytest.mark.parametrize(
     "template",
-    ["quarantine.html.j2", "phone_review.html.j2", "album.html.j2",
+    ["quarantine.html.j2", "phone_review.html.j2",
      "places.html.j2", "search.html.j2", "shrink.html.j2", "album_edit.html.j2"],
 )  # fmt: skip
 def test_the_pages_that_ask_carry_the_dialog_once(template: str) -> None:

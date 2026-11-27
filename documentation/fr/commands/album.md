@@ -82,7 +82,7 @@ Avec une télé appairée, chaque carte de la page des albums porte un **📺** 
 sur la télé et ouvre sa télécommande dans un nouvel onglet ; sans télé appairée, pas de bouton.
 
 La ligne **📁 Dossier des albums** de la page des albums dit le dossier relu dans `config.toml` ;
-**Changer** le règle. La question n'est posée que si aucun dossier n'est connu. Le dossier doit
+**Changer** le règle : choisissez un disque (ou un dossier monté) dans la liste, ce qui commence le chemin avec `_Albums` à la suite, puis tapez un autre nom pour créer un nouveau dossier. **📂 Choisir dans mes dossiers…** ouvre dans une fenêtre le même arbre des dossiers que la photothèque : un clic sur un dossier l'enregistre, relu dans `config.toml` et affiché (le champ à taper reste le chemin rapide). La question n'est posée que si aucun dossier n'est connu. Le dossier doit
 être sur le même disque et dans le même `-v` que les photos, hors des dossiers protégés ; exFAT
 refuse les liens physiques. Les dossiers créés dans l'ancien dossier (ou dans `Albums`, le défaut
 avant `_Albums`) reçoivent **Déplacer les N dossiers d'album créés dans …** : chaque album est

@@ -125,7 +125,7 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
   **+N**, a click lists them under the bar), **Sort by**, the thumbnail size **S** (photos only), **M**,
-  **L** (every word), **XL**, and **◀ Hide the panel** (the whole width for the photos), kept for
+  **L** (every word), **XL**, and **◀** (the handle on the left panel's edge) (the whole width for the photos), kept for
   this browser — the same switch on every page of photos (`person`, `people`, the reviews, the
   phone, the quarantine); below, what to do with the files picked — greyed
   while none is: four menus in the same order on every page of tiles, **📂 Move ▾** (filled: the
@@ -179,6 +179,7 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   Details › Date taken**, or as the *Date taken* column (right-click the column headers). A file
   that does not say it (a scan, a screenshot) reads *no date taken*: a search by date does not
   find it.
+- **A video your browser cannot play** (an iPhone HEVC `.MOV` without Edge's HEVC extension): the large view shows the video's frame and says its format, instead of a black box; **Open the original** still works.
 - **The photo's EXIF**: in the large view, **I** lists what the photo says of itself: when it was
   taken, the camera, the lens, the exposure, its size in pixels and its GPS position, with the
   nearest town and its country (*Brussels, Belgium*, found offline: no position leaves your PC). Read only:

@@ -20,6 +20,7 @@ from media_hygiene.report.decisions import read_decisions
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.clean import CleanService
+from media_hygiene.services.import_aside_count import remember_aside, take_aside
 from media_hygiene.services.import_bursts import IMPORT_DECISIONS
 
 if TYPE_CHECKING:
@@ -103,6 +104,7 @@ def tell_aside(runtime: Runtime, new: Collection[Path]) -> None:
         new: The files the import copied.
     """
     aside = set_aside_copies(runtime, new)
+    remember_aside(runtime.locations.reports_dir, aside)
     runtime.output.success(
         ngettext(
             "🧹 {count} copy among the new files set aside.",
@@ -145,7 +147,13 @@ def tell_done(runtime: Runtime, new: Collection[Path]) -> None:
         "✨ All done: {count} new photos and videos in your library",
         len(new),
     ).format(count=len(new))
-    series, shots = reviewed_bursts(runtime.locations.reports_dir / IMPORT_DECISIONS)
+    reports = runtime.locations.reports_dir
+    copies = take_aside(reports)
+    if copies:
+        line = f"{line}, " + ngettext(
+            "{count} copy set aside", "{count} copies set aside", copies
+        ).format(count=copies)
+    series, shots = reviewed_bursts(reports / IMPORT_DECISIONS)
     if series:
         reviewed = ngettext(
             "{series} burst series reviewed",

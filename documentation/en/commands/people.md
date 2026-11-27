@@ -253,7 +253,7 @@ without a `config.toml` of yours, the names only.
    named*, *Someone else* (a face that looks like them but is named another person). The
    status line counts the photos hidden; Ctrl+A and the buttons act on the photos shown only.
    **S M L XL** in the bar sets the size of the photos (XL to tell small children apart: the
-   face that matched grows too), and **◀ Hide the panel** gives the whole width to the grid;
+   face that matched grows too), and **◀** (the handle on the left panel's edge) gives the whole width to the grid;
    both are kept in this browser. When a photo's folder or file name holds the name of a
    person you named (*Avril 2004 - Manon 5 mois*, *Petite Manon.png*; whole words, without case
    or accents), its tile says **📁 Manon**, in red when it names someone else than the face's
@@ -289,8 +289,8 @@ a new audit keeps it), named and searched like the others. A box drawn on a face
 already has adds nothing: the page chooses that face (*This face is already on the photo*). Only
 a box sharing most of a face's frame counts as that face: two people cheek to cheek stay two
 faces. Drawn by mistake, or twice? The **×** of a face drawn forgets it: it leaves the index, and
-its name leaves `config.toml`, read back; a face the audit found has no ×, the next audit would
-find it again. A face even smaller or more blurred
+its name leaves `config.toml`, read back; a face the audit found is not forgotten (the next
+audit would find it again): it is ignored instead, see below. A face even smaller or more blurred
 than the people page shows can be drawn: it is kept for the search, not shown on the people
 page. Too blurred to find anyone (a baby's smooth face has little detail), it is kept all the
 same to be named on that photo: the page opens *This face is… [name]* and says *it counts for
@@ -302,6 +302,14 @@ A person is on a photo once: naming a face *Stéphanie* takes that name off any 
 the same photo (two people of the same name: tell them apart, *Stéphanie 1*, *Stéphanie 2*). The
 **×** of a named face, the name confirmed (✓) or guessed (≈), takes the name off: the face stays,
 to name.
+
+A face nobody is named for (**? not named**), on `/person` or in any large view, has its **×**
+too: *Not someone to name — ignore this face* (a reflection in a window, a poster, a stranger).
+It joins the faces ignored (`/config/people/ignored.toml`, read back and shown): it leaves the
+photo, the people page's groups and the names guessed, and the same face found again by a new
+audit, or on the photo once moved or renamed, stays ignored (it is recognised by its likeness).
+Nothing is silent: the photo says *N faces ignored: show them*, which draws them marked ⊘, and
+**↩** on one takes it back, to name.
 
 ## Photos to straighten
 
@@ -322,6 +330,9 @@ Shift+click, a rectangle, Ctrl+A, I to invert, Enter or a double click for the l
 Photos of a protected folder or of a backup, and any file that is not a JPEG, are never turned
 nor shown. Fast path for a large collection, every photo at once without showing them:
 `mh people --straighten` (one question, the same journal).
+
+When it found photos to straighten, `people` ends on them: its 👉 *What next* line counts them
+and leads to this page.
 
 ## Options
 

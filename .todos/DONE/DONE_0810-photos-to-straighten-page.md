@@ -23,3 +23,13 @@ the refusals by path (`TurnRefusals`), the journaled write and its byte-identica
 - [ ] The page served has `id="applyNow"` once a turn is pending (test).
 - [ ] A refusal on the page leaves the photo out of the next Apply (test).
 - [ ] Docs EN + FR; French strings.
+
+## Status — DONE (2026-11-27)
+
+- The page, its Apply now, refusals, the menu/home entry (*Sort out* › *Go further*), the fast
+  path `people --straighten` and the docs: already done by ee513bf0 (2026-11-14), tests
+  `tests/integration/test_straighten_page.py` (`id="applyNow"`, a refusal left out of Apply,
+  undo byte-identical); only unticked.
+- New here: `people`'s 👉 *What next* line when turns are proposed (and nothing set aside),
+  `suggest_straighten`, its test; docs EN + FR; French strings.
+- `docs_screenshots` should run (people page section, and the console end of `people`).

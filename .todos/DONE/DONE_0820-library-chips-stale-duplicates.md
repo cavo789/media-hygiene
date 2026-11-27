@@ -39,3 +39,7 @@ fits this.
 
 Searching, removing filters and resizing never shows a chip that is not in the left panel's
 current state, and never the same chip twice.
+
+## Status — DONE (2026-11-27)
+
+`showChips` empties the `+N` panel before drawing the new set; unit test on the rendered script (not run in a browser).

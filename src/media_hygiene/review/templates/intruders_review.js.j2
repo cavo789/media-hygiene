@@ -23,6 +23,24 @@
   // A file lies in a folder ticked, or below it (as the server's `is_within`).
   const within = (folder, top) => folder === top || folder.startsWith(/[\\/]$/.test(top) ? top : top + (top.includes("\\") ? "\\" : "/"));
   let files = [];
+  // The ticks kept in the URL (0796, as 0666): `x` extensions, `f` folders (told apart by `|`, which no
+  // path holds on Windows), `m` the mode; a reload or a link brings the same ticks back.
+  const SEPARATOR = "|";
+  let restored = false;
+  const keepView = (extensions, folders, but) => {
+    if (restored) window.mhView.set({ x: extensions.join(SEPARATOR), f: folders.join(SEPARATOR), m: but ? "but" : null });
+  };
+  const restore = () => {
+    const asked = window.mhView.get({ x: "text", f: "path", m: ["but"] });
+    const ticks = (id, text) => {
+      const wanted = text ? text.split(SEPARATOR) : [];
+      for (const box of byId(id).querySelectorAll("input")) box.checked = wanted.includes(box.value);
+    };
+    ticks("extensions", asked.x);
+    ticks("folders", asked.f);
+    if (asked.m === "but") byId("mode").querySelector("input[value='but']").checked = true;
+    restored = true;
+  };
 
   const setStatus = (text, kind) => {
     byId("status").textContent = text;
@@ -75,6 +93,7 @@
     const extensions = ticked("extensions");
     const folders = ticked("folders");
     const but = byId("mode").querySelector("input:checked").value === "but"; // 0568
+    keepView(extensions, folders, but);
     const byExtension = (file) => extensions.length === 0 || extensions.includes(file.extension) !== but;
     const byFolder = (file) => folders.length === 0 || folders.some((top) => within(file.folder, top));
     narrow("folders", (file, key) => file.folder === key && byExtension(file));
@@ -132,6 +151,7 @@
       rows("extensions", state.extensions);
       rows("folders", state.folders);
       showAside(state.set_aside);
+      restore();
       refresh();
     })
     .catch(() => setStatus(T.offline, "error"));

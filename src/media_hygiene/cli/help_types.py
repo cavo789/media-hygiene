@@ -3,8 +3,9 @@
 Since 0.29, Typer prints each option's Python type (`<bool>`, `<list[str]>`) before its
 help; a PowerShell user does not read `list[str]`, and the column wraps the help texts.
 Typer shows an option's `metavar` instead when one is set (`display_type_rich`), so
-every option without one gets a translated word here: nothing for a flag, `TEXT`,
-`NUMBER`, `PATH` or the choices for a value. An argument's metavar is its name, so it
+every option without one gets a translated word here: nothing for a flag, the choices
+for a value that has some, the word of `metavars` (`FOLDER`, `PORT`...), else `TEXT`,
+`NUMBER` or `PATH`. An argument's metavar is its name, so it
 becomes a `PlainArgument` instead, whose type column uses the same words.
 """
 
@@ -15,6 +16,7 @@ from typing import TYPE_CHECKING, Any, get_args, override
 from typer._click import Command
 from typer.core import TyperArgument, TyperOption
 
+from media_hygiene.cli.metavars import argument_words, option_words
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -55,6 +57,22 @@ def value_word(descriptor: TypeDescriptor) -> str:
     return _("TEXT")
 
 
+def option_word(option: TyperOption, words: dict[str, str]) -> str:
+    """Name what an option's value is: its own word (0818), else the generic one.
+
+    Args:
+        option: An option taking a value.
+        words: The word of each option, by long name (`metavars.option_words`).
+
+    Returns:
+        `FOLDER`, `PORT`...; the choices of an option that has them; else `value_word`.
+    """
+    generic = value_word(option.type_descriptor)
+    if option.type_descriptor.choices:
+        return generic
+    return next((words[name] for name in option.opts if name in words), generic)
+
+
 class PlainArgument(TyperArgument):
     """A Typer argument whose type column reads a plain word."""
 
@@ -66,9 +84,12 @@ class PlainArgument(TyperArgument):
             ctx: Context of the command.
 
         Returns:
-            The word, as `value_word` gives it.
+            Its own word (`FOLDER`, `RUN`...); its choices or `value_word` otherwise.
         """
-        return value_word(self.type_descriptor)
+        generic = value_word(self.type_descriptor)
+        if self.type_descriptor.choices:
+            return generic
+        return argument_words().get(self.name or "", generic)
 
 
 def name_values(params: list[Parameter]) -> list[Parameter]:
@@ -80,9 +101,10 @@ def name_values(params: list[Parameter]) -> list[Parameter]:
     Returns:
         The same parameters.
     """
+    words = option_words()
     for param in params:
         if isinstance(param, TyperOption) and param.metavar is None:
-            param.metavar = "" if param.is_flag else value_word(param.type_descriptor)
+            param.metavar = "" if param.is_flag else option_word(param, words)
         elif isinstance(param, TyperArgument) and not isinstance(param, PlainArgument):
             param.__class__ = PlainArgument
     return params

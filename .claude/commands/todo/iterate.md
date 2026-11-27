@@ -61,10 +61,11 @@ or locked.
 Lots run **one after the other** (they share the working tree), each delegated to a
 `general-purpose` subagent, in the foreground (the next lot depends on its commit).
 
-**Model per lot** (the `model` parameter): run `python3 .claude/scripts/todo_model.py NNNN` on
-each TODO of the lot (when the project has it); `sonnet` only when every TODO of the lot says
+**Model per lot** (the `model` parameter): run `python3 .claude/scripts/todo_model.py NNNN NNNN …`
+once with every TODO of the lot (when the project has it: one line each, `<id> <model>: <reason>`);
+`sonnet` only when every TODO of the lot says
 `sonnet`, else `opus`. The script's rules: `opus` for anything touching the user's files or what
-protects them, caches, concurrency, an open question, a past mistake, many source files, and in
+protects them (the project's globs in `.config/todo_model_risky_paths.txt`, plus generic defaults), caches, concurrency, an open question, a past mistake, many source files, and in
 doubt; `sonnet` for text only (docs, translations, backlog) or small Low work. Without the
 script, the same rules by hand. Say the choice and its reason in the progress line.
 

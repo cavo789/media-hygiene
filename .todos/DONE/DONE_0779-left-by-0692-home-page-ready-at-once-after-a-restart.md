@@ -26,3 +26,15 @@ Split from section 0692 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
 - Part of this needs the maintainer (see *Needs maintainer*): do the code part, leave the rest said in the report, never guess it.
+
+## Status — DONE (2026-11-27)
+
+- Page drawn at once at a second start: already done by 0692 (last state in `localStorage`,
+  `home.js.j2` `STATE_KEY`); measured by the maintainer 3.7-4 s for the whole restart of `mh`
+  (container start included, was ~30 s).
+- Equivalence: already done (`test_card_is_the_same_cached_or_not`), one test per invalidation
+  event in `tests/unit/test_safety_cache.py`.
+- Route failure: the card already said a failed answer (`safetyFailed`); new here, the route
+  answers a 503 with its message when a journal or the quarantine cannot be read (was an
+  unhandled `OSError`), `test_the_route_says_when_the_card_fails`.
+- One new string, translated; no capture changes, no docs to update.

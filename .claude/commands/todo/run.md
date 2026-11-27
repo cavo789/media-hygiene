@@ -161,8 +161,8 @@ When the project has `.claude/scripts/todo_model.py`, each TODO is implemented b
 (Agent tool, `general-purpose`, foreground: the next TODO may depend on it), never in the main
 session: the main session keeps only its short report, so a run of several TODOs stays cheap.
 
-- The model: the `--model` given, else the first word of
-  `python3 .claude/scripts/todo_model.py NNNN` (`sonnet` for text-only or small Low work,
+- The model: the `--model` given, else the second word of
+  `python3 .claude/scripts/todo_model.py NNNN` (`<id> <model>: <reason>`) (`sonnet` for text-only or small Low work,
   `opus` for anything touching the user's files, caches, concurrency, open questions — and in
   doubt). Say it in one line before starting: `0450 → sonnet (text only)`.
 - The subagent's prompt gives it everything, as it starts cold: the TODO ID, "follow
@@ -216,6 +216,11 @@ Then apply exactly one of the following outcomes:
 - Rename: `.todos/NNN-name.md` → `.todos/DONE/DONE_NNN-name.md`
 - Do **not** modify the file content.
 - Run: `git mv .todos/NNN-name.md .todos/DONE/DONE_NNN-name.md`
+- **Revives**: when its header carries `- **Revives**: MMMM`, the remainder of that
+  `PARTIAL_`/`BLOCKED_` file is now done too: append to it
+  `## Status — DONE (YYYY-MM-DD)` with one line, "remainder completed by NNN", and
+  `git mv` it to `.todos/DONE/DONE_MMMM-name.md` (prefix replaced). Only on DONE: a PARTIAL
+  revival leaves the revived file where it is.
 
 ### Partially handled → rename with `PARTIAL_` prefix and update content
 

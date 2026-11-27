@@ -80,7 +80,7 @@ With a paired TV, each card of the albums page has a **📺**: one click starts 
 and opens its remote in a new tab; no TV paired, no button.
 
 The **📁 Albums folder** line of the albums page says the folder as read back from
-`config.toml`; **Change** sets it. It asks where the albums go only when no folder is known. The
+`config.toml`; **Change** sets it: pick a drive (or mounted folder) in the list, which starts the path with `_Albums` after it, then type another name to make a new folder. **📂 Pick in my folders…** opens the same tree of folders as the library in a window: a click on a folder saves it, read back from `config.toml` and shown (the typed field stays the fast path). It asks where the albums go only when no folder is known. The
 folder must be on the same disk and in the same `-v` as the photos, outside the protected folders;
 exFAT refuses hard links. Folders made in the old folder (or in `Albums`, the default before
 `_Albums`) are offered **Move the N album folders made in …**: each album is made again in the

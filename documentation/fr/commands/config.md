@@ -114,6 +114,7 @@ mh config tidy --apply   # retirer les entrées cochées
 | `[[classify.rules]]` `match = "date_range"` | aucune photo indexée n'a été prise à ces dates : montrée **non cochée** (une règle écrite avant un import) ; `--dates` la coche aussi |
 | `[[classify.rules]]` `match = "path"` (dépassée) | tous les fichiers qu'elle trouve sont déjà dans un dossier que vous avez nommé (`2017\2017-04\Bruges`) : `sort` les en sortirait. Montrée **non cochée** (une règle peut renommer un dossier exprès) ; `--superseded` la coche aussi |
 | `[[classify.clocks]]` | aucune photo de cet appareil à ces dates |
+| `[classify.town_names]` | le nom de ville de gauche est inconnu des villes hors ligne (une faute de frappe : `Bruge = "Bruges"`), le renommage ne s'applique donc jamais |
 
 Un dossier sur un lecteur non monté (une clé USB) n'est **pas jugé**, et c'est dit. Un index
 vide ne juge aucune règle : lancez d'abord `audit` sur tous vos dossiers. Une règle `path` dont

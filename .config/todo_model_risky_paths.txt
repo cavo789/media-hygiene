@@ -1,0 +1,9 @@
+# Paths whose change can lose or expose the user's photos, or break what protects them.
+# Read by .claude/scripts/todo_model.py: a TODO whose `Files:` bullet matches one is opus work.
+# One glob per line (fnmatch, matched against the path and its file name); `#` starts a comment.
+# Generic defaults are added by the script (Dockerfile*, *compose*.y*ml, .devcontainer/*, ...).
+src/media_hygiene/actions/*
+src/media_hygiene/index/*
+src/media_hygiene/scan/*
+src/media_hygiene/paths/*
+src/media_hygiene/cli/templates/mh*

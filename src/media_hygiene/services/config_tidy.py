@@ -7,6 +7,7 @@ removed is what the disk proves gone.
 
 from __future__ import annotations
 
+import dataclasses
 import shutil
 import sqlite3
 import tomllib
@@ -21,6 +22,7 @@ from media_hygiene.config.tidy_rules import LibraryFacts
 from media_hygiene.config.tidy_write import check_removed, without_entries
 from media_hygiene.errors import MountError
 from media_hygiene.file_history import replace_text
+from media_hygiene.geo.gazetteer import Gazetteer
 from media_hygiene.i18n import _
 from media_hygiene.index.listing import indexed_files
 from media_hygiene.index.read_only import connect_read_only
@@ -62,7 +64,11 @@ def stale_entries(runtime: Runtime) -> TidyFindings:
     if not config_file.is_file():
         return TidyFindings((), ())
     document = tomllib.loads(read_user_text(config_file))
-    return find_stale(document, library_facts(runtime), lambda p: _exists(runtime, p))
+    facts = library_facts(runtime)
+    if runtime.settings.classify.town_names:
+        known = frozenset(Gazetteer.load().geonames)
+        facts = dataclasses.replace(facts, towns=known)
+    return find_stale(document, facts, lambda p: _exists(runtime, p))
 
 
 def library_facts(runtime: Runtime) -> LibraryFacts:

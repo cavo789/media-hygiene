@@ -41,7 +41,7 @@ un clic ouvre n'importe quel autre espace.
 
 Depuis la page, sur le PC (un téléphone regarde seulement : les albums changent sur le PC), vous pouvez :
 
-- **🗑 Supprimer** les albums cochés dans la liste : la page demande une fois, puis seul
+- **🗑 Supprimer** les albums cochés dans la liste : sans question, seul
   `albums.json` change, vos photos restent où elles sont ; **↩ Annuler** dans le message les remet
   (la dernière suppression est gardée à côté du fichier des albums, dans `albums-deleted.json`, pendant 30 jours) ;
 - **✏️ Renommer** un album : un nom qu'a déjà un autre album (quelles que soient ses majuscules)

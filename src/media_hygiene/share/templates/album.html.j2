@@ -18,16 +18,15 @@
   "missing": [ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 1), ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 2)],
   "undated": _("Without a date"),
   "unplayable": _("This video does not play on a phone as it is ({format})."),
+  "playFailed": _("This browser cannot play this video ({format}): here is its frame."),
   "offline": _("Media Hygiene does not answer: the albums show while mh runs on the PC, on the home Wi-Fi."),
   "failed": _("The albums cannot be read (error {status})."),
   "out": _("Take out of the album"),
-  "deleteYes": _("Delete"),
   "addTo": _("Add to an album"),
   "cover": _("Use as cover"),
   "newAlbum": _("New album…"),
   "of": _("{at} of {total}"),
   "delete": _("Delete"),
-  "deleteAsk": [ngettext("Delete {n} album? Your photos stay where they are: only the albums file changes.", "Delete {n} albums? Your photos stay where they are: only the albums file changes.", 1), ngettext("Delete {n} album? Your photos stay where they are: only the albums file changes.", "Delete {n} albums? Your photos stay where they are: only the albums file changes.", 2)],
   "rename": _("Rename"),
   "onTv": _("Show this album on the TV"),
   "renameAsk": _("The new name of {name}:"),
@@ -154,7 +153,6 @@
     <button type="button" id="sheetClose" aria-label="{{ _('Close') }}">✕</button>
   </form>
 </div>
-{% include "ask_dialog.html.j2" %}
 {% include "busy_say.html.j2" %}
 <p class="toast" id="toast" role="status" hidden></p>
 <script nonce="{{ page_nonce }}">

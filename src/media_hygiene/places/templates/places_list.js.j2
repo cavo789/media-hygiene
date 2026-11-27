@@ -86,9 +86,14 @@
       line.title = folder.folder; line.dataset.drawer = `folder:${folder.folder}`; line.classList.add("folder");
     }
   }
-  byId("folderFilter").addEventListener("input", drawFolders);
+  // The two typed filters are kept in the URL (0796, as 0666): `q` the folders', `t` the tree's.
+  const keptFilter = window.mhView.get({ q: "text", t: "text" });
+  byId("folderFilter").value = keptFilter.q || "";
+  byId("treeFilter").value = keptFilter.t || "";
+  const keepFilters = () => window.mhView.set({ q: byId("folderFilter").value.trim(), t: byId("treeFilter").value.trim() });
+  byId("folderFilter").addEventListener("input", () => { keepFilters(); drawFolders(); });
   byId("folderFilter").addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && byId("folderFilter").value) { event.stopPropagation(); byId("folderFilter").value = ""; drawFolders(); }
+    if (event.key === "Escape" && byId("folderFilter").value) { event.stopPropagation(); byId("folderFilter").value = ""; keepFilters(); drawFolders(); }
   });
   // Every place the photos were taken on screen (0339): the clusters, the places, the folders
   // placed by hand, beside the drawer; a point at exactly 0, 0 (a camera writing an empty GPS
@@ -282,9 +287,9 @@
                  pictures: node.count - node.videos, videos: node.videos, folder, actions,
                  title: `${node.name} — ${treeFiles(node)}`, note: T.treeHint });
   }
-  byId("treeFilter").addEventListener("input", drawTree);
+  byId("treeFilter").addEventListener("input", () => { keepFilters(); drawTree(); });
   byId("treeFilter").addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && byId("treeFilter").value) { event.stopPropagation(); byId("treeFilter").value = ""; drawTree(); }
+    if (event.key === "Escape" && byId("treeFilter").value) { event.stopPropagation(); byId("treeFilter").value = ""; keepFilters(); drawTree(); }
   });
 
   function draw() {

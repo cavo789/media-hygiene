@@ -5,9 +5,12 @@
   <button id="albumRootChange" type="button">{{ _("Change") }}</button>
   <button id="albumRootMove" type="button" hidden></button></p>
 <form id="albumRootForm" class="pc-only" hidden>
+  <select id="albumRootMount" aria-label="{{ _('Drive or mounted folder') }}" title="{{ _('The mounted folders of your photos: pick one, then name the new folder after it.') }}" hidden></select>
   <input id="albumRootField" aria-label="{{ _('Where should your albums go?') }}" title="{{ _('On the disk of your photos, in the same mounted folder (-v). exFAT refuses hard links.') }}" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\_Albums') }}">
+  <button id="albumRootTree" type="button" title="{{ _('Pick the folder in the tree of your folders, as the library shows it.') }}">📂 {{ _("Pick in my folders…") }}</button>
   <button type="submit">{{ _("Save") }}</button>
 </form>
+{% include "folder_chooser.html.j2" %}
 <script nonce="{{ page_nonce }}">
 (() => {
   if (document.documentElement.hasAttribute("data-phone")) return;
@@ -18,6 +21,8 @@
     "notSaved": _("Nothing was saved: {error}"),
     "move": [ngettext("Move the {n} album folder made in {folder}", "Move the {n} album folders made in {folder}", 1), ngettext("Move the {n} album folder made in {folder}", "Move the {n} album folders made in {folder}", 2)],
     "moving": _("Moving…"),
+    "pick": _("Pick a drive or folder…"),
+    "treeTitle": _("Where should your albums go?"),
   } | tojson }};
   const $ = (id) => document.getElementById(id);
   let moveFrom = "";
@@ -32,6 +37,19 @@
     $("albumRootMove").textContent = moveFrom ? fill(TEXTS.move[many], { n: state.movable, folder: state.old }) : "";
     $("albumRootMove").hidden = !moveFrom;
   };
+  // The drives (the mounted folders) to pick from; a pick starts the path, and the field is typed on
+  // to name a new folder after it (0797).
+  const fillMounts = (mounts) => {
+    const list = $("albumRootMount");
+    list.hidden = !mounts.length;
+    list.replaceChildren(new Option(TEXTS.pick, ""), ...mounts.map((mount) => new Option(mount, mount)));
+  };
+  $("albumRootMount").addEventListener("change", () => {
+    const base = $("albumRootMount").value;
+    if (!base) return;
+    $("albumRootField").value = base + (base.includes("\\") ? "\\" : "/") + "_Albums";
+    $("albumRootField").focus();
+  });
   const post = async (url, body) => {
     const answer = await fetch(url, {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
@@ -47,6 +65,13 @@
     if (ok) { $("albumRootMove").hidden = true; moveFrom = ""; $("albumRootSaid").textContent = state.said; }
     else $("albumRootSaid").textContent = fill(TEXTS.notSaved, { error: state.error || "" });
   });
+  // The library's folders tree in a dialog (0824): a click on a folder saves it, read back and shown.
+  $("albumRootTree").addEventListener("click", async () => {
+    const folder = await window.mhPickFolder({ url: {{ paths.album_root_folders | tojson }}, title: TEXTS.treeTitle });
+    if (!folder) return;
+    $("albumRootField").value = folder;
+    $("albumRootForm").requestSubmit();
+  });
   $("albumRootChange").addEventListener("click", () => { $("albumRootForm").hidden = !$("albumRootForm").hidden; });
   $("albumRootForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -54,6 +79,6 @@
     if (ok) show(state, state.said);
     else $("albumRootSaid").textContent = fill(TEXTS.notSaved, { error: state.error || "" });
   });
-  fetch(PATH).then((answer) => answer.json()).then((state) => show(state)).catch(() => { /* the page says it */ });
+  fetch(PATH).then((answer) => answer.json()).then((state) => { fillMounts(state.mounts || []); show(state); }).catch(() => { /* the page says it */ });
 })();
 </script>

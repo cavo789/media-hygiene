@@ -1,7 +1,7 @@
 ---
 description: Capture a new task into the .todos/ backlog as one well-formed NNNN-slug.md file
 argument-hint: <short task description>
-allowed-tools: Bash(ls*), Bash(find*), Bash(.claude/scripts/todo_next_id.sh*), Read, Write
+allowed-tools: Bash(ls*), Bash(find*), Bash(.claude/scripts/todo_next_id.sh*), Bash(.claude/scripts/todo_known_ids.sh*), Read, Write
 ---
 
 # Add a TODO to the backlog
@@ -23,18 +23,32 @@ as a valid `Depends` value).
    - Use `.todos/` at the repository root. If it doesn't exist, create it.
 
 3. **Dedupe (cheap guard).**
-   - List existing `.todos/*.md` and read their Titles (first `# ` heading).
+   - Run `.claude/scripts/todo_known_ids.sh .todos` (`ID<TAB>STATUS<TAB>title` for every
+     TODO, status subfolders included) and read the titles — never list files by hand.
    - If the new task clearly duplicates an existing entry, STOP and tell the user
      which file already covers it — don't create a second one.
 
-4. **Compute the next ID.**
+   - Related to a `PARTIAL`/`BLOCKED` entry whose remainder this task is: add
+     `- **Revives**: <ID>` to the header (step 6).
+
+4. **Risk scan (one question at most).** Before writing, look for a hidden load-bearing
+   assumption in the task. Most tasks have none: then ask nothing. Otherwise ask **one**
+   question, for the first line that applies:
+   - a resource several people or systems use — is it shared, or owned by one?
+   - an environment-specific value (a URL, a path, a credential) confirmed only where this
+     conversation runs — is it the same elsewhere?
+   - an external dependency that may be unreachable elsewhere (a network service, a tool
+     installed here only).
+   Fold the answer into Context.
+
+5. **Compute the next ID.**
    - Run `.claude/scripts/todo_next_id.sh .todos` — it scans every `.todos/*.md`
      file (including status subfolders and any numeric-prefixed name like
      `000_...`) and prints `max + 1`, zero-padded to 4 digits (`NNNN`). Never
      compute this by hand, and never reuse an existing ID. (Legacy 3-digit IDs
      from before this width change stay as they are — never rename them.)
 
-5. **Write `.todos/NNNN-<slug>.md`** with the skeleton below. The filename is an
+6. **Write `.todos/NNNN-<slug>.md`** with the skeleton below. The filename is an
    **identity**: never encode priority, status, or batch in it.
 
    ```markdown
@@ -58,6 +72,6 @@ as a valid `Depends` value).
    `Priority` / `Batch` / `Depends` / `Files` at their defaults for the user to
    adjust — these header bullets are what `/todo:plan` parses.
 
-6. **Report and hand off.**
-   - Print the created path and the Title. Do not run nor offer `/todo:plan`:
-     the user regenerates the plan when they choose.
+7. **Report and hand off.**
+   - Print the created path and the Title, then remind the user to run `/todo:plan` to
+     queue it. Never run it yourself.

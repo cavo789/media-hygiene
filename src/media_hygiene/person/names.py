@@ -22,6 +22,7 @@ from media_hygiene.people.naming import How, face_id, id_of, name_all
 from media_hygiene.people.people_memo import PeopleMemo
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
+from media_hygiene.person.ignore_face import ignored_tag, ignoring
 from media_hygiene.person.name_save import save_changes
 from media_hygiene.person.unguess import unname
 from media_hygiene.services.kept_state import KeptState
@@ -52,8 +53,8 @@ class NameAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["name", "move", "reject", "unname"]  # unname: no guess
-    name: str = Field(min_length=1, max_length=_NAME_LENGTH)
+    action: Literal["name", "move", "reject", "unname", "ignore", "unignore"]
+    name: str = Field(default="", max_length=_NAME_LENGTH)  # none to ignore (0843)
     faces: tuple[int, ...] = Field(min_length=1)
     source: str = Field(default="", max_length=_NAME_LENGTH)  # "move": shown under
     also: tuple[NameGroup, ...] = ()  # "move": more names, saved in the same write
@@ -108,6 +109,8 @@ class FaceNames:
         ids = tuple(self._ids(asked.faces))
         if (said := self._refused(ids)) or self.config_file is None:
             return {"error": said}
+        if asked.action in {"ignore", "unignore"}:
+            return ignoring(self, asked.action, ids)
         if asked.action == "unname":
             return unname(self, asked.faces[0])
         naming = Naming(asked.name.strip(), ids)
@@ -158,9 +161,12 @@ class FaceNames:
         known = self.known()
         names = name_all(tuple(stored.values()), known)
         tags: dict[int, dict[str, object]] = {}
+        own = frozenset(self.settings().ignored)
         for (key, face), named in zip(stored.items(), names, strict=True):
             ruled_out = sorted(known.rejected.get(id_of(face), frozenset()))
-            if named.how in _NAMED or ruled_out:
+            if (tag := ignored_tag(face, named, own)) is not None:
+                tags[key] = tag
+            elif named.how in _NAMED or ruled_out:
                 name = named.name if named.how in _NAMED else ""
                 tags[key] = {"name": name, "how": str(named.how), "not": ruled_out}
         return tags

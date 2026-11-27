@@ -90,6 +90,19 @@ function toggle(id) {
   $(id).hidden = !$(id).hidden;
 }
 
+// A video this browser cannot decode (HEVC without its extension): its frame instead of a black
+// box, the format said (0786). Wired once, here: every page of tiles gets it.
+$("movie").addEventListener("error", () => {
+  const file = files[current];
+  if (!file || !file.video || !$("movie").getAttribute("src")) return;
+  const format = (file.original.split("?")[0].split(".").pop() || "?").toUpperCase();
+  $("movie").hidden = true;
+  $("large").hidden = false;
+  $("large").src = file.preview;
+  $("movieSaid").textContent = $("movie").dataset.noplay.replace("{format}", format);
+  $("movieSaid").hidden = false;
+});
+
 function open() {
   const file = files[current];
   if (!file) return;
@@ -97,6 +110,7 @@ function open() {
   const large = $("large");
   movie.hidden = !file.video;
   large.hidden = Boolean(file.video);
+  $("movieSaid").hidden = true;
   if (file.video) { sharpWanted = null; movie.src = file.video; } else { movie.removeAttribute("src"); showPicture(file); }
   large.alt = file.name;
   $("viewerName").replaceChildren(...named(file));

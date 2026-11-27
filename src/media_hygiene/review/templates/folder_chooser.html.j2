@@ -1,0 +1,53 @@
+{# The folders tree as a chooser (0824): `window.mhPickFolder({ url, title })` opens a dialog with the
+   library's own tree (`folder_tree.js.j2`, `folder_tree.css.j2`, the data of `GET /api/folders`) and
+   resolves with the host path of the folder clicked, or null (Esc, Cancel, a click outside). One
+   component for the library and every page that asks for a folder; the tree's names stay inside this
+   script, so a page may also draw its own. The caller saves what it gets and shows it read back. #}
+<dialog id="mhFolderPick" aria-labelledby="mhFolderPickTitle">
+  <form method="dialog">
+    <h2 id="mhFolderPickTitle"></h2>
+    <p id="mhFolderPickNone" hidden>{{ _("No folder to show yet: the tree comes from the audit. Type the path instead.") }}</p>
+    <div id="tree" aria-label="{{ _('Your folders') }}"></div>
+    <p class="mhFolderPickButtons"><button type="submit" class="plain">{{ _("Cancel") }}</button></p>
+  </form>
+</dialog>
+<style>
+{% include "folder_tree.css.j2" %}
+  #mhFolderPick { width: min(34rem, calc(100vw - 32px)); max-height: 80vh; padding: 18px 20px; border: 1px solid var(--line, #888);
+                  border-radius: 12px; color: var(--ink, inherit); background: var(--card, Canvas); }
+  #mhFolderPick::backdrop { background: rgb(0 0 0 / 45%); }
+  #mhFolderPickTitle { margin: 0 0 8px; font-size: 1.1rem; }
+  #mhFolderPick #tree { max-height: 55vh; overflow: auto; }
+  #mhFolderPick .mhFolderPickButtons { display: flex; justify-content: flex-end; margin: 14px 0 0; }
+</style>
+<script nonce="{{ page_nonce }}">
+(() => {
+  const dialog = document.getElementById("mhFolderPick");
+  const TEXTS = {{ {
+    "counts": _("{photos} photos · {videos} videos · {size}"),
+    "roleOpen": _("Role of this folder"),
+    "roleWhy": {},
+  } | tojson }};
+  const element = (tag, className, text) => {
+    const one = document.createElement(tag);
+    if (className) one.className = className;
+    if (text !== undefined) one.textContent = text;
+    return one;
+  };
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+{% include "folder_tree.js.j2" %}
+  let settle = null;
+  const close = (answer) => { const done = settle; settle = null; if (dialog.open) dialog.close(); if (done) done(answer); };
+  dialog.addEventListener("close", () => close(null));
+  dialog.addEventListener("click", (event) => { if (event.target === dialog) close(null); });
+  window.mhPickFolder = async ({ url, title }) => {
+    close(null);
+    document.getElementById("mhFolderPickTitle").textContent = title;
+    const answer = await fetch(url).then((reply) => reply.json()).catch(() => ({}));
+    const folders = answer.folders || [];
+    document.getElementById("mhFolderPickNone").hidden = folders.length > 0;
+    document.getElementById("tree").replaceChildren(folderTree(folders, (node) => close(node.path)));
+    return new Promise((resolve) => { settle = resolve; dialog.showModal(); });
+  };
+})();
+</script>

@@ -266,3 +266,29 @@ def test_superseded_rules_removed_with_the_option(locations: Locations) -> None:
     assert not entry.ticked
     show_tidy(runtime, apply=False, opt_in=frozenset({OptIn.SUPERSEDED}))
     assert "Nothing was written" in output_of(runtime)
+
+
+TOWNS: Final = """
+[classify.town_names]
+Brugge = "Bruges"
+Bruge = "Bruges"
+"""
+
+
+def test_a_town_rename_of_an_unknown_town_is_a_typo() -> None:
+    """A GeoNames name the gazetteer lacks is listed, removed alone, the rest kept."""
+    facts = dataclasses.replace(FACTS, towns=frozenset({"Brugge"}))
+    found = reasons(TOWNS, facts)
+    assert list(found) == ["classify.town_names:Bruge = Bruges"]
+    result = without_entries(TOWNS, list(found.values()))
+    assert tomllib.loads(result)["classify"]["town_names"] == {"Brugge": "Bruges"}
+    assert not reasons(TOWNS)  # no gazetteer read: not judged
+
+
+def test_town_renames_judged_against_the_shipped_gazetteer(
+    locations: Locations,
+) -> None:
+    """The service reads the offline towns only when renames are written."""
+    locations.config_file.write_text(TOWNS.replace("Brugge =", "Paris ="), "utf-8")
+    labels = [entry.label for entry in stale_entries(make_runtime(locations)).stale]
+    assert labels == ["Bruge = Bruges"]

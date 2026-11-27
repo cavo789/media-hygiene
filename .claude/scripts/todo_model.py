@@ -6,34 +6,39 @@ TODO itself, the same way every time, so the choice is cheap, testable and said 
 
 Rules, in order (the first that applies wins):
 1. opus — the TODO touches the user's files or what protects them (a path of its
-   `Files:` bullet matches RISKY_PATHS), names a risky subject in its text (RISKY_WORDS:
-   cache, concurrency, a move, a deletion…), carries an `## Options` section or an open
-   question, reports a past mistake, or lists more than MAX_SRC_FOR_SONNET source files;
+   `Files:` bullet matches DEFAULT_RISKY or a glob of the project's RISKY_FILE), names a
+   risky subject (RISKY_WORDS: cache, concurrency, a move, a deletion…), carries an
+   `## Options` section or an open question, reports a past mistake, or lists more than
+   MAX_SRC_FOR_SONNET source files;
 2. sonnet — every listed file is text only (docs, translations, backlog, templates), or
    the TODO is Priority Low with at most MAX_SRC_FOR_SONNET source files;
 3. opus — in doubt.
 
-Usage: todo_model.py NNNN [todos-dir]
-Output: one line, `<model>: <reason>`; exit 2 when the TODO is not found.
+Usage: todo_model.py NNNN [NNNN ...] [todos-dir]
+Output: one line per ID, `<id> <model>: <reason>`; exit 2 when a TODO is not found.
+RISKY_FILE is read next to the backlog folder (`<todos-dir>/../.config/`): one glob per
+line, `#` comments, matched with fnmatch against each path and its file name.
 """
 
 from __future__ import annotations
 
+import fnmatch
 import re
 import sys
 from pathlib import Path
 
 MAX_SRC_FOR_SONNET = 3
 NOT_FOUND = 2  # the exit code without a TODO
-_WITH_ID = 2  # argv holds the script and the ID
-# Paths whose change can lose or expose the user's photos, or break what protects them.
-RISKY_PATHS = (
-    "src/media_hygiene/actions/",
-    "src/media_hygiene/index/",
-    "src/media_hygiene/scan/",
-    "src/media_hygiene/paths/",
-    "src/media_hygiene/cli/templates/mh",
-    "Dockerfile",
+RISKY_FILE = ".config/todo_model_risky_paths.txt"
+# Globs risky in any project: images, environments, secrets, database migrations.
+DEFAULT_RISKY = (
+    "Dockerfile*",
+    "*compose*.y*ml",
+    ".devcontainer/*",
+    "install*.sh",
+    ".env*",
+    "*migrations/*",
+    "*.sql",
 )
 RISKY_WORDS = re.compile(
     r"\b(cache|concurren\w*|race|lock|journal|undo|quarantin\w*|delet\w*|move[sd]?|"
@@ -71,6 +76,37 @@ def find_todo(number: str, todos: Path) -> Path | None:
     return None
 
 
+def risky_globs(todos: Path) -> tuple[str, ...]:
+    """The risky globs: the generic defaults, then the project's file.
+
+    Args:
+        todos: The backlog folder; the project's file is read next to it.
+
+    Returns:
+        Every glob, defaults first.
+    """
+    path = todos.parent / RISKY_FILE
+    lines = path.read_text(encoding="utf-8").splitlines() if path.is_file() else []
+    own = (line.split("#", 1)[0].strip() for line in lines)
+    return DEFAULT_RISKY + tuple(glob for glob in own if glob)
+
+
+def is_risky(path: str, globs: tuple[str, ...]) -> bool:
+    """Whether a path matches a risky glob, by its whole path or its file name.
+
+    Args:
+        path: A path of the `Files:` bullet.
+        globs: The risky globs.
+
+    Returns:
+        True when one matches.
+    """
+    name = path.rsplit("/", 1)[-1]
+    return any(
+        fnmatch.fnmatch(path, glob) or fnmatch.fnmatch(name, glob) for glob in globs
+    )
+
+
 def listed_files(text: str) -> list[str]:
     """The paths of the `Files:` bullet.
 
@@ -84,19 +120,20 @@ def listed_files(text: str) -> list[str]:
     return PATH_IN_TEXT.findall(found.group(1)) if found else []
 
 
-def _opus_reason(text: str, files: list[str]) -> str | None:
+def _opus_reason(text: str, files: list[str], globs: tuple[str, ...]) -> str | None:
     """Why a TODO needs opus, if it does.
 
     Args:
         text: The TODO's whole file.
         files: The paths of its `Files:` bullet.
+        globs: The risky path globs.
 
     Returns:
         The reason, or None when nothing calls for opus.
     """
     body = FILES.sub("", text)  # the words of the paths are not the subject
     sources = [path for path in files if path.startswith("src/")]
-    risky = [path for path in files if path.startswith(RISKY_PATHS)]
+    risky = [path for path in files if is_risky(path, globs)]
     word = RISKY_WORDS.search(body)
     reasons = (
         (
@@ -111,17 +148,18 @@ def _opus_reason(text: str, files: list[str]) -> str | None:
     return next((why for applies, why in reasons if applies), None)
 
 
-def choose(text: str) -> tuple[str, str]:
+def choose(text: str, globs: tuple[str, ...] = DEFAULT_RISKY) -> tuple[str, str]:
     """Pick the model of a TODO.
 
     Args:
         text: The TODO's whole file.
+        globs: The risky path globs (`risky_globs`).
 
     Returns:
         The model (`sonnet` or `opus`) and why, in a few words.
     """
     files = listed_files(text)
-    if (why := _opus_reason(text, files)) is not None:
+    if (why := _opus_reason(text, files, globs)) is not None:
         return "opus", why
     if files and all(TEXT_ONLY.match(path) for path in files):
         return "sonnet", "text only (docs, translations, backlog)"
@@ -133,25 +171,31 @@ def choose(text: str) -> tuple[str, str]:
 
 
 def main(argv: list[str]) -> int:
-    """Print the model suggested for a TODO.
+    """Print the model suggested for each TODO given.
 
     Args:
-        argv: The command line.
+        argv: The command line: IDs, then the backlog folder (optional).
 
     Returns:
-        0, or 2 when the TODO is not found.
+        0, or 2 when no ID is given or a TODO is not found.
     """
-    if len(argv) < _WITH_ID or not argv[1].isdigit():
+    ids = [arg for arg in argv[1:] if arg.isdigit()]
+    others = [arg for arg in argv[1:] if not arg.isdigit()]
+    if not ids or len(others) > 1:
         sys.stderr.write(__doc__.split("\n\n")[-2] + "\n")
         return NOT_FOUND
-    todos = Path(argv[2]) if len(argv) > _WITH_ID else Path(".todos")
-    path = find_todo(argv[1], todos)
-    if path is None:
-        sys.stderr.write(f"no open TODO {argv[1]} in {todos}\n")
-        return NOT_FOUND
-    model, why = choose(path.read_text(encoding="utf-8"))
-    sys.stdout.write(f"{model}: {why}\n")
-    return 0
+    todos = Path(others[0]) if others else Path(".todos")
+    globs = risky_globs(todos)
+    status = 0
+    for number in ids:
+        path = find_todo(number, todos)
+        if path is None:
+            sys.stderr.write(f"no open TODO {number} in {todos}\n")
+            status = NOT_FOUND
+            continue
+        model, why = choose(path.read_text(encoding="utf-8"), globs)
+        sys.stdout.write(f"{number} {model}: {why}\n")
+    return status
 
 
 if __name__ == "__main__":

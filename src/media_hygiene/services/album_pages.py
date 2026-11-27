@@ -21,7 +21,12 @@ from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.search.album_make_desk import ALBUM_MAKE_PATH, AlbumMakeDesk
 from media_hygiene.search.album_move_desk import ALBUM_MOVE_PATH
-from media_hygiene.search.album_root_desk import ALBUM_ROOT_PATH, album_root_desk
+from media_hygiene.search.album_root_desk import (
+    ALBUM_ROOT_FOLDERS,
+    ALBUM_ROOT_PATH,
+    album_root_desk,
+)
+from media_hygiene.search.album_root_tree import folders_response
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.aside_filter import AsideFilter, Kept
 from media_hygiene.search.folder_role_desk import RoleDesk
@@ -100,13 +105,20 @@ def _folder_door(runtime: Runtime) -> AlbumFolderDoor:
     locations = runtime.locations
     roles = RoleDesk(locations.config_file, runtime.mapper, shown_roots(runtime))
     root = album_root_desk(roles, runtime)
+    tree = partial(
+        folders_response, runtime.index_file, runtime.mapper, shown_roots(runtime)
+    )
     posts = {
         ALBUM_ROOT_PATH: root.answer,
         ALBUM_MAKE_PATH: AlbumMakeDesk(runtime).answer,
     }
     if root.move is not None:
         posts[ALBUM_MOVE_PATH] = root.move.answer
-    return AlbumFolderDoor({ALBUM_ROOT_PATH: root.state}, posts, PHONE_HEADER)
+    return AlbumFolderDoor(
+        {ALBUM_ROOT_PATH: root.state, ALBUM_ROOT_FOLDERS: tree},
+        posts,
+        PHONE_HEADER,
+    )
 
 
 def album_page(
@@ -142,6 +154,7 @@ def album_page(
                 "tv_album": f"{SLIDESHOW_PAGE}{ALBUM_SHOW}",
                 "link": ALBUM_LINK_PATH,  # 🔗 Share by link (0462)
                 "album_root": ALBUM_ROOT_PATH,  # 📁 Albums folder (0625)
+                "album_root_folders": ALBUM_ROOT_FOLDERS,  # its folders tree (0824)
                 "album_make": ALBUM_MAKE_PATH,
             },
             albums_path=ALBUM_CHANGE_PATH,  # 📺 On the TV posts its files there

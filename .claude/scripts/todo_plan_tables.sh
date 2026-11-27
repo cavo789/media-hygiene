@@ -11,7 +11,8 @@ set -euo pipefail
 # Output (markdown):
 #   > Open TODOs: N — Critical: n · High: n · Medium: n · Low: n · Locked: n · Waiting: n
 #   (blank line)
-#   | ID | Title | File |   ← one row per .todos/PARTIAL/PARTIAL_*.md, by ID
+#   | ID | Title | File | Revived by |   ← one row per .todos/PARTIAL/PARTIAL_*.md, by ID;
+#   "Revived by": the open TODOs whose `- **Revives**: <ID>` bullet names it
 
 todos_dir="${1:-.todos}"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,12 +24,14 @@ printf '> Open TODOs: %s — Critical: %s · High: %s · Medium: %s · Low: %s �
     "$(count '^ID: ')" "$(count '^PRIORITY: critical')" "$(count '^PRIORITY: high')" \
     "$(count '^PRIORITY: (medium|\(missing\))')" "$(count '^PRIORITY: low')" \
     "$(count '^LOCKED: .')" "$(count '^NEEDS: .')"
-printf '\n| ID | Title | File |\n|----|-------|------|\n'
+printf '\n| ID | Title | File | Revived by |\n|----|-------|------|------------|\n'
 shopt -s nullglob
 for file in "${todos_dir}"/PARTIAL/PARTIAL_*.md; do
     first_line="$(head -1 "${file}")"
     id="$(sed -E 's/^#[[:space:]]+([^[:space:]]+).*/\1/' <<<"${first_line}")"
     title="$(sed -E 's/^#[[:space:]]+[^[:space:]]+[[:space:]]*(—|-)[[:space:]]*//' <<<"${first_line}")"
     name="$(basename "${file}")"
-    printf '| %s | %s | [%s](PARTIAL/%s) |\n' "${id}" "${title}" "${name}" "${name}"
+    revived="$(grep -l -E "^- \*\*Revives\*\*:[[:space:]]*0*$((10#${id}))\b" "${todos_dir}"/*.md 2>/dev/null |
+        xargs -r -n1 basename | sed -E 's/^([0-9]+).*/\1/' | paste -sd, - || true)"
+    printf '| %s | %s | [%s](PARTIAL/%s) | %s |\n' "${id}" "${title}" "${name}" "${name}" "${revived:-—}"
 done

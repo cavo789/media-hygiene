@@ -127,3 +127,16 @@ def test_the_pages_with_a_view_of_their_own_still_have_one() -> None:
     for name in _OWN_VIEW:
         assert 'id="viewer"' in _PAGES[name]
         assert 'id="viewerWhoName"' not in _PAGES[name]
+
+
+def test_a_video_the_browser_cannot_play_shows_its_frame_everywhere() -> None:
+    """0786: the large view and the album viewer fall back to the frame on `error`."""
+    viewer = (_SRC / "review/templates/pick_viewer.js.j2").read_text("utf-8")
+    assert viewer.count('$("movie").addEventListener("error"') == 1
+    assert "file.preview" in viewer
+    assert 'data-noplay="' in (_SRC / "review/templates/pick_viewer.html.j2").read_text(
+        "utf-8"
+    )
+    album = (_SRC / "share/templates/album.js.j2").read_text("utf-8")
+    assert 'addEventListener("error"' in album
+    assert "item.thumb" in album

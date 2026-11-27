@@ -47,24 +47,30 @@ async function post(path, body) {
 
 // The faces of the photo, each with its name (or ?), to choose one: one alone is chosen at once.
 let shownFaces = []; // the photo's faces, also outlined in the ✏ dialog (person_draw.js.j2)
+let showIgnored = false; // the faces ignored (0843), shown when asked: `ignoredFold`
 function showFaces(faces, again) {
   shownFaces = faces;
-  showGuesses(faces); // person_names.js.j2
-  $("faces").replaceChildren(...faces.map((face) => {
-    const box = element("figure", "face");
-    const picture = element("img");
-    picture.src = face.face;
-    picture.alt = TEXTS.chooseFace;
-    box.dataset.key = face.key;
-    box.append(picture, faceTag(face.named)); // person_names.js.j2
-    if (face.drawn) box.append(forgetButton(face.key)); // person_draw.js.j2
-    else if (face.named && face.named.name && state.writable) box.append(notNameButton(face)); // person_names.js.j2
-    box.addEventListener("click", () => chooseFace(face.key, face.named));
-    return box;
-  }));
-  if (again) { for (const face of faces) if (face.key === seed) markFace(face.key); return; }
-  if (faces.length === 1) chooseFace(faces[0].key, faces[0].named);
-  else if (faces.length) sideSay(TEXTS.chooseFace);
+  const hidden = faces.filter(isIgnored); // person_names.js.j2
+  const listed = showIgnored ? faces : faces.filter((face) => !isIgnored(face));
+  showGuesses(listed); // person_names.js.j2
+  $("faces").replaceChildren(...listed.map(faceBox), ...ignoredFold(hidden));
+  if (again) { for (const face of listed) if (face.key === seed) markFace(face.key); return; }
+  if (listed.length === 1) chooseFace(listed[0].key, listed[0].named);
+  else if (listed.length) sideSay(TEXTS.chooseFace);
+}
+
+// One face of the strip: its picture, its name, its × (forget, not <name>, ignore) or ↩.
+function faceBox(face) {
+  const box = element("figure", "face");
+  const picture = element("img");
+  picture.src = face.face;
+  picture.alt = TEXTS.chooseFace;
+  box.dataset.key = face.key;
+  box.append(picture, faceTag(face.named)); // person_names.js.j2
+  if (face.drawn) box.append(forgetButton(face.key)); // person_draw.js.j2
+  else if (state.writable) box.append(...faceCross(face)); // person_names.js.j2
+  box.addEventListener("click", () => chooseFace(face.key, face.named));
+  return box;
 }
 
 async function find(typed) {

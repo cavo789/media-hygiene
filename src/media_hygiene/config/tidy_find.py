@@ -2,8 +2,9 @@
 
 Each one is judged against facts, never guessed: a folder against the disk (a folder on
 a drive that is not mounted is unknown, not missing), the rules and clocks against the
-index (`tidy_rules`). Hand-drawn places and spots set aside are never
-proposed: they stay valid for photos to come.
+index (`tidy_rules`), a town rename against the offline gazetteer (0812: a GeoNames name
+it does not know is a typo, the rename never applies). Hand-drawn places and spots set
+aside are never proposed: they stay valid for photos to come.
 """
 
 from __future__ import annotations
@@ -29,6 +30,7 @@ if TYPE_CHECKING:
     type Exists = Callable[[str], bool | None]  # host folder → exists; None: unknown
 
 PLACE_FOLDERS: Final = ("places", "folders")
+TOWN_NAMES: Final = ("classify", "town_names")
 FOLDER_ROLES: Final = ("preferred", "protected", "excluded", "backups")
 
 
@@ -74,6 +76,7 @@ def find_stale(
         *_place_folders(_array(document, PLACE_FOLDERS), folder),
         *stale_rules(_array(document, RULES), facts),
         *stale_clocks(_array(document, CLOCKS), facts),
+        *_town_names(_table(_table(document, TOWN_NAMES[0]), TOWN_NAMES[1]), facts),
     ]
     return TidyFindings(tuple(stale), tuple(dict.fromkeys(unknown)))
 
@@ -113,3 +116,15 @@ def _place_folders(
         seen.setdefault(key, rank)
         if reason:
             yield StaleEntry(".".join(PLACE_FOLDERS), rank, path, reason)
+
+
+def _town_names(
+    renames: Mapping[str, Any], facts: LibraryFacts
+) -> Iterator[StaleEntry]:
+    if facts.towns is None:
+        return
+    for rank, (name, renamed) in enumerate(renames.items()):
+        if name not in facts.towns:
+            label = f"{name} = {renamed}"
+            reason = _("no town of this name is known: a typo?")
+            yield StaleEntry(".".join(TOWN_NAMES), rank, label, reason)

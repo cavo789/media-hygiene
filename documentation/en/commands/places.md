@@ -35,7 +35,7 @@ docker run --rm -it `
 | Needs | `/cache` (the positions the audits recorded, and the previews), `/config` (where the places are saved), your photo folders read-only, and `-p 127.0.0.1:8088:8088`. |
 | Writes | `[[classify.places]]` entries in `config.toml`, keeping your comments and the rest of the file; also the folders' positions (`[[places.folders]]`), the names that are no town (`folder_town_ignore`), the clusters set aside (`[[places.ignored]]`) and the photos given a place by hand (`[[classify.place_photos]]`, their list in `/config/places/<place>.toml`). Each change is read back from the file before the page shows it. |
 | On a phone | A phone paired with `mh --lan` sees the map read-only (*See the places on a map* on its home page): the places, the clusters and their photos; every control that saves is hidden and its request refused. |
-| Undo | Delete a place on the map, or its lines in `config.toml`; **↶ Undo** on the line a place deleted shows (8 s; a place holding photos given by hand asks first instead); **Restore** what you set aside; ✕ a photo given by hand in its place's editor. |
+| Undo | Delete a place on the map, or its lines in `config.toml`; **↶ Undo** on the line a place deleted shows (8 s; a place holding photos given by hand asks first instead); **↶ Undo** on the line photos given to a place show takes back exactly those photos; **Restore** what you set aside; ✕ a photo given by hand in its place's editor. |
 | With `mh` | `mh places`: your photo folders are mounted read-only and the port is published for you. |
 
 ## Run it
@@ -101,7 +101,7 @@ drawn but left out of that view.
   **Enter**, drag, **Enter**. **N** / **→** and **P** / **←** open the next or previous folder of
   the list without saving. **Forget its position** moves it back. The folders set aside as *not a town*
   are in neither. **Type a name** in the box on top of the list to filter both sub-lists as you
-  type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box.
+  type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box. What you typed (in both boxes) stays in the page's address: a reload or a link brings it back.
 - **Any folder**, folded under the town folders, lists every folder of the index as
   [the folders of `library`](library.md#walk-through-your-folders) shows them (read from `/cache`, the disk is not walked): your mounted
   folders open, the others closed (▸ opens one). Each line counts the photos and videos without
