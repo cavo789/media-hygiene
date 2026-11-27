@@ -70,3 +70,14 @@ def test_the_active_filters_are_chips_after_the_count_folded_past_the_width() ->
     assert "filter.off();\n    search(null);" in page
     assert "#bar > #chipsFolded { position: absolute; top: 100%;" in page
     assert 'chipsMore.textContent = "+" + folded.length;' in page
+
+
+def test_a_new_set_of_chips_empties_the_folded_ones_first() -> None:
+    """0820: the chips folded by the last search never come back with the next one."""
+    page = render_page("search.html.j2")
+    show = page.split("function showChips(body) {")[1].split("}")[0]
+    assert show.index("chipsFolded.replaceChildren();") < show.index(
+        "chipsLine.replaceChildren("
+    )
+    fold = page.split("function foldChips() {")[1].split("\n}")[0]
+    assert fold.count("chipsFolded.append(") == 1  # only the set just measured
