@@ -47,3 +47,21 @@ Tiles are only worth it if a later measurement shows faces still missed on large
 photos at 0.6 (e.g. under 20 px once shrunk to 640). The second look (`LOOSE_SCORE` =
 0.6 = `MIN_SCORE` now) only adds the turned angles: lower it, or store its faces
 (boxes mapped back to the upright photo), if photos with tilted heads still miss faces.
+
+## Done (2026-11-27): tiles in the second look; the audit left
+
+`faces/tiles.py` (2 x 2 tiles, 25 % overlap, photos whose longer side is >= 1280 px) runs
+upright in the second look, after the turned angles; boxes mapped back, duplicates merged by
+`OVERLAP` like the angles. Test: `tests/unit/test_face_tiles.py` (synthetic picture).
+
+Measured 2026-11-27 (`media-hygiene:latest` + this module passed in the script, 200 random
+real JPEGs, `--cpus 4`, score 0.6): 188 large enough to cut; whole photo 231 faces in 9.6 s;
+tiles add **84 faces (+36 %) on 44 photos** for **20.1 s (+0.107 s per photo, ~3x the
+detector time)**. Of the 84, 61 have a face-like box (width/height 0.6-1.1, >= 20 px),
+23 do not (*estimated* false faces by box shape only, no one looked at them); by score:
+44 >= 0.7, 11 >= 0.8, 0 >= 0.9.
+
+Left (needs the maintainer): look at the 84 extra faces (or a run on a named event, as in
+0841: how many are close to a person named) before tiling in the audit for the photos the
+whole picture found nothing on. Without it, ~1 in 4 extras may be patterns, and the audit
+would be ~3x slower on face detection.
