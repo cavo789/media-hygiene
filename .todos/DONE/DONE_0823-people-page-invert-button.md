@@ -24,3 +24,7 @@ other pages' invert entry. Listed in the ⌨ panel without a key on this page.
 - [ ] The button inverts the picking of the shown groups only (never what is hidden)
 - [ ] `i` still ignores a group (its test unchanged)
 - [ ] French string; docs EN + FR of `people`; `docs_screenshots` said
+
+## Status — DONE (2026-11-27), already in place
+
+Done by 0720: the people page's bar has 🔀 *Invert the picking* (`#invertFaces`, `invertFacePick`: the faces the current section shows only, Ctrl+I too), `i` still ignores a group, French string, `documentation/*/commands/people.md` mention it. No code change here.
