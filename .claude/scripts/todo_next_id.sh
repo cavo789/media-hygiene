@@ -25,7 +25,7 @@ width="${2:-4}"
 
 max=0
 if [[ -d "${todos_dir}" ]]; then
-    highest="$(find "${todos_dir}" -type f -name '*.md' -printf '%f\n' |
+    highest="$(find "${todos_dir}" -mindepth 1 -name '.*' -prune -o -type f -name '*.md' -printf '%f\n' |
         sed -nE 's/^[^0-9]*0*([0-9]{3,}).*/\1/p' |
         sort -n | tail -1)"
     [[ -n "${highest}" ]] && max="${highest}"

@@ -6,7 +6,12 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.review.quarantine_app import QuarantineApp
 from media_hygiene.review.repair_app import RepairApp
-from media_hygiene.review.served_more import IMPORT_PAGE, QUARANTINE_PAGE, REPAIR_PAGE
+from media_hygiene.review.served_more import (
+    IMPORT_PAGE,
+    QUARANTINE_PAGE,
+    REPAIR_PAGE,
+    STRAIGHTEN_PAGE,
+)
 from media_hygiene.services.import_pick_serving import planned_app
 from media_hygiene.services.people_here import people_here
 from media_hygiene.services.phone_here import PhoneHere
@@ -14,6 +19,7 @@ from media_hygiene.services.prefixed_page import PrefixedPage
 from media_hygiene.services.quarantine_serving import quarantine_page
 from media_hygiene.services.repair_serving import repair_page
 from media_hygiene.services.settings_here import SettingsHere
+from media_hygiene.services.straighten_serving import straighten_app
 from media_hygiene.services.versions_here import VersionsHere
 
 if TYPE_CHECKING:
@@ -23,7 +29,7 @@ if TYPE_CHECKING:
 
 
 def pages_here(fresh: FreshRuntime, server: HomeServer) -> tuple[ServedPage, ...]:
-    """The pages of the quarantine, damaged files, import, people, phone, settings.
+    """The pages of the quarantine, damaged files, turns, import, people, phone...
 
     Args:
         fresh: The server's settings, read again when their files change.
@@ -47,6 +53,11 @@ def pages_here(fresh: FreshRuntime, server: HomeServer) -> tuple[ServedPage, ...
             REPAIR_PAGE,
             fresh,
             lambda runtime: RepairApp(runtime, repair_page(), executor),
+        ),
+        PrefixedPage(
+            STRAIGHTEN_PAGE,
+            fresh,
+            lambda runtime: straighten_app(runtime, server),
         ),
         PhoneHere(fresh, server),
         SettingsHere(fresh),

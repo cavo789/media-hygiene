@@ -24,7 +24,11 @@ from media_hygiene.review.serving import json_response
 from media_hygiene.search import statements as sql
 from media_hygiene.search.days import NAME as DAY
 from media_hygiene.services.slideshow_folders import labelled, newest_first
-from media_hygiene.services.slideshow_random_pick import RandomAsk, random_files
+from media_hygiene.services.slideshow_random_pick import (
+    RandomAsk,
+    dated_photos,
+    random_files,
+)
 from media_hygiene.services.slideshow_selection import selected
 from media_hygiene.share.album_api import too_many
 
@@ -83,7 +87,8 @@ class Chooser:
                 for name, label in labelled(newest_first(runtime, search))
             ]
             months = [row[0] for row in search.connection.execute(_MONTHS)]
-            return json_response(HTTPStatus.OK, {"folders": listed, "months": months})
+            body: dict[str, object] = {"folders": listed, "months": months}
+            return json_response(HTTPStatus.OK, body)
         if request.method != "POST" or request.path != CHOOSE_PATH:
             return None
         if not request.headers.get("content-type", "").startswith(ContentType.JSON):
@@ -97,6 +102,8 @@ class Chooser:
     def _show(self, chosen: Chosen) -> Response:
         """Show a folder's files or a period's.
 
+        People to avoid are ticked on the remote the phone opens next (0825, 0834).
+
         Args:
             chosen: The folder, or the days.
 
@@ -105,7 +112,7 @@ class Chooser:
         """
         runtime, search = self.opened()
         if chosen.random is not None:
-            files = random_files(runtime, search, chosen.random)
+            files = random_files(runtime, dated_photos(runtime, search), chosen.random)
             if not files:
                 return _refused(_("No dated photo to show at random."))
             return selected(self.begin, files, ordered=True)

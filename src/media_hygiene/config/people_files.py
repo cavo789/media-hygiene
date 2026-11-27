@@ -10,10 +10,12 @@ and added to those of the file.
 
 from __future__ import annotations
 
+import functools
 import tomllib
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.config.face_refs import face_keys
+from media_hygiene.config.people_parsed import parsed_file
+from media_hygiene.config.stamped_text import stamped_value
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 
@@ -31,6 +33,8 @@ REJECTED: Final = "rejected"
 IGNORED: Final = "ignored"
 IGNORED_FILE: Final = "ignored_file"
 FOLDER: Final = "people"  # under the folder of config.toml
+UNGUESSED: Final = "unguessed"  # faces no name is guessed for (2026-11-16)
+UNGUESSED_PATH: Final = f"{FOLDER}/{UNGUESSED}.toml"  # never linked: always there
 ENCODING: Final = "utf-8"
 
 
@@ -77,6 +81,8 @@ def linked_section(
     inline = section.get(IGNORED, [])
     if isinstance(ignored_file, str) and ignored_file and isinstance(inline, list):
         resolved[IGNORED] = [*inline, *read_lists(config_dir, ignored_file)[FACES]]
+    if (config_dir / UNGUESSED_PATH).is_file():
+        resolved[UNGUESSED] = read_lists(config_dir, UNGUESSED_PATH)[FACES]
     people = section.get(PERSON)
     if isinstance(people, list):
         resolved[PERSON] = [_person(entry, config_dir) for entry in people]
@@ -123,12 +129,28 @@ def linked_path(config_dir: Path, relative: str) -> Path:
     Raises:
         ValueError: The path leads out of the folder.
     """
-    root = config_dir.resolve()
-    path = (root / relative).resolve()
+    root = _resolved(config_dir)
+    path = _resolved(root / relative)
     if not path.is_relative_to(root):
         message = _("{file} is not inside the folder of config.toml")
         raise ValueError(message.format(file=relative))
     return path
+
+
+@functools.lru_cache(maxsize=4096)
+def _resolved(path: Path) -> Path:
+    """A path resolved once (2026-11-16).
+
+    Each `resolve` inspects every folder on the way: a few hundred `lstat` per
+    save, each one slow over Docker Desktop's file sharing.
+
+    Args:
+        path: The path.
+
+    Returns:
+        It, absolute, its links followed.
+    """
+    return path.resolve()
 
 
 def read_lists(config_dir: Path, relative: str) -> dict[str, list[object]]:
@@ -148,12 +170,9 @@ def read_lists(config_dir: Path, relative: str) -> dict[str, list[object]]:
         "{file} is missing: restore it, or remove the line file = '{file}' "
         "of config.toml (its faces are then forgotten)"
     )
-    loaded = load_linked(linked_path(config_dir, relative), relative, missing)
-    lists: dict[str, list[object]] = {}
-    for key in (FACES, REJECTED):
-        value = loaded.get(key, [])
-        lists[key] = face_keys(value, None) if isinstance(value, list) else [value]
-    return lists
+    path = linked_path(config_dir, relative)
+    load_linked(path, relative, missing)  # says what is wrong with the file
+    return {key: list(keys) for key, keys in parsed_file(path).lists.items()}
 
 
 def load_linked(path: Path, relative: str, missing: str) -> dict[str, object]:
@@ -171,7 +190,7 @@ def load_linked(path: Path, relative: str, missing: str) -> dict[str, object]:
         ValueError: The file is missing or not valid TOML.
     """
     try:
-        return tomllib.loads(path.read_text(ENCODING))
+        return stamped_value(path, tomllib.loads)
     except FileNotFoundError:
         raise ValueError(missing.format(file=relative)) from None
     except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:

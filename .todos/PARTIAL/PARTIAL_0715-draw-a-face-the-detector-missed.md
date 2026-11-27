@@ -48,3 +48,4 @@ click.
   **Reason:** needs the maintainer: ~10 real photos with a known person's missed face, box drawn on `/person`, note whether that person's photos come first; a small log of each drawn face's sharpness and score still to add.
 - Dialog not checked in headless Chromium; `docs_screenshots` not run.
 - Open question: mark drawn faces on the people page?
+  → no mark: a drawn face is a face like the others (maintainer, inbox 2026-11-14)

@@ -19,15 +19,19 @@ from media_hygiene.config.people_files import (
     FACES,
     FOLDER,
     REJECTED,
+    UNGUESSED,
     linked_path,
 )
 from media_hygiene.config.photo_ref import write_refs
-from media_hygiene.file_history import keep_previous
 from media_hygiene.i18n import _
 from media_hygiene.people.face_ids import known_ids
+from media_hygiene.people.unchanged_file import person_header, unchanged
+from media_hygiene.people.unguessed_file import write_unguessed
+from media_hygiene.review.disk_tags import side_by_side
+from media_hygiene.review.slow_log import Laps
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Mapping
+    from collections.abc import Mapping
     from pathlib import Path
 
     from media_hygiene.config.people_settings import PeopleSettings, Person
@@ -35,6 +39,7 @@ if TYPE_CHECKING:
 SUFFIX: Final = ".toml"
 IGNORED_NAME: Final = "ignored"
 IGNORED_PATH: Final = f"{FOLDER}/{IGNORED_NAME}{SUFFIX}"
+_OURS: Final = frozenset({IGNORED_NAME, UNGUESSED})  # never a person's file
 _FORBIDDEN: Final = re.compile(r'[<>:"/\\|?*\x00-\x1f]')  # refused by Windows
 _RESERVED: Final = frozenset(
     {"CON", "PRN", "AUX", "NUL"}
@@ -61,7 +66,7 @@ def safe_name(name: str) -> str:
     """
     cleaned = _FORBIDDEN.sub("_", name.strip()).rstrip(". ")
     stem = cleaned.split(".", 1)[0]
-    if not cleaned or stem.upper() in _RESERVED or stem.casefold() == IGNORED_NAME:
+    if not cleaned or stem.upper() in _RESERVED or stem.casefold() in _OURS:
         cleaned = f"_{cleaned}"
     return cleaned
 
@@ -111,11 +116,20 @@ def write_files(
         OSError: A file cannot be written.
     """
     files, mapper = file_names(wanted.person), face_mapper()
+    laps = Laps("people files")
+    changed = [
+        (person, file)
+        for person, file in zip(wanted.person, files, strict=True)
+        if moves or not unchanged(config_dir, file, person)
+    ]
     every = (
         *wanted.ignored,
-        *(k for p in wanted.person for k in (*p.faces, *p.rejected)),
+        *wanted.unguessed,
+        *(k for p, _f in changed for k in (*p.faces, *p.rejected)),
     )
+    laps.lap(f"{len(changed)} of {len(files)} changed")
     ids = known_ids(config_dir, every, moves)
+    laps.lap(f"ids of {len(every)} faces")
 
     def lines(keys: tuple[str, ...]) -> list[str]:
         """The faces as written.
@@ -128,20 +142,36 @@ def write_files(
         """
         return [face_line(key, ids, mapper) for key in keys]
 
-    for person, file in zip(wanted.person, files, strict=True):
-        header = _(
-            "The faces of {name}, saved by the people page; "
-            "config.toml links this file."
-        )
-        lists = {FACES: lines(person.faces), REJECTED: lines(person.rejected)}
-        _write(linked_path(config_dir, file), header.format(name=person.name), lists)
+    side_by_side(  # a cross may rule a face out of 13 people: 13 files at once
+        _write_one,
+        [
+            (
+                linked_path(config_dir, f),
+                person_header(p.name),
+                lines(p.faces),
+                lines(p.rejected),
+            )
+            for p, f in changed
+        ],
+    )
+    write_unguessed(config_dir, lines(wanted.unguessed))
+    laps.lap("written")
     if not wanted.ignored:
+        laps.said()
         return Links(files)
     header = _("The faces ignored on the people page; config.toml links this file.")
     _write(
         linked_path(config_dir, IGNORED_PATH), header, {FACES: lines(wanted.ignored)}
     )
+    laps.lap(f"{len(wanted.ignored)} ignored")
+    laps.said()
     return Links(files, IGNORED_PATH)
+
+
+def _write_one(job: tuple[Path, str, list[str], list[str]]) -> None:
+    """Write one person's file: its path, header, faces and faces ruled out."""
+    path, header, faces, rejected = job
+    _write(path, header, {FACES: faces, REJECTED: rejected})
 
 
 def _write(path: Path, header: str, lists: Mapping[str, list[str]]) -> None:
@@ -157,28 +187,3 @@ def _write(path: Path, header: str, lists: Mapping[str, list[str]]) -> None:
         lists: Its arrays' lines, by key; an empty one is left out, but `faces`.
     """
     write_refs(path, header, {k: v for k, v in lists.items() if v or k == FACES})
-
-
-def remove_unlinked(config_dir: Path, before: Iterable[str], links: Links) -> None:
-    """Remove the files `config.toml` linked before and no longer does.
-
-    Only files of the people folder are removed: a file linked by hand elsewhere
-    stays. Each one is copied into `.history/` first.
-
-    Args:
-        config_dir: The folder of `config.toml`.
-        before: The files it linked before the change.
-        links: Those it links now.
-    """
-    kept = {file.casefold() for file in (*links.people, links.ignored) if file}
-    folder = linked_path(config_dir, FOLDER)
-    for file in before:
-        if file.casefold() in kept:
-            continue
-        try:
-            path = linked_path(config_dir, file)
-        except ValueError:
-            continue  # never ours to remove
-        if path.parent == folder and path.suffix == SUFFIX:
-            keep_previous(path)  # its faces stay recoverable from `.history/` (0795)
-            path.unlink(missing_ok=True)

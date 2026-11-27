@@ -38,7 +38,7 @@ class FaceShelf:
     def __init__(self) -> None:
         """Start with no face."""
         self._faces: list[ShelfFace] = []
-        self._numbers: dict[tuple[Path, bytes], int] = {}
+        self._numbers: dict[tuple[Path, bytes | int], int] = {}
 
     def add(self, face: ShelfFace) -> int:
         """Number a face, or give back the number it has.
@@ -46,10 +46,15 @@ class FaceShelf:
         Args:
             face: The face.
 
+        A face of the index is known by its number in its photo: two faces drawn too
+        blurred to search share an empty vector, and the photo shown to draw on has one
+        too (2026-11-15: naming the second named the first, its x forgot the first).
+
         Returns:
             Its number.
         """
-        known = (face.path, face.embedding)
+        mark = face.embedding if face.number is None else face.number
+        known = (face.path, mark)
         if known not in self._numbers:
             self._numbers[known] = len(self._faces)
             self._faces.append(face)

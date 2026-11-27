@@ -16,15 +16,14 @@ from typing import TYPE_CHECKING, Final, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.i18n import _
-from media_hygiene.people.changes import Naming, give_name, reject_faces
-from media_hygiene.people.config_file import read_people, save_people
-from media_hygiene.people.followed import follow_ids
+from media_hygiene.people.changes import Naming
 from media_hygiene.people.known import Known
-from media_hygiene.people.moving import move_faces
 from media_hygiene.people.naming import How, face_id, id_of, name_all
 from media_hygiene.people.people_memo import PeopleMemo
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
+from media_hygiene.person.name_save import save_changes
+from media_hygiene.person.unguess import unname
 from media_hygiene.services.kept_state import KeptState
 
 if TYPE_CHECKING:
@@ -39,15 +38,25 @@ _NAME_LENGTH: Final = 100
 _NAMED: Final = frozenset({How.CONFIRMED, How.ASSIGNED})
 
 
+class NameGroup(BaseModel):
+    """More faces of one naming: *Confirm the names guessed* sends them all at once."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    name: str = Field(min_length=1, max_length=_NAME_LENGTH)
+    faces: tuple[int, ...] = Field(min_length=1)
+
+
 class NameAsked(BaseModel):
     """`POST /person/api/names`: these faces are someone, or are not someone."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["name", "move", "reject"]
+    action: Literal["name", "move", "reject", "unname"]  # unname: no guess
     name: str = Field(min_length=1, max_length=_NAME_LENGTH)
     faces: tuple[int, ...] = Field(min_length=1)
     source: str = Field(default="", max_length=_NAME_LENGTH)  # "move": shown under
+    also: tuple[NameGroup, ...] = ()  # "move": more names, saved in the same write
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,7 +78,7 @@ class FaceNames:
         """
         settings = self.settings()
         every = self.faces.every
-        key = (settings.person, settings.ignored, every)  # the same objects: `is`
+        key = (settings.person, settings.ignored, settings.unguessed, every)
         return self.kept.value(lambda: key, lambda: Known.of(every, settings))
 
     def settings(self) -> PeopleSettings:
@@ -81,9 +90,7 @@ class FaceNames:
         if self.config_file is None:
             return self.base
         back = self.memo.read(self.config_file)
-        return self.base.model_copy(
-            update={"person": back.person, "ignored": back.ignored}
-        )
+        return self.base.with_faces_of(back)
 
     def answer(self, body: bytes) -> dict[str, object]:
         """Save a naming, read it back.
@@ -99,35 +106,44 @@ class FaceNames:
         """
         asked = NameAsked.model_validate_json(body)
         ids = tuple(self._ids(asked.faces))
-        if self.config_file is None:
-            said = _(
-                "names are kept in config.toml: mount a folder of yours on /config"
-            )
+        if (said := self._refused(ids)) or self.config_file is None:
             return {"error": said}
-        if not ids:
-            return {
-                "error": _("This face was found by a second look: it cannot be named.")
-            }
+        if asked.action == "unname":
+            return unname(self, asked.faces[0])
         naming = Naming(asked.name.strip(), ids)
+        changes = [Change(asked.action, naming, asked.source)]
+        groups = asked.also if asked.action == "move" else ()
+        changes.extend(
+            Change("move", Naming(group.name.strip(), more), "")
+            for group in groups
+            if (more := tuple(self._ids(group.faces)))
+        )
         try:
-            original = read_people(self.config_file)
-            present = {str(face.path) for face in self.faces.every}
-            written = follow_ids(original, {}, present)
-            if asked.action == "reject":
-                wanted = reject_faces(written, naming)
-            elif asked.action == "move":
-                wanted = move_faces(written, naming, asked.source)
-            else:
-                wanted = give_name(written, naming)
-            save_people(self.config_file, wanted)
-            back = read_people(self.config_file)
+            back = save_changes(self, self.config_file, changes)
         except (ValueError, OSError) as error:
             return {"error": str(error)}
         if asked.action == "reject":
             line = rejected_line(back, naming, again=False)
         else:
-            line = proof_line(back, Change(asked.action, naming, asked.source))
+            line = " ".join(proof_line(back, change) for change in changes)
         return {"saved": line, "people": [person.name for person in back.person]}
+
+    def _refused(self, ids: tuple[str, ...]) -> str:
+        """Why faces cannot be named: no `config.toml`, or none in the index.
+
+        Args:
+            ids: Their face ids.
+
+        Returns:
+            The reason; empty when they can.
+        """
+        if self.config_file is None:
+            return _(
+                "names are kept in config.toml: mount a folder of yours on /config"
+            )
+        if not ids:
+            return _("This face was found by a second look: it cannot be named.")
+        return ""
 
     def tags(self, keys: list[int]) -> dict[int, dict[str, object]]:
         """The name of each face, as the file and the index say now.
@@ -138,7 +154,7 @@ class FaceNames:
         Returns:
             By number: `name`, `how` (confirmed or assigned), `not` (names ruled out).
         """
-        stored = {key: face for key in keys if (face := self._stored(key)) is not None}
+        stored = {key: face for key in keys if (face := self.stored(key)) is not None}
         known = self.known()
         names = name_all(tuple(stored.values()), known)
         tags: dict[int, dict[str, object]] = {}
@@ -149,7 +165,7 @@ class FaceNames:
                 tags[key] = {"name": name, "how": str(named.how), "not": ruled_out}
         return tags
 
-    def _stored(self, key: int) -> StoredFace | None:
+    def stored(self, key: int) -> StoredFace | None:
         """The face of the index a shelf number names.
 
         Args:
@@ -175,4 +191,4 @@ class FaceNames:
         Returns:
             The ids, in order.
         """
-        return [id_of(face) for key in keys if (face := self._stored(key)) is not None]
+        return [id_of(face) for key in keys if (face := self.stored(key)) is not None]

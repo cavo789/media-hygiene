@@ -15,6 +15,7 @@ from media_hygiene.faces.models import FaceBox
 from media_hygiene.index.aside_not import FORGET_ASIDE
 from media_hygiene.index.drawn_faces import DRAWN_FROM
 from media_hygiene.index.face_groups import FORGET_GROUPS
+from media_hygiene.index.face_tops import FORGET_TOPS
 
 if TYPE_CHECKING:
     import sqlite3
@@ -56,6 +57,7 @@ _FORGET: Final = (
     "PRAGMA secure_delete = ON",
     "DELETE FROM faces",
     "DELETE FROM face_scans",
+    FORGET_TOPS,  # how far down each was looked for (0841)
     *FORGET_ASIDE,  # the faces of the people set aside (0328), and not them (0713)
     FORGET_GROUPS,  # which group each face fell in (0588)
 )
@@ -188,8 +190,7 @@ class FaceStore:
         """Delete every face and every scan row, of any model, zeroing their pages.
 
         Returns:
-            How many faces were deleted, and how many the index holds afterwards,
-            read back once the deletion is committed.
+            How many faces were deleted, and how many remain once committed.
         """
         before = self._connection.execute(_COUNT_FACES).fetchone()
         for statement in _FORGET:

@@ -129,6 +129,7 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
                     day or None,
                     _film(connection, key, source),
                     notes=notes_of(connection, key, source),
+                    path=str(source),
                 ),
                 source,
             )

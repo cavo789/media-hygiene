@@ -1,0 +1,64 @@
+{% extends "page_frame.html.j2" %}
+{# The photos to straighten (0810), served by the home server under /straighten/: each photo
+   `people` guessed lying on its side from its faces (🤖 YuNet), shown turned as it would be.
+   A page of photos to pick (`pick_*`, skill photo-picking-pages): ↻ Turn writes the picked
+   ones shown, journaled, read back; the toast's Undo runs `mh undo` of that run. ✋ Never turn
+   keeps a refusal in the index (never proposed again). *Apply now* turns every photo shown.
+   No Delete key: nothing is set aside here. #}
+{% set texts = {
+  "status": _("{count} photos to straighten"),
+  "empty": _("No photo to straighten: nothing proposed, or every turn written or refused."),
+  "turn": _("Turned {degrees}° clockwise"),
+  "turning": _("Turning…"),
+  "back": _("Turned and read back at {time}: {count} photos."),
+  "refused": _("Never turned, read back from the index at {time}: {count} photos."),
+  "left": _("Not turned: {reasons}"),
+  "notSaved": _("Nothing was turned: {error}"),
+  "failed": _("Nothing was turned (error {status})."),
+  "offline": _("The page cannot reach mh: is it still running?"),
+  "picked": [ngettext("{n} photo picked", "{n} photos picked", 1), ngettext("{n} photo picked", "{n} photos picked", 2)],
+  "aside": "",
+  "tick": _("Pick this photo"),
+  "saving": _("Turning…"),
+} %}
+{% set page_name = _("Photos to straighten") %}
+{% set pick_all = _("every photo of the page") %}
+{% set pick_marks = false %}
+{% set pick_first = "straighten_turn.html.j2" %}
+{% set keys_safe = _("A turn changes two bytes of the photo (its orientation tag), journaled: 'mh undo' of its run gives the file back byte for byte.") %}
+{% set apply_more = _("Apply turns every photo shown.") %}
+{% block style %}
+{% include "pick_grid.css.j2" %}
+  main#grid { display: block; }
+  #setAside, #takeBack { display: none; }  /* nothing is set aside here: Turn or Never turn instead */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(220px * var(--tile-scale))), 1fr)); gap: 10px; }
+  .turned { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .turned img { max-width: 75%; max-height: 75%; object-fit: contain; }
+  .file .empty { font-size: 2rem; text-align: center; }
+  .file .meta div { overflow-wrap: anywhere; }
+  #chosen.saved { color: var(--ok); } #chosen.error { color: var(--bad); }
+{% endblock %}
+{% block side %}
+    <section id="toc" aria-label="{{ page_name }}">
+      <p class="muted">{{ _("Each photo people found lying on its side, from the faces it holds (🤖 a local face model, YuNet: a guess, look). Shown turned as it would be.") }}</p>
+      <p class="muted">{{ _("Fast path, every photo at once without showing them: mh people --straighten.") }}</p>
+    </section>
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
+    {% include "pick_acting.html.j2" %}
+{% endblock %}
+{% block content %}
+  <main id="grid"></main>
+{% endblock %}
+{% block after %}
+{% include "pick_viewer.html.j2" %}
+{% include "undo_toast.html.j2" %}
+<script nonce="{{ page_nonce }}">
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+{% include "straighten.js.j2" %}
+</script>
+{% endblock %}

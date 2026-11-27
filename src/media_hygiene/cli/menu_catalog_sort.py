@@ -34,7 +34,6 @@ def sort_steps() -> tuple[Step, ...]:
             keywords=_("classify tidy propose tree workbook excel year event"),
             doc=Doc("commands/classify/"),
             slot=Slot.CLASSIFY,
-            ai=True,
         ),
         Step(
             "places",
@@ -61,6 +60,19 @@ def sort_steps() -> tuple[Step, ...]:
             keywords=_("faces people names family"),
             doc=Doc("commands/people/"),
             slot=Slot.PEOPLE,
+            optional=True,
+        ),
+        Step(
+            "straighten",
+            space,
+            _("Straighten the photos lying on their side"),
+            _("Each one shown turned first; journaled, undo gives it back."),
+            "people --straighten",
+            Risk.UNDO,
+            Kind.PAGE,
+            icon="face",
+            keywords=_("turn rotate straighten orientation sideways upright"),
+            doc=Doc("commands/people/", "#photos-to-straighten", "#photos-à-redresser"),
             optional=True,
         ),
         Step(
@@ -97,7 +109,10 @@ def sort_area() -> Area:
             "apply it. Nothing moves before you agree."
         ),
         "folders",
-        (Group(_("The guide"), guide, numbered=True),),
+        (
+            Group(_("The guide"), guide, numbered=True),
+            Group(_("Go further"), ("straighten",)),
+        ),
         Doc("sort/quick-guide/"),
         _("Sort in short"),
         stage=3,

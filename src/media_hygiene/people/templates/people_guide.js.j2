@@ -64,6 +64,7 @@ function drawPeople() {
   const items = shown.map((person) => {
     const count = "✓ " + person.verified + (person.attributed ? " · " + fill(TEXTS.toConfirm, { n: person.attributed }) : "");
     const node = entry(person.name, count, () => choose(person.name), person.name === chosen);
+    if (state.writable && window.mhPersonMenu) node.append(window.mhPersonMenu.menu(person.name)); // person_menu.html.j2
     if (person.attributed) node.classList.add("work");
     return node;
   });
@@ -145,3 +146,9 @@ $("who").addEventListener("keydown", (event) => {
 $("onlyPerson").addEventListener("change", () => { onlyPerson = $("onlyPerson").checked && Boolean(chosen); render(true); drawPeople(); });
 $("next").addEventListener("click", () => nextToDo());
 $("onlyLeft").addEventListener("click", () => { onlyLeft = !onlyLeft; render(true); drawProgress(); });
+// A person renamed, merged, set aside or given an album (person_menu.html.j2): the groups again,
+// the line read back from the disk said.
+window.addEventListener("mh-person-changed", async (event) => {
+  await load();
+  say(event.detail);
+});

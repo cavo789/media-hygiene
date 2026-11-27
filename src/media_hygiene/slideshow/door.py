@@ -26,6 +26,7 @@ from media_hygiene.review.lan_phone_care import now_utc, touch
 from media_hygiene.review.lan_phone_model import FAMILY
 from media_hygiene.review.lan_phones_api import for_good
 from media_hygiene.services.reviewing import HOST_LOOPBACK
+from media_hygiene.slideshow.avoid_desk import PHONE_MARK
 from media_hygiene.slideshow.screens import SCREEN_COOKIE
 
 if TYPE_CHECKING:
@@ -159,7 +160,7 @@ class Door:
         """
         port = 0 if self.lan is None else self.lan.port
         local = f"{HOST_LOOPBACK}:{port}"
-        headers = {**request.headers, "host": local}
+        headers = {**request.headers, "host": local, PHONE_MARK: "1"}
         origin = request.headers.get("origin")
         if self.lan is not None and origin == self.lan.origin:
             headers["origin"] = f"http://{local}"  # the remote's own: a POST passes

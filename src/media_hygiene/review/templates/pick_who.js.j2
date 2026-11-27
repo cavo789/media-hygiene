@@ -8,10 +8,18 @@
    "👤 Its other photos" opens /person on that face. Read-only (a phone, no config.toml): the
    names only. Included by `pick_viewer.js.j2` and `people_viewer.js.j2` (needs `$`, `element`,
    `fill`); `#viewerWho` (`pick_viewer.html.j2`) holds the words; a page that shows names
-   listens to the `mh-named` event of `document`. #}
+   listens to the `mh-named` event of `document`. Each face is outlined on the photo, its name
+   under it (`pick_who_boxes.js.j2`, 0838). Back on the tab, the faces are asked again. #}
 {% include "combo_list.js.j2" %}
+{% include "pick_who_boxes.js.j2" %}
 let whoAsked = 0;   // the latest photo asked: an answer for an earlier one is dropped
 let whoFile = null; // the file whose faces are shown
+
+// Back on this tab (a face named in the /person tab "Identify someone" opened): the names as
+// they are now, asked again for the photo still open.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && whoFile && $("viewer").classList.contains("open")) showWho(whoFile);
+});
 
 async function whoAsk(url, body) {
   const options = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
@@ -27,16 +35,24 @@ async function showWho(file) {
   who.hidden = true;
   who.replaceChildren();
   $("viewerWhoName").replaceChildren();
+  whoClear();
   if (!file.path || file.video) return;
   const result = await whoAsk("/person/api/photo", { path: file.path });
   const faces = result && asked === whoAsked ? result.faces || [] : [];
   if (!faces.length) return;
   const writable = Boolean(result.writable) && !document.documentElement.hasAttribute("data-phone");
+  const name = writable ? (face, at) => whoNamer(face, at, result.people || []) : null;
   who.append("👤 ");
   faces.forEach((face, at) => {
     if (at) who.append(" · ");
-    who.append(whoFace(face, writable ? () => whoNamer(face, at, result.people || []) : null));
+    const chip = who.appendChild(whoFace(face, name ? () => name(face, at) : null));
+    chip.addEventListener("mouseenter", () => whoLight(at, true));
+    chip.addEventListener("mouseleave", () => whoLight(at, false));
   });
+  const guessed = name ? faces.filter((face) => face.named && face.named.name && face.named.how !== "confirmed") : [];
+  if (guessed.length) who.append(" ", whoConfirm(guessed));
+  if (faces.some((face) => face.box)) who.append(" ", whoSwitch());
+  whoDraw(faces, name);
   who.hidden = false;
 }
 
@@ -71,18 +87,13 @@ function whoNamer(face, at, people) {
   const input = element("input");
   input.placeholder = who.dataset.placeholder;
   input.setAttribute("aria-label", said);
-  const go = async (name) => {
-    if (!name) return;
-    const line = $("viewerSaid");
-    line.className = "";
-    line.textContent = who.dataset.saving;
-    const body = { action: "move", name: name, faces: [Number(face.key)], source: source };
-    const saved = await whoAsk("/person/api/names", body);
-    line.className = saved && !saved.error ? "" : "error";
-    line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
-    if (!saved || saved.error) return;
-    document.dispatchEvent(new CustomEvent("mh-named"));
-    if (whoFile === file) showWho(file); // the names as the file says now
+  let busy = false; // Enter on a name offered: the list and the key both ask, once saved
+  const go = (name) => {
+    if (!name || busy) return null;
+    busy = true;
+    return whoSave(file, [{ name: name, keys: [Number(face.key)], source: source }]).finally(() => {
+      busy = false;
+    });
   };
   const box = comboAttach(input, () => people, (row) => go(row.value));
   input.addEventListener("keydown", (event) => {
@@ -97,6 +108,63 @@ function whoNamer(face, at, people) {
   others.href = "/person?path=" + encodeURIComponent(file.path) + "&face=" + at;
   others.target = "_blank";
   others.rel = "noopener";
-  $("viewerWhoName").replaceChildren(element("span", "", said), box, button, others);
+  const parts = [element("span", "", said), box, button, others];
+  if (source) { // "✗ It is not Chloé": the face left with no name, nothing typed
+    const notThem = element("button", "", fill(who.dataset.unsure, { name: source }));
+    notThem.type = "button";
+    notThem.addEventListener("click", () => whoPost(file, { action: "unname", name: source, faces: [Number(face.key)], source: "" }));
+    parts.unshift(notThem);
+  }
+  if (source && face.named.how !== "confirmed") { // ≈ guessed: "✓ It is Chloé", one click
+    const sure = element("button", "", fill(who.dataset.sure, { name: source }));
+    sure.type = "button";
+    sure.addEventListener("click", () => whoSave(file, [{ name: source, keys: [Number(face.key)], source: "" }]));
+    parts.unshift(sure);
+  }
+  $("viewerWhoName").replaceChildren(...parts);
+  whoLit = at; // outlined on the photo while it is named
+  whoLight(at, false);
   input.focus();
+}
+
+// Saves names ({name, keys, source} each, as /person does: `move`), says the line read back
+// from config.toml, then the faces as the file says now.
+function whoSave(file, changes) {
+  // One request, one write, whatever the number of names (`also`: 4 s each before).
+  const [first, ...more] = changes;
+  const also = more.map((change) => ({ name: change.name, faces: change.keys }));
+  return whoPost(file, { action: "move", name: first.name, faces: first.keys, source: first.source, also: also });
+}
+
+// Sends a naming (`move`) or *✗ It is not …* (`unname`: no name left guessed, as the cross
+// of /person), says the line read back, then the faces as the file says now.
+async function whoPost(file, body) {
+  const who = $("viewerWho");
+  const line = $("viewerSaid");
+  line.className = "";
+  line.textContent = who.dataset.saving;
+  const saved = await whoAsk("/person/api/names", body);
+  line.className = saved && !saved.error ? "" : "error";
+  line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
+  if (!saved || saved.error) return;
+  document.dispatchEvent(new CustomEvent("mh-named", { detail: { key: file.key } }));
+  if (whoFile === file) showWho(file);
+}
+
+// "✓ Confirm the names guessed: N": every ≈ face of the photo, as the tool named it.
+function whoConfirm(guessed) {
+  const who = $("viewerWho");
+  const file = whoFile;
+  const words = guessed.length === 1 ? who.dataset.sureOne : who.dataset.sureMany;
+  const button = element("button", "whoConfirm", fill(words, { n: guessed.length }));
+  button.type = "button";
+  button.addEventListener("click", () => {
+    const byName = new Map();
+    for (const face of guessed) byName.set(face.named.name, [...(byName.get(face.named.name) || []), Number(face.key)]);
+    button.disabled = true; // one click: the names are saved in one write
+    whoSave(file, [...byName].map(([name, keys]) => ({ name: name, keys: keys, source: "" }))).finally(() => {
+      button.disabled = false;
+    });
+  });
+  return button;
 }

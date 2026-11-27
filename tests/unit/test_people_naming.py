@@ -240,3 +240,26 @@ def test_a_face_on_a_group_photo_is_marked_shared() -> None:
     board = PeopleBoard.of(grouped, every)  # type: ignore[arg-type]
     shown = faces_view(board, (0, 1, 2), str)
     assert [one["shared"] for one in shown] == [True, True, False]
+
+
+def test_a_name_on_a_photo_is_not_guessed_again_the_next_one_is() -> None:
+    """✓ Chloé on a photo: its other face Chloé-like gets the next closest name."""
+    group = Path("/data/group.jpg")
+    vector = np.zeros(EMBEDDING_SIZE, dtype=np.float32)
+    vector[:3] = (1.0, 0.0, 0.0)
+    here = StoredFace(
+        group, 0, FaceBox(0, 0, 50, 50), 0.9, 80.0, embedding_bytes(vector)
+    )
+    vector[:3] = (0.8, 0.6, 0.0)
+    other = StoredFace(
+        group, 1, FaceBox(60, 0, 50, 50), 0.9, 80.0, embedding_bytes(vector)
+    )
+    marc = face("marc", (0.0, 1.0))
+    people = (
+        Person(name="Chloé", faces=(face_id(CHLOE.path, 0), face_id(group, 0))),
+        Person(name="Marc", faces=(face_id(marc.path, 0),)),
+    )
+    every = (CHLOE, marc, here, other)
+    known = Known.of(every, PeopleSettings(person=people))
+    names = name_all((here, other), known)
+    assert names == (FaceName("Chloé", How.CONFIRMED), FaceName("Marc", How.ASSIGNED))

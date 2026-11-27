@@ -37,3 +37,4 @@ Split from section 0572 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
   of `events_choose`, their tests), and rewrite what `sort/11` (en + fr) still says of it.
   **Reason:** about 1,600 lines of JavaScript shared with review-sort's choices and no browser
   test in the devcontainer: a removal to do with CI's headless Chromium checking each step.
+  → remove it (maintainer, inbox 2026-11-14): filed as 0822.

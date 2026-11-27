@@ -117,8 +117,10 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **Pick**, as on every page of photos: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
-  in the bar takes every file the search finds, not only the 240 shown; **🔀 Invert the picking**
-  (or I) picks the others.
+  in the bar takes every file the search finds, not only the 240 shown (a message says so the
+  moment the 240 shown are picked, with the same button); **🔀 Invert the picking** (or I) picks
+  the others. Every button acts on what is picked: the 240, or all N once *Pick all* is clicked.
+  ▶ Slideshow with nothing picked shows every file found, and its menu says so.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
@@ -145,7 +147,12 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   whole path and a link to the original); ← → (on a
   phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, L the landmark it
   shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Identify someone** names someone on the photo shown, or finds every photo of them
-  ([`people`](people.md#from-any-photo-name-or-set-aside-someone)).
+  ([`people`](people.md#from-any-photo-name-or-set-aside-someone)). Each face found is outlined on the
+  photo with its name under it (✓ confirmed, ≈ guessed, ? not named); **Hide names** / **Show names**
+  turns the names off or on (remembered). Hovering a face of the line under the photo outlines it on
+  the photo; a click on a face, under the photo or on it, names it right there (on a phone: names only).
+  A face with a name, guessed or confirmed, offers **✓ It is …** and **✗ It is not …**: the second
+  leaves the face with no name (? not named), without typing another one.
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,

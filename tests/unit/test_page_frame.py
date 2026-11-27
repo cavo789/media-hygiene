@@ -157,7 +157,7 @@ def test_the_search_tree_of_folders_scrolls_on_its_own() -> None:
 # (the 200-line cap is for Python), so that the next monolith is seen; sizes shrink.
 TEMPLATE_SOFT_CAP: Final = 400
 OVERSIZED_TEMPLATES: Final = {
-    "review/templates/home_run.js.j2": 603,
+    "review/templates/home_run.js.j2": 486,
     "review/templates/home_parts.css.j2": 547,
     "review/templates/review.html.j2": 501,
     "config/templates/config.toml.j2": 501,

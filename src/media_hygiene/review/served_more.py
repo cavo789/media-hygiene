@@ -13,6 +13,7 @@ IMPORT_PAGE: Final = "/import/"  # `services/pages_here` (0590)
 INTRUDERS_PAGE: Final = "/review/intruders/"  # `services/review_kinds` (0594)
 SHRINK_PAGE: Final = "/shrink/"  # `services/shrink_here` (0599)
 REPAIR_PAGE: Final = "/repair/"  # `services/pages_here` (0783)
+STRAIGHTEN_PAGE: Final = "/straighten/"  # `services/pages_here` (0810)
 DISK_PURGE_PATH: Final = "/disk-space/api/purge"  # `services/disk_here` (0616)
 SERVED_MORE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     {
@@ -22,6 +23,7 @@ SERVED_MORE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
         ("review", "--intruders"): INTRUDERS_PAGE,
         ("shrink", "--try"): SHRINK_PAGE,
         ("clean", "--repair"): REPAIR_PAGE,
+        ("people", "--straighten"): STRAIGHTEN_PAGE,
     }
 )
 

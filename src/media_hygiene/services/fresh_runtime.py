@@ -4,8 +4,11 @@ A command reads `config.toml` and `/config/people/*.toml` when it starts, then l
 few minutes. The home server lives the whole session (0355, 0356) while the user edits
 `config.toml`, names a person on the people page or saves a place, each in a container
 of its own: without this it would show stale settings until `mh` starts again (0358).
-The files are compared by content (a few KB, SHA-256): a copy keeping the old mtime,
-an atomic save (another inode), an edit in place or a removal are all seen alike. A
+The files are compared by content (SHA-256), once their stamps say something may
+have changed: a copy keeping the old mtime (its ctime), an atomic save (another
+inode), an edit in place or a removal are all seen alike, and a file saved again
+unchanged reloads nothing. Only the stamps are read each second: the people's files
+reached 1.2 MB, read in 0.8 s over Docker Desktop's file sharing (2026-11-16). A
 file that no longer loads keeps the last good settings, said once in the console and,
 until it loads again, on the pages (`error`, 0364): the server runs in the background.
 """
@@ -25,12 +28,47 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.next_command import tool_host
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.paths.locations import Locations
     from media_hygiene.services.runtime import Runtime
 
 # The files read at most once a second: a page asks a dozen times when it opens, and
 # Docker Desktop's file sharing makes each read of /config slower than on Linux (0277).
 CHECK_SECONDS: Final = 1.0
+
+
+def settings_stamps(locations: Locations) -> tuple[tuple[object, ...], ...]:
+    """The stamp of every file the settings are read from, without reading them.
+
+    Args:
+        locations: The mount points: `config.toml` and its `people` folder.
+
+    Returns:
+        Each file's name, inode, size, modification and change times.
+    """
+    stamps: list[tuple[object, ...]] = []
+    for path in _settings_files(locations):
+        try:
+            status = path.stat()
+        except OSError:
+            stamps.append((path.name,))
+            continue
+        times = (status.st_mtime_ns, status.st_ctime_ns)
+        stamps.append((path.name, status.st_ino, status.st_size, *times))
+    return tuple(stamps)
+
+
+def _settings_files(locations: Locations) -> tuple[Path, ...]:
+    """`config.toml` and the files of its `people` folder.
+
+    Args:
+        locations: The mount points.
+
+    Returns:
+        The files, in order.
+    """
+    return (locations.config_file, *sorted((locations.config_dir / FOLDER).glob("*")))
 
 
 def settings_mark(locations: Locations) -> bytes:
@@ -43,8 +81,7 @@ def settings_mark(locations: Locations) -> bytes:
         The digest; another one as soon as a file is added, removed or changed.
     """
     digest = hashlib.sha256()
-    files = (locations.config_file, *sorted((locations.config_dir / FOLDER).glob("*")))
-    for path in files:
+    for path in _settings_files(locations):
         digest.update(path.name.encode())
         try:
             digest.update(path.read_bytes())
@@ -65,6 +102,7 @@ class FreshRuntime:
         """
         self._runtime = runtime
         self._mark = settings_mark(runtime.locations)
+        self._stamps = settings_stamps(runtime.locations)
         self._every = every
         self._checked = time.monotonic()
         self._error = ""
@@ -90,6 +128,10 @@ class FreshRuntime:
         if now - self._checked < self._every:
             return self._runtime
         self._checked = now
+        stamps = settings_stamps(self._runtime.locations)
+        if stamps == self._stamps:
+            return self._runtime
+        self._stamps = stamps
         mark = settings_mark(self._runtime.locations)
         if mark == self._mark:
             return self._runtime

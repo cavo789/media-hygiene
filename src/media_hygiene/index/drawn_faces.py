@@ -23,6 +23,10 @@ if TYPE_CHECKING:
 
 DRAWN_FROM: Final = 1000  # the numbers of the faces drawn; a photo has fewer found
 _VERSION: Final = "SELECT size, mtime_ns FROM files WHERE path = ?"
+# A photo whose faces the person page found, never audited: no row of `files`.
+_FACES_VERSION: Final = (
+    "SELECT size, mtime_ns FROM faces WHERE path = ? AND model = ? LIMIT 1"
+)
 _LAST: Final = "SELECT MAX(number) FROM faces WHERE path = ? AND model = ?"
 _PUT: Final = (
     "INSERT INTO faces (path, size, mtime_ns, model, number, x, y, width, height,"
@@ -57,11 +61,23 @@ def add_drawn(
         model: The pair of models its vector comes from.
         drawn: The photo, in the container, and the face.
 
+    The photo's version is the audit's (`files`), else that of the faces already
+    kept for it (the person page finds the faces of a photo no audit has read), else
+    the file's on disk (a photo where no face was found).
+
     Returns:
-        Its number; None when the index does not know the photo.
+        Its number; None when the photo is neither in the index nor on disk.
     """
     path, face = drawn
-    version = connection.execute(_VERSION, (str(path),)).fetchone()
+    version = connection.execute(_VERSION, (str(path),)).fetchone() or (
+        connection.execute(_FACES_VERSION, (str(path), model)).fetchone()
+    )
+    if version is None:
+        try:
+            stat = path.stat()
+        except OSError:
+            return None
+        version = (stat.st_size, stat.st_mtime_ns)
     if version is None:
         return None
     last = connection.execute(_LAST, (str(path), model)).fetchone()[0]

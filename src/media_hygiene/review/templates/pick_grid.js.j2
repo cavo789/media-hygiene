@@ -23,6 +23,7 @@ let current = -1;      // the card with the focus
 let anchor = -1;       // where a Shift+click range starts
 let total = 0;         // every file found, when the page shows the first ones only
 let everything = false; // every file found is picked, not only those shown (*pickAll*)
+let allShownSaid = false; // the toast offering every file found was shown for this picking
 const picked = new Set(); // the keys of the files picked
 let bandDrawn = false; // a rectangle just ended: the click that follows picks nothing
 let saveChoice = null; // the page's own saving of a choice, instead of `CHOSEN_PATH`'s
@@ -151,6 +152,16 @@ function showFiles(listed, again) {
   showPicked();
 }
 
+// *Show more* (0408): the next files after those shown, added; the picks stay.
+function appendFiles(listed) {
+  const start = files.length;
+  files = files.concat(listed);
+  const added = listed.map((file, rank) => card(file, start + rank));
+  cards = cards.concat(added);
+  if (typeof placeCards === "function") placeCards(cards); else $("grid").append(...added);
+  showPicked();
+}
+
 function focusOn(index) {
   if (index < 0 || index >= cards.length) return;
   if (current >= 0 && cards[current]) cards[current].classList.remove("current");
@@ -208,7 +219,19 @@ function showPicked() {
   $("pickAll").hidden = !(everything || (total > files.length && picked.size === files.length));
   $("pickAll").disabled = everything;
   if (TEXTS.allFound) $("pickAll").textContent = fill(everything ? TEXTS.allPicked : TEXTS.allFound, { total: total });
+  offerAll();
   if (window.mhAlbumPicked) window.mhAlbumPicked(count); // album_bar.html.j2
+}
+
+// Every file shown picked (Ctrl+A, Invert, the rectangle…) on a search showing its first
+// files: a toast says only those are picked and offers every file found (0837), once.
+function offerAll() {
+  const allShown = !everything && total > files.length && files.length > 0 && files.every((file) => picked.has(file.key));
+  if (allShown && !allShownSaid && TEXTS.partialPick && window.mhSay) {
+    window.mhSay(fill(TEXTS.partialPick, { n: picked.size, total: total }), "info",
+      { label: fill(TEXTS.allFound, { total: total }), run: () => { everything = true; showPicked(); } });
+  }
+  allShownSaid = allShown;
 }
 
 // What *Set aside* and *Add to the album* take: the files picked, or every file found.
@@ -317,10 +340,19 @@ if ($("acting")) { // a page answering per group has no picking bar (0321)
 // home server's slideshow; a new tab opens at once (opened before the answer: a browser
 // lets a click open a tab, not a script after it): the TV's remote, or with `here` (🖥 On
 // this PC, 0659) the screen itself, full screen on a click, the keyboard as remote.
+// What a show takes (0833, 0837): what is picked, like every button (*Pick all N*: every
+// file found); nothing picked on a search showing its first files: every file found; else
+// those shown. `count`: the number the menu states.
+function showing() {
+  if (everything) return { keys: [], all: true, count: total };
+  if (picked.size > 0) return { keys: [...picked], all: false, count: picked.size };
+  if (total > files.length) return { keys: [], all: true, count: total };
+  return { keys: files.map((file) => file.key), all: false, count: files.length };
+}
+
 async function toTv(button, here = false) {
-  const some = picked.size > 0 || everything;
-  const sent = some ? picking() : { keys: files.map((file) => file.key), all: total > files.length, search: scope() };
-  sent.keys = sent.keys.map(String);
+  const { keys, all } = showing();
+  const sent = { keys: keys.map(String), all: all, search: scope() };
   const remote = window.open("", "_blank");
   $("chosen").className = "";
   $("chosen").textContent = button.dataset.sending;

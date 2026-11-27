@@ -1,0 +1,108 @@
+{# The script of straighten.html.j2, after the shared `pick_*` scripts: each photo shown
+   turned as it would be; ↻ Turn posts the keys picked, ✋ Never turn their refusal, then the
+   page shows the photos as the server read them again; the toast's Undo runs `mh undo` of
+   the run just made. *Apply now* shows while a turn is pending. #}
+const TEXTS = {{ texts | tojson }};
+const STATE_PATH = {{ state_path | tojson }};
+const TURN_PATH = {{ turn_path | tojson }};
+const REFUSE_PATH = {{ refuse_path | tojson }};
+const CHOSEN_PATH = ""; // unused: `saveChoice` turns or refuses
+const LANG = document.documentElement.lang;
+let tiles = [];
+let posting = TURN_PATH;
+
+const number = (value) => value.toLocaleString(LANG);
+
+function listing() {
+  return tiles.map((tile) => ({
+    key: tile.key, name: tile.name, preview: tile.preview, original: tile.original,
+    chosen: false, folder: tile.folder,
+  }));
+}
+
+function card(file, index) {
+  const tile = tiles[index];
+  const node = element("article");
+  const frame = element("div", "turned");
+  const image = element("img");
+  image.loading = "lazy";
+  image.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+  image.alt = tile.name;
+  image.src = tile.preview;
+  image.style.transform = `rotate(${tile.turn}deg)`;
+  image.addEventListener("error", () => image.replaceWith(element("div", "empty", "📷")));
+  frame.append(image);
+  const meta = element("div", "meta");
+  meta.append(
+    element("div", "name", tile.name), element("div", "muted", tile.folder),
+    element("div", "muted", fill(TEXTS.turn, { degrees: tile.turn })),
+  );
+  node.append(frame, meta);
+  return wireCard(node, index);
+}
+
+function placeCards(made) {
+  if (made.length === 0) {
+    $("grid").replaceChildren(element("p", "muted", TEXTS.empty));
+    return;
+  }
+  const grid = element("div", "tiles");
+  grid.append(...made);
+  $("grid").replaceChildren(grid);
+}
+
+function scope() {
+  return {};
+}
+
+function reopen() {
+  showFiles(listing(), false);
+  $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length) }) : TEXTS.empty;
+  if (window.mhApplyNow) window.mhApplyNow(tiles.length > 0);
+}
+
+function say(text, kind) {
+  for (const id of ["chosen", "viewerSaid"]) {
+    $(id).className = kind || "";
+    $(id).textContent = text;
+  }
+  $("chosen").title = text;
+}
+
+async function readAgain() {
+  const answer = await ask(STATE_PATH);
+  if (!answer || !answer.ok) { say(TEXTS.offline, "error"); return; }
+  tiles = (await answer.json()).tiles;
+  reopen();
+}
+
+// ↻ Turn or ✋ Never turn: the photos picked (only those shown); the page shows the disk again.
+saveChoice = async (action, keys) => {
+  if (action !== "add" || keys.length === 0) return false;
+  const path = posting;
+  say(TEXTS.turning, "");
+  const answer = await ask(path, { keys: keys });
+  if (!answer) { say(TEXTS.offline, "error"); return false; }
+  const reply = await answer.json().catch(() => ({}));
+  if (!answer.ok) {
+    say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error");
+    return false;
+  }
+  tiles = reply.state.tiles;
+  const time = new Date().toLocaleTimeString(LANG);
+  let text = fill(path === REFUSE_PATH ? TEXTS.refused : TEXTS.back, { time: time, count: number(reply.done) });
+  if (reply.left.length) text += " " + fill(TEXTS.left, { reasons: reply.left.join(" · ") });
+  say(text, reply.left.length ? "error" : "saved");
+  if (reply.run_id) {
+    window.mhUndoToast(text, async () => { say(await window.mhUndoRun(reply.run_id), ""); await readAgain(); }, { keys: true });
+  }
+  return true;
+};
+deleteKeySets = false; // nothing is set aside here
+delete VIEWER_KEYS.Delete;
+delete VIEWER_KEYS.Backspace;
+delete VIEWER_KEYS.a;
+$("turnPicked").addEventListener("click", () => { posting = TURN_PATH; choose("add"); });
+$("refusePicked").addEventListener("click", () => { posting = REFUSE_PATH; choose("add"); });
+
+readAgain();

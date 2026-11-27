@@ -190,3 +190,32 @@ def test_a_face_forgotten_leaves_every_name_and_a_person_left_without_any() -> N
     assert [person.name for person in after.person] == ["Bob"]
     assert (after.person[0].faces, after.person[0].rejected) == ((kept,), (kept,))
     assert after.ignored == ("/data/c/b.jpg#0",)
+
+
+def test_a_face_drawn_on_a_photo_the_person_page_scanned_is_kept(
+    tmp_path: Path,
+) -> None:
+    """No audit row: the version of the faces the page found is the photo's."""
+    path = tmp_path / "a.jpg"
+    with FactsRepository.open(tmp_path / "index.sqlite") as repository:
+        connection = repository.connection
+        store = FaceStore(connection, MODEL)
+        store.put(PhotoFaces(path, 10, 1, (face_of(0, (60, 60)),), 0.1))
+        assert add_drawn(connection, MODEL, (path, face_of(1, (30, 30)))) == DRAWN_FROM
+        store.put(PhotoFaces(path, 10, 1, (face_of(0, (60, 60)),), 0.1))  # again
+        rows = connection.execute("SELECT number FROM faces ORDER BY number")
+        assert [number for (number,) in rows] == [0, DRAWN_FROM]
+
+
+def test_a_face_drawn_on_a_photo_without_any_face_takes_its_version_on_disk(
+    tmp_path: Path,
+) -> None:
+    """Neither audited nor any face kept: the file's own size and date."""
+    path = tmp_path / "a.jpg"
+    path.write_bytes(b"0123456789")
+    with FactsRepository.open(tmp_path / "index.sqlite") as repository:
+        connection = repository.connection
+        assert add_drawn(connection, MODEL, (path, face_of(1, (30, 30)))) == DRAWN_FROM
+        stat = path.stat()
+        row = connection.execute("SELECT size, mtime_ns FROM faces").fetchone()
+        assert row == (stat.st_size, stat.st_mtime_ns)

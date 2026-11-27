@@ -4,7 +4,9 @@
    same <script>, parsed by tests/unit/test_slideshow_screen.py). The actions are the
    remote's `POST` (JSON): the server takes them from the PC alone. In the home server
    (`presence_kept`), the tab says it is alive, as every page of mh: the home page it
-   replaced said it left, and the server would end mid-show; ✕ leads back home. #}
+   replaced said it left, and the server would end mid-show; ✕ leads back home. Avoid some
+   people (0829): the remote's own script, slideshow_avoid.js.j2, included below; when
+   someone is seen, the show pauses under #hereAvoid until Start (Enter); P opens it again. #}
 var hereAnswer = null;
 (function () {
   var SHOW = {{ show_path | tojson }};
@@ -49,6 +51,22 @@ var hereAnswer = null;
     bar.className = "";
     document.body.className = "pointing";
     hideTimer = window.setTimeout(hide, STILL_MS);
+  }
+
+  var avoiding = false;
+  var avoidPanel = document.getElementById("hereAvoid");
+
+  function avoidOpen(open) {
+    if (document.getElementById("avoid").hidden) {
+      return;  // nobody seen on the show: nothing to avoid
+    }
+    avoiding = open;
+    avoidPanel.className = open ? "" : "hidden";
+    act(open ? "pause" : "play");
+  }
+
+  function avoidOpened() {
+    avoidOpen(true);
   }
 
   function toggle() {
@@ -110,9 +128,21 @@ var hereAnswer = null;
     }
   });
   document.addEventListener("mousemove", reveal, false);
+  document.getElementById("hereStart").addEventListener("click", function () {
+    avoidOpen(false);
+  }, false);
   document.addEventListener("keydown", function (event) {
     var key = event.keyCode;
-    if (key === 37) {
+    if (avoiding) {
+      if (key === 13 || key === 80) {
+        avoidOpen(false);
+        event.preventDefault();
+      }
+      return;  // the ticks take Space; the show waits for Start
+    }
+    if (key === 80) {
+      avoidOpen(true);
+    } else if (key === 37) {
       act("previous");
     } else if (key === 39) {
       act("next");
@@ -132,4 +162,5 @@ var hereAnswer = null;
     window.setInterval(alive, 10000);
   }
   reveal();
+{% include "slideshow_avoid.js.j2" %}
 }());

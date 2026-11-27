@@ -1,0 +1,90 @@
+{# The remote's grid in groups (0831, 0832): one per event of the show, i.e. its folder (the
+   chapters of 0448, not the library's 🗂 Events tab), each with its count and a box ticked by
+   default that sets its photos out of the show or back in (`untick` / `tick`); a group with
+   no photo left is hidden, never "0 photos", but an event unticked keeps its heading and box
+   to be ticked back; then, last,
+   *Will not be shown*: every photo out, each with why (✓ ≈ a person avoided, an event
+   unticked, by hand) and *Show it again*. The group of the photo on the TV is marked. The
+   look of the phone page's folders (`tile_groups.css.j2`). Included inside slideshow.js.j2's
+   closure: it reads `tiles`, `grid`, `TEXTS`, `ask`, `plural`. #}
+  const groups = new Map();  // an event's folder → its group
+  const folderOf = new Map();  // a key → its event's folder
+  let order = [];  // the keys, in the show's order
+  let outGroup = null;
+
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function groupOf(label, folder) {
+    const section = element("section", "folder");
+    const bar = element("div", "folderBar");
+    const group = { section, label, folder, tiles: element("div", "tiles"), count: element("span", "muted count"), box: null };
+    if (folder !== null) {
+      const box = element("input");
+      box.type = "checkbox";
+      box.checked = true;
+      box.title = TEXTS.eventBox;
+      box.setAttribute("aria-label", `${TEXTS.eventBox} ${label}`);
+      box.addEventListener("change", () => ask({ action: box.checked ? "tick" : "untick", folder }));
+      group.box = box;
+      bar.append(box);
+    }
+    bar.append(element("h2", "", label), group.count);
+    section.append(bar, group.tiles);
+    grid.append(section);
+    return group;
+  }
+
+  function placeGroups(slides, events) {
+    for (const event of events) {
+      const label = [event.name, event.period].filter(Boolean).join(" · ") || TEXTS.otherPhotos;
+      groups.set(event.folder, groupOf(event.folder ? label : TEXTS.otherPhotos, event.folder));
+    }
+    outGroup = groupOf(TEXTS.notShown, null);
+    outGroup.section.classList.add("notShown");
+    order = slides.map((slide) => slide.key);
+    for (const slide of slides) folderOf.set(slide.key, slide.folder || "");
+  }
+
+  function reasonOf(reason) {
+    if (reason === "hand") return TEXTS.byHand;
+    if (reason.startsWith("person:")) return reason.slice("person:".length);
+    const event = groups.get(reason.slice("event:".length));
+    return event ? event.label : reason;
+  }
+
+  // Each tile in its group, in the show's order; moved only when its place changed.
+  function regroup(show) {
+    if (outGroup === null) return;
+    const outKeys = new Set(show.out);
+    const why = show.why || {};
+    const last = new Map();
+    const counts = new Map();
+    for (const key of order) {
+      const tile = tiles.get(key);
+      const out = outKeys.has(key);
+      const group = out ? outGroup : groups.get(folderOf.get(key));
+      const before = last.get(group);
+      const spot = before ? before.nextSibling : group.tiles.firstChild;
+      if (spot !== tile) group.tiles.insertBefore(tile, spot);
+      last.set(group, tile);
+      counts.set(group, (counts.get(group) || 0) + 1);
+      tile.querySelector(".why").textContent = out ? (why[key] || ["hand"]).map(reasonOf).join(", ") : "";
+    }
+    const unticked = new Set(show.unticked || []);
+    const shownFolder = show.current === null ? null : folderOf.get(show.current);
+    for (const group of [...groups.values(), outGroup]) {
+      const count = counts.get(group) || 0;
+      const off = group.box !== null && unticked.has(group.folder);
+      // No "0 photos": a group with none shown is hidden, but an event unticked keeps its
+      // heading and box (its photos are under *Will not be shown*), so it can be ticked back.
+      group.section.hidden = count === 0 && !off;
+      group.count.textContent = count === 0 ? "" : plural(TEXTS.photos, count);
+      if (group.box) group.box.checked = !off;
+      group.section.classList.toggle("current", group.folder !== null && group.folder === shownFolder);
+    }
+  }

@@ -82,7 +82,8 @@ def test_the_people_column(
     assert run(cli, "audit").exit_code == 0
     assert run(cli, "inventory", "--format", "csv").exit_code == 0
     assert _people(locations) == {""}
-    named = next(locations.data_dir.rglob("*.jpg"))
+    # One the inventory lists: an rglob order may give IMG_9999.jpg, left out.
+    named = locations.data_dir / "c" / "Family Photos" / "2021" / "Plage.jpg"
     monkeypatch.setattr(
         "media_hygiene.services.inventory.people_words",
         lambda _connection, _settings: {named: ("Léa", "Paul")},
@@ -93,6 +94,10 @@ def test_the_people_column(
 
 def _people(locations: Locations) -> set[str]:
     """The values of the People column of the latest CSV inventory."""
-    latest = max(locations.reports_dir.glob("*-inventory*/inventory.csv"))
+    # By time: a run in the same second writes `<stamp>-inventory-2`, first by name.
+    latest = max(
+        locations.reports_dir.glob("*-inventory*/inventory.csv"),
+        key=lambda path: path.stat().st_mtime_ns,
+    )
     with latest.open(encoding="utf-8-sig", newline="") as stream:
         return {row["People"] for row in csv.DictReader(stream)}

@@ -1,0 +1,98 @@
+{# The faces outlined on the photo opened large (0838), included by `pick_who.js.j2`: each
+   face the who line lists gets its box over `#large` (fractions of the upright picture sent
+   by `/person/api/photo`, `box`), its name under it (✓ ≈ ?). A switch on the who line shows or
+   hides the names, remembered per viewer (localStorage, on by default); hovering a face of the
+   line, or its box, outlines it, and the face being named stays outlined. A click on a box
+   names it as a click on its face does (not on a phone: names only). The layer is placed over
+   the picture's drawn rect (object-fit: contain), again on resize and on load. #}
+const WHO_NAMES_KEY = "mh-face-names";
+let whoBoxes = [];  // [{ box, tag }] of the photo shown
+let whoLit = -1;    // the face being named: stays outlined
+
+function whoNamesOn() {
+  try { return window.localStorage.getItem(WHO_NAMES_KEY) !== "off"; } catch { return true; }
+}
+
+function whoLayer() {
+  let layer = $("whoLayer");
+  if (!layer) {
+    layer = element("div");
+    layer.id = "whoLayer";
+    $("viewer").append(layer);
+  }
+  return layer;
+}
+
+// Over the picture as it is drawn: its element's rect less the bands object-fit leaves.
+function whoPlace() {
+  const layer = $("whoLayer");
+  const large = $("large");
+  if (!layer || !whoBoxes.length || !large.naturalWidth) { if (layer) layer.hidden = true; return; }
+  const frame = $("viewer").getBoundingClientRect();
+  const drawn = large.getBoundingClientRect();
+  const scale = Math.min(drawn.width / large.naturalWidth, drawn.height / large.naturalHeight);
+  const width = large.naturalWidth * scale;
+  const height = large.naturalHeight * scale;
+  layer.style.left = (drawn.left - frame.left + (drawn.width - width) / 2) + "px";
+  layer.style.top = (drawn.top - frame.top + (drawn.height - height) / 2) + "px";
+  layer.style.width = width + "px";
+  layer.style.height = height + "px";
+  layer.classList.toggle("named", whoNamesOn());
+  layer.hidden = large.hidden;
+}
+
+function whoLight(at, on) {
+  whoBoxes.forEach((face, index) => face.box.classList.toggle("lit", index === whoLit || (on && index === at)));
+}
+
+// The boxes of the faces listed: `faces` as the server sent them, `name(face, at)` or null.
+function whoDraw(faces, name) {
+  const layer = whoLayer();
+  whoLit = -1;
+  whoBoxes = [];
+  layer.replaceChildren();
+  faces.forEach((face, at) => {
+    if (!face.box) return;
+    const box = element(name ? "button" : "div", "whoBox");
+    if (name) {
+      box.type = "button";
+      box.addEventListener("click", () => name(face, at));
+    }
+    box.style.left = face.box.x * 100 + "%";
+    box.style.top = face.box.y * 100 + "%";
+    box.style.width = face.box.w * 100 + "%";
+    box.style.height = face.box.h * 100 + "%";
+    const named = face.named && face.named.name ? face.named : null;
+    const sure = Boolean(named) && named.how === "confirmed";
+    box.append(element("span", "whoLabel", named ? (sure ? "✓ " : "≈ ") + named.name : $("viewerWho").dataset.nobody));
+    box.addEventListener("mouseenter", () => whoLight(at, true));
+    box.addEventListener("mouseleave", () => whoLight(at, false));
+    layer.append(box);
+    whoBoxes.push({ box, at });
+  });
+  whoBoxes = faces.map((face, at) => whoBoxes.find((one) => one.at === at) || { box: element("i"), at });
+  whoPlace();
+}
+
+// "Show names" / "Hide names" at the end of the who line.
+function whoSwitch() {
+  const who = $("viewerWho");
+  const button = element("button", "whoSwitch", whoNamesOn() ? who.dataset.hide : who.dataset.show);
+  button.type = "button";
+  button.addEventListener("click", () => {
+    try { window.localStorage.setItem(WHO_NAMES_KEY, whoNamesOn() ? "off" : "on"); } catch { /* kept for this view */ }
+    button.textContent = whoNamesOn() ? who.dataset.hide : who.dataset.show;
+    whoPlace();
+  });
+  return button;
+}
+
+function whoClear() {
+  whoBoxes = [];
+  whoLit = -1;
+  if ($("whoLayer")) { $("whoLayer").replaceChildren(); $("whoLayer").hidden = true; }
+}
+
+window.addEventListener("resize", whoPlace);
+document.addEventListener("fullscreenchange", whoPlace);
+$("large").addEventListener("load", whoPlace);

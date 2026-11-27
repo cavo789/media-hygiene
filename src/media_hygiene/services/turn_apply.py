@@ -116,4 +116,12 @@ class TurnService:
         with new_run(self._runtime, self._progress, Phase.TURN) as context:
             interrupted = TurnExecutor(context, tally).run(jobs, stop)
         run_id = context.quarantine_run_dir.name
-        return TurnResult(run_id, tally.freeze(), interrupted)
+        outcome = tally.freeze()
+        untouched = {incident.path for incident in (*outcome.skipped, *outcome.failed)}
+        reached = jobs[: outcome.done + len(untouched)]  # in order; Ctrl+C: the rest
+        # Turned: no longer proposed, although the index still holds the version before.
+        with FactsRepository.open(self._runtime.locations.index_file) as repository:
+            TurnStore(repository.connection, FACE_MODEL).forget(
+                job.path for job in reached if job.path not in untouched
+            )
+        return TurnResult(run_id, outcome, interrupted)

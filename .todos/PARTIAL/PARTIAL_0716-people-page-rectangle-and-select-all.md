@@ -37,6 +37,7 @@ but not by dragging a rectangle nor Ctrl+A / invert, and does not use the shared
 - Invert (`I`): the people page's `i` already ignores a group (since 0667); giving `I` the
   grid's meaning would change a key users know. Needs the maintainer's choice (another key,
   a button in the namer line, or move *ignore the group*).
+  → an *Invert* button in the people page's bar, `i` keeps ignoring a group (maintainer, inbox 2026-11-14): filed as 0823.
 - The shared `pick_band.js.j2` is bound to the grid's state (`picked`, `files`, `cards`):
   the people page has its own rectangle on the same rules. Making `pick_band` generic (a
   callback for the cards and the pick) would let both share one script.

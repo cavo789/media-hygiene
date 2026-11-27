@@ -19,14 +19,16 @@ from typing import TYPE_CHECKING, Final, Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.people.changes import Naming, give_name, put_back, reject_faces
+from media_hygiene.people.changes import Naming, give_name
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
+from media_hygiene.people.unnamed import left_unnamed, named_again
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
+from media_hygiene.review.slow_log import Laps
 from media_hygiene.search.people_seen import Seen
 from media_hygiene.search.people_words import words_of
 
@@ -117,15 +119,18 @@ class PeopleDesk:
             raise ValueError(
                 _("names are kept in config.toml: mount a folder of yours on /config")
             )
+        laps = Laps(f"people {asked.action} {asked.name}")
         seen = self.faces()
+        laps.lap("faces")
         named = seen.named.setdefault(path, {})
         written = follow_ids(read_people(config), seen.moves, seen.present())
+        laps.lap("read")
         if asked.action == "back":
             ids, confirmed = self.undo.pop((asked.key, asked.name), ((), ()))
             if not ids:
                 raise ValueError(_("nothing to put back"))
             naming = Naming(asked.name, ids)
-            save_people(config, put_back(written, naming, confirmed))
+            save_people(config, named_again(written, naming, confirmed))
             named[asked.name] = tuple(dict.fromkeys((*named.get(asked.name, ()), *ids)))
         else:
             naming = Naming(asked.name, seen.ids(path, asked.name, asked.face))
@@ -135,15 +140,19 @@ class PeopleDesk:
                 confirmed = tuple(
                     k for k in naming.faces if _confirmed(written, naming, k)
                 )
-                save_people(config, reject_faces(written, naming))
+                save_people(config, left_unnamed(written, naming))
                 self.undo[asked.key, asked.name] = (naming.faces, confirmed)
                 left = tuple(k for k in named[asked.name] if k not in naming.faces)
                 named[asked.name] = left
                 if not left:
                     named.pop(asked.name)
+        laps.lap("write")
         self.search.name_people(words_of(seen.named, self.place.settings))
+        laps.lap("search words")
         back = read_people(config)
         seen.renamed(back)
+        laps.lap("read back")
+        laps.said()
         if asked.action == "confirm":
             return proof_line(back, Change("name", naming))
         return rejected_line(back, naming, again=asked.action == "back")

@@ -10,12 +10,13 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import partial
 from typing import TYPE_CHECKING
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.person.door import with_person
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_phones import phone_book
@@ -33,8 +34,11 @@ from media_hygiene.slideshow.slides import Timing
 from media_hygiene.slideshow.tv_door import TvDoor
 
 if TYPE_CHECKING:
+    from concurrent.futures import Executor
+
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.slideshow.app import SlideshowApp
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,8 +64,8 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
     """
     with open_search(runtime, words=False) as search:
         picked = shown_slides(runtime, search, start.pick)
-        settings = runtime.settings.slideshow
-        show = Show(picked.slides, Timing(settings.interval_seconds))
+        interval = runtime.settings.slideshow.interval_seconds
+        show = Show(picked.slides, Timing(interval))
         with runtime.executor_factory() as executor:
             lan = lan_access(start.port) if start.port else None  # `mh --lan`
             secure = lan is not None and lan.secure  # phones paired for good (0431)
@@ -71,23 +75,31 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
             app = show_app(runtime, desk, Serving(search, executor, door))
             ready = partial(announce_slideshow, runtime, app.door)
             with contextlib.suppress(KeyboardInterrupt):
-                ending = Ending()
                 asyncio.run(
                     serve_until_ended(
-                        EndingDoor(
-                            app,
-                            ending,
-                            plain=TvDoor(
-                                app,
-                                runtime.settings.home.family_title,
-                                runtime.locations.index_file,
-                            ).handle,
-                        ),
-                        start.port,
-                        ready,
+                        _served(runtime, app, executor), start.port, ready
                     )
                 )
     return len(picked.slides)
+
+
+def _served(runtime: Runtime, app: SlideshowApp, executor: Executor) -> EndingDoor:
+    """The show's door: the TV's plain one, and `/person` for who is on a photo (0830).
+
+    Args:
+        runtime: Settings, mount points and output.
+        app: The slideshow's routes.
+        executor: The worker pool.
+
+    Returns:
+        The door; a phone asks `/person/api/photo` through the app, read-only.
+    """
+    title = runtime.settings.home.family_title
+    plain = TvDoor(app, title, runtime.locations.index_file).handle
+    served = with_person(EndingDoor(app, Ending(), plain=plain), runtime, executor)
+    if served.person is None:
+        return served
+    return replace(served, app=replace(app, person=served.person.handle))
 
 
 def shown_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:

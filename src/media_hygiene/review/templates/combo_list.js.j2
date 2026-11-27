@@ -22,6 +22,20 @@ function comboList(combo) {
     if (at >= 0) lines[at].scrollIntoView({ block: "nearest" });
   };
   const choose = (row) => { field.value = row.value; clearable(); close(); combo.pick(row); };
+  // Below the field, or above it when the room below is short (0838): never off screen;
+  // its height is the room left, the rest scrolls inside.
+  const place = () => {
+    const COMBO_GAP = 8;
+    const COMBO_HALF = 0.5;
+    const room = field.getBoundingClientRect();
+    const below = window.innerHeight - room.bottom - COMBO_GAP;
+    const above = room.top - COMBO_GAP;
+    list.style.maxHeight = "";
+    const wanted = Math.min(list.scrollHeight, window.innerHeight * COMBO_HALF);
+    const up = below < wanted && above > below;
+    list.classList.toggle("above", up);
+    list.style.maxHeight = Math.max(0, Math.min(wanted, up ? above : below)) + "px";
+  };
   async function open() {
     const all = await combo.rows();
     const typed = field.value.trim().toLowerCase();
@@ -40,6 +54,7 @@ function comboList(combo) {
       return line;
     }));
     list.hidden = !rows.length || document.activeElement !== field;
+    if (!list.hidden) place();
     field.setAttribute("aria-expanded", String(!list.hidden));
     at = -1;
   }

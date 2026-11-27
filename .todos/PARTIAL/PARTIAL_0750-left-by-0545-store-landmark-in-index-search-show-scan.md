@@ -41,3 +41,4 @@ Split from section 0545 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
   **Reason:** scope of this lot; same move as the GPS line (read `spots_by_key`).
 - Import, quarantine, phone and review tile pages show no place.
   **Reason:** their files are mostly not in the index; needs a lookup by path or digest first.
+  → not wanted: places stay on the library's pages (maintainer, inbox 2026-11-14).

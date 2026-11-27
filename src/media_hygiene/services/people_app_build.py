@@ -22,6 +22,8 @@ from media_hygiene.people.app import (
 )
 from media_hygiene.people.aside import ASIDE_PATH, AsideDesk
 from media_hygiene.people.board import PeopleBoard
+from media_hygiene.people.person_actions import RENAME_PATH
+from media_hygiene.people.person_aside import PERSON_ASIDE_PATH
 from media_hygiene.people.pictures import FACE_PREFIX, PHOTO_PREFIX
 from media_hygiene.people.remembered import AsideMemory
 from media_hygiene.people.roster import NamesFile, Roster
@@ -31,6 +33,7 @@ from media_hygiene.review.home_tags_api import PEOPLE_PATH
 from media_hygiene.review.home_views import UNDO_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.services.people_actions import ALBUMS_PATH
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
@@ -75,8 +78,16 @@ def people_page(build: PeopleBuild) -> bytes:
         "apply_path": APPLY_PATH,
         "undo_path": UNDO_PATH,
     }
+    menu = {
+        "rename": RENAME_PATH,
+        "aside": PERSON_ASIDE_PATH,
+        "albums": ALBUMS_PATH,
+        "photo": PHOTO_PREFIX,
+        "groupAside": ASIDE_PATH,
+    }
     if build.relative:
         paths = {name: path.removeprefix("/") for name, path in paths.items()}
+        menu = {name: path.removeprefix("/") for name, path in menu.items()}
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     return (
         environment.get_template(_PAGE_TEMPLATE)
@@ -87,6 +98,7 @@ def people_page(build: PeopleBuild) -> bytes:
             new_photos=build.new - build.turns,
             turn_photos=build.turns,
             scan_path=PEOPLE_PATH,
+            person_menu=menu,
             **paths,
         )
         .encode()

@@ -6,7 +6,7 @@
   const TURN_PHOTOS = {{ turn_photos | tojson }};
   const WORDS = {
     start: {{ _("New photos to analyse: {count}. The groups below stay usable meanwhile…") | tojson }},
-    turns: {{ _("Photos whose turn is still to guess: {count} (analysed before, not new).") | tojson }},
+    turns: {{ _("Photos to look at again: {count} (analysed before, not new): their turn, or faces further away.") | tojson }},
     running: {{ _("New photos: {done} of {total} analysed; nothing is sent.") | tojson }},
     done: {{ _("New photos analysed, kept in the cache.") | tojson }},
     stopped: {{ _("Stopped: the photos left will be analysed the next time this page opens.") | tojson }},

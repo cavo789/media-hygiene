@@ -50,6 +50,19 @@ function faceTag(named) {
   return tag;
 }
 
+// × on a named face the tool found: no name any more ("? nobody" at once: each name the tool
+// would guess in turn is ruled out, `person/unguess.py`), the faces as the file says now.
+function notNameButton(face) {
+  const out = element("button", "plain forget writes", "×");
+  out.type = "button";
+  out.title = fill(TEXTS.notThisFace, { name: face.named.name });
+  out.addEventListener("click", async (event) => {
+    event.stopPropagation(); // never chooses the face
+    if (await send({ action: "unname", name: face.named.name, faces: [Number(face.key)] })) await render();
+  });
+  return out;
+}
+
 // The name line under the faces: "This face is… [combo] [Name]".
 function showNamer(key, named) {
   const source = named && named.name ? named.name : "";
@@ -106,6 +119,8 @@ function toConfirm(listed) {
 function showSteps() {
   $("steps").hidden = !seedName || !state.writable;
   $("stepsSaid").textContent = fill(TEXTS.steps, { name: seedName });
+  const menus = seedName && state.writable && window.mhPersonMenu ? [window.mhPersonMenu.menu(seedName)] : []; // person_menu.html.j2
+  $("personMenuSlot").replaceChildren(...menus);
   $("showWhich").parentElement.title = TEXTS.showHint;
 }
 
@@ -150,8 +165,15 @@ function showGuesses(faces) {
 $("confirmGuesses").addEventListener("click", async () => {
   const byName = new Map();
   for (const face of guesses) byName.set(face.named.name, [...(byName.get(face.named.name) || []), Number(face.key)]);
-  for (const [name, keys] of byName) if (!(await send({ action: "move", name: name, faces: keys, source: "" }))) return;
-  await render();
+  const [[name, keys], ...more] = byName; // one request, one write (`also`)
+  const also = more.map(([other, faces]) => ({ name: other, faces: faces }));
+  const button = $("confirmGuesses");
+  button.disabled = true; // until the page shows what the file holds now
+  try {
+    if (await send({ action: "move", name: name, faces: keys, source: "", also: also })) await render();
+  } finally {
+    button.disabled = false;
+  }
 });
 
 $("confirmNames").addEventListener("click", async () => {
@@ -197,3 +219,8 @@ function nameCard(node, file) {
   showPathTag(node, file); // person_paths.js.j2
   return node;
 }
+// A person renamed or merged from the naming line: the faces again, the line read back said.
+window.addEventListener("mh-person-changed", (event) => {
+  sayNames(event.detail);
+  if (photo) render();
+});

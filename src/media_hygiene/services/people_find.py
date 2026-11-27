@@ -12,8 +12,11 @@ import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.faces.worker import FaceJob, find_faces
 from media_hygiene.i18n import ngettext
+from media_hygiene.index.face_tops import add_found, boxes_of, is_topped, mark_topped
+from media_hygiene.index.read_versions import version_of
 from media_hygiene.index.turn_rows import TurnGuess
 
 if TYPE_CHECKING:
@@ -40,6 +43,7 @@ class FindDeps:
     progress: ProgressSink
     stopped: Callable[[], bool]
     turns: TurnStore | None = None  # where the turns guessed are kept (0725)
+    model: str = FACE_MODEL  # the store's: the top-ups read and write its rows (0841)
 
 
 @dataclass(slots=True)
@@ -50,6 +54,8 @@ class FindOutcome:
     analysed: int = 0
     faces: int = 0
     unreadable: int = 0
+    topped: int = 0  # photos scanned before, looked at again for the faces missed
+    added: int = 0  # the faces they lacked
     stopped: bool = False
 
     def estimate(self, photos: int) -> float:
@@ -116,18 +122,50 @@ class _Run:
                 self.outcome.stopped = True
                 return
             known = self.deps.store.scanned(photo)  # faces kept: the turn only
-            job = FaceJob(
-                photo.path, photo.size, photo.mtime_ns, self.deps.recipe, known
-            )
-            loop = asyncio.get_running_loop()
-            found = await loop.run_in_executor(self.deps.executor, find_faces, job)
-            if found is not None and self.deps.turns is not None:
-                self.deps.turns.put(
-                    TurnGuess(found.path, found.size, found.mtime_ns, found.turn)
-                )
-            if found is None or found.complete:
-                self._count(found)
+            turns = self.deps.turns
+            if not known or turns is None or not turns.guessed(photo):
+                await self._first(photo, known)
+            if known:  # the faces it lacks, below the score of its first scan (0841)
+                await self._top_up(photo)
             self.deps.progress.advance()
+
+    async def _first(self, photo: PhotoVersion, known: bool) -> None:  # noqa: FBT001
+        """Find the faces of a photo and guess its turn, or its turn only.
+
+        Args:
+            photo: The photo.
+            known: Its faces are kept already: the turn only.
+        """
+        job = FaceJob(photo.path, photo.size, photo.mtime_ns, self.deps.recipe, known)
+        loop = asyncio.get_running_loop()
+        found = await loop.run_in_executor(self.deps.executor, find_faces, job)
+        if found is not None and self.deps.turns is not None:
+            self.deps.turns.put(
+                TurnGuess(found.path, found.size, found.mtime_ns, found.turn)
+            )
+        if found is None or found.complete:
+            self._count(found)
+
+    async def _top_up(self, photo: PhotoVersion) -> None:
+        """Add the faces a photo scanned before lacks, after its own.
+
+        Args:
+            photo: The photo, scanned already.
+        """
+        store, model = self.deps.store, self.deps.model
+        if is_topped(store.connection, model, version_of(photo)):
+            return
+        beside = boxes_of(store.connection, model, version_of(photo))
+        job = FaceJob(
+            photo.path, photo.size, photo.mtime_ns, self.deps.recipe, beside=beside
+        )
+        loop = asyncio.get_running_loop()
+        found = await loop.run_in_executor(self.deps.executor, find_faces, job)
+        if found is None:
+            return
+        add_found(store.connection, model, found)
+        self.outcome.added += len(found.faces)
+        self.outcome.topped += 1
 
     def _count(self, found: PhotoFaces | None) -> None:
         """Keep the faces of a photo, and count it.
@@ -139,6 +177,7 @@ class _Run:
             self.outcome.unreadable += 1
             return
         self.deps.store.put(found)
+        mark_topped(self.deps.store.connection, self.deps.model, found)
         self.outcome.analysed += 1
         self.outcome.faces += len(found.faces)
         count = len(found.faces)

@@ -21,7 +21,8 @@
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
   "chooseFace": _("Click the face of the person to name or set aside."),
   "noFace": _("No face was found on this photo when its faces were analysed: look again, slower."),
-  "notScanned": _("The faces of this photo were never looked for: run 'audit --people', or look again, slower."),
+  "notScanned": _("The faces of this photo were not all looked for yet: find them now, as 'audit --people' does."),
+  "scanning": _("Looking for the faces of this photo…"),
   "looking": _("Looking at the photo turned, one angle after the other…"),
   "photos": [ngettext("{n} photo of this person", "{n} photos of this person", 1), ngettext("{n} photo of this person", "{n} photos of this person", 2)],
   "known": _("the person set aside on {date}"),
@@ -54,6 +55,7 @@
   "drawLooking": _("Looking for the face in the box…"),
   "drawn": _("Face drawn and kept: name it, then check its photos."),
   "forgetDrawn": _("Forget this face drawn by hand (drawn by mistake, or twice): it leaves the index and the names; you can draw it again"),
+  "notThisFace": _("Not {name}: takes the name off this face (no other name guessed); it stays to name"),
   "dropTile": _("Not this person: leaves this search (nothing saved)"),
 } %}
 {% set page_name = _("Identify someone") %}
@@ -62,6 +64,8 @@
 {% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
+  #findBox { margin-top: 12px; }
+  #findBox summary { cursor: pointer; color: var(--muted); }
   #find { display: flex; flex-direction: column; gap: 6px; }
   #find input { width: 100%; padding: 4px 8px; font: inherit; border: 1px solid var(--line);
                 border-radius: 6px; background: var(--bg); color: var(--text); }
@@ -102,19 +106,28 @@
   #drawFrame { position: relative; display: inline-block; cursor: crosshair; touch-action: none; user-select: none; }
   #drawPicture { display: block; max-width: 86vw; max-height: 70vh; }
   #drawBox { position: absolute; border: 2px solid var(--accent); pointer-events: none; }
+  .drawKnown { position: absolute; border: 2px solid #ffd479; pointer-events: none; }
+  .drawKnown > * { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 2px; white-space: nowrap;
+    padding: 1px 6px; border-radius: 4px; background: rgba(0, 0, 0, .7); color: #fff; font-size: .8rem; }
 {% endblock %}
 {% block side %}
-    <form id="find">
-      <label for="path">{{ _("A photo of this person: its path") }}</label>
-      <input id="path" type="text" placeholder="C:\Photos\…\IMG_1234.jpg" autocomplete="off" spellcheck="false">
-      <button type="submit">{{ _("Find their photos") }}</button>
-    </form>
-    <p id="sideSaid">{{ _("Their photos are found by their face; you check them before setting them aside.") }}</p>
     <div id="faces"></div>
     <button id="confirmGuesses" type="button" hidden></button>
     <div id="namer"></div>
+    {# Below the faces: its text changes at each save, the faces never move under the pointer. #}
+    <p id="sideSaid">{{ _("Their photos are found by their face; you check them before setting them aside.") }}</p>
+    <button id="scanNow" type="button" hidden>{{ _("Find its faces now") }}</button>
     <button id="lookAgain" class="plain" type="button" hidden>{{ _("Look again, slower: the photo turned, less strict") }}</button>
     <button id="drawOpen" class="plain" type="button" hidden>{{ _("✏ Draw a face the tool missed") }}</button>
+    {# Folded once a photo is given (from a large view): the eye goes to the faces, not here. #}
+    <details id="findBox" open>
+      <summary>{{ _("Start from another photo") }}</summary>
+      <form id="find">
+        <label for="path">{{ _("A photo of this person: its path") }}</label>
+        <input id="path" type="text" placeholder="C:\Photos\…\IMG_1234.jpg" autocomplete="off" spellcheck="false">
+        <button type="submit">{{ _("Find their photos") }}</button>
+      </form>
+    </details>
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
@@ -123,6 +136,7 @@
     {% include "album_bar.html.j2" %}
     <div id="steps" hidden>
     <span id="stepsSaid"></span>
+    <span id="personMenuSlot"></span>
     <button id="confirmNames" type="button"></button>
     <button id="rejectNames" type="button" hidden></button>
     <label>{{ _("Show") }} <select id="showWhich">
@@ -142,6 +156,8 @@
 {% endblock %}
 {% block after %}
 {% include "undo_toast.html.j2" %}
+{% set person_menu = {"rename": paths.rename | default("")} %}
+{% include "person_menu.html.j2" %}
 {% include "pick_viewer.html.j2" %}
 <dialog id="drawFace" aria-labelledby="drawTitle">
   <p id="drawTitle"><strong>{{ _("✏ Draw a face the tool missed") }}</strong></p>

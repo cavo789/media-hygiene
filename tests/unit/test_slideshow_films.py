@@ -25,7 +25,7 @@ from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, LanAccess
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.pictures import Pictures
-from media_hygiene.slideshow.app import ShowPages, SlideshowApp
+from media_hygiene.slideshow.app import SlideshowApp
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door
 from media_hygiene.slideshow.films import film_ended
@@ -33,6 +33,7 @@ from media_hygiene.slideshow.pictures import ShowPictures
 from media_hygiene.slideshow.screen_jpeg import ScreenJob
 from media_hygiene.slideshow.screens import SCREEN_COOKIE, Screens
 from media_hygiene.slideshow.show import Show
+from media_hygiene.slideshow.show_pages import ShowPages
 from media_hygiene.slideshow.slides import (
     UNKNOWN_LENGTH_SECONDS,
     Film,

@@ -22,3 +22,6 @@ dist/
 .claude/memory/
 .claude/plans/
 .claude/settings.local.json
+
+# Regenerated projection of the backlog (/todo:plan)
+.todos/plan.md

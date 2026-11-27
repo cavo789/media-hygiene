@@ -50,7 +50,8 @@ Why, from reading the code (not measured):
 
 ## Acceptance
 
-- [ ] Step 1's figures before / after, on the maintainer's PC (measured, each part)
+- [x] Step 1's figures before / after, on the maintainer's PC (measured, each part): see
+  *Measured on the maintainer's PC* below
 - [ ] Second start of `mh` (container removed, nothing changed): the home page is drawn
   → code work, not the maintainer's: listed in 0718 (2026-11-12)
       under 1 s, then updated
@@ -89,3 +90,16 @@ Why, from reading the code (not measured):
   **Reason:** only the maintainer's machine can give them: build the image from the branch
   `iterate/2026-11-11`, then run step 46 (`.\mh-measure.ps1 -Only 46 -Count 1`, the script
   fetched by the commit SHA of this lot).
+
+### Measured on the maintainer's PC (2026-11-14, step 46, Windows + Docker Desktop, real folders)
+- Second start of `mh`, by stopwatch: the page drawn in **under 5 s (was about 30 s)**; the
+  safety card looks filled at once (its last answer from `localStorage`).
+- Inside the container, two calls each: `home_state` 2.5 s then 2.2 s (`read_status` 1.5 / 1.2 s,
+  `latest_reports` 0.3 s); the card 10.7 s then 10.6 s, of which **`safety_key` 10.0 s each time**
+  (`read_runs` 0.2-0.4 s). From Windows: `GET /api/state` 1.83 s, `GET /api/safety` 11.86 s.
+- So the cache never saves time there: its key walks every quarantine folder (`_tree`,
+  `os.walk` + `stat` through the Docker Desktop bind mount) and costs what it saves. Filed: 0819.
+
+## Closed — DONE (2026-11-14, inbox)
+- Measured on the maintainer's PC (sections above): page drawn in 3.7-4 s at the second
+  start (was ~30 s); the card's route 11.9 s → 0.9 s after 0819. The code left is 0779.

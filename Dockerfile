@@ -202,6 +202,9 @@ LABEL org.opencontainers.image.title="media-hygiene" \
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PATH=/opt/venv/bin:${PATH}
+# The ONNX runtime's telemetry off for any Python run here, not only mh's own imports
+# (a measurement script importing onnxruntime first started it, 2026-11-14).
+ENV ORT_DISABLE_TELEMETRY=1
 
 # Every mount point exists and belongs to the app user: a named volume mounted there for the
 # first time inherits that ownership (e.g. -v media-hygiene-cache:/cache).

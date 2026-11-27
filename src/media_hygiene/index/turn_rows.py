@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
     import sqlite3
+    from collections.abc import Iterable
 
     from media_hygiene.index.descriptions import PhotoVersion
 
@@ -36,6 +37,7 @@ _PUT: Final = (
     "INSERT OR REPLACE INTO face_turns (path, size, mtime_ns, model, turn)"
     " VALUES (?, ?, ?, ?, ?)"
 )
+_FORGET: Final = "DELETE FROM face_turns WHERE path = ?"
 # Only the current version of a file: a photo changed since is not proposed.
 _PROPOSED: Final = (
     "SELECT face_turns.path, face_turns.turn FROM face_turns"
@@ -100,3 +102,12 @@ class TurnStore:
             (Path(path), int(turn))
             for path, turn in self._connection.execute(_PROPOSED, (self._model,))
         )
+
+    def forget(self, paths: Iterable[Path]) -> None:
+        """Forget the guesses of these photos, turned since (0810), committed at once.
+
+        Args:
+            paths: The photos.
+        """
+        self._connection.executemany(_FORGET, ((str(path),) for path in paths))
+        self._connection.commit()

@@ -47,3 +47,15 @@ target. No PowerShell runs in the devcontainer: nothing here executes what you w
   https://raw.githubusercontent.com/<owner>/<repo>/<sha>/tests/measure/mh-measure.ps1 -OutFile
   .\mh-measure.ps1`, `Unblock-File .\mh-measure.ps1`, `.\mh-measure.ps1 -Only N`. ❌ DON'T: the
   bare script name (it lives in the repository, not on the PC).
+- ✅ DO: before handing over a step that runs Python in the image, run that Python against the
+  current sources in the devcontainer (`awk` it out of the here-string, `uv run python`, the
+  helper's env from `_media_hygiene_env`); again after any code change to what it wraps or
+  times. ❌ DON'T: hand it unrun (2026-11-14: step 46 wrapped a name the fix had just removed:
+  a traceback on the maintainer's PC and a wasted run).
+- ✅ DO: a step silent for more than ~10 s says so first (`Write-Host "... about a minute,
+  nothing to do..."`): the maintainer took a silent minute for a hang (2026-11-14).
+- ✅ DO: a question to the maintainer is numbered actions, then exactly what to watch and when
+  to stop the stopwatch. ❌ DON'T: ask for what the page cannot show (a card drawn at once from
+  its last answer has no "filled" moment to time: 46f, removed).
+- ✅ DO: ask a running page on the address its container publishes (`docker port`): `mh` alone
+  publishes on the PC's home-network address, not on 127.0.0.1 (46d failed, 2026-11-14).

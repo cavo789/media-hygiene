@@ -17,6 +17,7 @@ import shutil
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.config.stamped_text import stamped_text
 from media_hygiene.constants import CONFIG_FILE_NAME
 
 if TYPE_CHECKING:
@@ -63,10 +64,10 @@ def versions_of(path: Path) -> tuple[Path, ...]:
     folder, prefix = _prefix(path)
     if not folder.is_dir():
         return ()
-    found = [
+    found = [  # the name first: `is_file` crosses the file sharing, for 20 at most
         each
         for each in folder.iterdir()
-        if each.is_file() and _stamp_of(each.name, prefix) is not None
+        if _stamp_of(each.name, prefix) is not None and each.is_file()
     ]
     return tuple(sorted(found, key=lambda each: each.name, reverse=True))
 
@@ -117,13 +118,28 @@ def replace_text(path: Path, text: str) -> None:
         path: The file to write.
         text: Its new content, written in UTF-8.
     """
+    if _holds(path, text):  # read once while unchanged (`stamped_text`): no write
+        return
     draft = path.with_name(f".{path.name}.tmp")
     draft.write_text(text, _ENCODING)
-    if path.is_file() and path.read_bytes() == draft.read_bytes():
-        draft.replace(path)
-        return
     keep_previous(path)
     draft.replace(path)
+
+
+def _holds(path: Path, text: str) -> bool:
+    """Whether a file holds this text already.
+
+    Args:
+        path: The file.
+        text: The text about to be written.
+
+    Returns:
+        True when its content is the text, in UTF-8.
+    """
+    try:
+        return stamped_text(path) == text
+    except OSError, UnicodeDecodeError:
+        return False
 
 
 def restore_version(path: Path, version: Path) -> bytes:
