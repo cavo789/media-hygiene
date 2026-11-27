@@ -113,6 +113,9 @@ def records(todos: Path, measured: set[str]) -> list[Record]:
 def feedback(plans: Path) -> list[Record]:
     """Give the feedback files of unattended runs that were not reviewed yet.
 
+    A reviewed file was moved to `reviewed/` (`feedback_pending.py done`): the
+    files left at the top of the plans folder are the pending ones, none is read.
+
     Returns:
         One record per such file.
     """
@@ -128,7 +131,6 @@ def feedback(plans: Path) -> list[Record]:
             "MEASURED-BY": "",
         }
         for path in sorted(plans.glob("feedback-*.md"))
-        if "## Reviewed" not in path.read_text(encoding="utf-8")
     ]
 
 

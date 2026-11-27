@@ -16,12 +16,13 @@ first. Speak the user's language.
 ## Phase 0 — Read
 
 1. Take the inventory: `python3 .claude/scripts/feedback_pending.py` lists every feedback file
-   without a `## Reviewed (<date>)` heading, oldest first, with its count of questions and
-   deviations (the heading Phase 3 writes is the record: no list to keep by hand). Say in one
-   line how many are pending; none → say so and stop. A file given as argument is reviewed even
-   when it carries the heading (ask first whether to review it again).
+   still at the top of `.claude/plans/` (a reviewed one was moved to `.claude/plans/reviewed/`:
+   the location is the record, no list to keep by hand, no old file read), oldest first, with
+   its count of questions and deviations. Say in one line how many are pending; none → say so
+   and stop. A file given as argument is reviewed even when it sits in `reviewed/` (ask first
+   whether to review it again).
    Then go through the pending files one after the other, oldest first: Phases 0–3 for each
-   (its own `## Reviewed` heading at its close, so an interrupted session resumes at the next).
+   (closed and moved at its own end, so an interrupted session resumes at the next).
    An old file: check each item against today's code and backlog first; an item done or
    superseded since is closed as *stale* in one line, never asked.
 2. List what needs the user, from every TODO section and the closing sections:
@@ -71,7 +72,9 @@ asks. Never merge the pull request: the user does, once satisfied.
 
 1. Answer the pull request comments in one line each (what was done, the commit), so the thread
    reads as closed on the phone.
-2. Append `## Reviewed (<date>)` to the feedback file: the decisions in one line each, the commits
-   made, the TODOs filed, what still waits for the user.
+2. Close the file with `python3 .claude/scripts/feedback_pending.py done <file> --note "<text>"`:
+   it appends `## Reviewed (<date>)` with the note (the decisions in one line each, the commits
+   made, the TODOs filed, what still waits for the user) and moves the file to
+   `.claude/plans/reviewed/`. Never append the heading or move the file by hand.
 3. Final message: the same, short, and the next step (merge the pull request; `/todo:iterate` when
    the plan has runnable lots).

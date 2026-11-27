@@ -26,8 +26,10 @@ File one TODO per item, flat under `.todos/`.
 - **Naming** — `NNNN-short-description.md`, description in English. The filename carries the ID and
   subject only — never encode priority, status, or batch (those change; the filename is a stable
   identity that other TODOs, commits, and notes point at).
-- **Anti-duplication** — before writing, confirm no existing item (any folder) already covers it; if
-  related, reference it and say whether to extend or chain rather than duplicate.
+- **Anti-duplication** — before writing, confirm no existing item (any folder) already covers it:
+  read `.claude/scripts/todo_known_ids.sh .todos` (`ID<TAB>STATUS<TAB>title` for every TODO,
+  status subfolders included; `--open` for the flat backlog only) instead of listing files by
+  hand. If related, reference it and say whether to extend or chain rather than duplicate.
 
 Every TODO opens with `# NNNN — title`, then a bullet header the plan generator (`/todo:plan`) parses.
 The first four fields are mandatory and machine-readable:
@@ -68,6 +70,10 @@ Optional, machine-readable too:
   `- **Needs maintainer**: a measurement on Windows + Docker Desktop (a first audit)`.
   `/todo:plan` lists these TODOs apart, so an unattended run does not pick them and close them
   PARTIAL for that reason alone. Omit the field when nothing is needed.
+- **Revives** — the bare `NNNN` of a `PARTIAL_`/`BLOCKED_` file whose remainder this TODO was
+  filed for, e.g. `- **Revives**: 0177`. When this TODO ends DONE, `/todo:run` closes the revived
+  file too (moved to `DONE/`); `/todo:plan` shows it in the *Partially done* table. Omit it
+  otherwise.
 
 In the body, every figure says how it was obtained: **measured** (what, where, how) or
 **estimated** (from which measures). Do not state a fact about a third-party product without

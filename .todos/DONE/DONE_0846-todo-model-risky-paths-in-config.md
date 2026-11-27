@@ -1,4 +1,4 @@
-# todo_model.py: risky paths in a config file, several IDs per call
+# 0846 — todo_model.py: risky paths in a config file, several IDs per call
 
 - **Priority**: Low
 - **Batch**: claude-tooling

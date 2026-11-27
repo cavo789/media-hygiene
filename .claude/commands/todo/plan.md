@@ -264,11 +264,11 @@ owning session likely crashed), that's a call for the human — this plan only r
 
 Closed out as `PARTIAL`, with work documented under their `### Not done` bullets. **Not queued**:
 `/todo:run NNN` no longer reaches them. Listed so the remainder stays visible — reviving one means
-filing a fresh TODO for what is left.
+filing a fresh TODO for what is left, with `- **Revives**: <ID>` (the *Revived by* column).
 
-| ID | Title | File |
-|----|-------|------|
-| 007 | Inspect baseline format | [PARTIAL_007-inspect.md](PARTIAL/PARTIAL_007-inspect.md) |
+| ID | Title | File | Revived by |
+|----|-------|------|------------|
+| 007 | Inspect baseline format | [PARTIAL_007-inspect.md](PARTIAL/PARTIAL_007-inspect.md) | 0212 |
 
 *(omit this section entirely when `PARTIAL/` is empty)*
 

@@ -53,8 +53,8 @@ Per TODO, once every item of it is answered:
 - **PARTIAL / BLOCKED** where every remaining item is "keep" or "stale": `git mv` to `DONE/`
   (work done, rest dropped) or `UNNEEDED/` (nothing of it is wanted any more), the answers kept
   in its `## Status`.
-- **An answer that asks for work**: file a fresh TODO (skill `todo-authoring`), referencing the
-  one it follows; `/todo:run` never reaches PARTIAL files. Then close the old one as above.
+- **An answer that asks for work**: file a fresh TODO (skill `todo-authoring`) with
+  `- **Revives**: <ID>` naming the PARTIAL/BLOCKED one it follows (its DONE closes that one too); `/todo:run` never reaches PARTIAL files. Then close the old one as above.
 - **Measure** items: nothing to apply until the results come back; when they do, read the
   results file, then treat each measured item as answered.
 - A pattern the maintainer corrected: a short rule in `.claude/rules/workflow.md` (public, no
