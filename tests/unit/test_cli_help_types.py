@@ -101,3 +101,22 @@ def test_audit_help_names_a_folder_a_folder() -> None:
     assert any(
         "--port" in line and "PORT" in line for line in people.output.splitlines()
     )
+
+
+def test_every_argument_names_its_value_with_its_own_word() -> None:
+    """`[workbook]  FILE`, `run_id  RUN`: no argument reads TEXT or PATH."""
+    generic = {"TEXT", "NUMBER", "PATH"}
+    command = typer.main.get_command(build_app())
+    bare: list[str] = []
+    for path in _paths(command):
+        node = command
+        for name in path:
+            node = node.commands[name]  # type: ignore[attr-defined]
+        context = typer.Context(node)
+        bare.extend(
+            f"{' '.join(path)} {param.name}"
+            for param in name_values(list(node.params))
+            if isinstance(param, typer.core.TyperArgument)
+            and param.display_type_rich(context) in generic
+        )
+    assert not bare, f"arguments with no word of their own (cli/metavars.py): {bare}"

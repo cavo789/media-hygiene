@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, get_args, override
 from typer._click import Command
 from typer.core import TyperArgument, TyperOption
 
-from media_hygiene.cli.metavars import option_words
+from media_hygiene.cli.metavars import argument_words, option_words
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -84,9 +84,12 @@ class PlainArgument(TyperArgument):
             ctx: Context of the command.
 
         Returns:
-            The word, as `value_word` gives it.
+            Its own word (`FOLDER`, `RUN`...); its choices or `value_word` otherwise.
         """
-        return value_word(self.type_descriptor)
+        generic = value_word(self.type_descriptor)
+        if self.type_descriptor.choices:
+            return generic
+        return argument_words().get(self.name or "", generic)
 
 
 def name_values(params: list[Parameter]) -> list[Parameter]:

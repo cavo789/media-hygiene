@@ -1175,6 +1175,9 @@ msgstr ""
 "Un mot, un lieu, une année, une personne : avec aperçus, dans le "
 "navigateur."
 
+msgid "ACTION"
+msgstr "ACTION"
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr "Couleurs ANSI : \"auto\", \"always\" ou \"never\"."
 
@@ -10472,6 +10475,9 @@ msgstr "SHA-256"
 
 msgid "STARS"
 msgstr "ÉTOILES"
+
+msgid "STEP"
+msgstr "ÉTAPE"
 
 msgid "Same Wi-Fi, open:"
 msgstr "Même Wi-Fi, ouvrez :"

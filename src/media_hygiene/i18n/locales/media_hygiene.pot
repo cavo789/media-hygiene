@@ -913,6 +913,9 @@ msgstr ""
 msgid "A word, a place, a year, a person: with previews, in the browser."
 msgstr ""
 
+msgid "ACTION"
+msgstr ""
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr ""
 
@@ -8741,6 +8744,9 @@ msgid "SHA-256"
 msgstr ""
 
 msgid "STARS"
+msgstr ""
+
+msgid "STEP"
 msgstr ""
 
 msgid "Same Wi-Fi, open:"

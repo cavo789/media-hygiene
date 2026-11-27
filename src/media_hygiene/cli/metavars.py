@@ -4,6 +4,7 @@ The same word names the same kind of value in every command, in the interface
 language (`DOSSIER`, `NOMBRE`...). An option the table does not know keeps the generic
 word of `help_types.value_word` (`TEXT`, `NUMBER`, `PATH`); a test fails for a new
 option left in that case, and an option that sets its own `metavar` keeps it.
+Arguments get theirs the same way, by parameter name (review of 2026-11-27).
 """
 
 from __future__ import annotations
@@ -55,4 +56,24 @@ def option_words() -> dict[str, str]:
         "--seconds": _("SECONDS"),
         "--expect": _("NAMES/IGNORED"),
         "--trial": _("latest|MONTH|FOLDER"),
+    }
+
+
+def argument_words() -> dict[str, str]:
+    """The word of each argument's value, translated now.
+
+    Returns:
+        The word by the argument's parameter name.
+    """
+    file = _("FILE")
+    return {
+        "folder": _("FOLDER"),
+        "workbook": file,
+        "archive": file,
+        "photo": file,
+        "name": _("NAME"),
+        "run_id": _("RUN"),
+        "words": _("WORDS"),
+        "step": _("STEP"),
+        "action": _("ACTION"),
     }

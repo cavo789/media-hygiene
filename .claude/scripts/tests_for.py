@@ -35,7 +35,7 @@ import sys
 from pathlib import Path
 
 ROOTS = {"src": "", "tests": "tests"}  # folder -> package prefix of its modules
-CAP = 40  # test files: past it the caller narrows (2026-11-27: 326 listed)
+CAP = 80  # test files: past it the caller narrows (326 listed; 80 since the review)
 TEMPLATES = frozenset({".j2", ".css", ".js"})
 PAGE_TESTS = (  # the page contract (.claude/rules/pages.md) every template answers to
     "tests/unit/test_page_frame.py",
