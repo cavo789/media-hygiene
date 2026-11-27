@@ -10,7 +10,8 @@ deeper than DEPTH, or a template read at run time, is not followed.
 Never an empty line (0844: an empty `pytest $(…)` runs the whole suite): a
 changed file no test imports falls back to the tests of its package (the tests
 importing any module of its folder); a changed template (`.j2`, `.css`, `.js`)
-adds the page contract tests (`PAGE_TESTS`); still nothing, a harmless target
+adds the page contract tests (`PAGE_TESTS`), a change under `cli/` or a `.po`
+the tests walking every `--help` (`CLI_TESTS`); still nothing, a harmless target
 (`HARMLESS`), said on stderr. `tests/e2e/` is left out unless `--e2e`. Over
 `CAP` test files (or a changed `conftest.py`), nothing is printed, exit 3.
 
@@ -43,6 +44,11 @@ PAGE_TESTS = (  # the page contract (.claude/rules/pages.md) every template answ
     "tests/unit/test_same_features_on_pages.py",
     "tests/unit/test_shell_pages.py",
 )
+CLI_TESTS = (  # walk every verb's --help through build_app: no cmd_*.py import (0852)
+    "tests/integration/test_cli.py",
+    "tests/unit/test_cli_help_types.py",
+)
+CLI_DIR = ("src", "media_hygiene", "cli")
 HARMLESS = ("--co", "-q", "tests/unit/test_slow_log.py")
 TOO_MANY = 3  # exit status past CAP
 type Graph = dict[str, set[str]]
@@ -145,6 +151,8 @@ def select(
         found = tests_of({name}, graph, depth) if name in importers else set()
         if path.suffix in TEMPLATES and path.parts[:1] == ("src",):
             found |= set(PAGE_TESTS)
+        if path.parts[:3] == CLI_DIR or path.suffix == ".po":
+            found |= set(CLI_TESTS)
         if not found and path.exists() and path.parts[:1] == ("src",):
             found = tests_of(package_of(path, modules), graph, 0)
             sys.stderr.write(

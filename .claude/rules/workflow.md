@@ -22,9 +22,9 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   commit gate. The whole suite is CI's job, or `check` when a change is cross-cutting (a
   `conftest.py`, a template, a constant every module reads). ❌ DON'T: run the whole suite after
   each edit (minutes of load on the maintainer's PC).
-- ✅ DO: a change to a CLI option, its help or a `_()` string of `cli/`: run
-  `tests/integration/test_cli.py` too (it walks every verb's `--help` through `build_app`,
-  which `tests_for.py` does not trace back to `cmd_*.py`). ❌ DON'T: assert on Rich's wrapped
+- ✅ DO: a change under `cli/` or to a `.po`: `tests_for.py` adds
+  `tests/integration/test_cli.py` and `test_cli_help_types.py` (they walk every verb's
+  `--help` through `build_app`, no `cmd_*.py` import; 0852). ❌ DON'T: assert on Rich's wrapped
   lines: normalise to words (PR 89/90 failed on CI that way, 2026-11-27).
 - ✅ DO: keep what passes to one line and what fails in full: `pytest -q --tb=short … | tail
   -25`, `pre-commit … | grep -v -e Passed -e Skipped`, `git push -q`. ❌ DON'T: cut a failure's

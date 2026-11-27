@@ -71,6 +71,14 @@ def test_a_template_gets_the_page_contract_tests(tmp_path: Path) -> None:
     assert "tests/unit/test_page_frame.py" in run.stdout.split()
 
 
+def test_a_cli_change_gets_the_help_walk_tests(tmp_path: Path) -> None:
+    """A `cli/` module or a `.po` lists the tests walking every `--help` (0852)."""
+    _tree(tmp_path)
+    walks = {"tests/integration/test_cli.py", "tests/unit/test_cli_help_types.py"}
+    for changed in ("src/media_hygiene/cli/cmd_x.py", "src/media_hygiene/i18n/x.po"):
+        assert walks <= set(_run(tmp_path, changed).stdout.split()), changed
+
+
 def test_nothing_found_prints_a_harmless_target(tmp_path: Path) -> None:
     """A file outside every package: a collect-only target, never an empty line."""
     _tree(tmp_path)
