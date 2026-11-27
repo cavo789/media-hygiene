@@ -76,13 +76,13 @@ plus récente est remise.
  sauvegardé l'index actuel.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   archive      <str>  La sauvegarde à remettre, par son nom ; la plus        │
-│                       récente par défaut.                                    │
+│   archive      FICHIER  La sauvegarde à remettre, par son nom ; la plus      │
+│                         récente par défaut.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --config          <bool>  Remettre aussi les réglages (config.toml, people)  │
-│                           ; l'index seul par défaut.                         │
-│ --help    -h      <bool>  Affiche ce message et quitte.                      │
+│ --config            Remettre aussi les réglages (config.toml, people) ;      │
+│                     l'index seul par défaut.                                 │
+│ --help    -h        Affiche ce message et quitte.                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -147,30 +147,30 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
  (journaled, undoable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  The album's name, as search saved it: the folder       │
-│                       holding its links.                                     │
-│                       [required]                                             │
+│ *    name      NAME  The album's name, as search saved it: the folder        │
+│                      holding its links.                                      │
+│                      [required]                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>   Instead of a saved album: the files of this      │
-│                             category, as the edited classify workbook says.  │
-│ --event             <str>   The files of this event: its id or its name.     │
-│ --apply             <bool>  Make the links; without it, only show what the   │
-│                             album gathers.                                   │
-│ --help      -h      <bool>  Show this message and exit.                      │
+│ --category          NAME  Instead of a saved album: the files of this        │
+│                           category, as the edited classify workbook says.    │
+│ --event             NAME  The files of this event: its id or its name.       │
+│ --apply                   Make the links; without it, only show what the     │
+│                           album gathers.                                     │
+│ --help      -h            Show this message and exit.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --rule            <str>                  The files the classify rule of this │
-│                                          name decided.                       │
-│ --rating          <int range> [1<=x<=5]  The files given at least these      │
-│                                          stars in Windows (1 to 5).          │
-│ --workbook        <str>                  The classify workbook to read; the  │
-│                                          latest classify run's by default.   │
+│ --rule            NAME             The files the classify rule of this name  │
+│                                    decided.                                  │
+│ --rating          STARS [1<=x<=5]  The files given at least these stars in   │
+│                                    Windows (1 to 5).                         │
+│ --workbook        FILE             The classify workbook to read; the latest │
+│                                    classify run's by default.                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --backup        <list[str]>  A backup or an old disk, mounted read-only:     │
-│                              never changed, and not refused for being        │
-│                              read-only (mh passes your backups). Repeatable. │
+│ --backup        FOLDER  A backup or an old disk, mounted read-only: never    │
+│                         changed, and not refused for being read-only (mh     │
+│                         passes your backups). Repeatable.                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

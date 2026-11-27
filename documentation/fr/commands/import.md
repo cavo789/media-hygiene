@@ -335,45 +335,40 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
  avant ; chaque copie prouvée (journalisée, annulable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   folder      <str>  Dossier d'où importer (chemin de l'hôte) : votre NAS,   │
-│                      un disque USB, une carte SD, un ancien disque ;         │
-│                      seulement lu. Par défaut : vos dossiers de sauvegarde.  │
+│   folder      DOSSIER  Dossier d'où importer (chemin de l'hôte) : votre NAS, │
+│                        un disque USB, une carte SD, un ancien disque ;       │
+│                        seulement lu. Par défaut : vos dossiers de            │
+│                        sauvegarde.                                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --to             <str>               Dossier qui reçoit les copies (chemin   │
-│                                      de l'hôte) ; par défaut : « From        │
-│                                      <source> » dans votre premier dossier   │
-│                                      de photos (From NAS, From E), ses       │
-│                                      dossiers gardés en dessous.             │
-│ --yes    -y      <bool>              Copier sans demander d'abord.           │
-│ --phone          <bool>              Un téléphone en USB au lieu d'un        │
-│                                      dossier : Windows seulement, le mh de   │
-│                                      PowerShell copie lui-même ses nouvelles │
-│                                      photos ; --free fait ensuite de la      │
-│                                      place dessus.                           │
-│ --since          <str>               Seulement les fichiers d'une période :  │
-│                                      today, week, month, all ou un jour      │
-│                                      (2026-10-29), selon la date de leur     │
-│                                      nom, sinon leur date de modification.   │
-│                                      Par défaut : tous les fichiers d'un     │
-│                                      dossier ; avec --phone, depuis le       │
-│                                      dernier import.                         │
-│ --pick           <bool>              Voir d'abord les fichiers en photos     │
-│                                      dans le navigateur : écartez ceux que   │
-│                                      vous ne voulez pas, puis copiez depuis  │
-│                                      la page.                                │
-│ --port           <int range> [x>=1]  Port de la page. docker run le publie   │
-│                                      sous le même numéro sur votre           │
-│                                      ordinateur, par exemple -p              │
-│                                      127.0.0.1:9000:9000 pour --port 9000.   │
-│                                      Par défaut :  port dans config.toml,    │
-│                                      8088.                                   │
-│ --help   -h      <bool>              Affiche ce message et quitte.           │
+│ --to             DOSSIER      Dossier qui reçoit les copies (chemin de       │
+│                               l'hôte) ; par défaut : « From <source> » dans  │
+│                               votre premier dossier de photos (From NAS,     │
+│                               From E), ses dossiers gardés en dessous.       │
+│ --yes    -y                   Copier sans demander d'abord.                  │
+│ --phone                       Un téléphone en USB au lieu d'un dossier :     │
+│                               Windows seulement, le mh de PowerShell copie   │
+│                               lui-même ses nouvelles photos ; --free fait    │
+│                               ensuite de la place dessus.                    │
+│ --since          PÉRIODE      Seulement les fichiers d'une période : today,  │
+│                               week, month, all ou un jour (2026-10-29),      │
+│                               selon la date de leur nom, sinon leur date de  │
+│                               modification. Par défaut : tous les fichiers   │
+│                               d'un dossier ; avec --phone, depuis le dernier │
+│                               import.                                        │
+│ --pick                        Voir d'abord les fichiers en photos dans le    │
+│                               navigateur : écartez ceux que vous ne voulez   │
+│                               pas, puis copiez depuis la page.               │
+│ --port           PORT [x>=1]  Port de la page. docker run le publie sous le  │
+│                               même numéro sur votre ordinateur, par exemple  │
+│                               -p 127.0.0.1:9000:9000 pour --port 9000. Par   │
+│                               défaut :  port dans config.toml, 8088.         │
+│ --help   -h                   Affiche ce message et quitte.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <list[str]>  Une sauvegarde ou un ancien disque : comparé,   │
-│                              jamais modifié. Dit ce qui lui manque et ce que │
-│                              lui seul contient. Répétable.                   │
+│ --backup        DOSSIER  Une sauvegarde ou un ancien disque : comparé,       │
+│                          jamais modifié. Dit ce qui lui manque et ce que lui │
+│                          seul contient. Répétable.                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

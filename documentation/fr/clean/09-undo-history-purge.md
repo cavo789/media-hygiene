@@ -37,12 +37,12 @@ docker run --rm -it `
 ```text
 👁 Toute une exécution : 'undo --pick' montre les photos et n'en remet que
 quelques-unes.
-─────────────── Annulation de l'exécution clean 20261113-174438 ────────────────
+─────────────── Annulation de l'exécution clean 20261127-222143 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution clean
-20261113-174438
+20261127-222143
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,6 Mo │
@@ -86,8 +86,8 @@ Exécutions (les plus récentes d'abord)
 ┃                 ┃         ┃          ┃        ┃      En ┃ Dossiers ┃         ┃
 ┃ Exécution       ┃ Comman… ┃ Supprim… ┃ Libéré ┃ quaran… ┃ supprim… ┃ Restau… ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
-│ 20261113-174440 │ clean   │        1 │      0 │      41 │        9 │       0 │
-│ 20261113-174438 │ clean   │        1 │      0 │      35 │        7 │      43 │
+│ 20261127-222146 │ clean   │        1 │      0 │      41 │        9 │       0 │
+│ 20261127-222143 │ clean   │        1 │      0 │      35 │        7 │      43 │
 └─────────────────┴─────────┴──────────┴────────┴─────────┴──────────┴─────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -123,16 +123,16 @@ synchronisé d'un cloud, monté dans le conteneur.
 👁 Voyez d'abord ces fichiers en photos : 'undo --pick' (rien n'y est effacé).
 ⚠️  9 fichiers mis de côté n'existent nulle part ailleurs (2,3 Mo) :
 quasi-doublons, photos de rafale, déchets ou illisibles, pas des copies exactes.
-  /quarantine/20261113-174440/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-  /quarantine/20261113-174440/d/Ancien disque/Courriel/IMG_0110 petite.jpg
-  /quarantine/20261113-174440/c/Photos/WhatsApp/IMG-20190712-WA0005.jpg
-  /quarantine/20261113-174440/c/Photos/WhatsApp/VID-20220521-WA0001.mp4
-  /quarantine/20261113-174440/c/Photos/2022/Anniversaire/IMG_3003.jpg
-  /quarantine/20261113-174440/c/Photos/2023/Lac/IMG_4002.jpg
-  /quarantine/20261113-174440/d/Ancien disque/2020/IMG_1203.jpg
-  /quarantine/20261113-174440/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
-  /quarantine/20261113-174440/d/Ancien disque/Photos 2019/IMG_0102.xmp
-❓ Effacer la quarantaine de 20261113-174440 (41 fichiers, 16,4 Mo) ? Cela
+  /quarantine/20261127-222146/d/Ancien disque/Courriel/IMG_0110 petite.jpg
+  /quarantine/20261127-222146/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+  /quarantine/20261127-222146/c/Photos/WhatsApp/IMG-20190712-WA0005.jpg
+  /quarantine/20261127-222146/c/Photos/WhatsApp/VID-20220521-WA0001.mp4
+  /quarantine/20261127-222146/c/Photos/2022/Anniversaire/IMG_3003.jpg
+  /quarantine/20261127-222146/d/Ancien disque/2020/IMG_1203.jpg
+  /quarantine/20261127-222146/c/Photos/2023/Lac/IMG_4002.jpg
+  /quarantine/20261127-222146/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
+  /quarantine/20261127-222146/d/Ancien disque/Photos 2019/IMG_0102.xmp
+❓ Effacer la quarantaine de 20261127-222146 (41 fichiers, 16,4 Mo) ? Cela
 comprend les 9 fichiers listés ci-dessus, qui n'existent nulle part ailleurs.
 [o/N] o
 ✅ Quarantaine vidée : 16,4 Mo libérés.

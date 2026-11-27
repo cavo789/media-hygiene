@@ -346,27 +346,22 @@ Le port est `[review] port`, celui de toutes les pages.
  album.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --folder          <str>               Montrer les photos de ce dossier et de │
-│                                       ses sous-dossiers, tel que             │
-│                                       l'Explorateur le montre :              │
-│                                       "C:\Photos\Vacances 2026".             │
-│ --search          <str>               Montrer les photos que trouve une      │
-│                                       recherche, tapée comme dans search :   │
-│                                       "noel 2025".                           │
-│ --album           <str>               Montrer un album, fait dans search ou  │
-│                                       le tri des rafales : "Crète 2023".     │
-│ --port            <int range> [x>=1]  Port de la page. docker run le publie  │
-│                                       sous le même numéro sur votre          │
-│                                       ordinateur, par exemple -p             │
-│                                       127.0.0.1:9000:9000 pour --port 9000.  │
-│                                       Par défaut :  port dans config.toml,   │
-│                                       8088.                                  │
-│ --since           <str>               Seulement les fichiers d'une période,  │
-│                                       selon la date de leur nom, sinon leur  │
-│                                       date de modification : today, week,    │
-│                                       month, all ou un jour comme            │
-│                                       2026-10-29.                            │
-│ --help    -h      <bool>              Affiche ce message et quitte.          │
+│ --folder          DOSSIER      Montrer les photos de ce dossier et de ses    │
+│                                sous-dossiers, tel que l'Explorateur le       │
+│                                montre : "C:\Photos\Vacances 2026".           │
+│ --search          MOTS         Montrer les photos que trouve une recherche,  │
+│                                tapée comme dans search : "noel 2025".        │
+│ --album           NOM          Montrer un album, fait dans search ou le tri  │
+│                                des rafales : "Crète 2023".                   │
+│ --port            PORT [x>=1]  Port de la page. docker run le publie sous le │
+│                                même numéro sur votre ordinateur, par exemple │
+│                                -p 127.0.0.1:9000:9000 pour --port 9000. Par  │
+│                                défaut :  port dans config.toml, 8088.        │
+│ --since           PÉRIODE      Seulement les fichiers d'une période, selon   │
+│                                la date de leur nom, sinon leur date de       │
+│                                modification : today, week, month, all ou un  │
+│                                jour comme 2026-10-29.                        │
+│ --help    -h                   Affiche ce message et quitte.                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -170,14 +170,14 @@ commande montre son propre `--help` ; voici la liste des commandes :
  dossiers et disques. Commencez par 'audit' (lecture seule), puis 'clean'.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --version          <bool>  Affiche la version et quitte.                     │
-│ --help     -h      <bool>  Affiche ce message et quitte.                     │
+│ --version            Affiche la version et quitte.                           │
+│ --help     -h        Affiche ce message et quitte.                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Affichage (remplace general.* de config.toml) ──────────────────────────────╮
-│ --locale           <en|fr>                      Langue de l'interface.       │
-│ --verbosity        <error|warning|info|verbose  Niveau de détail des         │
-│                    |debug>                      journaux.                    │
-│ --color            <auto|always|never>          Quand utiliser les couleurs  │
+│ --locale           en|fr                        Langue de l'interface.       │
+│ --verbosity        error|warning|info|verbose|  Niveau de détail des         │
+│                    debug                        journaux.                    │
+│ --color            auto|always|never            Quand utiliser les couleurs  │
 │                                                 (NO_COLOR est aussi          │
 │                                                 respecté).                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯

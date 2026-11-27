@@ -401,14 +401,17 @@ Réglages effectifs
 │ people.min_face             │ 40                         │ défaut            │
 │ people.min_sharpness        │ 30.0                       │ défaut            │
 │ people.with_audit           │ False                      │ défaut            │
+│ people.videos               │ False                      │ défaut            │
 │ people.ignored              │ 0 visages                  │ défaut            │
 │ people.ignored_file         │                            │ défaut            │
 │ people.person               │                            │ défaut            │
+│ people.unguessed            │                            │ défaut            │
 │ push.keep_removed_days      │ 90                         │ défaut            │
 │ push.stop_above_percent     │ 20                         │ défaut            │
 │ push.threads                │ 8                          │ défaut            │
 │ slideshow.screen_px         │ 1920                       │ défaut            │
 │ slideshow.interval_seconds  │ 8                          │ défaut            │
+│ slideshow.avoid             │ []                         │ défaut            │
 │ share.long_side_px          │ 2048                       │ défaut            │
 │ share.quality               │ 85                         │ défaut            │
 │ share.keep_gps              │ False                      │ défaut            │
@@ -1023,14 +1026,17 @@ Réglages effectifs
 │ people.min_face             │ 40                         │ config.toml       │
 │ people.min_sharpness        │ 30.0                       │ config.toml       │
 │ people.with_audit           │ False                      │ config.toml       │
+│ people.videos               │ False                      │ config.toml       │
 │ people.ignored              │ 0 visages                  │ défaut            │
 │ people.ignored_file         │                            │ défaut            │
 │ people.person               │                            │ défaut            │
+│ people.unguessed            │                            │ défaut            │
 │ push.keep_removed_days      │ 90                         │ config.toml       │
 │ push.stop_above_percent     │ 20                         │ config.toml       │
 │ push.threads                │ 8                          │ config.toml       │
 │ slideshow.screen_px         │ 1920                       │ config.toml       │
 │ slideshow.interval_seconds  │ 8                          │ config.toml       │
+│ slideshow.avoid             │ []                         │ défaut            │
 │ share.long_side_px          │ 2048                       │ config.toml       │
 │ share.quality               │ 85                         │ config.toml       │
 │ share.keep_gps              │ False                      │ config.toml       │

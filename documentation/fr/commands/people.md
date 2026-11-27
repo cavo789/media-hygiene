@@ -71,7 +71,7 @@ ouvre sa photo. Ctrl+C, ou fermer son onglet, l'arrête.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysées : 13 visages, 0,07 s par photo.
+✅ 37 photos analysées : 14 visages, 0,08 s par photo.
 ✅ 17 visages dans 47 photos : 3 groupes de visages semblables, les plus grands
 7, 5, 4 ; 1 vus une seule fois.
 ✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les
@@ -428,25 +428,38 @@ Ni Ollama, ni carte graphique : les modèles de visages sont intégrés ([IA loc
  Visages gardés dans le cache, jamais envoyés nulle part.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path            <list[str]>         Seulement les photos sous ce dossier   │
-│                                       (chemin de l'hôte, tel que vous l'avez │
-│                                       monté) ; à répéter pour plusieurs. Par │
-│                                       défaut : toutes les photos de l'index. │
-│ --sample          <int range> [x>=0]  Analyser ce nombre de photos prises au │
-│                                       hasard, afficher le temps par photo et │
-│                                       l'estimation d'une exécution complète, │
-│                                       puis s'arrêter.                        │
-│ --forget          <bool>              Supprimer tous les visages du cache,   │
-│                                       puis montrer qu'il n'en reste aucun ;  │
-│                                       demande aussi avant d'effacer les noms │
-│                                       de config.toml.                        │
-│ --port            <int range> [x>=1]  Port de la page. docker run le publie  │
-│                                       sous le même numéro sur votre          │
-│                                       ordinateur, par exemple -p             │
-│                                       127.0.0.1:9000:9000 pour --port 9000.  │
-│                                       Par défaut :  port dans config.toml,   │
-│                                       8088.                                  │
-│ --help    -h      <bool>              Affiche ce message et quitte.          │
+│ --path                DOSSIER        Seulement les photos sous ce dossier    │
+│                                      (chemin de l'hôte, tel que vous l'avez  │
+│                                      monté) ; à répéter pour plusieurs. Par  │
+│                                      défaut : toutes les photos de l'index.  │
+│ --sample              NOMBRE [x>=0]  Analyser ce nombre de photos prises au  │
+│                                      hasard, afficher le temps par photo et  │
+│                                      l'estimation d'une exécution complète,  │
+│                                      puis s'arrêter.                         │
+│ --forget                             Supprimer tous les visages du cache,    │
+│                                      puis montrer qu'il n'en reste aucun ;   │
+│                                      demande aussi avant d'effacer les noms  │
+│                                      de config.toml.                         │
+│ --names                              Avec --forget : supprimer aussi les     │
+│                                      noms de config.toml et les visages      │
+│                                      ignorés, sans demander (le fichier      │
+│                                      précédent est conservé).                │
+│ --expect              NOMS/IGNORÉS   Avec --names : ce que la confirmation a │
+│                                      listé (noms/ignorés, p. ex. 3/12) ;     │
+│                                      refuse, sans rien supprimer, si         │
+│                                      config.toml a changé depuis.            │
+│ --straighten                         Tourner toutes les photos trouvées      │
+│                                      couchées sur le côté (la page Photos à  │
+│                                      redresser les montre d'abord), après    │
+│                                      une question, journalisé : mh undo les  │
+│                                      rend.                                   │
+│ --port                PORT [x>=1]    Port de la page. docker run le publie   │
+│                                      sous le même numéro sur votre           │
+│                                      ordinateur, par exemple -p              │
+│                                      127.0.0.1:9000:9000 pour --port 9000.   │
+│                                      Par défaut :  port dans config.toml,    │
+│                                      8088.                                   │
+│ --help        -h                     Affiche ce message et quitte.           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

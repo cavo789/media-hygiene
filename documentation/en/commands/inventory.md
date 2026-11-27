@@ -80,10 +80,10 @@ audited completely.
  what the audits learnt to Excel, from the cache alone: no file is read.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --format          <xlsx|csv>  xlsx: an Excel workbook (Files and Summary     │
-│                               sheets). csv: the Files sheet only, like       │
-│                               plan.csv. Default: xlsx.                       │
-│ --help    -h      <bool>      Show this message and exit.                    │
+│ --format          xlsx|csv  xlsx: an Excel workbook (Files and Summary       │
+│                             sheets). csv: the Files sheet only, like         │
+│                             plan.csv. Default: xlsx.                         │
+│ --help    -h                Show this message and exit.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

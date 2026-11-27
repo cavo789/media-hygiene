@@ -126,36 +126,32 @@ mh undo --pick
  was moved; remove the links of an album.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Run to undo (see 'history'); the latest one by default. │
-│                      For a sort, every run of the same workbook.             │
+│   run_id      RUN  Run to undo (see 'history'); the latest one by default.   │
+│                    For a sort, every run of the same workbook.               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes              -y      <bool>              Do not ask for confirmation   │
-│                                                before undoing several runs   │
-│                                                of a sort (overrides          │
-│                                                sort.confirm).                │
-│ --pick                     <bool>              Open the quarantine in the    │
-│                                                browser, as tiles, and put    │
-│                                                back only the photos you      │
-│                                                pick; 'undo' of their run     │
-│                                                still brings back the rest.   │
-│ --port                     <int range> [x>=1]  Port of the page. docker run  │
-│                                                publishes it under the same   │
-│                                                number on your computer: -p   │
-│                                                127.0.0.1:9000:9000 for       │
-│                                                --port 9000. Default:  port   │
-│                                                in config.toml, 8088.         │
-│ --from-quarantine          <bool>              The run's journal is lost:    │
-│                                                bring its files back from the │
-│                                                layout of its quarantine,     │
-│                                                shown first, never over a     │
-│                                                file.                         │
-│ --help             -h      <bool>              Show this message and exit.   │
+│ --yes              -y                   Do not ask for confirmation before   │
+│                                         undoing several runs of a sort       │
+│                                         (overrides sort.confirm).            │
+│ --pick                                  Open the quarantine in the browser,  │
+│                                         as tiles, and put back only the      │
+│                                         photos you pick; 'undo' of their run │
+│                                         still brings back the rest.          │
+│ --port                     PORT [x>=1]  Port of the page. docker run         │
+│                                         publishes it under the same number   │
+│                                         on your computer: -p                 │
+│                                         127.0.0.1:9000:9000 for --port 9000. │
+│                                         Default:  port in config.toml, 8088. │
+│ --from-quarantine                       The run's journal is lost: bring its │
+│                                         files back from the layout of its    │
+│                                         quarantine, shown first, never over  │
+│                                         a file.                              │
+│ --help             -h                   Show this message and exit.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --backup        <list[str]>  A backup or an old disk, mounted read-only:     │
-│                              never changed, and not refused for being        │
-│                              read-only (mh passes your backups). Repeatable. │
+│ --backup        FOLDER  A backup or an old disk, mounted read-only: never    │
+│                         changed, and not refused for being read-only (mh     │
+│                         passes your backups). Repeatable.                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

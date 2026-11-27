@@ -289,25 +289,24 @@ The `-v` of earlier guides still work, alongside `--photos`.
  your folders: mh audit, mh clean.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --shell               <powershell|bash>  The shell of the script:            │
-│                                          'powershell' (Windows) or 'bash'    │
-│                                          (WSL, Linux, macOS). Default:       │
-│                                          guessed from the mounted folders.   │
-│ --photos              <list[str]>        A folder of photos and videos, as   │
-│                                          Explorer shows it: "C:\Photos" (or  │
-│                                          /mnt/c/Photos in WSL). Repeat it    │
-│                                          for several folders. No -v needed.  │
-│ --quarantine          <str>              Where the copies set aside go,      │
-│                                          once: best on the photos' disk (a   │
-│                                          move, not a copy). Default: the     │
-│                                          quarantine folder of your home.     │
-│ --backup              <list[str]>        A backup or an old disk, as         │
-│                                          Explorer shows it: "E:\Backup".     │
-│                                          Mounted read-only for every         │
-│                                          command, clean included, and given  │
-│                                          as --backup: compared, never        │
-│                                          changed. Repeatable.                │
-│ --help        -h      <bool>             Show this message and exit.         │
+│ --shell               powershell|bash  The shell of the script: 'powershell' │
+│                                        (Windows) or 'bash' (WSL, Linux,      │
+│                                        macOS). Default: guessed from the     │
+│                                        mounted folders.                      │
+│ --photos              FOLDER           A folder of photos and videos, as     │
+│                                        Explorer shows it: "C:\Photos" (or    │
+│                                        /mnt/c/Photos in WSL). Repeat it for  │
+│                                        several folders. No -v needed.        │
+│ --quarantine          FOLDER           Where the copies set aside go, once:  │
+│                                        best on the photos' disk (a move, not │
+│                                        a copy). Default: the quarantine      │
+│                                        folder of your home.                  │
+│ --backup              FOLDER           A backup or an old disk, as Explorer  │
+│                                        shows it: "E:\Backup". Mounted        │
+│                                        read-only for every command, clean    │
+│                                        included, and given as --backup:      │
+│                                        compared, never changed. Repeatable.  │
+│ --help        -h                       Show this message and exit.           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

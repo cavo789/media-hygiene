@@ -319,23 +319,21 @@ The port is `[review] port`, the one of every page.
  choosing the next one: a folder, a search or an album.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --folder          <str>               Show the photos of this folder and its │
-│                                       subfolders, as the Explorer shows it:  │
-│                                       "C:\Photos\2026 Holidays".             │
-│ --search          <str>               Show the photos a search finds, as     │
-│                                       typed in search: "noel 2025".          │
-│ --album           <str>               Show an album, made in search or the   │
-│                                       burst review: "Crete 2023".            │
-│ --port            <int range> [x>=1]  Port of the page. docker run publishes │
-│                                       it under the same number on your       │
-│                                       computer: -p 127.0.0.1:9000:9000 for   │
-│                                       --port 9000. Default:  port in         │
-│                                       config.toml, 8088.                     │
-│ --since           <str>               Only the files of a period, by the day │
-│                                       in their name, else their modified     │
-│                                       time: today, week, month, all or a day │
-│                                       such as 2026-10-29.                    │
-│ --help    -h      <bool>              Show this message and exit.            │
+│ --folder          FOLDER       Show the photos of this folder and its        │
+│                                subfolders, as the Explorer shows it:         │
+│                                "C:\Photos\2026 Holidays".                    │
+│ --search          WORDS        Show the photos a search finds, as typed in   │
+│                                search: "noel 2025".                          │
+│ --album           NAME         Show an album, made in search or the burst    │
+│                                review: "Crete 2023".                         │
+│ --port            PORT [x>=1]  Port of the page. docker run publishes it     │
+│                                under the same number on your computer: -p    │
+│                                127.0.0.1:9000:9000 for --port 9000. Default: │
+│                                port in config.toml, 8088.                    │
+│ --since           PERIOD       Only the files of a period, by the day in     │
+│                                their name, else their modified time: today,  │
+│                                week, month, all or a day such as 2026-10-29. │
+│ --help    -h                   Show this message and exit.                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

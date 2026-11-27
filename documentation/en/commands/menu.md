@@ -68,7 +68,7 @@ A command that has no place in the menu yet still shows, last, under *Other comm
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────
-Last audit: 2026-11-13 17:41 (today) — 10 files, 4 extra copies (5.9 MB), 1
+Last audit: 2026-11-27 22:16 (today) — 10 files, 4 extra copies (5.9 MB), 1
 broken.
 Quarantine: empty.
 
@@ -166,6 +166,7 @@ Quarantine: empty.
    20 mh clean --delete                               Delete the     ⚠️ optional
                                                       copies at once
       Sort the photos
+      The guide
 ✅ 21 mh classify                                     Propose a tidy 🔒
                                                       tree
    22 mh places                                       Name your      🔒 optional
@@ -176,25 +177,29 @@ Quarantine: empty.
                                                       photos into
                                                       the proposed
                                                       folders
+      Go further
+   25 mh people --straighten                          Straighten the ↩️ optional
+                                                      photos lying
+                                                      on their side
       Find a photo
       The guide
-   25 mh tags                                         Give your      🔒
+   26 mh tags                                         Give your      🔒
                                                       photos words
-   26 mh spots                                        Name where     🔒
+   27 mh spots                                        Name where     🔒
                                                       your photos
                                                       were taken
-   27 mh library                                      Library: find  🔒
+   28 mh library                                      Library: find  🔒
                                                       a photo
       Go further
       mh person "C:\Photos\IMG_0001.jpg"              Name someone   🔒
                                                       from a photo
                                                       (type it
                                                       yourself)
-   28 mh xmp                                          Carry the      ↩️ optional
+   29 mh xmp                                          Carry the      ↩️ optional
                                                       words into
                                                       other photo
                                                       software
-   29 mh inventory                                    All your       🔒 optional
+   30 mh inventory                                    All your       🔒 optional
                                                       photos in
                                                       Excel
       Back up to the NAS
@@ -204,7 +209,7 @@ Quarantine: empty.
                                                       on the NAS
                                                       (type it
                                                       yourself)
-   30 mh push                                         Back up what   ↩️
+   31 mh push                                         Back up what   ↩️
                                                       the NAS lacks
       Share your photos
       The commands
@@ -225,7 +230,7 @@ Quarantine: empty.
                                                       disk (type it
                                                       yourself)
       Reports
-   31 mh reports                                      List the       🔒
+   32 mh reports                                      List the       🔒
                                                       reports
       mh reports --prune 10                           Keep only the  🔒 optional
                                                       recent reports
@@ -233,48 +238,51 @@ Quarantine: empty.
                                                       yourself)
       Settings
       Your folders
-   32 mh folders                                      See your       🔒
+   33 mh folders                                      See your       🔒
                                                       folders
       mh folders remove "E:\Archives"                 Remove a       🔒 optional
                                                       folder (type
                                                       it yourself)
       Update
-   33 mh update                                       Install the    🔒
+   34 mh update                                       Install the    🔒
                                                       new version
       Backup
-   34 mh backup                                       Back up the    🔒
+   35 mh backup                                       Back up the    🔒
                                                       index and the
                                                       settings
-   35 mh restore                                      Restore the    ↩️
+   36 mh restore                                      Restore the    ↩️
                                                       index
       Windows
-   36 mh shortcut                                     An icon on the 🔒 optional
+   37 mh shortcut                                     An icon on the 🔒 optional
                                                       Desktop and in
                                                       the Start menu
-   37 mh explorer                                     Media Hygiene  🔒 optional
+   38 mh explorer                                     Media Hygiene  🔒 optional
                                                       in the
                                                       Explorer's
                                                       right-click
-   38 mh explorer --remove                            Remove Media   🔒 optional
+   39 mh explorer --remove                            Remove Media   🔒 optional
                                                       Hygiene from
                                                       the
                                                       right-click
       Privacy
-   39 mh people --forget                              Forget every   🔒 optional
+   40 mh people --forget                              Forget every   🔒 optional
                                                       face
+   41 mh people --forget --names                      Forget every   ⚠️ optional
+                                                      face and every
+                                                      name
       Advanced
-   40 mh config                                       See each       🔒
+   42 mh config                                       See each       🔒
                                                       setting and
                                                       where it comes
                                                       from
-   41 mh config tidy                                  Tidy           🔒 optional
+   43 mh config tidy                                  Tidy           🔒 optional
                                                       config.toml
-   42 mh status                                       Where am I, in 🔒 optional
+   44 mh status                                       Where am I, in 🔒 optional
                                                       the console
-   43 mh menu                                         The menu in    🔒 optional
+   45 mh menu                                         The menu in    🔒 optional
                                                       the console
-   44 mh launcher                                     Write mh again 🔒 optional
-   45 mh home                                         The home page  🔒 optional
+   46 mh launcher                                     Write mh again 🔒 optional
+   47 mh home                                         The home page  🔒 optional
 
 🔒 your photos are not touched · ↩️ can be undone · ⚠️ for good
 🤖 classify and tags can also ask a local AI model: set [classify.ai] model in
@@ -315,7 +323,7 @@ the guides), then type mh menu.
  command, the next one first: what 'mh' alone shows, Enter runs it.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h      <bool>  Show this message and exit.                          │
+│ --help  -h        Show this message and exit.                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
