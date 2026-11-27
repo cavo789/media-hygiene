@@ -46,7 +46,6 @@ function card(hit, index) {
     if (!hit.taken) node.classList.add("notTaken");
     if (hit.left) node.classList.add("leftHere");
   }
-  if (hit.row !== undefined && eventTile) eventTile(hit, meta, node);  // an event's (0438)
   if (hit.likely && window.mhLate) window.mhLate.tile(hit, meta, node);  // a late photo's (0558)
   if (hit.inAlbum) { node.classList.add("inAlbum"); meta.append(element("div", "inAlbumMark", TEXTS.inAlbum)); }  // 0501
   if (hit.caption) meta.append(titled(element("div", "muted caption", hit.caption)));

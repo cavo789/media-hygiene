@@ -838,9 +838,6 @@ msgid ""
 "rule…"
 msgstr ""
 
-msgid "A rule is already named so: choose another name."
-msgstr ""
-
 msgid ""
 "A screenshot or a document, as 'classify' tells them: a screenshot name, "
 "or a PNG or tiny image without any camera trace."
@@ -934,16 +931,6 @@ msgstr ""
 msgid ""
 "Above this many photos to describe, classify asks first and prints the "
 "estimated time. One photo at a time suits one graphics card."
-msgstr ""
-
-msgid "Accept at once every event still to decide whose proposal is sure (V)"
-msgstr ""
-
-msgid "Accept them"
-msgstr ""
-
-#, python-brace-format
-msgid "Accept {sure} ({files})"
 msgstr ""
 
 msgid ""
@@ -1411,12 +1398,6 @@ msgid "Archives, newest first:"
 msgstr ""
 
 msgid "Are my photos safe?"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"As decided by the classify run {run}: run classify again to see the rules"
-" you changed at work."
 msgstr ""
 
 msgid "As photos: only what your photos lack; the folder is only read."
@@ -1943,10 +1924,6 @@ msgstr ""
 msgid "Choosing categories"
 msgstr ""
 
-#, python-brace-format
-msgid "Chosen here: {chosen} · still to decide: {open}"
-msgstr ""
-
 msgid "Christmas"
 msgstr ""
 
@@ -2392,9 +2369,6 @@ msgid "Date…"
 msgstr ""
 
 msgid "Day"
-msgstr ""
-
-msgid "Days"
 msgstr ""
 
 msgid "Days of every year"
@@ -2974,10 +2948,6 @@ msgstr ""
 msgid "Effective settings"
 msgstr ""
 
-#, python-brace-format
-msgid "Elsewhere: {folders}."
-msgstr ""
-
 msgid "Empty"
 msgstr ""
 
@@ -3143,15 +3113,6 @@ msgstr ""
 msgid "Events split in several, each part keeps the edit: {names}."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"Events to decide with a sure proposal: {count}. Each one gets its "
-"proposed folder, as Enter would give it, saved in one write: {moves} "
-"move, {kept} keep the folder you named. Events to decide left to look at:"
-" {left}. Click an event to look at it first; the ↶ button takes the whole"
-" batch back."
-msgstr ""
-
 msgid ""
 "Events: photos taken less than merge_gap_hours apart belong together; "
 "fewer than min_event_size photos are not an event, and fall back to their"
@@ -3229,14 +3190,6 @@ msgid ""
 "/config/.history/; your photos do not change."
 msgstr ""
 
-msgid "Every file of this event is already in its folder: nothing to move."
-msgstr ""
-
-msgid ""
-"Every file of this event is already where it goes, or stays: nothing to "
-"move."
-msgstr ""
-
 msgid "Every file of this period is sorted already: nothing left to group."
 msgstr ""
 
@@ -3300,9 +3253,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "Every report is listed in {path} (Ctrl+click opens it)."
-msgstr ""
-
-msgid "Every rule decided something."
 msgstr ""
 
 msgid "Every series has been seen."
@@ -3962,9 +3912,6 @@ msgid ""
 msgstr ""
 
 msgid "From your NAS or an old disk"
-msgstr ""
-
-msgid "From:"
 msgstr ""
 
 msgid "Full screen (Esc leaves it)"
@@ -4819,12 +4766,6 @@ msgstr ""
 msgid "Leave the set aside: every file again"
 msgstr ""
 
-msgid "Leave the whole event where it is (Shift+S)"
-msgstr ""
-
-msgid "Leave where they are (S)"
-msgstr ""
-
 msgid "Left as it is"
 msgstr ""
 
@@ -5094,9 +5035,6 @@ msgstr ""
 msgid "March"
 msgstr ""
 
-msgid "Match"
-msgstr ""
-
 msgid "May"
 msgstr ""
 
@@ -5360,11 +5298,6 @@ msgid "Moved"
 msgstr ""
 
 msgid ""
-"Moved at once, journaled: 'undo' puts them back. The other events are "
-"left for later."
-msgstr ""
-
-msgid ""
 "Moved at once, journaled: Undo puts them back. The rest of the plan stays"
 " where it is."
 msgstr ""
@@ -5436,19 +5369,6 @@ msgstr ""
 msgid "My places"
 msgstr ""
 
-msgid ""
-"N and P walk only the events to decide whose proposal is sure, one by "
-"one, before accepting them"
-msgstr ""
-
-msgid "N, P and U skip the events already chosen and those whose proposal is sure"
-msgstr ""
-
-msgid ""
-"N, P and U walk only the events with files still to move: neither sorted "
-"nor in place"
-msgstr ""
-
 msgid "NAME"
 msgstr ""
 
@@ -5470,9 +5390,6 @@ msgstr ""
 msgid "Name another file with --decisions, or mount the same folders."
 msgstr ""
 
-msgid "Name of the event"
-msgstr ""
-
 msgid "Name of the event's folder"
 msgstr ""
 
@@ -5485,9 +5402,6 @@ msgid "Name saved, read back from the disk."
 msgstr ""
 
 msgid "Name someone from a photo"
-msgstr ""
-
-msgid "Name the event so and save it; change it in the field above at any time"
 msgstr ""
 
 msgid "Name the faces"
@@ -5916,15 +5830,6 @@ msgid "No draft: {reason}"
 msgstr ""
 
 msgid "No entry is ticked: nothing was written."
-msgstr ""
-
-msgid "No event left to decide after this one."
-msgstr ""
-
-msgid "No event left to sort after this one."
-msgstr ""
-
-msgid "No event matches these filters."
 msgstr ""
 
 msgid "No face looked for: 'people', or the next 'audit --people', does it later."
@@ -7132,12 +7037,6 @@ msgid ""
 " wherever that rule is listed."
 msgstr ""
 
-msgid "Only the events not sorted yet"
-msgstr ""
-
-msgid "Only the events to decide"
-msgstr ""
-
 msgid ""
 "Only the files below this folder (host path, as you mounted it); repeat "
 "it for several. The events stay whole: they are built from every file, "
@@ -7204,9 +7103,6 @@ msgid "Only the series still to see"
 msgstr ""
 
 msgid "Only the series to look at"
-msgstr ""
-
-msgid "Only the sure proposals"
 msgstr ""
 
 msgid ""
@@ -7881,9 +7777,6 @@ msgstr ""
 msgid "Proposed folder"
 msgstr ""
 
-msgid "Proposed name:"
-msgstr ""
-
 msgid "Proposed tree"
 msgstr ""
 
@@ -8158,9 +8051,6 @@ msgstr ""
 msgid "Reading the journals and the quarantine…"
 msgstr ""
 
-msgid "Reading the latest classify plan…"
-msgstr ""
-
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
@@ -8254,18 +8144,7 @@ msgstr ""
 msgid "Remove from the favourites"
 msgstr ""
 
-msgid "Remove the rules"
-msgstr ""
-
 msgid "Remove the ticked entries (a copy is kept first):"
-msgstr ""
-
-#, python-brace-format
-msgid "Remove the {count} rules that decided nothing"
-msgstr ""
-
-#, python-brace-format
-msgid "Remove these rules from config.toml? {names}"
 msgstr ""
 
 msgid "Remove this filter and search again"
@@ -8276,10 +8155,6 @@ msgid "Remove this photo too (quarantine, undo possible)"
 msgid_plural "Remove these {n} photos too (quarantine, undo possible)"
 msgstr[0] ""
 msgstr[1] ""
-
-#, python-brace-format
-msgid "Removed from config.toml, read back at {time}: {names}."
-msgstr ""
 
 msgid "Rename"
 msgstr ""
@@ -8496,19 +8371,10 @@ msgstr ""
 msgid "Root"
 msgstr ""
 
-msgid "Rule"
-msgstr ""
-
 #, python-brace-format
 msgid ""
 "Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the "
 "next classify applies it."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the "
-"next classify applies it; this event's folder is chosen too."
 msgstr ""
 
 #, python-brace-format
@@ -8520,9 +8386,6 @@ msgid "Rule '{rule}': {count} file sorted by what the model saw"
 msgid_plural "Rule '{rule}': {count} files sorted by what the model saw"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Rule:"
-msgstr ""
 
 msgid "Rules and reasons"
 msgstr ""
@@ -8798,9 +8661,6 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-msgid "Save and move on"
-msgstr ""
-
 msgid ""
 "Save it in the folder mounted on /reports, then run the same 'clean' "
 "command with --decisions decisions.json: it audits again, applies your "
@@ -8809,11 +8669,6 @@ msgid ""
 msgstr ""
 
 msgid "Save it, close it, then run 'sort' again."
-msgstr ""
-
-msgid ""
-"Save the folder, then move the files of this event only, journaled: undo "
-"puts them back (M)"
 msgstr ""
 
 msgid "Save the rule"
@@ -8959,9 +8814,6 @@ msgstr ""
 msgid ""
 "Saved, then read back from the disk at {time}: {ticked} files ticked in "
 "{file}."
-msgstr ""
-
-msgid "Saved."
 msgstr ""
 
 #, python-brace-format
@@ -9144,13 +8996,6 @@ msgid "Select {text} and press Ctrl+C."
 msgstr ""
 
 msgid "Send"
-msgstr ""
-
-#, python-brace-format
-msgid "Send the photos ({count}) to the folder, under the year:"
-msgstr ""
-
-msgid "Send to another folder (O)"
 msgstr ""
 
 msgid "Sent to the TV: its remote opens."
@@ -9470,12 +9315,6 @@ msgid "Show {tile}"
 msgstr ""
 
 msgid ""
-"Shown by kind and date, the latest first; config.toml keeps its own "
-"order, which decides. Click Rule or Files to sort by it, again to "
-"reverse."
-msgstr ""
-
-msgid ""
 "Shown for you to check, never removed on their own. × : not this person, "
 "remembered. Removed means moved to the quarantine at the next clean; undo"
 " brings the photos back."
@@ -9617,9 +9456,6 @@ msgstr ""
 msgid "Sort the rest ({n} files)"
 msgstr ""
 
-msgid "Sort this event now"
-msgstr ""
-
 #, python-brace-format
 msgid "Sort {files} files of {month} now? They go to:"
 msgstr ""
@@ -9645,12 +9481,6 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"Sorted: {events} events, {files} files ({share}) · already in place: "
-"{inPlace} files · left: {leftEvents} events, {leftFiles} files to move"
-msgstr ""
-
-#, python-brace-format
 msgid "Sorted: {sorted} % · nothing special: {nothing} % · left: {left}."
 msgstr ""
 
@@ -9660,9 +9490,6 @@ msgstr ""
 msgid ""
 "Sorting the files of the rule: the plan of classify is read, the files "
 "moved, then checked at their new place…"
-msgstr ""
-
-msgid "Sorting the files of this event…"
 msgstr ""
 
 msgid "Source folders removed"
@@ -9730,12 +9557,6 @@ msgid "Starting the show on this PC…"
 msgstr ""
 
 msgid "State"
-msgstr ""
-
-msgid "Status:"
-msgstr ""
-
-msgid "Stay on this event"
 msgstr ""
 
 msgid "Staying where they are"
@@ -9957,12 +9778,6 @@ msgstr ""
 msgid "Tag…"
 msgstr ""
 
-msgid "Take back the choice made here (T)"
-msgstr ""
-
-msgid "Take back the last batch of sure proposals (Shift+Z)"
-msgstr ""
-
 #, python-brace-format
 msgid ""
 "Take every photo out of {name}? The album will be empty and removed. The "
@@ -9982,10 +9797,6 @@ msgid "Take out of the set aside"
 msgstr ""
 
 msgid "Take out of the set aside (Backspace in the large view)"
-msgstr ""
-
-#, python-brace-format
-msgid "Take the batch back ({events})"
 msgstr ""
 
 msgid "Take the picked files out of the album: the photos stay where they are"
@@ -10559,11 +10370,6 @@ msgid ""
 msgstr ""
 
 msgid ""
-"The folder receiving the sorted tree and its shape, with a preview on "
-"your photos"
-msgstr ""
-
-msgid ""
 "The folder the files ticked were just copied into from the phone, as "
 "Explorer shows it (mounted read-only)."
 msgstr ""
@@ -10580,9 +10386,6 @@ msgid "The folder to remove"
 msgstr ""
 
 msgid "The folder to show, as the Explorer shows it"
-msgstr ""
-
-msgid "The folder typed for this event is not saved. Save it before leaving?"
 msgstr ""
 
 #, python-brace-format
@@ -11390,9 +11193,6 @@ msgstr ""
 msgid "The slideshow is over: the TV says so."
 msgstr ""
 
-msgid "The sort runs of this plan"
-msgstr ""
-
 msgid "The step"
 msgstr ""
 
@@ -11532,11 +11332,6 @@ msgstr ""
 msgid ""
 "The workbook is open in Excel or LibreOffice: what is not saved is not "
 "shown."
-msgstr ""
-
-msgid ""
-"The workbook was edited otherwise since this choice: choose again here, "
-"or press T to let the workbook decide."
 msgstr ""
 
 #, python-brace-format
@@ -11686,9 +11481,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "These folders are mounted read-only: {folders}."
-msgstr ""
-
-msgid "These photos are left as they are: no choice applies to them."
 msgstr ""
 
 msgid ""
@@ -11875,12 +11667,6 @@ msgid "This photo is now the cover of {name}."
 msgstr ""
 
 msgid "This report"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"This rule would take {files}: {mine} of this event, {others} of other "
-"events or folders on the same days."
 msgstr ""
 
 msgid "This run changed since its files were shown: look at them again."
@@ -12240,9 +12026,6 @@ msgid ""
 "back."
 msgstr ""
 
-msgid "Turn into dates"
-msgstr ""
-
 msgid ""
 "Turn the picked photos now: two bytes of each written, journaled, read "
 "back (Enter opens the large view)"
@@ -12509,9 +12292,6 @@ msgstr ""
 msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr ""
 
-msgid "Use this name"
-msgstr ""
-
 msgid "User name on the NAS"
 msgstr ""
 
@@ -12728,9 +12508,6 @@ msgid ""
 msgstr ""
 
 msgid "Where the event is told"
-msgstr ""
-
-msgid "Where the files of this event go, as 'sort' will move them:"
 msgstr ""
 
 msgid "Where the photos of this event were taken"
@@ -12984,11 +12761,6 @@ msgid "Write these layouts into {path}?"
 msgstr ""
 
 msgid "Write this day"
-msgstr ""
-
-msgid ""
-"Write this event down as a rule of config.toml: its days, its folder; the"
-" next classify runs apply it (R)"
 msgstr ""
 
 msgid ""
@@ -13247,9 +13019,6 @@ msgstr ""
 msgid "Your places, the spots ignored, naming places online."
 msgstr ""
 
-msgid "Your rules"
-msgstr ""
-
 msgid ""
 "Your time zone, for the dates and the names of reports and runs, e.g. "
 "\"Europe/Brussels\" or \"America/Montreal\" (list: "
@@ -13456,10 +13225,6 @@ msgid "and {count} more"
 msgstr ""
 
 #, python-brace-format
-msgid "and {n} more"
-msgstr ""
-
-#, python-brace-format
 msgid "and {n} more face"
 msgid_plural "and {n} more faces"
 msgstr[0] ""
@@ -13551,9 +13316,6 @@ msgstr ""
 msgid "broken files"
 msgstr ""
 
-msgid "built in: its folder names the category"
-msgstr ""
-
 msgid "built-in"
 msgstr ""
 
@@ -13595,9 +13357,6 @@ msgstr ""
 msgid ""
 "category {name}: a category lists extensions, not categories; for the "
 "extension, write .{value}"
-msgstr ""
-
-msgid "changed, not saved yet: Enter saves it, Esc drops it"
 msgstr ""
 
 msgid "checks"
@@ -13777,10 +13536,6 @@ msgid "date"
 msgstr ""
 
 msgid "date on the disk"
-msgstr ""
-
-#, python-brace-format
-msgid "decided in the workbook: {value}"
 msgstr ""
 
 msgid "decisions.json cannot be read: 'review' will say why."
@@ -14055,9 +13810,6 @@ msgstr ""
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr ""
 
-msgid "in place: nothing to move"
-msgstr ""
-
 msgid "in the future: to check"
 msgstr ""
 
@@ -14170,9 +13922,6 @@ msgid ""
 "it may be the last name of the photo"
 msgstr ""
 
-msgid "its own folder"
-msgstr ""
-
 msgid "its photo large; Delete sets it aside, Esc closes"
 msgstr ""
 
@@ -14276,9 +14025,6 @@ msgid "leave the pair alone, then next"
 msgstr ""
 
 msgid "leaves the phone"
-msgstr ""
-
-msgid "left as it is"
 msgstr ""
 
 msgid "left out"
@@ -14572,10 +14318,6 @@ msgstr ""
 msgid "names are kept in config.toml: mount a folder of yours on /config"
 msgstr ""
 
-#, python-brace-format, python-format
-msgid "naming the events up to this one covers {share}%% of the work"
-msgstr ""
-
 msgid "nas get back restore backup copy missing usb disk"
 msgstr ""
 
@@ -14744,9 +14486,6 @@ msgid "not sorted yet."
 msgstr ""
 
 msgid "not yet"
-msgstr ""
-
-msgid "nothing"
 msgstr ""
 
 msgid "nothing to put back"
@@ -14976,10 +14715,6 @@ msgstr ""
 msgid "proposed aside: underexposed next to the others"
 msgstr ""
 
-#, python-brace-format
-msgid "proposed by classify ({why}), not validated yet"
-msgstr ""
-
 msgid "protected"
 msgstr ""
 
@@ -15175,9 +14910,6 @@ msgstr ""
 msgid "sorted since."
 msgstr ""
 
-msgid "sorted: its files are in their folders"
-msgstr ""
-
 msgid "space freed, largest first"
 msgstr ""
 
@@ -15210,9 +14942,6 @@ msgid "stopped"
 msgstr ""
 
 msgid "suggestion"
-msgstr ""
-
-msgid "sure: V accepts it with the other sure proposals"
 msgstr ""
 
 #, python-format
@@ -15757,13 +15486,6 @@ msgid "validate"
 msgstr ""
 
 msgid "validate every obvious series at once"
-msgstr ""
-
-msgid "validated here"
-msgstr ""
-
-#, python-brace-format
-msgid "validated here at {time}"
 msgstr ""
 
 msgid "verified"
@@ -17244,12 +16966,6 @@ msgid "{done} of {total} steps done."
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"{done}, read back from the disk at {time}: the ↶ button takes the whole "
-"batch back."
-msgstr ""
-
-#, python-brace-format
 msgid "{done}: Z takes the whole batch back."
 msgstr ""
 
@@ -17343,10 +17059,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "{files}, from {year}"
-msgstr ""
-
-#, python-brace-format
-msgid "{files}, {undecided} to check or to sort"
 msgstr ""
 
 #, python-brace-format
@@ -17625,12 +17337,6 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"{moved} moved, {verified} checked at their new place (run {run}, at "
-"{time}): 'undo {run}' puts them back."
-msgstr ""
-
-#, python-brace-format
 msgid "{name} ({count} faces)"
 msgstr ""
 
@@ -17734,10 +17440,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} already there"
-msgstr ""
-
-#, python-brace-format
 msgid "{n} already there by its GPS: not written."
 msgid_plural "{n} already there by their GPS: not written."
 msgstr[0] ""
@@ -17754,20 +17456,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} choice of the batch taken back"
-msgid_plural "{n} choices of the batch taken back"
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "{n} could not be written."
 msgid_plural "{n} could not be written."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
-msgid "{n} event"
-msgid_plural "{n} events"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -17831,12 +17521,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} file goes to"
-msgid_plural "{n} files go to"
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "{n} file has no date: left where it is."
 msgid_plural "{n} files have no date: left where they are."
 msgstr[0] ""
@@ -17845,12 +17529,6 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} file is already in its month: not moved."
 msgid_plural "{n} files are already in their month: not moved."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
-msgid "{n} file keeps its own folder"
-msgid_plural "{n} files keep their own folder"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -17907,24 +17585,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} file sent elsewhere, one by one"
-msgid_plural "{n} files sent elsewhere, one by one"
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid ""
 "{n} file set aside before was left unticked: tick it in the large view or"
 " with its own ☑, after reading its warning."
 msgid_plural ""
 "{n} files set aside before were left unticked: tick each one in the large"
 " view or with its own ☑, after reading its warning."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
-msgid "{n} file stays where it is"
-msgid_plural "{n} files stay where they are"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -17952,10 +17618,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "{n} files on another disk or mount: no link possible."
-msgstr ""
-
-#, python-brace-format
-msgid "{n} files the old rule decided are not taken any more."
 msgstr ""
 
 #, python-brace-format
@@ -18209,12 +17871,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} rule decided nothing."
-msgid_plural "{n} rules decided nothing."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid ""
 "{n} rule gives a category of several folder levels ({names}): the "
 "convention wants one name (2009/2009-11/<name>). Write one name in its "
@@ -18277,18 +17933,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} sure proposal"
-msgid_plural "{n} sure proposals"
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
-msgid "{n} sure proposal accepted"
-msgid_plural "{n} sure proposals accepted"
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "{n} to confirm"
 msgstr ""
 
@@ -18319,10 +17963,6 @@ msgid "{n} {files} file ({size}), in every folder."
 msgid_plural "{n} {files} files ({size}), in every folder."
 msgstr[0] ""
 msgstr[1] ""
-
-#, python-brace-format
-msgid "{n} → {folder}"
-msgstr ""
 
 #, python-brace-format
 msgid "{old} ({n} faces) joins {into} ({m} faces)."
@@ -18747,10 +18387,6 @@ msgid "{to} is not a folder on a drive letter."
 msgstr ""
 
 #, python-brace-format
-msgid "{undone}, read back from the disk at {time}."
-msgstr ""
-
-#, python-brace-format
 msgid "{units} group of photos (an event or a lone photo) no rule of yours took:"
 msgid_plural "{units} groups of photos (events or lone photos) no rule of yours took:"
 msgstr[0] ""
@@ -18800,14 +18436,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "{when} It did not finish: run it again."
-msgstr ""
-
-#, python-brace-format
-msgid "{when} · {events} · {files} files · undo {run}"
-msgstr ""
-
-#, python-brace-format
-msgid "{when} · {events} · {files} files · undone"
 msgstr ""
 
 #, python-brace-format

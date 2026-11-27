@@ -80,10 +80,10 @@ def test_no_native_datalist_is_left(template: str) -> None:
 
 
 def test_the_other_fields_get_the_combo_list() -> None:
-    """0490: album, event folders (three fields), people (go to, name a group)."""
+    """0490: album, people (go to, name a group); no plan folder fields since 0822."""
     search = render_page("search.html.j2")
     assert 'comboAttach($("albumName")' in search
-    assert '["eventFolderIn", "send-category", "ruleCategory"]' in search
+    assert "eventFolderIn" not in search
     people = render_page("people.html.j2")
     assert 'comboAttach($("who")' in people
     assert "comboAttach(input, () => state.people" in people

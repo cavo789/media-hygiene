@@ -39,7 +39,9 @@ def test_the_bar_chip_keeps_a_name_whole_and_shows_it_as_on_the_card() -> None:
     page = render_page("search.html.j2")
     words = re.search(r"const chipWords = \(text\) => text\.match\((/.+/g)\)", page)
     assert words is not None
-    assert words.group(1) == r'/(?:\w+:)?"[^"]*"|\S+/g'
+    assert (
+        words.group(1) == r"/(?:\w+:)?\x22[^\x22]*\x22|\S+/g"
+    )  # \x22: a quote, kept out of the source (0822)
     label = re.search(r"word\.match\((/.+/i)\)", page)
     assert label is not None
     assert label.group(1) == r"/^person:\x22?([^\x22]*)\x22?$/i"  # \x22: a quote
