@@ -42,6 +42,7 @@ and size, and its red button carries that count (**Set these 12 files aside**):
 While an extension is ticked, the folder table lists only the folders that hold some, each with
 the count and size of that extension: you see where they are. A folder ticked works the same way
 on the extension table. Untick everything to see every row again.
+Your ticks stay in the page's address: a reload or a link brings them back.
 
 Many types, only a few to keep? Above the extension table, switch from **Set these aside** to
 **Set everything aside but these** and tick the extensions to keep. The bar then names every

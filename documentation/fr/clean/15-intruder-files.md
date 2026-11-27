@@ -44,6 +44,7 @@ côté**) :
 Tant qu'une extension est cochée, le tableau des dossiers ne liste que ceux qui en contiennent,
 chacun avec le nombre et la taille de cette extension : vous voyez où ils sont. Un dossier coché
 fait de même sur le tableau des extensions. Décochez tout pour revoir toutes les lignes.
+Vos coches restent dans l'adresse de la page : un rechargement ou un lien les retrouve.
 
 Beaucoup de types, et seulement quelques-uns à garder ? Au-dessus du tableau des extensions,
 passez de **Mettre ceux-ci de côté** à **Tout mettre de côté sauf ceux-ci** et cochez les

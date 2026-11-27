@@ -109,7 +109,7 @@ placés à la main) ; ⤢ sous les boutons de zoom ramène cette vue. Une photo 
   et **P** / **←** ouvrent le dossier suivant ou précédent de la liste sans enregistrer.
   **Oublier sa position** la ramène. Les dossiers écartés comme *pas une ville* ne sont dans aucune. **Tapez un nom** dans
   la zone en haut de la liste pour filtrer les deux sous-listes au fil de la frappe (le nom
-  affiché et le chemin du dossier ; les nombres se lisent *3 / 41*) ; Échap vide la zone.
+  affiché et le chemin du dossier ; les nombres se lisent *3 / 41*) ; Échap vide la zone. Ce que vous tapez (dans les deux zones) reste dans l'adresse de la page : un rechargement ou un lien le retrouve.
 - **N'importe quel dossier**, replié sous les dossiers au nom d'une ville, liste chaque dossier
   de l'index comme [les dossiers de `library`](library.md#parcourir-vos-dossiers) les montre (lu dans `/cache`, sans parcourir le disque) :
   vos dossiers montés ouverts, les autres fermés (▸ en ouvre un). Chaque ligne compte les photos

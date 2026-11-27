@@ -101,7 +101,7 @@ drawn but left out of that view.
   **Enter**, drag, **Enter**. **N** / **→** and **P** / **←** open the next or previous folder of
   the list without saving. **Forget its position** moves it back. The folders set aside as *not a town*
   are in neither. **Type a name** in the box on top of the list to filter both sub-lists as you
-  type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box.
+  type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box. What you typed (in both boxes) stays in the page's address: a reload or a link brings it back.
 - **Any folder**, folded under the town folders, lists every folder of the index as
   [the folders of `library`](library.md#walk-through-your-folders) shows them (read from `/cache`, the disk is not walked): your mounted
   folders open, the others closed (▸ opens one). Each line counts the photos and videos without
