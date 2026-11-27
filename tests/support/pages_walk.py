@@ -160,6 +160,40 @@ def own_server_rounds(page: Page) -> dict[str, Any]:
     return {"review": name, "rounds_ms": times}
 
 
+# 0848: words enough to fold into `+N` at the walk's width, then fewer, then none.
+CHIP_WORDS: Final = (24, 3, 0)
+CHIPS_JS: Final = """() => ({
+  line: document.querySelectorAll('#chips .chip').length,
+  folded: document.querySelectorAll('#chipsFolded .chip').length,
+  more: !document.querySelector('.chipsMore').hidden,
+})"""
+
+
+def chips_step(page: Page, home: str) -> list[dict[str, Any]]:
+    """The filter chips after searches of many, fewer, then no words (0820, 0848).
+
+    Each word is one chip: the line and `+N` together must hold exactly the words of
+    the last search, never the folded chips of a former one.
+
+    Args:
+        page: The tab.
+        home: The home page's address.
+
+    Returns:
+        Per search: the words asked, the chips on the line, folded, and `+N` shown.
+    """
+    page.goto(f"{home}search")
+    page.wait_for_selector(PAGE_READY, timeout=SHOWN_MS)
+    seen: list[dict[str, Any]] = []
+    for count in CHIP_WORDS:
+        page.fill("#text", " ".join(f"chipword{rank:02d}" for rank in range(count)))
+        with page.expect_response(_searched, timeout=SHOWN_MS):
+            page.press("#text", "Enter")
+        page.wait_for_timeout(300)  # the ResizeObserver's fold, one frame or two
+        seen.append({"words": count, **page.evaluate(CHIPS_JS)})
+    return seen
+
+
 def stopped_overlay(page: Page, home: str) -> dict[str, Any]:
     """0416: the server ended behind the page's back, the page says it stopped.
 
@@ -213,6 +247,7 @@ def main() -> None:
         walk["clicks_until"] = time.time()
         walk["console"] = console_step(page)
         walk["own_server"] = own_server_rounds(page)
+        walk["chips"] = chips_step(page, home)
         walk["csp_refused"] = refused
         walk["stopped"] = stopped_overlay(page, home)  # last: it ends mh
         browser.close()

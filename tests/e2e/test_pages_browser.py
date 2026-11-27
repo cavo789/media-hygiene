@@ -188,5 +188,11 @@ def test_pages_of_mh_alone_in_a_real_browser(
     assert rounds["review"], "no review page available on the demo tree"
     assert len(rounds["rounds_ms"]) == _ROUNDS
     assert max(rounds["rounds_ms"]) < _ROUND_MS, rounds
+    chips = walk["chips"]  # 0848: +N never keeps the chips of a former search
+    assert [each["line"] + each["folded"] for each in chips] == [
+        each["words"] for each in chips
+    ], chips
+    assert chips[0]["more"], chips  # many words fold into +N
+    assert not chips[-1]["more"], chips
     assert walk["stopped"]["shown"], walk["stopped"]  # 0416
     assert walk["csp_refused"] == [], walk["csp_refused"]  # 0671

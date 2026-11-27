@@ -52,6 +52,9 @@ class PeopleSettings(BaseModel):
     min_sharpness: float = Field(default=MIN_SHARPNESS, ge=0)
     # `audit` looks for faces too, after asking, as with `audit --people`.
     with_audit: bool = False
+    # Faces are looked for in videos too, on a few frames each (0839): about 1 s per
+    # video, against a few tenths for a photo.
+    videos: bool = False
     # Faces of strangers, posters, statues: never named, their group never shown.
     ignored: tuple[str, ...] = ()
     # The file holding the ignored faces, relative to the folder of config.toml.

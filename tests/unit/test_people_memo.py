@@ -119,16 +119,15 @@ def test_a_person_added_in_config_toml_is_seen(tmp_path: Path) -> None:
     assert [each.name for each in memo.read(config).person] == ["Léa", "Paul"]
 
 
-def test_a_missing_person_file_raises_and_nothing_is_kept(tmp_path: Path) -> None:
-    """The file of a person removed: the read says so; restored, it is read again."""
+def test_a_missing_person_file_reads_empty_and_nothing_is_kept(tmp_path: Path) -> None:
+    """The file of a person removed: read empty (0849); restored, it is read again."""
     config = _saved(tmp_path)
     memo = PeopleMemo()
     memo.read(config)
     person = _person_file(config)
     text = person.read_text("utf-8")
     person.unlink()
-    with pytest.raises(ValueError, match="is missing"):
-        memo.read(config)
+    assert memo.read(config).person[0].faces == ()
     person.write_text(text, "utf-8")
     assert memo.read(config).person[0].faces == LEA.faces
 

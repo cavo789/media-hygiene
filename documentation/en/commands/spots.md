@@ -20,6 +20,7 @@ photos words*, on the same page, does it first, with its progress line.
 
 | | |
 |---|---|
+| Local AI | **Built in**, but `--vision`: **🤖 Needs a local AI (Ollama)** ([Local AI](../reference-ai.md)). |
 | Your photos | 🔒 Not read, never changed: only the positions the index already holds (`--vision` 🤖 reads them, never changes them). |
 | Needs | `/cache` (the index): run [`audit`](audit.md) once before. |
 | Writes | In the index only. |

@@ -153,6 +153,7 @@ nav:
       - commands/xmp.md
   - Reference:
       - reference-advanced.md
+      - reference-ai.md
       - reference-albums.md
       - reference-glossary.md
       - reference-inventory.md

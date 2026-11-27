@@ -37,6 +37,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| IA locale | **Intégré** : les modèles de visages tournent sur le processeur, ni Ollama, ni carte graphique ([IA locale](../reference-ai.md)). |
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Il faut | Vos dossiers, `/cache` (en écriture : les visages y sont gardés), `/config` (en écriture, pour enregistrer les noms) et `-p 127.0.0.1:8088:8088`. |
 | Écrit | Les visages et les deux modèles de visages (39 Mo, une fois), dans le cache ; les noms, dans `config.toml` ; les photos mises de côté, dans `decisions.json` de `/reports`. |
@@ -304,7 +305,8 @@ sans `config.toml` à vous, les noms seulement.
 **Pas de visage sur la photo ?** Un visage penché, couché ou flou échappe souvent à l'audit, qui
 regarde chaque photo droite. **Regarder encore, plus lentement** regarde cette seule photo
 tournée (jusqu'à 90° de chaque côté) et moins exigeante (jusqu'à une certitude de 0,4, contre
-0,6 pour l'audit) : les visages trouvés que la photo n'avait pas sont gardés dans l'index, une
+0,6 pour l'audit), et une grande photo aussi en quatre parties qui se chevauchent, où les
+petits visages d'une photo de groupe prise à quelques mètres paraissent plus grands : les visages trouvés que la photo n'avait pas sont gardés dans l'index, une
 fois chacun, et nommés d'après les personnes que vous connaissez, comme les autres : confirmez
 ou corrigez. Sur une fête de famille (215 vraies photos), 3 à 5 visages sur 6 trouvés sous la
 certitude de l'audit sont bien des personnes : les autres, un motif ou un reflet, restent
@@ -342,7 +344,7 @@ les montrer*, qui les affiche marqués ⊘, et **↩** sur l'un d'eux le reprend
 ## Photos à redresser
 
 En cherchant les visages, `people` remarque aussi une photo couchée sur le côté : ses visages ne
-sont droits qu'une fois la photo tournée (🤖 le modèle de visages local, YuNet : une supposition).
+sont droits qu'une fois la photo tournée (le modèle de visages intégré, YuNet : une supposition).
 La page **Photos à redresser** de la page d'accueil (*Trier*, *Aller plus loin*) montre chacune
 **tournée comme elle le serait**, une vignette par photo, choisie comme dans [`library`](library.md) :
 clic, Ctrl+clic, Maj+clic, un rectangle, Ctrl+A, I pour inverser, Entrée ou un double clic pour la
@@ -382,6 +384,7 @@ jamais dans vos photos ni dans les rapports ; la page est servie sur `127.0.0.1`
 découpe les visages dans les photos à la demande, sans jamais les enregistrer. Le seul accès au
 réseau est le téléchargement, une fois, des deux modèles depuis OpenCV Zoo, vérifiés par leur
 SHA-256 : il n'envoie rien sur vos photos.
+Ni Ollama, ni carte graphique : les modèles de visages sont intégrés ([IA locale](../reference-ai.md)).
 
 ## Bon à savoir
 
@@ -390,6 +393,8 @@ SHA-256 : il n'envoie rien sur vos photos.
   `classify`, XMP), sauf si vous les avez confirmés : rien n'est analysé à nouveau.
 - `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
   temps que ça prend ; `with_audit = true` dans `[people]` le fait à chaque audit.
+- Vidéos : `videos = true` dans `[people]` y cherche aussi les visages, sur cinq images de
+  chacune (environ une seconde par vidéo) ; une personne vue sur plusieurs images compte une fois.
 - Les visages pris à quelques mètres, sur les photos de groupe, sont gardés depuis novembre
   2026 : deux fois plus de visages sur une fête de famille, presque tous nommés d'emblée
   d'après les personnes que vous avez déjà nommées. Les photos analysées avant sont regardées

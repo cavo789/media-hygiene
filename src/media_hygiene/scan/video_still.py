@@ -86,6 +86,24 @@ async def video_jpeg(still: VideoStill, edge: int) -> bytes | None:
     Returns:
         The JPEG, or None when the frame cannot be decoded.
     """
+    picture = await video_picture(still, edge)
+    if picture is None:
+        return None
+    buffer = io.BytesIO()
+    picture.save(buffer, "JPEG", quality=_JPEG_QUALITY)
+    return buffer.getvalue()
+
+
+async def video_picture(still: VideoStill, edge: int) -> Image.Image | None:
+    """Decode the frame, upright, its longer side `edge` pixels.
+
+    Args:
+        still: The video, the moment, its orientation and `ffmpeg`.
+        edge: The longer side, in pixels.
+
+    Returns:
+        The RGB picture, or None when the frame cannot be decoded.
+    """
     scale = f"scale={edge}:-2" if still.landscape else f"scale=-2:{edge}"
     command = (
         still.ffmpeg,
@@ -102,7 +120,4 @@ async def video_jpeg(still: VideoStill, edge: int) -> bytes | None:
         return None
     other = len(run.stdout) // row
     size = (edge, other) if still.landscape else (other, edge)
-    picture = Image.frombytes("RGB", size, run.stdout)
-    buffer = io.BytesIO()
-    picture.save(buffer, "JPEG", quality=_JPEG_QUALITY)
-    return buffer.getvalue()
+    return Image.frombytes("RGB", size, run.stdout)

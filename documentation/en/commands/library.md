@@ -41,6 +41,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| Local AI | **Built in**: nothing to install, no graphics card ([Local AI](../reference-ai.md)). |
 | Your photos | 🔒 Nothing moves without your GO: *I checked: sort these N files* moves the files of a rule checked on the page, journaled; `undo` puts them back. `mh library` mounts them writable, with `/journal`; mounted `:ro`, the page stays read-only and the GO is refused. |
 | Needs | `/cache` (the words of `tags`), your folders (to show the photos), and `-p 127.0.0.1:8088:8088` for the page; `/reports` to set photos aside. |
 | Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports; your albums, in `albums.json` next to it. |
@@ -243,7 +244,8 @@ nothing).
 decide nothing, turn a folder-name rule into dates.
 
 **📐 Where and how to sort** chooses, on your photos, what the next `classify` proposes: the folder
-receiving the tree (`[classify] target`; empty: each folder is sorted in place) and its shape,
+receiving the tree (`[classify] target`; empty: each folder is sorted in place; **📂 Pick in my
+folders…** picks it in the library's tree, typing stays for a folder not audited yet) and its shape,
 *Year / Year-month / Event* or *Year / Month only*, each with the tree it gives (from your latest
 `classify`, else from the dates of your photos, without the names of the events). The files the sort
 is less sure of stay where they are unless you choose a shape for them too. Saved in `config.toml`
@@ -595,7 +597,7 @@ not known yet: 0 of 44,488 files described…*, with the step that fills it (�
 |---|---|---|
 | `an old man` | **Every word must be found**: `an` and `old` and `man`; a small word counts too. | `man`, then fewer words. |
 | `old man`, `grandmother`, `woman` | **The model never writes an age, a sex or a relationship**: for people it writes *adult*, *child*, *baby* or *group* only. | `person:` and the person's name (named on the [`people`](people.md) page), or `child`. |
-| `an old man in a garden` | **A whole sentence needs search by meaning** (`tags --meaning`); without it, words only. | `garden`; or run 🤖 `tags --meaning` once: then sentences work. |
+| `an old man in a garden` | **A whole sentence needs search by meaning** (`tags --meaning`); without it, words only. | `garden`; or run `tags --meaning` once: then sentences work. |
 | `beach` during a `tags` run | **The model's words reach the search at the end of the run** (or after one Ctrl+C, which writes those of the photos described so far). | Wait for the end of `tags`, or Ctrl+C once. |
 
 Nothing found? Fewer words, the start of a word (`anniv*`), another source's prefix (`folder:`), or

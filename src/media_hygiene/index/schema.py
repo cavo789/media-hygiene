@@ -21,7 +21,8 @@ the faces of the people set aside (`index.aside_faces`); version 18 the group of
 face (`index.face_groups`); version 19 where each located photo lies
 (`index.spot_rows`); version 20 when each file was last read in full, and
 the files found damaged (`index.verified_rows`); version 23 how far down each
-photo's faces were looked for (`index.face_tops`). An older
+photo's faces were looked for (`index.face_tops`); version 24 the frame of each
+face of a video (`index.face_frames`). An older
 index keeps its digests and integrity results: the new columns are filled once,
 without decoding images again.
 """
@@ -41,7 +42,7 @@ from media_hygiene.index.takeout_rows import CREATE_TAKEOUT
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 23  # 23: face_tops (0841)
+SCHEMA_VERSION: Final = 24  # 24: face_frames (0839)
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,

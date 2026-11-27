@@ -19,6 +19,7 @@
     <p class="muted">{{ _("Sort here now and Move to an event use these choices at once, and keep the folder named after the event, even with Year / Month only.") }}</p>
     <label for="setupTarget">{{ _("Folder receiving the tree (empty: each of your folders is sorted in place)") }}</label>
     <input id="setupTarget" maxlength="4096" placeholder="{{ _('e.g. C:\\Photos\\Sorted') }}">
+    <button id="setupTargetTree" type="button" data-pick-field="setupTarget" data-pick-url="{{ folders_path }}" data-pick-title="{{ _('Folder receiving the tree (empty: each of your folders is sorted in place)') }}" title="{{ _('Pick the folder in the tree of your folders, as the library shows it.') }}">📂 {{ _("Pick in my folders…") }}</button>
     <label for="setup-layout">{{ _("The shape of the tree") }}</label>
     <select id="setup-layout"></select>
     <div id="tree-layout" class="tree"></div>
@@ -40,3 +41,4 @@
     </menu>
   </form>
 </dialog>
+{% include "folder_chooser.html.j2" %}

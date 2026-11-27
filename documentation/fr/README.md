@@ -141,6 +141,7 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 - [Les tags](reference-tags.md) : des mots pour retrouver les photos, tirés de leurs dossiers,
   noms, dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache ; `library` les
   retrouve dans votre navigateur, `xmp` les écrit dans des fichiers compagnons `.xmp`.
+- [IA locale](reference-ai.md) : ce qui est intégré, ce qui demande une IA locale (Ollama), quel modèle pour votre carte graphique
 - [Les personnes](reference-people.md) : trouver les visages des photos, regrouper ceux qui se
   ressemblent et les nommer dans votre navigateur (`people`), puis retrouver quelqu'un avec
   `library` ; gardés dans le cache, jamais envoyés.

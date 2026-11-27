@@ -29,6 +29,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| Local AI | **Built in** for the words of folders, names, dates, places and `--meaning`; **🤖 Needs a local AI (Ollama)** to describe what photos show ([Local AI](../reference-ai.md)). |
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | `/cache`, filled by an earlier [`audit`](audit.md). |
 | Recommended | Your folders (needed for the vision model, which reads the photos), `/config` (the model, `[tags]`). |
@@ -94,7 +95,7 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
 | 🤖 `--sample N` | **With a local AI only.** Describe N random photos with the model, print their words, the time per photo and the estimate of a full run, and stop. |
 | 🤖 `--no-describe` | **With a local AI only.** Ask the model nothing new: the words of the folders, names, dates and places, and the descriptions already in the cache. |
 | 🤖 `--yes`, `-y` | **With a local AI only.** Describe the photos without asking, however many (above 200, it asks first). |
-| 🤖 `--meaning` | A model on this computer's processor (CLIP: no Ollama, no GPU, nothing sent) looks at each photo once, about 1 minute per 1,000 photos, so that [`library`](library.md) finds what a photo shows ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). The model (894 MB) is downloaded into the cache the first time. Default: `[tags] meaning`. |
+| `--meaning` | A model on this computer's processor (CLIP: no Ollama, no GPU, nothing sent) looks at each photo once, about 1 minute per 1,000 photos, so that [`library`](library.md) finds what a photo shows ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). The model (894 MB) is downloaded into the cache the first time. Default: `[tags] meaning`. |
 
 ## Good to know
 

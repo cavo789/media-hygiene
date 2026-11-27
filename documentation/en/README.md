@@ -134,6 +134,7 @@ otherwise both copies are sorted.
 - [Tags](reference-tags.md): words to find photos by, from their folders, names, dates and places, and
   from a local vision model (`tags`), kept in the cache; `library` finds them in your browser,
   `xmp` writes them into `.xmp` sidecars.
+- [Local AI](reference-ai.md): what is built in, what needs a local AI (Ollama), which model for your graphics card
 - [People](reference-people.md): find the faces in the photos, group those alike and name them
   in your browser (`people`), then find someone with `library`; kept in the cache, never sent
   anywhere.

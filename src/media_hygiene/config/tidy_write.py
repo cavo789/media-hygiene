@@ -8,7 +8,7 @@ removed, or nothing is written.
 from __future__ import annotations
 
 import tomllib
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final
 
 import tomlkit
 from tomlkit.items import AoT, Array, InlineTable, Table
@@ -20,6 +20,9 @@ if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     from media_hygiene.config.tidy_rules import StaleEntry
+
+# Sections whose entries lose one key, not the row: a missing people file (0849).
+UNLINKED: Final = {"people.person": "file"}
 
 
 def without_entries(text: str, entries: Sequence[StaleEntry]) -> str:
@@ -63,6 +66,10 @@ def check_removed(before: str, after: str, entries: Sequence[StaleEntry]) -> Non
         ranks = {entry.rank for entry in entries if entry.section == section}
         top, key = section.split(".")
         rows = expected[top][key]
+        if section in UNLINKED:
+            for rank in ranks:
+                rows[rank].pop(UNLINKED[section], None)
+            continue
         if isinstance(rows, dict):  # `town_names`: a table, its keys in file order
             expected[top][key] = {
                 name: value
@@ -115,6 +122,9 @@ def _remove(document: tomlkit.TOMLDocument, section: str, ranks: Sequence[int]) 
     if not isinstance(rows, AoT | Array):
         raise ConfigError(_("{section} is not a list.").format(section=section))
     for rank in ranks:
+        if section in UNLINKED:
+            del rows[rank][UNLINKED[section]]
+            continue
         del rows[rank]
     if isinstance(rows, AoT) and not rows.body and isinstance(holder, Table):
         del holder[key]

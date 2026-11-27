@@ -24,22 +24,9 @@ function problem(text) {
   $("problem").textContent = text || "";
   $("problem").hidden = !text;
 }
-// `undo`: what takes the change back (a delete: the copy the server kept, 0499; a photo taken
-// out: added again, 0696), its answer read back from the disk.
-function toast(text, undo) {
-  const box = $("toast");
-  box.textContent = text;
-  if (undo) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = `↩ ${T.undo}`;
-    button.addEventListener("click", () => { box.hidden = true; undo(); });
-    box.append(button);
-  }
-  box.hidden = false;
-  window.clearTimeout(toast.timer);
-  toast.timer = window.setTimeout(() => { box.hidden = true; }, 6000);
-}
+// The shared toast (0851): `undo` takes the change back (a delete: the copy the server kept,
+// 0499; a photo taken out: added again, 0696), its answer read back from the disk.
+const toast = (text, undo) => window.mhUndoToast(text, undo || null);
 async function ask(url, options) {
   let response;
   try {

@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Final
 
 from PIL import Image
 
+from media_hygiene.faces.video_faces import frame_picture
 from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.image_check import prepare_image_worker
 
@@ -31,6 +32,7 @@ class CropJob:
 
     path: Path
     box: FaceBox
+    moment: float | None = None  # a video's face: the frame it was found on (0839)
 
 
 def face_crop(job: CropJob) -> bytes | None:
@@ -45,6 +47,9 @@ def face_crop(job: CropJob) -> bytes | None:
         The JPEG bytes, or None when the photo cannot be decoded any more.
     """
     prepare_image_worker()
+    if job.moment is not None:
+        frame = frame_picture(job.path, job.moment)
+        return None if frame is None else crop_jpeg(frame, job.box)
     try:
         picture = upright_picture(job.path)
     except unreadable_errors():

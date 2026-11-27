@@ -118,7 +118,8 @@ class PeopleStep:
             The work.
         """
         connection = self.store.connection
-        photos, absent = present_photos(people_photos(connection, within))
+        videos = self._runtime.settings.people.videos  # 0839
+        photos, absent = present_photos(people_photos(connection, within, videos))
         scanned, missing = unread(connection, self._model, photos)  # 0815
         turn_only = sum(1 for p in missing if p.path in scanned)
         return PeopleWork(photos, missing, absent, turn_only)

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Final
 
+from media_hygiene.index.face_frames import CREATE_FACE_FRAMES
 from media_hygiene.index.face_schema import FACE_TABLES
 from media_hygiene.index.gone_rows import CREATE_GONE
 from media_hygiene.index.journal_words import JOURNAL_TABLES
@@ -21,6 +22,7 @@ LATER_TABLES: Final = (
     CREATE_SPOTS,
     CREATE_VERIFIED,
     CREATE_TURN_REFUSALS,
+    CREATE_FACE_FRAMES,
 )
 # `files` first: `FactsRepository.forget` counts the files it removes on it.
 PATH_TABLES: Final = (
@@ -30,6 +32,7 @@ PATH_TABLES: Final = (
     "face_scans",
     "face_tops",
     "faces",
+    "face_frames",
     "face_turns",
     "turn_refusals",
     "measures",

@@ -85,7 +85,8 @@ class PersonFinder:
         if path is None:
             message = _("{path} is not a photo of the folders this page shows.")
             return {"said": message.format(path=typed.strip(_QUOTES)), "faces": []}
-        if (video := video_said(path)) is not None:
+        video = video_said(path)
+        if video is not None and not self.faces.scanned(path):  # a video's (0839)
             return {"said": video, "faces": []}
         size = upright_size(self.faces.file, path)
         views = []
@@ -171,5 +172,11 @@ class PersonFinder:
             Its number.
         """
         return self.shelf.add(
-            ShelfFace(face.path, search_vector(face), face.box, number=face.number)
+            ShelfFace(
+                face.path,
+                search_vector(face),
+                face.box,
+                number=face.number,
+                moment=face.moment,
+            )
         )

@@ -8,9 +8,11 @@
   <form id="makeFolderForm" hidden>
     <label for="makeFolder">{{ _("Where should your albums go?") }}</label>
     <input id="makeFolder" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\_Albums') }}">
+    <button id="makeFolderTree" type="button" data-pick-field="makeFolder" data-pick-url="{{ paths.album_root_folders }}" data-pick-title="{{ _('Where should your albums go?') }}" data-pick-submit title="{{ _('Pick the folder in the tree of your folders, as the library shows it.') }}">📂 {{ _("Pick in my folders…") }}</button>
     <button type="submit">{{ _("Save") }}</button>
   </form>
   <p class="warn">{{ _("A retouch of a photo in the folder changes the original too: it is the same file. The folder must be on the same disk and in the same mounted folder (-v) as the photos; exFAT refuses hard links.") }}</p>
   <p><button id="makeGo" type="button" hidden></button>
     <button id="makeClose" class="plain" type="button">{{ _("Close") }}</button></p>
 </dialog>
+{% include "folder_chooser.html.j2" %}

@@ -30,6 +30,7 @@ class ShelfFace:
     box: FaceBox | None = None  # in the upright photo
     crop: bytes | None = None  # JPEG, found turned by a second look
     number: int | None = None  # its number in the photo, in the index: it can be named
+    moment: float | None = None  # a video's face: the frame it was found on (0839)
 
 
 class FaceShelf:

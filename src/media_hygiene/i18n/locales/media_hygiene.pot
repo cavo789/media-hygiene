@@ -681,6 +681,12 @@ msgid ""
 " then share again."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"A linked people file is missing, its faces are not loaded: {files}. "
+"Restore it, or run config tidy --apply to unlink it."
+msgstr ""
+
 msgid ""
 "A local model looks at each photo on this computer's processor, so that "
 "search finds photos by what they show. Nothing is sent; only the cache is"
@@ -15654,6 +15660,12 @@ msgstr ""
 msgid ""
 "true: every 'audit' then looks for faces in the photos not looked at yet,"
 " after saying how long it takes and asking, as 'audit --people' does."
+msgstr ""
+
+msgid ""
+"true: faces are looked for in videos too, on five frames of each (about "
+"one second per video, a few times a photo's). The page 'Identify someone'"
+" then shows a video's faces like a photo's."
 msgstr ""
 
 msgid "turn rotate straighten orientation sideways upright"

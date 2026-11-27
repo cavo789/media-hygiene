@@ -39,3 +39,16 @@ guess on `people.md`), which misleads.
    seconds per photo) and **check** the other sizes against Ollama's library pages before
    writing them: no figure from memory (rule: a fact about a third-party product is checked).
 5. `people.md` "Your privacy": one line "no Ollama, no graphics card" + link.
+
+## Done (2026-11-27)
+
+- `reference-ai.md` EN + FR (nav, README contents): the one sentence, the table, the VRAM table.
+- "Local AI" / "IA locale" row in the At a glance table of people, tags, classify, spots,
+  library, places; 🤖 removed from the built-in mentions (`tags --meaning`, the turn guess);
+  people "Your privacy" line.
+- CLI: already right (`--meaning` outside the 🤖 panel; only `tags` has `ai=True` in the menu).
+- Measured (devcontainer → host Ollama, 6 synthetic 768×576 JPEG, `/api/generate`, 80 tokens
+  max): `qwen3.8:27b` Q4_K_M 17.4 GB VRAM (`/api/ps`), cold 10.9 s, warm 1.6–2.3 s per photo.
+  Checked: model sizes on ollama.com/library/<model>/tags (2026-11-27).
+- Left: no measurement of a small model nor of CPU-only speed (not pulled on the maintainer's
+  machine); the suggested models per size are a choice, not measured quality.

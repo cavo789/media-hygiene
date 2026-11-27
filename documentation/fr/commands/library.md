@@ -42,6 +42,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| IA locale | **Intégré** : rien à installer, pas de carte graphique ([IA locale](../reference-ai.md)). |
 | Vos photos | 🔒 Rien ne bouge sans votre GO : *J'ai vérifié : trier ces N fichiers* déplace les fichiers d'une règle vérifiés sur la page, notés au journal ; `undo` les remet. `mh library` les monte accessibles en écriture, avec `/journal` ; montées en `:ro`, la page reste en lecture seule et le GO est refusé. |
 | Il faut | `/cache` (les mots de `tags`), vos dossiers (pour montrer les photos), et `-p 127.0.0.1:8088:8088` pour la page ; `/reports` pour mettre des photos de côté. |
 | Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports ; vos albums, dans `albums.json` à côté. |
@@ -261,7 +262,9 @@ jours de l'événement (il ne déplace rien).
 retirez celles qui ne décident rien, changez une règle de nom de dossier en dates.
 
 **📐 Où et comment trier** choisit, sur vos photos, ce que propose le prochain `classify` : le dossier
-qui reçoit l'arborescence (`[classify] target` ; vide : chaque dossier est trié sur place) et sa forme,
+qui reçoit l'arborescence (`[classify] target` ; vide : chaque dossier est trié sur place ; **📂 Choisir
+dans mes dossiers…** le choisit dans l'arbre de la photothèque, le taper reste possible pour un dossier
+pas encore audité) et sa forme,
 *Année / Année-mois / Événement* ou *Année / Mois seulement*, chacune avec l'arborescence qu'elle donne
 (d'après votre dernier `classify`, sinon d'après les dates de vos photos, sans le nom des événements).
 Les fichiers dont le tri est moins sûr restent où ils sont, sauf si vous choisissez aussi une forme pour
@@ -640,7 +643,7 @@ dates, des lieux et des personnes.
 |---|---|---|
 | `un vieil homme` | **Chaque mot doit être trouvé** : `un` et `vieil` et `homme` ; un petit mot compte aussi. | `homme`, puis moins de mots. |
 | `vieil homme`, `grand-mère`, `femme` | **Le modèle n'écrit jamais d'âge, de sexe ni de lien de parenté** : pour les personnes, il n'écrit que *adulte*, *enfant*, *bébé* ou *groupe*. | `person:` et le nom de la personne (nommée sur la page [`people`](people.md)), ou `enfant`. |
-| `un vieil homme dans un jardin` | **Une phrase entière demande la recherche par le sens** (`tags --meaning`) ; sans elle, des mots seulement. | `jardin` ; ou lancez une fois 🤖 `tags --meaning` : les phrases marchent alors. |
+| `un vieil homme dans un jardin` | **Une phrase entière demande la recherche par le sens** (`tags --meaning`) ; sans elle, des mots seulement. | `jardin` ; ou lancez une fois `tags --meaning` : les phrases marchent alors. |
 | `plage` pendant un `tags` | **Les mots du modèle arrivent dans la recherche à la fin du run** (ou après un seul Ctrl+C, qui écrit ceux des photos déjà décrites). | Attendez la fin de `tags`, ou un Ctrl+C. |
 
 Rien trouvé ? Moins de mots, le début d'un mot (`anniv*`), le préfixe d'une autre source (`folder:`), ou

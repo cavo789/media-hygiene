@@ -97,8 +97,8 @@ def _person(entry: object, config_dir: Path) -> object:
         config_dir: The folder of `config.toml`.
 
     Returns:
-        The table with its lists; as it was without a file (or malformed: the
-        settings say what is wrong).
+        The table with its lists; as it was without a file, its file missing (or
+        malformed: the settings say what is wrong).
     """
     if not isinstance(entry, dict):
         return entry
@@ -107,6 +107,8 @@ def _person(entry: object, config_dir: Path) -> object:
     if not (isinstance(file, str) and file):
         return entry
     if not (isinstance(faces, list) and isinstance(rejected, list)):
+        return entry
+    if not linked_path(config_dir, file).is_file():  # gone: warned, tidy unlinks (0849)
         return entry
     lists = read_lists(config_dir, file)
     return {

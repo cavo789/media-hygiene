@@ -21,6 +21,7 @@ avec sa ligne de progression.
 
 | | |
 |---|---|
+| IA locale | **Intégré**, sauf `--vision` : **🤖 Demande une IA locale (Ollama)** ([IA locale](../reference-ai.md)). |
 | Vos photos | 🔒 Ni lues, ni modifiées : seulement les positions que l'index connaît déjà (`--vision` 🤖 les lit, sans jamais les modifier). |
 | Il faut | `/cache` (l'index) : lancez [`audit`](audit.md) une fois avant. |
 | Écrit | Dans l'index seulement. |

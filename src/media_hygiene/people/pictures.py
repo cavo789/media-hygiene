@@ -61,7 +61,7 @@ class FacePictures:
                     face.path,
                 )
             image = await asyncio.get_running_loop().run_in_executor(
-                self.executor, face_crop, CropJob(face.path, face.box)
+                self.executor, face_crop, CropJob(face.path, face.box, face.moment)
             )
             if image is None:
                 break

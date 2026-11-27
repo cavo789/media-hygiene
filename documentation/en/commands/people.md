@@ -35,6 +35,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| Local AI | **Built in**: the face models run on the processor, no Ollama, no graphics card ([Local AI](../reference-ai.md)). |
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | Your folders, `/cache` (writable: the faces are kept there), `/config` (writable, to save the names) and `-p 127.0.0.1:8088:8088`. |
 | Writes | The faces and the two face models (39 MB, once), in the cache; the names, in `config.toml`; the photos you set aside, in `decisions.json` of `/reports`. |
@@ -279,7 +280,8 @@ without a `config.toml` of yours, the names only.
 **No face on the photo?** A face tilted, lying on its side or blurred is often missed by the
 audit, which looks at each photo upright. **Look again, slower** looks at that one photo turned
 (up to 90° each way) and less strictly (down to a detector score of 0.4, the audit's being
-0.6): the faces it finds that the photo did not have are kept in the index, each once, and
+0.6), and a large photo also in four overlapping parts, where the small faces of a group
+photo taken from a few metres look larger: the faces it finds that the photo did not have are kept in the index, each once, and
 named after the people you know like the others: confirm or correct them. On a family event
 (215 real photos), 3 to 5 faces in 6 found below the audit's score are still people: the
 others, a pattern or a reflection, you simply leave without a name. Still nothing, though you see the face? **✏ Draw a face the tool missed**
@@ -314,7 +316,7 @@ Nothing is silent: the photo says *N faces ignored: show them*, which draws them
 ## Photos to straighten
 
 While it looks for faces, `people` also notices a photo lying on its side: its faces stand
-upright only once the photo is turned (🤖 the local face model, YuNet: a guess). The page
+upright only once the photo is turned (the built-in face model, YuNet: a guess). The page
 **Photos to straighten** of the home page (*Sort out*, *Go further*) shows each of them
 **turned as it would be**, a tile per photo, picked as in [`library`](library.md): click, Ctrl+click,
 Shift+click, a rectangle, Ctrl+A, I to invert, Enter or a double click for the large view.
@@ -352,6 +354,7 @@ The numbers that describe a face are **biometric data**. They stay in the cache,
 photos nor in the reports; the page is served on `127.0.0.1` only and cuts the faces out of the
 photos on request, never saved. The only network access is the one-time download of the two
 models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your photos.
+No Ollama, no graphics card: the face models are built in ([Local AI](../reference-ai.md)).
 
 ## Good to know
 
@@ -360,6 +363,8 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
   `classify`, XMP), unless you confirmed them: nothing is analysed again.
 - `audit --people` looks for the faces right after an audit, once you agreed to the time it
   takes; `with_audit = true` in `[people]` does it at every audit.
+- Videos: `videos = true` in `[people]` looks for faces in them too, on five frames of each
+  (about one second per video); one person seen on several frames counts once.
 - Faces a few metres away, in group photos, are kept since November 2026: twice as many faces
   on a family event, almost all named at once after the people you named already. Photos
   analysed before are looked at once more by the next `people` (or `audit --people`): it only

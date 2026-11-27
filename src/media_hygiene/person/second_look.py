@@ -8,9 +8,10 @@ Measured 2026-11-15 on "Communion Manon" (215 real photos, upright only): 497 fa
 the audit's score, 3 to 5 faces in 6 are still people, so the user picks. Each face
 found is placed back on the upright photo (`upright_box`), the same face found at two
 angles is kept once, by its place (`OVERLAP`), and a face the photo has already is not
-returned (`beside`): what comes back is new, and kept in the index by the page
-(`scan_route.looked_again`), named and searched like any other (0841). Runs in a
-worker process.
+returned (`beside`). A large photo is also looked at upright on overlapping tiles
+(`faces.tiles`, 0840): the small faces of a group photo. What comes back is new,
+and kept in the index by the page (`scan_route.looked_again`), named and searched
+like any other (0841). Runs in a worker process.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from PIL import Image
 
 from media_hygiene.faces.detect import OVERLAP
 from media_hygiene.faces.models import FaceBox
+from media_hygiene.faces.tiles import find_on_tiles
 from media_hygiene.faces.worker import finder_of
 from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.image_check import prepare_image_worker
@@ -73,6 +75,7 @@ def second_look(job: LookJob) -> tuple[Face, ...]:
             dataclasses.replace(face, box=upright_box(face.box, turn), landmarks=())
             for face in finder.find(turned)
         )
+    found.extend(find_on_tiles(finder, picture))
     found.sort(key=lambda face: -face.score)
     kept: list[Face] = []
     for face in found:

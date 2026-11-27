@@ -22,6 +22,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.config.loader import load_settings
 from media_hygiene.config.people_files import FOLDER
+from media_hygiene.config.people_missing import settings_warning
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
@@ -113,9 +114,11 @@ class FreshRuntime:
 
         Returns:
             One translated line naming the file as Explorer shows it; empty once the
-            files load.
+            files load; else the line of a missing people file (0849).
         """
-        return self._error
+        return self._error or settings_warning(
+            self._runtime.loaded, self._runtime.locations.config_dir
+        )
 
     def runtime(self) -> Runtime:
         """The runtime with the settings the files hold now.
