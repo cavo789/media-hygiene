@@ -220,7 +220,7 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 ## Mettre à jour
 
 `docker pull cavo789/media-hygiene` récupère la dernière version ; un tag comme
-`cavo789/media-hygiene:0.4.0` en fixe une.
+`cavo789/media-hygiene:0.5.0` en fixe une.
 
 ### Vous veniez de media-dedup ?
 
