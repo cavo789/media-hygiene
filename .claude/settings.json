@@ -26,6 +26,19 @@
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/scripts/git_guard.sh",
+            "timeout": 10,
+            "statusMessage": "git guard (no stash, no --no-verify, no force push)…"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
