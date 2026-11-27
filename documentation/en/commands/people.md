@@ -35,6 +35,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| Local AI | **Built in**: the face models run on the processor, no Ollama, no graphics card ([Local AI](../reference-ai.md)). |
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | Your folders, `/cache` (writable: the faces are kept there), `/config` (writable, to save the names) and `-p 127.0.0.1:8088:8088`. |
 | Writes | The faces and the two face models (39 MB, once), in the cache; the names, in `config.toml`; the photos you set aside, in `decisions.json` of `/reports`. |
@@ -314,7 +315,7 @@ Nothing is silent: the photo says *N faces ignored: show them*, which draws them
 ## Photos to straighten
 
 While it looks for faces, `people` also notices a photo lying on its side: its faces stand
-upright only once the photo is turned (🤖 the local face model, YuNet: a guess). The page
+upright only once the photo is turned (the built-in face model, YuNet: a guess). The page
 **Photos to straighten** of the home page (*Sort out*, *Go further*) shows each of them
 **turned as it would be**, a tile per photo, picked as in [`library`](library.md): click, Ctrl+click,
 Shift+click, a rectangle, Ctrl+A, I to invert, Enter or a double click for the large view.
@@ -352,6 +353,7 @@ The numbers that describe a face are **biometric data**. They stay in the cache,
 photos nor in the reports; the page is served on `127.0.0.1` only and cuts the faces out of the
 photos on request, never saved. The only network access is the one-time download of the two
 models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your photos.
+No Ollama, no graphics card: the face models are built in ([Local AI](../reference-ai.md)).
 
 ## Good to know
 

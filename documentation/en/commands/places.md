@@ -31,6 +31,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| Local AI | **Built in**: nothing to install, no graphics card ([Local AI](../reference-ai.md)). |
 | Your photos | 🔒 Never changed: the positions come from the cache. The photo folders, read-only (`:ro`), show the photos of a cluster; without them, the map works but shows no photo. |
 | Needs | `/cache` (the positions the audits recorded, and the previews), `/config` (where the places are saved), your photo folders read-only, and `-p 127.0.0.1:8088:8088`. |
 | Writes | `[[classify.places]]` entries in `config.toml`, keeping your comments and the rest of the file; also the folders' positions (`[[places.folders]]`), the names that are no town (`folder_town_ignore`), the clusters set aside (`[[places.ignored]]`) and the photos given a place by hand (`[[classify.place_photos]]`, their list in `/config/places/<place>.toml`). Each change is read back from the file before the page shows it. |

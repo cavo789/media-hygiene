@@ -30,6 +30,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| IA locale | **Intégré** pour les mots des dossiers, des noms, des dates, des lieux et `--meaning` ; **🤖 Demande une IA locale (Ollama)** pour décrire ce que les photos montrent ([IA locale](../reference-ai.md)). |
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Il faut | `/cache`, rempli par un [`audit`](audit.md) précédent. |
 | Conseillé | Vos dossiers (indispensables pour le modèle de vision, qui lit les photos), `/config` (le modèle, `[tags]`). |
@@ -92,7 +93,7 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
 | 🤖 `--sample N` | **Avec une IA locale seulement.** Décrire N photos prises au hasard avec le modèle, afficher leurs mots, le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
 | 🤖 `--no-describe` | **Avec une IA locale seulement.** Ne rien demander de nouveau au modèle : les mots des dossiers, noms, dates et lieux, et les descriptions déjà dans le cache. |
 | 🤖 `--yes`, `-y` | **Avec une IA locale seulement.** Décrire les photos sans demander, quel que soit leur nombre (au-delà de 200, il demande d'abord). |
-| 🤖 `--meaning` | Un modèle sur le processeur de cet ordinateur (CLIP : ni Ollama, ni carte graphique, rien n'est envoyé) regarde chaque photo une fois, environ 1 minute pour 1 000 photos, pour que [`library`](library.md) trouve ce qu'une photo montre ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). Le modèle (894 Mo) est téléchargé dans le cache la première fois. Par défaut : `[tags] meaning`. |
+| `--meaning` | Un modèle sur le processeur de cet ordinateur (CLIP : ni Ollama, ni carte graphique, rien n'est envoyé) regarde chaque photo une fois, environ 1 minute pour 1 000 photos, pour que [`library`](library.md) trouve ce qu'une photo montre ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). Le modèle (894 Mo) est téléchargé dans le cache la première fois. Par défaut : `[tags] meaning`. |
 
 ## Bon à savoir
 

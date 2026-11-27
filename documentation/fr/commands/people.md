@@ -37,6 +37,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| IA locale | **Intégré** : les modèles de visages tournent sur le processeur, ni Ollama, ni carte graphique ([IA locale](../reference-ai.md)). |
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Il faut | Vos dossiers, `/cache` (en écriture : les visages y sont gardés), `/config` (en écriture, pour enregistrer les noms) et `-p 127.0.0.1:8088:8088`. |
 | Écrit | Les visages et les deux modèles de visages (39 Mo, une fois), dans le cache ; les noms, dans `config.toml` ; les photos mises de côté, dans `decisions.json` de `/reports`. |
@@ -342,7 +343,7 @@ les montrer*, qui les affiche marqués ⊘, et **↩** sur l'un d'eux le reprend
 ## Photos à redresser
 
 En cherchant les visages, `people` remarque aussi une photo couchée sur le côté : ses visages ne
-sont droits qu'une fois la photo tournée (🤖 le modèle de visages local, YuNet : une supposition).
+sont droits qu'une fois la photo tournée (le modèle de visages intégré, YuNet : une supposition).
 La page **Photos à redresser** de la page d'accueil (*Trier*, *Aller plus loin*) montre chacune
 **tournée comme elle le serait**, une vignette par photo, choisie comme dans [`library`](library.md) :
 clic, Ctrl+clic, Maj+clic, un rectangle, Ctrl+A, I pour inverser, Entrée ou un double clic pour la
@@ -382,6 +383,7 @@ jamais dans vos photos ni dans les rapports ; la page est servie sur `127.0.0.1`
 découpe les visages dans les photos à la demande, sans jamais les enregistrer. Le seul accès au
 réseau est le téléchargement, une fois, des deux modèles depuis OpenCV Zoo, vérifiés par leur
 SHA-256 : il n'envoie rien sur vos photos.
+Ni Ollama, ni carte graphique : les modèles de visages sont intégrés ([IA locale](../reference-ai.md)).
 
 ## Bon à savoir
 

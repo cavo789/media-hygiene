@@ -29,6 +29,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| Local AI | **Built in**, but the `subject` rule and `--sample`: **🤖 Needs a local AI (Ollama)** ([Local AI](../reference-ai.md)). |
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | Your folders. |
 | Recommended | `/cache` (dates, cameras and places come from it), `/reports` (the workbook and the report), `/config` (your layout and rules). |

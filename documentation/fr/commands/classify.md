@@ -29,6 +29,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
+| IA locale | **Intégré**, sauf la règle `subject` et `--sample` : **🤖 Demande une IA locale (Ollama)** ([IA locale](../reference-ai.md)). |
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Il faut | Vos dossiers. |
 | Conseillé | `/cache` (les dates, appareils et lieux en viennent), `/reports` (le classeur et le rapport), `/config` (votre disposition et vos règles). |

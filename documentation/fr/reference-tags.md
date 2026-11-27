@@ -164,7 +164,7 @@ carte graphique, rien n'est envoyé), et `library` classe ensuite les photos par
 montrent, en français ou en anglais :
 
 ```powershell
-docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 un modèle tourne sur ce PC
+docker run --rm -it ... cavo789/media-hygiene tags --meaning   # intégré : un modèle sur le processeur de ce PC
 ```
 
 - **Ce qu'il trouve** : ce qui se voit. Mesuré sur 1 000 photos du mainteneur avec 20 recherches

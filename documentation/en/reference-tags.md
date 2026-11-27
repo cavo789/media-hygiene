@@ -159,7 +159,7 @@ multilingual text model: no Ollama, no GPU, nothing sent), and `library` then ra
 what they show, in French or in English:
 
 ```powershell
-docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 a model runs on this PC
+docker run --rm -it ... cavo789/media-hygiene tags --meaning   # built in: a model on this PC's processor
 ```
 
 - **What it finds**: what is seen. Measured on the maintainer's 1,000 photos with 20 French
